@@ -15,3 +15,6 @@
 /samples/CsvSampleConsoleApp/CsvSampleConsoleApp/obj
 /src/.vs/TinyCsv
 /samples/CsvSampleConsoleApp/.vs/CsvSampleConsoleApp/DesignTimeBuild
+/samples/CsvSampleConsoleApp/bin/Debug/net5.0
+/samples/.vs/CsvSampleConsoleApp/v17
+/samples/CsvSampleConsoleApp/obj
