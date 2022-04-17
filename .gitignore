@@ -1,0 +1,17 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/src/TinyCsv/TinyCsv/obj
+/src/TinyCsv/.vs/TinyCsv/v17
+/src/TinyCsv/TinyCsv/bin/Debug/netstandard2.1
+/src/TinyCsv/.vs/TinyCsv/DesignTimeBuild
+/src/TinyCsv/bin/Debug/netstandard2.1
+/src/TinyCsv/obj
+/src/.vs/TinyCsv/v17/.suo
+/samples/CsvSampleConsoleApp/.vs/CsvSampleConsoleApp/v17
+/samples/CsvSampleConsoleApp/CsvSampleConsoleApp/bin/Debug/net5.0
+/samples/CsvSampleConsoleApp/CsvSampleConsoleApp/obj
+/src/.vs/TinyCsv
+/samples/CsvSampleConsoleApp/.vs/CsvSampleConsoleApp/DesignTimeBuild
