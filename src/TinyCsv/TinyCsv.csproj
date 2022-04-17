@@ -20,6 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\..\LICENSE.md" Link="LICENSE.md" />
     <None Include="..\..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
