@@ -3,6 +3,24 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
+    <PackageLicenseFile>C:\Users\fmazzant\Desktop\WORKAREA\GITHUBS\TinyCsv\LICENSE</PackageLicenseFile>
+    <NeutralLanguage>en</NeutralLanguage>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Description>TinyCsv is a .NET library to load and write CSV data in an easy way.</Description>
+    <PackageProjectUrl></PackageProjectUrl>
+    <RepositoryUrl>https://github.com/fmazzant/TinyCsv</RepositoryUrl>
+    <PackageTags>csv,import,export,c-sharp</PackageTags>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>Mafe.TinyCsv</PackageId>
+    <Authors>Federico Mazzanti</Authors>
+    <Copyright>Copyright (c) 2022 Federico Mazzanti</Copyright>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
