@@ -13,7 +13,7 @@ public class Model
 }
 ```
 
-Now, is necessary setting the TinyCSV options, like this:
+Now, is necessary to define the TinyCSV options, like this:
 
 ```c#
 var csv = new TinyCsv<Model>(options =>
