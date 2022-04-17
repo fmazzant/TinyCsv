@@ -32,7 +32,7 @@ namespace TinyCsv
                 while (!file.EndOfStream)
                 {
                     var line = file.ReadLine();
-                    var values = line.Split(Options.Delimiter);
+                    var values = line.Split(new string[] { Options.Delimiter }, StringSplitOptions.None);
                     var model = new T();
                     foreach (var column in Options.Columns)
                     {

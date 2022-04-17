@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <Nullable>enable</Nullable>
+    <TargetFrameworks>netstandard2.1;net5.0;net6.0</TargetFrameworks>
+    <LangVersion>preview</LangVersion>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <Description>TinyCsv is a .NET library to load and write CSV data in an easy way.</Description>
     <PackageProjectUrl>https://github.com/fmazzant/TinyCsv</PackageProjectUrl>
     <RepositoryUrl>https://github.com/fmazzant/TinyCsv</RepositoryUrl>
@@ -17,10 +18,14 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Product>TinyCsv</Product>
     <Version>1.0.0</Version>
+
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\LICENSE.md" Link="LICENSE.md" />
+    <None Include="..\..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="..\..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
