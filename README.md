@@ -26,6 +26,7 @@ var csv = new TinyCsv<Model>(options =>
 });
 ```
 The options defines that the file has the header in first row and the delimier char is ";", furthermore there are defined three columns.
+
 A column is defined with the model's property only. The library get or set the value in automatically.
 
 To read a csv file is only necessary invoke the load method, like this:
