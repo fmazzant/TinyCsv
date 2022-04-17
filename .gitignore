@@ -20,3 +20,4 @@
 /samples/CsvSampleConsoleApp/obj
 /samples/.vs/CsvSampleConsoleApp/DesignTimeBuild
 /src/TinyCsv/bin/Debug
+/src/TinyCsv/bin/Release
