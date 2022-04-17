@@ -47,4 +47,4 @@ The method saves the file.
 
 The library is very very simple to use.
 
-The library is in preview version and in the future days it will be upgrade to exspand its functionality.
+The library is in preview version and in the future days it will be upgrade to expand its functionality.
