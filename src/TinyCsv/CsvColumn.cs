@@ -34,7 +34,6 @@ namespace TinyCsv
             {
                 return this;
             }
-
             public string Format(string format, object arg, IFormatProvider formatProvider)
             {
                 return ((IFormattable)arg).ToString(CustomFormat, formatProvider);

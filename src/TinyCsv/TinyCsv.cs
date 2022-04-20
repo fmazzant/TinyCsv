@@ -65,7 +65,7 @@ namespace TinyCsv
                         var propertyName = columnExpression.GetPropertyName();
                         var property = model.GetType().GetProperty(propertyName);
                         var value = property.GetValue(model);
-                        var typedValue = Convert.ChangeType(value, typeof(string), column.ColumnFormatProvider);
+                        var typedValue = string.Format(column.ColumnFormatProvider, "{0}", value);
                         var stringValue = $"\"{typedValue}\"";
                         return stringValue;
                     });
