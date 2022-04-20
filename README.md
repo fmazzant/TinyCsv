@@ -10,6 +10,7 @@ public class Model
     public int Id { get; set; }
     public string Name { get; set; }
     public decimal Price { get; set; }
+    public DateTime CreatedOn { get; set; }
 }
 ```
 
@@ -23,6 +24,7 @@ var csv = new TinyCsv<Model>(options =>
     options.Columns.AddColumn(m => m.Id);
     options.Columns.AddColumn(m => m.Name);
     options.Columns.AddColumn(m => m.Price);
+    options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
 });
 ```
 The options defines that the file has the header in first row and the delimier char is ";", furthermore there are defined three columns.

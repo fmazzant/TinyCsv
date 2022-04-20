@@ -17,7 +17,7 @@
     <AssemblyName>Mafe.TinyCsv</AssemblyName>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Product>TinyCsv</Product>
-    <Version>1.0.0-beta</Version>
+    <Version>1.0.0-preview1</Version>
 
   </PropertyGroup>
 

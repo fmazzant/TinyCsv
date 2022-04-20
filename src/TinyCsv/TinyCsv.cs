@@ -40,7 +40,7 @@ namespace TinyCsv
                         var columnExpression = column.ColumnExpression;
                         var propertyName = columnExpression.GetPropertyName();
                         var property = typeof(T).GetProperty(propertyName);
-                        var typedValue = Convert.ChangeType(value, column.ColumnType, CultureInfo.InvariantCulture);
+                        var typedValue = Convert.ChangeType(value, column.ColumnType, column.ColumnFormatProvider);
                         property.SetValue(model, typedValue);
                     }
                     models.Add(model);
@@ -65,7 +65,7 @@ namespace TinyCsv
                         var propertyName = columnExpression.GetPropertyName();
                         var property = model.GetType().GetProperty(propertyName);
                         var value = property.GetValue(model);
-                        var typedValue = Convert.ChangeType(value, typeof(string), CultureInfo.InvariantCulture);
+                        var typedValue = string.Format(column.ColumnFormatProvider, "{0}", value);
                         var stringValue = $"\"{typedValue}\"";
                         return stringValue;
                     });
