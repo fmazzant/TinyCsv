@@ -15,22 +15,23 @@ namespace TinyCsv
             Columns = new List<CsvColumn>();
         }
 
-        public void AddColumn<T>(int columnIndex, Expression<Func<M, T>> expression)
+        public void AddColumn<T>(int columnIndex, Expression<Func<M, T>> expression, string columnFormat = null)
         {
-            this.AddColumn(columnIndex, expression.GetPropertyName(), expression);
+            this.AddColumn(columnIndex, expression.GetPropertyName(), expression, columnFormat);
         }
-        public void AddColumn<T>(Expression<Func<M, T>> expression)
+        public void AddColumn<T>(Expression<Func<M, T>> expression, string columnFormat = null)
         {
-            this.AddColumn(Columns.Count, expression.GetPropertyName(), expression);
+            this.AddColumn(Columns.Count, expression.GetPropertyName(), expression, columnFormat);
         }
-        private void AddColumn<T>(int columnIndex, string columnName, Expression<Func<M, T>> expression)
+        private void AddColumn<T>(int columnIndex, string columnName, Expression<Func<M, T>> expression, string columnFormat = null)
         {
             Columns.Add(new CsvColumn()
             {
                 ColumnIndex = columnIndex,
                 ColumnName = columnName,
                 ColumnType = typeof(T),
-                ColumnExpression = expression
+                ColumnExpression = expression,
+                ColumnFormat = columnFormat
             });
         }
         public IEnumerator<CsvColumn> GetEnumerator() => Columns.GetEnumerator();

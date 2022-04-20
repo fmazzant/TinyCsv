@@ -8,6 +8,7 @@ namespace CsvSampleConsoleApp
         public int Id { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
+        public DateTime CreatedOn { get; set; }
     }
 
     internal class Program
@@ -22,6 +23,7 @@ namespace CsvSampleConsoleApp
                 options.Columns.AddColumn(m => m.Id);
                 options.Columns.AddColumn(m => m.Name);
                 options.Columns.AddColumn(m => m.Price);
+                options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
             });
 
             // load from file
