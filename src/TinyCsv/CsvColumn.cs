@@ -22,8 +22,7 @@ namespace TinyCsv
                 return new FormatProvider(ColumnFormat);
             }
         }
-
-        public class FormatProvider : IFormatProvider, ICustomFormatter
+        internal class FormatProvider : IFormatProvider, ICustomFormatter
         {
             public string CustomFormat { get; set; }
             public FormatProvider(string customFormat)
