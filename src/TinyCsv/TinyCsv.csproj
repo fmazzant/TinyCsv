@@ -6,7 +6,7 @@
     <NeutralLanguage>en</NeutralLanguage>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <Description>TinyCsv is a .NET library to load and write CSV data in an easy way.</Description>
+    <Description>TinyCsv is a .NET library to read and write CSV data in an easy way.</Description>
     <PackageProjectUrl>https://github.com/fmazzant/TinyCsv</PackageProjectUrl>
     <RepositoryUrl>https://github.com/fmazzant/TinyCsv</RepositoryUrl>
     <PackageTags>csv,import,export,c-sharp</PackageTags>
