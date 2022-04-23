@@ -1,6 +1,6 @@
 # TinyCsv
 
-TinyCsv is a .NET library to load and write CSV data in an easy way. 
+TinyCsv is a .NET library to read and write CSV data in an easy way. 
 
 Define the model if you want to use, like this:
 
