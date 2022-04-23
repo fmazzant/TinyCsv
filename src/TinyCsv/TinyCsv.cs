@@ -14,7 +14,6 @@ namespace TinyCsv
         public TinyCsv(Action<CsvOptions<T>> options)
         {
             Options = new CsvOptions<T>();
-            Options.Columns = new CsvOptionsColumns<T>();
             options(Options);
         }
 
