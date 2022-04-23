@@ -11,18 +11,33 @@ namespace TinyCsv
         public Type ColumnType { get; internal set; }
         public Expression ColumnExpression { get; internal set; }
         public string ColumnFormat { get; internal set; }
-        internal IFormatProvider ColumnFormatProvider
+
+        private IFormatProvider _FormatProvider = null;
+        public IFormatProvider ColumnFormatProvider
         {
             get
             {
-                if (string.IsNullOrEmpty(ColumnFormat))
+                var formatProvider = _FormatProvider;
+                if (formatProvider == null)
                 {
-                    return CultureInfo.InvariantCulture;
+                    if (string.IsNullOrEmpty(ColumnFormat))
+                    {
+                        formatProvider = CultureInfo.InvariantCulture;
+                    }
+                    else
+                    {
+                        formatProvider = new FormatProvider(ColumnFormat);
+                    }
                 }
-                return new FormatProvider(ColumnFormat);
+                return formatProvider;
+            }
+            set
+            {
+                _FormatProvider = value;
             }
         }
-        internal class FormatProvider : IFormatProvider, ICustomFormatter
+        
+        private sealed class FormatProvider : IFormatProvider, ICustomFormatter
         {
             public string CustomFormat { get; set; }
             public FormatProvider(string customFormat)

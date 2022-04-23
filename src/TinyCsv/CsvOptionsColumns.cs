@@ -23,7 +23,15 @@ namespace TinyCsv
         {
             this.AddColumn(Columns.Count, expression.GetPropertyName(), expression, columnFormat);
         }
-        private void AddColumn<T>(int columnIndex, string columnName, Expression<Func<M, T>> expression, string columnFormat = null)
+        public void AddColumn<T>(int columnIndex, string columnName, Expression<Func<M, T>> expression, IFormatProvider formatProvider)
+        {
+            this.AddColumn(columnIndex, columnName, expression, null, formatProvider);
+        }
+        public void AddColumn<T>(Expression<Func<M, T>> expression, IFormatProvider formatProvider)
+        {
+            this.AddColumn(Columns.Count, expression.GetPropertyName(), expression, null, formatProvider);
+        }
+        private void AddColumn<T>(int columnIndex, string columnName, Expression<Func<M, T>> expression, string columnFormat = null, IFormatProvider formatProvider = null)
         {
             Columns.Add(new CsvColumn()
             {
@@ -31,7 +39,8 @@ namespace TinyCsv
                 ColumnName = columnName,
                 ColumnType = typeof(T),
                 ColumnExpression = expression,
-                ColumnFormat = columnFormat
+                ColumnFormat = columnFormat,
+                ColumnFormatProvider = formatProvider
             });
         }
         public IEnumerator<CsvColumn> GetEnumerator() => Columns.GetEnumerator();
