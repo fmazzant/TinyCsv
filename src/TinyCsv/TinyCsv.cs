@@ -24,8 +24,7 @@ namespace TinyCsv
             {
                 if (Options.HasHeaderRecord)
                 {
-                    var header = file.ReadLine();
-                    //var headerValues = header.Split(Options.Delimiter);
+                    file.ReadLine();
                 }
 
                 while (!file.EndOfStream)
