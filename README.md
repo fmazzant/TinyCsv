@@ -2,6 +2,8 @@
 
 TinyCsv is a .NET library to read and write CSV data in an easy way. 
 
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCvs?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCvs)
+
 Define the model if you want to use, like this:
 
 ```c#
