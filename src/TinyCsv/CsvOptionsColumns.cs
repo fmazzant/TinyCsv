@@ -34,10 +34,10 @@ namespace TinyCsv
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using TinyCsv.Extentsions;
-    
+
     public sealed class CsvOptionsColumns<M> : IEnumerable<CsvColumn>
     {
-        public List<CsvColumn> Columns { get; private set; }
+        private List<CsvColumn> Columns { get; set; }
 
         public CsvOptionsColumns()
         {
@@ -72,7 +72,7 @@ namespace TinyCsv
                 ColumnFormatProvider = formatProvider
             });
         }
-     
+
         public IEnumerator<CsvColumn> GetEnumerator() => Columns.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
