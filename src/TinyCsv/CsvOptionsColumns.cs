@@ -72,6 +72,7 @@ namespace TinyCsv
                 ColumnFormatProvider = formatProvider
             });
         }
+     
         public IEnumerator<CsvColumn> GetEnumerator() => Columns.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
