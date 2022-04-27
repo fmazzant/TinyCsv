@@ -35,6 +35,10 @@ namespace TinyCsv
     using System.Linq;
     using TinyCsv.Extentsions;
 
+    /// <summary>
+    /// TinyCsv is a simple csv reader/writer library.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public sealed class TinyCsv<T>
         where T : class, new()
     {
@@ -45,6 +49,11 @@ namespace TinyCsv
             options(Options);
         }
 
+        /// <summary>
+        /// Reads a csv file and returns a list of objects.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public ICollection<T> Load(string path)
         {
             var models = new List<T>();
@@ -76,6 +85,11 @@ namespace TinyCsv
             return models;
         }
 
+        /// <summary>
+        /// Writes a list of objects to a csv file.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="models"></param>
         public void Save(string path, ICollection<T> models)
         {
             using (StreamWriter file = new StreamWriter(path))
@@ -91,8 +105,7 @@ namespace TinyCsv
                         var propertyName = columnExpression.GetPropertyName();
                         var property = model.GetType().GetProperty(propertyName);
                         var value = property.GetValue(model);
-                        var typedValue = string.Format(column.ColumnFormatProvider, "{0}", value);
-                        var stringValue = $"\"{typedValue}\"";
+                        var stringValue = string.Format(column.ColumnFormatProvider, "{0}", value);
                         return stringValue;
                     });
                     var line = string.Join(Options.Delimiter, values);
