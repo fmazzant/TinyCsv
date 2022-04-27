@@ -14,7 +14,7 @@
     <PackageId>Mafe.TinyCsv</PackageId>
     <Authors>Federico Mazzanti</Authors>
     <Copyright>Copyright (c) 2022 Federico Mazzanti</Copyright>
-    <AssemblyName>Mafe.TinyCsv</AssemblyName>
+    <AssemblyName>Mafe.$(MSBuildProjectName)</AssemblyName>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Product>TinyCsv</Product>
     <Version>1.0.1</Version>
