@@ -94,9 +94,12 @@ namespace TinyCsv
         {
             using (StreamWriter file = new StreamWriter(path))
             {
-                var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"\"{x.ColumnName}\""));
-                file.WriteLine(headers);
-
+                if (Options.HasHeaderRecord)
+                {
+                    var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
+                    file.WriteLine(headers);
+                }
+                
                 foreach (var model in models)
                 {
                     var values = Options.Columns.Select(column =>
