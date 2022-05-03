@@ -81,6 +81,7 @@ namespace TinyCsv
                     }
                     models.Add(model);
                 }
+
                 file.Close();
             }
             return models;
@@ -117,6 +118,7 @@ namespace TinyCsv
                     }
                     models.Add(model);
                 }
+
                 file.Close();
             }
             return models;
@@ -151,6 +153,7 @@ namespace TinyCsv
                     var line = string.Join(Options.Delimiter, values);
                     file.WriteLine(line);
                 }
+
                 file.Flush();
                 file.Close();
             }
@@ -185,6 +188,7 @@ namespace TinyCsv
                     var line = string.Join(Options.Delimiter, values);
                     await file.WriteLineAsync(line).ConfigureAwait(false);
                 }
+
                 await file.FlushAsync().ConfigureAwait(false);
                 file.Close();
             }
