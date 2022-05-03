@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using TinyCsv;
 
 namespace CsvSampleConsoleApp
@@ -13,7 +14,7 @@ namespace CsvSampleConsoleApp
 
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             // definitions
             var csv = new TinyCsv<Model>(options =>
@@ -27,11 +28,10 @@ namespace CsvSampleConsoleApp
             });
 
             // load from file
-            var models = csv.Load("file.csv");
+            var models = await csv.LoadAsync("file.csv");
 
             // write on file
-            csv.Save("file_export.csv", models);
-
+            await csv.SaveAsync("file_export.csv", models);
         }
     }
 }

@@ -33,6 +33,7 @@ namespace TinyCsv
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
     using TinyCsv.Extentsions;
 
     /// <summary>
@@ -86,6 +87,42 @@ namespace TinyCsv
         }
 
         /// <summary>
+        /// Reads a csv file and returns a list of objects.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public async Task<ICollection<T>> LoadAsync(string path)
+        {
+            var models = new List<T>();
+            using (StreamReader file = new StreamReader(path))
+            {
+                if (Options.HasHeaderRecord)
+                {
+                    await file.ReadLineAsync().ConfigureAwait(false);
+                }
+
+                while (!file.EndOfStream)
+                {
+                    var line = await file.ReadLineAsync().ConfigureAwait(false);
+                    var values = line.Split(new string[] { Options.Delimiter }, StringSplitOptions.None);
+                    var model = new T();
+                    foreach (var column in Options.Columns)
+                    {
+                        var value = values[column.ColumnIndex].Trim('"', '\'');
+                        var columnExpression = column.ColumnExpression;
+                        var propertyName = columnExpression.GetPropertyName();
+                        var property = typeof(T).GetProperty(propertyName);
+                        var typedValue = Convert.ChangeType(value, column.ColumnType, column.ColumnFormatProvider);
+                        property.SetValue(model, typedValue);
+                    }
+                    models.Add(model);
+                }
+                file.Close();
+            }
+            return models;
+        }
+
+        /// <summary>
         /// Writes a list of objects to a csv file.
         /// </summary>
         /// <param name="path"></param>
@@ -99,7 +136,7 @@ namespace TinyCsv
                     var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
                     file.WriteLine(headers);
                 }
-                
+
                 foreach (var model in models)
                 {
                     var values = Options.Columns.Select(column =>
@@ -115,6 +152,40 @@ namespace TinyCsv
                     file.WriteLine(line);
                 }
                 file.Flush();
+                file.Close();
+            }
+        }
+
+        /// <summary>
+        /// Writes a list of objects to a csv file.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="models"></param>
+        public async Task SaveAsync(string path, ICollection<T> models)
+        {
+            using (StreamWriter file = new StreamWriter(path))
+            {
+                if (Options.HasHeaderRecord)
+                {
+                    var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
+                    await file.WriteLineAsync(headers).ConfigureAwait(false);
+                }
+
+                foreach (var model in models)
+                {
+                    var values = Options.Columns.Select(column =>
+                    {
+                        var columnExpression = column.ColumnExpression;
+                        var propertyName = columnExpression.GetPropertyName();
+                        var property = model.GetType().GetProperty(propertyName);
+                        var value = property.GetValue(model);
+                        var stringValue = string.Format(column.ColumnFormatProvider, "{0}", value);
+                        return stringValue;
+                    });
+                    var line = string.Join(Options.Delimiter, values);
+                    await file.WriteLineAsync(line).ConfigureAwait(false);
+                }
+                await file.FlushAsync().ConfigureAwait(false);
                 file.Close();
             }
         }
