@@ -77,17 +77,7 @@ namespace TinyCsv
                 while (!file.EndOfStream)
                 {
                     var line = file.ReadLine();
-                    var values = line.Split(new string[] { Options.Delimiter }, StringSplitOptions.None);
-                    var model = new T();
-                    foreach (var column in Options.Columns)
-                    {
-                        var value = values[column.ColumnIndex].Trim('"', '\'');
-                        var columnExpression = column.ColumnExpression;
-                        var propertyName = columnExpression.GetPropertyName();
-                        var property = typeof(T).GetProperty(propertyName);
-                        var typedValue = Convert.ChangeType(value, column.ColumnType, column.ColumnFormatProvider);
-                        property.SetValue(model, typedValue);
-                    }
+                    var model = this.GetModelFromLine(line);
                     models.Add(model);
                 }
 
@@ -113,17 +103,7 @@ namespace TinyCsv
             while (!streamReader.EndOfStream)
             {
                 var line = streamReader.ReadLine();
-                var values = line.Split(new string[] { Options.Delimiter }, StringSplitOptions.None);
-                var model = new T();
-                foreach (var column in Options.Columns)
-                {
-                    var value = values[column.ColumnIndex].Trim('"', '\'');
-                    var columnExpression = column.ColumnExpression;
-                    var propertyName = columnExpression.GetPropertyName();
-                    var property = typeof(T).GetProperty(propertyName);
-                    var typedValue = Convert.ChangeType(value, column.ColumnType, column.ColumnFormatProvider);
-                    property.SetValue(model, typedValue);
-                }
+                var model = this.GetModelFromLine(line);
                 models.Add(model);
             }
 
@@ -137,7 +117,7 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public async Task<ICollection<T>> LoadAsync(string path, CancellationToken cancellationToken = new CancellationToken())
+        public async Task<IEnumerable<T>> LoadAsync(string path, CancellationToken cancellationToken = new CancellationToken())
         {
             var models = new List<T>();
             using (StreamReader file = new StreamReader(path))
@@ -149,24 +129,9 @@ namespace TinyCsv
 
                 while (!file.EndOfStream)
                 {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        return null;
-                    }
-
+                    cancellationToken.ThrowIfCancellationRequested();
                     var line = await file.ReadLineAsync().ConfigureAwait(false);
-                    var values = line.Split(new string[] { Options.Delimiter }, StringSplitOptions.None);
-                    var model = new T();
-                    foreach (var column in Options.Columns)
-                    {
-                        var value = values[column.ColumnIndex].Trim('"', '\'');
-                        var columnExpression = column.ColumnExpression;
-                        var propertyName = columnExpression.GetPropertyName();
-                        var property = typeof(T).GetProperty(propertyName);
-                        var typedValue = Convert.ChangeType(value, column.ColumnType, column.ColumnFormatProvider);
-                        property.SetValue(model, typedValue);
-                    }
+                    var model = this.GetModelFromLine(line);
                     models.Add(model);
                 }
 
@@ -191,30 +156,36 @@ namespace TinyCsv
 
             while (!streamReader.EndOfStream)
             {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    return null;
-                }
-
+                cancellationToken.ThrowIfCancellationRequested();
                 var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                var values = line.Split(new string[] { Options.Delimiter }, StringSplitOptions.None);
-                var model = new T();
-                foreach (var column in Options.Columns)
-                {
-                    var value = values[column.ColumnIndex].Trim('"', '\'');
-                    var columnExpression = column.ColumnExpression;
-                    var propertyName = columnExpression.GetPropertyName();
-                    var property = typeof(T).GetProperty(propertyName);
-                    var typedValue = Convert.ChangeType(value, column.ColumnType, column.ColumnFormatProvider);
-                    property.SetValue(model, typedValue);
-                }
+                var model = this.GetModelFromLine(line);
                 models.Add(model);
             }
 
             streamReader.Close();
 
             return models;
+        }
+
+        /// <summary>
+        /// Build T object from line
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        private T GetModelFromLine(string line)
+        {
+            var values = line.Split(new string[] { Options.Delimiter }, StringSplitOptions.None);
+            var model = new T();
+            foreach (var column in Options.Columns)
+            {
+                var value = values[column.ColumnIndex].Trim('"', '\'');
+                var columnExpression = column.ColumnExpression;
+                var propertyName = columnExpression.GetPropertyName();
+                var property = typeof(T).GetProperty(propertyName);
+                var typedValue = Convert.ChangeType(value, column.ColumnType, column.ColumnFormatProvider);
+                property.SetValue(model, typedValue);
+            }
+            return model;
         }
 
         /// <summary>
@@ -234,16 +205,7 @@ namespace TinyCsv
 
                 foreach (var model in models)
                 {
-                    var values = Options.Columns.Select(column =>
-                    {
-                        var columnExpression = column.ColumnExpression;
-                        var propertyName = columnExpression.GetPropertyName();
-                        var property = model.GetType().GetProperty(propertyName);
-                        var value = property.GetValue(model);
-                        var stringValue = string.Format(column.ColumnFormatProvider, "{0}", value);
-                        return stringValue;
-                    });
-                    var line = string.Join(Options.Delimiter, values);
+                    var line = this.GetLineFromModel(model);
                     file.WriteLine(line);
                 }
 
@@ -269,22 +231,8 @@ namespace TinyCsv
 
                 foreach (var model in models)
                 {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        return;
-                    }
-
-                    var values = Options.Columns.Select(column =>
-                    {
-                        var columnExpression = column.ColumnExpression;
-                        var propertyName = columnExpression.GetPropertyName();
-                        var property = model.GetType().GetProperty(propertyName);
-                        var value = property.GetValue(model);
-                        var stringValue = string.Format(column.ColumnFormatProvider, "{0}", value);
-                        return stringValue;
-                    });
-                    var line = string.Join(Options.Delimiter, values);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var line = this.GetLineFromModel(model);
                     await file.WriteLineAsync(line).ConfigureAwait(false);
                 }
 
@@ -308,27 +256,33 @@ namespace TinyCsv
 
             foreach (var model in models)
             {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    return;
-                }
-
-                var values = Options.Columns.Select(column =>
-                {
-                    var columnExpression = column.ColumnExpression;
-                    var propertyName = columnExpression.GetPropertyName();
-                    var property = model.GetType().GetProperty(propertyName);
-                    var value = property.GetValue(model);
-                    var stringValue = string.Format(column.ColumnFormatProvider, "{0}", value);
-                    return stringValue;
-                });
-                var line = string.Join(Options.Delimiter, values);
+                cancellationToken.ThrowIfCancellationRequested();
+                var line = this.GetLineFromModel(model);
                 await streamWriter.WriteLineAsync(line).ConfigureAwait(false);
             }
 
             await streamWriter.FlushAsync().ConfigureAwait(false);
             streamWriter.Close();
+        }
+
+        /// <summary>
+        /// get line from model
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        private string GetLineFromModel(T model)
+        {
+            var values = Options.Columns.Select(column =>
+            {
+                var columnExpression = column.ColumnExpression;
+                var propertyName = columnExpression.GetPropertyName();
+                var property = model.GetType().GetProperty(propertyName);
+                var value = property.GetValue(model);
+                var stringValue = string.Format(column.ColumnFormatProvider, "{0}", value);
+                return stringValue;
+            });
+            var line = string.Join(Options.Delimiter, values);
+            return line;
         }
     }
 }
