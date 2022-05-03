@@ -95,20 +95,23 @@ namespace TinyCsv
         {
             var models = new List<T>();
 
-            if (Options.HasHeaderRecord)
+            try
             {
-                streamReader.ReadLine();
+                if (Options.HasHeaderRecord)
+                {
+                    streamReader.ReadLine();
+                }
+                while (!streamReader.EndOfStream)
+                {
+                    var line = streamReader.ReadLine();
+                    var model = this.GetModelFromLine(line);
+                    models.Add(model);
+                }
             }
-
-            while (!streamReader.EndOfStream)
+            finally
             {
-                var line = streamReader.ReadLine();
-                var model = this.GetModelFromLine(line);
-                models.Add(model);
+                streamReader.Close();
             }
-
-            streamReader.Close();
-
             return models;
         }
 
@@ -124,9 +127,9 @@ namespace TinyCsv
             {
                 if (Options.HasHeaderRecord)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     await file.ReadLineAsync().ConfigureAwait(false);
                 }
-
                 while (!file.EndOfStream)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -134,7 +137,6 @@ namespace TinyCsv
                     var model = this.GetModelFromLine(line);
                     models.Add(model);
                 }
-
                 file.Close();
             }
             return models;
@@ -148,22 +150,25 @@ namespace TinyCsv
         public async Task<IEnumerable<T>> LoadAsync(StreamReader streamReader, CancellationToken cancellationToken = new CancellationToken())
         {
             var models = new List<T>();
-
-            if (Options.HasHeaderRecord)
+            try
             {
-                await streamReader.ReadLineAsync().ConfigureAwait(false);
+                if (Options.HasHeaderRecord)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await streamReader.ReadLineAsync().ConfigureAwait(false);
+                }
+                while (!streamReader.EndOfStream)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
+                    var model = this.GetModelFromLine(line);
+                    models.Add(model);
+                }
             }
-
-            while (!streamReader.EndOfStream)
+            finally
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                var model = this.GetModelFromLine(line);
-                models.Add(model);
+                streamReader.Close();
             }
-
-            streamReader.Close();
-
             return models;
         }
 
@@ -225,6 +230,7 @@ namespace TinyCsv
             {
                 if (Options.HasHeaderRecord)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
                     await file.WriteLineAsync(headers).ConfigureAwait(false);
                 }
@@ -248,21 +254,26 @@ namespace TinyCsv
         /// <param name="models"></param>
         public async Task SaveAsync(StreamWriter streamWriter, IEnumerable<T> models, CancellationToken cancellationToken = new CancellationToken())
         {
-            if (Options.HasHeaderRecord)
+            try
             {
-                var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
-                await streamWriter.WriteLineAsync(headers).ConfigureAwait(false);
+                if (Options.HasHeaderRecord)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
+                    await streamWriter.WriteLineAsync(headers).ConfigureAwait(false);
+                }
+                foreach (var model in models)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var line = this.GetLineFromModel(model);
+                    await streamWriter.WriteLineAsync(line).ConfigureAwait(false);
+                }
+                await streamWriter.FlushAsync().ConfigureAwait(false);
             }
-
-            foreach (var model in models)
+            finally
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                var line = this.GetLineFromModel(model);
-                await streamWriter.WriteLineAsync(line).ConfigureAwait(false);
+                streamWriter.Close();
             }
-
-            await streamWriter.FlushAsync().ConfigureAwait(false);
-            streamWriter.Close();
         }
 
         /// <summary>
