@@ -92,6 +92,42 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
+        public ICollection<T> Load(StreamReader streamReader)
+        {
+            var models = new List<T>();
+
+            if (Options.HasHeaderRecord)
+            {
+                streamReader.ReadLine();
+            }
+
+            while (!streamReader.EndOfStream)
+            {
+                var line = streamReader.ReadLine();
+                var values = line.Split(new string[] { Options.Delimiter }, StringSplitOptions.None);
+                var model = new T();
+                foreach (var column in Options.Columns)
+                {
+                    var value = values[column.ColumnIndex].Trim('"', '\'');
+                    var columnExpression = column.ColumnExpression;
+                    var propertyName = columnExpression.GetPropertyName();
+                    var property = typeof(T).GetProperty(propertyName);
+                    var typedValue = Convert.ChangeType(value, column.ColumnType, column.ColumnFormatProvider);
+                    property.SetValue(model, typedValue);
+                }
+                models.Add(model);
+            }
+
+            streamReader.Close();
+
+            return models;
+        }
+
+        /// <summary>
+        /// Reads a csv file and returns a list of objects.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public async Task<ICollection<T>> LoadAsync(string path)
         {
             var models = new List<T>();
