@@ -44,7 +44,15 @@ namespace TinyCsv
     public sealed class TinyCsv<T>
         where T : class, new()
     {
+        /// <summary>
+        /// Options
+        /// </summary>
         public CsvOptions<T> Options { get; private set; }
+
+        /// <summary>
+        /// Create a new instance of TinyCsv
+        /// </summary>
+        /// <param name="options"></param>
         public TinyCsv(Action<CsvOptions<T>> options)
         {
             Options = new CsvOptions<T>();
