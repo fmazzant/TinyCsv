@@ -29,12 +29,30 @@
 
 namespace TinyCsv
 {
+    /// <summary>
+    /// Csv Options definition
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public sealed class CsvOptions<T>
     {
+        /// <summary>
+        /// Has header record
+        /// </summary>
         public bool HasHeaderRecord { get; set; }
+
+        /// <summary>
+        /// Columns
+        /// </summary>
         public CsvOptionsColumns<T> Columns { get; internal set; }
+
+        /// <summary>
+        /// Delimiter
+        /// </summary>
         public string Delimiter { get; set; } = ";";
 
+        /// <summary>
+        /// Create a CsvOptions
+        /// </summary>
         public CsvOptions()
         {
             Columns = new CsvOptionsColumns<T>();
