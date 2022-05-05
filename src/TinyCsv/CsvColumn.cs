@@ -33,15 +33,44 @@ namespace TinyCsv
     using System.Globalization;
     using System.Linq.Expressions;
 
+    /// <summary>
+    /// The column definition.
+    /// </summary>
     public sealed class CsvColumn
     {
+        /// <summary>
+        /// Column's index
+        /// </summary>
         public int ColumnIndex { get; internal set; }
+
+        /// <summary>
+        /// Column's name
+        /// </summary>
         public string ColumnName { get; internal set; }
+
+        /// <summary>
+        /// Column's type
+        /// </summary>
         public Type ColumnType { get; internal set; }
+
+        /// <summary>
+        /// Column expression
+        /// </summary>
         public Expression ColumnExpression { get; internal set; }
+
+        /// <summary>
+        /// Column's value format
+        /// </summary>
         public string ColumnFormat { get; internal set; }
 
+        /// <summary>
+        /// Value format provider
+        /// </summary>
         private IFormatProvider _FormatProvider = null;
+
+        /// <summary>
+        /// Column's value format provider
+        /// </summary>
         public IFormatProvider ColumnFormatProvider
         {
             get
@@ -55,7 +84,7 @@ namespace TinyCsv
                     }
                     else
                     {
-                        formatProvider = new FormatProvider(ColumnFormat);
+                        formatProvider = new DefaultFormatProvider(ColumnFormat);
                     }
                 }
                 return formatProvider;
@@ -65,18 +94,43 @@ namespace TinyCsv
                 _FormatProvider = value;
             }
         }
-        
-        private sealed class FormatProvider : IFormatProvider, ICustomFormatter
+
+        /// <summary>
+        /// Default Format Provider definition
+        /// </summary>
+        private sealed class DefaultFormatProvider : IFormatProvider, ICustomFormatter
         {
+            /// <summary>
+            /// Column's format
+            /// </summary>
             public string CustomFormat { get; set; }
-            public FormatProvider(string customFormat)
+
+            /// <summary>
+            /// Create Default Format Provider
+            /// </summary>
+            /// <param name="customFormat"></param>
+            public DefaultFormatProvider(string customFormat)
             {
                 CustomFormat = customFormat;
             }
+
+            /// <summary>
+            /// Get format
+            /// </summary>
+            /// <param name="formatType"></param>
+            /// <returns></returns>
             public object GetFormat(Type formatType)
             {
                 return this;
             }
+
+            /// <summary>
+            /// Format
+            /// </summary>
+            /// <param name="format"></param>
+            /// <param name="arg"></param>
+            /// <param name="formatProvider"></param>
+            /// <returns></returns>
             public string Format(string format, object arg, IFormatProvider formatProvider)
             {
                 return ((IFormattable)arg).ToString(CustomFormat, formatProvider);

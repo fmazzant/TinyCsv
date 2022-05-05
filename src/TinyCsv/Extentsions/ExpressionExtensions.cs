@@ -33,8 +33,17 @@ namespace TinyCsv.Extentsions
     using System.Linq.Expressions;
     using System.Reflection;
 
+    /// <summary>
+    /// Expression Extentios
+    /// </summary>
     public static class ExpressionExtensions
     {
+        /// <summary>
+        /// Returns property name
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
         public static string GetPropertyName(this Expression expression)
         {
             var memberExpression = expression.GetType().GetRuntimeProperty("Body").GetValue(expression) as MemberExpression;

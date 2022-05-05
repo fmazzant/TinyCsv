@@ -35,31 +35,81 @@ namespace TinyCsv
     using System.Linq.Expressions;
     using TinyCsv.Extentsions;
 
+    /// <summary>
+    /// Csv Options Collection Columns
+    /// </summary>
+    /// <typeparam name="M"></typeparam>
     public sealed class CsvOptionsColumns<M> : IEnumerable<CsvColumn>
     {
+        /// <summary>
+        /// Columns
+        /// </summary>
         private List<CsvColumn> Columns { get; set; }
 
+        /// <summary>
+        /// Create CsvOptionColumns
+        /// </summary>
         public CsvOptionsColumns()
         {
             Columns = new List<CsvColumn>();
         }
 
+        /// <summary>
+        /// Add Column
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="columnIndex"></param>
+        /// <param name="expression"></param>
+        /// <param name="columnFormat"></param>
         public void AddColumn<T>(int columnIndex, Expression<Func<M, T>> expression, string columnFormat = null)
         {
             this.AddColumn(columnIndex, expression.GetPropertyName(), expression, columnFormat);
         }
+
+        /// <summary>
+        /// Add Column
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expression"></param>
+        /// <param name="columnFormat"></param>
         public void AddColumn<T>(Expression<Func<M, T>> expression, string columnFormat = null)
         {
             this.AddColumn(Columns.Count, expression.GetPropertyName(), expression, columnFormat);
         }
+
+        /// <summary>
+        /// Add Column
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="columnIndex"></param>
+        /// <param name="columnName"></param>
+        /// <param name="expression"></param>
+        /// <param name="formatProvider"></param>
         public void AddColumn<T>(int columnIndex, string columnName, Expression<Func<M, T>> expression, IFormatProvider formatProvider)
         {
             this.AddColumn(columnIndex, columnName, expression, null, formatProvider);
         }
+
+        /// <summary>
+        /// Add Column
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expression"></param>
+        /// <param name="formatProvider"></param>
         public void AddColumn<T>(Expression<Func<M, T>> expression, IFormatProvider formatProvider)
         {
             this.AddColumn(Columns.Count, expression.GetPropertyName(), expression, null, formatProvider);
         }
+
+        /// <summary>
+        /// Add Column
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="columnIndex"></param>
+        /// <param name="columnName"></param>
+        /// <param name="expression"></param>
+        /// <param name="columnFormat"></param>
+        /// <param name="formatProvider"></param>
         private void AddColumn<T>(int columnIndex, string columnName, Expression<Func<M, T>> expression, string columnFormat = null, IFormatProvider formatProvider = null)
         {
             Columns.Add(new CsvColumn()
@@ -73,7 +123,16 @@ namespace TinyCsv
             });
         }
 
+        /// <summary>
+        /// Get columns
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator<CsvColumn> GetEnumerator() => Columns.GetEnumerator();
+
+        /// <summary>
+        /// Get columns
+        /// </summary>
+        /// <returns></returns>
         IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 }

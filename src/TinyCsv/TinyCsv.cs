@@ -33,6 +33,8 @@ namespace TinyCsv
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
     using TinyCsv.Extentsions;
 
     /// <summary>
@@ -42,7 +44,15 @@ namespace TinyCsv
     public sealed class TinyCsv<T>
         where T : class, new()
     {
+        /// <summary>
+        /// Options
+        /// </summary>
         public CsvOptions<T> Options { get; private set; }
+
+        /// <summary>
+        /// Create a new instance of TinyCsv
+        /// </summary>
+        /// <param name="options"></param>
         public TinyCsv(Action<CsvOptions<T>> options)
         {
             Options = new CsvOptions<T>();
@@ -54,7 +64,7 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public ICollection<T> Load(string path)
+        public IEnumerable<T> Load(string path)
         {
             var models = new List<T>();
             using (StreamReader file = new StreamReader(path))
@@ -67,17 +77,64 @@ namespace TinyCsv
                 while (!file.EndOfStream)
                 {
                     var line = file.ReadLine();
-                    var values = line.Split(new string[] { Options.Delimiter }, StringSplitOptions.None);
-                    var model = new T();
-                    foreach (var column in Options.Columns)
-                    {
-                        var value = values[column.ColumnIndex].Trim('"', '\'');
-                        var columnExpression = column.ColumnExpression;
-                        var propertyName = columnExpression.GetPropertyName();
-                        var property = typeof(T).GetProperty(propertyName);
-                        var typedValue = Convert.ChangeType(value, column.ColumnType, column.ColumnFormatProvider);
-                        property.SetValue(model, typedValue);
-                    }
+                    var model = this.GetModelFromLine(line);
+                    models.Add(model);
+                }
+
+                file.Close();
+            }
+            return models;
+        }
+
+        /// <summary>
+        /// Reads a csv file and returns a list of objects.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public IEnumerable<T> Load(StreamReader streamReader)
+        {
+            var models = new List<T>();
+
+            try
+            {
+                if (Options.HasHeaderRecord)
+                {
+                    streamReader.ReadLine();
+                }
+                while (!streamReader.EndOfStream)
+                {
+                    var line = streamReader.ReadLine();
+                    var model = this.GetModelFromLine(line);
+                    models.Add(model);
+                }
+            }
+            finally
+            {
+                streamReader.Close();
+            }
+            return models;
+        }
+
+        /// <summary>
+        /// Reads a csv file and returns a list of objects asynchronously.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<T>> LoadAsync(string path, CancellationToken cancellationToken = new CancellationToken())
+        {
+            var models = new List<T>();
+            using (StreamReader file = new StreamReader(path))
+            {
+                if (Options.HasHeaderRecord)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await file.ReadLineAsync().ConfigureAwait(false);
+                }
+                while (!file.EndOfStream)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var line = await file.ReadLineAsync().ConfigureAwait(false);
+                    var model = this.GetModelFromLine(line);
                     models.Add(model);
                 }
                 file.Close();
@@ -86,11 +143,62 @@ namespace TinyCsv
         }
 
         /// <summary>
+        /// Reads a csv file and returns a list of objects asynchronously.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<T>> LoadAsync(StreamReader streamReader, CancellationToken cancellationToken = new CancellationToken())
+        {
+            var models = new List<T>();
+            try
+            {
+                if (Options.HasHeaderRecord)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await streamReader.ReadLineAsync().ConfigureAwait(false);
+                }
+                while (!streamReader.EndOfStream)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
+                    var model = this.GetModelFromLine(line);
+                    models.Add(model);
+                }
+            }
+            finally
+            {
+                streamReader.Close();
+            }
+            return models;
+        }
+
+        /// <summary>
+        /// Build T object from line
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        private T GetModelFromLine(string line)
+        {
+            var values = line.Split(new string[] { Options.Delimiter }, StringSplitOptions.None);
+            var model = new T();
+            foreach (var column in Options.Columns)
+            {
+                var value = values[column.ColumnIndex].Trim('"', '\'');
+                var columnExpression = column.ColumnExpression;
+                var propertyName = columnExpression.GetPropertyName();
+                var property = typeof(T).GetProperty(propertyName);
+                var typedValue = Convert.ChangeType(value, column.ColumnType, column.ColumnFormatProvider);
+                property.SetValue(model, typedValue);
+            }
+            return model;
+        }
+
+        /// <summary>
         /// Writes a list of objects to a csv file.
         /// </summary>
         /// <param name="path"></param>
         /// <param name="models"></param>
-        public void Save(string path, ICollection<T> models)
+        public void Save(string path, IEnumerable<T> models)
         {
             using (StreamWriter file = new StreamWriter(path))
             {
@@ -99,24 +207,93 @@ namespace TinyCsv
                     var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
                     file.WriteLine(headers);
                 }
-                
+
                 foreach (var model in models)
                 {
-                    var values = Options.Columns.Select(column =>
-                    {
-                        var columnExpression = column.ColumnExpression;
-                        var propertyName = columnExpression.GetPropertyName();
-                        var property = model.GetType().GetProperty(propertyName);
-                        var value = property.GetValue(model);
-                        var stringValue = string.Format(column.ColumnFormatProvider, "{0}", value);
-                        return stringValue;
-                    });
-                    var line = string.Join(Options.Delimiter, values);
+                    var line = this.GetLineFromModel(model);
                     file.WriteLine(line);
                 }
+
                 file.Flush();
                 file.Close();
             }
+        }
+
+        /// <summary>
+        /// Writes a list of objects to a csv file asynchronously.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="models"></param>
+        public async Task SaveAsync(string path, IEnumerable<T> models, CancellationToken cancellationToken = new CancellationToken())
+        {
+            using (StreamWriter file = new StreamWriter(path))
+            {
+                if (Options.HasHeaderRecord)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
+                    await file.WriteLineAsync(headers).ConfigureAwait(false);
+                }
+
+                foreach (var model in models)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var line = this.GetLineFromModel(model);
+                    await file.WriteLineAsync(line).ConfigureAwait(false);
+                }
+
+                await file.FlushAsync().ConfigureAwait(false);
+                file.Close();
+            }
+        }
+
+        /// <summary>
+        /// Writes a list of objects to a csv file asynchronously.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="models"></param>
+        public async Task SaveAsync(StreamWriter streamWriter, IEnumerable<T> models, CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                if (Options.HasHeaderRecord)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
+                    await streamWriter.WriteLineAsync(headers).ConfigureAwait(false);
+                }
+                foreach (var model in models)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var line = this.GetLineFromModel(model);
+                    await streamWriter.WriteLineAsync(line).ConfigureAwait(false);
+                }
+                await streamWriter.FlushAsync().ConfigureAwait(false);
+            }
+            finally
+            {
+                streamWriter.Close();
+            }
+        }
+
+        /// <summary>
+        /// get line from model
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        private string GetLineFromModel(T model)
+        {
+            var values = Options.Columns.Select(column =>
+            {
+                var columnExpression = column.ColumnExpression;
+                var propertyName = columnExpression.GetPropertyName();
+                var property = model.GetType().GetProperty(propertyName);
+                var value = property.GetValue(model);
+                var stringValue = string.Format(column.ColumnFormatProvider, "{0}", value);
+                return stringValue;
+            });
+            var line = string.Join(Options.Delimiter, values);
+            return line;
         }
     }
 }
