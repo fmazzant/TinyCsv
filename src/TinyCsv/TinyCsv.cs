@@ -116,7 +116,7 @@ namespace TinyCsv
         }
 
         /// <summary>
-        /// Reads a csv file and returns a list of objects.
+        /// Reads a csv file and returns a list of objects asynchronously.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -143,7 +143,7 @@ namespace TinyCsv
         }
 
         /// <summary>
-        /// Reads a csv file and returns a list of objects.
+        /// Reads a csv file and returns a list of objects asynchronously.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -220,7 +220,7 @@ namespace TinyCsv
         }
 
         /// <summary>
-        /// Writes a list of objects to a csv file.
+        /// Writes a list of objects to a csv file asynchronously.
         /// </summary>
         /// <param name="path"></param>
         /// <param name="models"></param>
@@ -248,7 +248,7 @@ namespace TinyCsv
         }
 
         /// <summary>
-        /// Writes a list of objects to a csv file.
+        /// Writes a list of objects to a csv file asynchronously.
         /// </summary>
         /// <param name="path"></param>
         /// <param name="models"></param>
