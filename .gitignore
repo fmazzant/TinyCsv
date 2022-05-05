@@ -21,3 +21,4 @@
 /samples/.vs/CsvSampleConsoleApp/DesignTimeBuild
 /src/TinyCsv/bin/Debug
 /src/TinyCsv/bin/Release
+/samples/CsvSampleConsoleApp/bin/Release/net5.0
