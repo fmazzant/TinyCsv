@@ -41,6 +41,12 @@ To read a csv file is only necessary invoke the load method, like this:
 var models = csv.Load("file.csv");
 ```
 
+or you can to use the asynchronously method, like this:
+
+```c#
+var models = await csv.LoadAsync("file.csv");
+```
+
 The load method returns a collection of Model type items and takes as argument the file's path.
 
 To write a csv file is only necessary invoke the Save method, like this:
@@ -48,9 +54,16 @@ To write a csv file is only necessary invoke the Save method, like this:
 ```c#
 csv.Save("file_export.csv", models);
 ```
+
+or you can to use the asynchronously method, like this:
+
+```c#
+await csv.SaveAsync("file_export.csv", models);
+```
+
 The save method takes the file's path and a collection of Model type. 
 The method saves the file.
 
 The library is very very simple to use.
 
-The library is in preview version and in the future days it will be upgrade to expand its functionality.
+
