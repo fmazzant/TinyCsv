@@ -35,7 +35,7 @@ namespace TinyCsv
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using TinyCsv.Extentsions;
+    using TinyCsv.Extensions;
 
     /// <summary>
     /// TinyCsv is a simple csv reader/writer library.

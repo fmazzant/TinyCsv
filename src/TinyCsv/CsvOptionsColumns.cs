@@ -33,7 +33,7 @@ namespace TinyCsv
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq.Expressions;
-    using TinyCsv.Extentsions;
+    using TinyCsv.Extensions;
 
     /// <summary>
     /// Csv Options Collection Columns

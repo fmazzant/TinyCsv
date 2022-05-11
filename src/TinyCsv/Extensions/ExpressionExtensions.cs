@@ -27,7 +27,7 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Extentsions
+namespace TinyCsv.Extensions
 {
     using System;
     using System.Linq.Expressions;
