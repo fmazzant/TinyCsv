@@ -187,7 +187,7 @@ namespace TinyCsv
                 var columnExpression = column.ColumnExpression;
                 var propertyName = columnExpression.GetPropertyName();
                 var property = typeof(T).GetProperty(propertyName);
-                var typedValue = Convert.ChangeType(value, column.ColumnType, column.ColumnFormatProvider);
+                var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
                 property.SetValue(model, typedValue);
             }
             return model;
@@ -289,7 +289,7 @@ namespace TinyCsv
                 var propertyName = columnExpression.GetPropertyName();
                 var property = model.GetType().GetProperty(propertyName);
                 var value = property.GetValue(model);
-                var stringValue = string.Format(column.ColumnFormatProvider, "{0}", value);
+                var stringValue = column.Converter.Convert(value, null, column.ColumnFormatProvider);
                 return stringValue;
             });
             var line = string.Join(Options.Delimiter, values);

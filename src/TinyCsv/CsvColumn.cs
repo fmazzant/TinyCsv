@@ -29,6 +29,7 @@
 
 namespace TinyCsv
 {
+    using TinyCsv.Conversions;
     using System;
     using System.Globalization;
     using System.Linq.Expressions;
@@ -62,6 +63,11 @@ namespace TinyCsv
         /// Column's value format
         /// </summary>
         public string ColumnFormat { get; internal set; }
+
+        /// <summary>
+        /// Converter
+        /// </summary>
+        public IValueConverter Converter { get; internal set; } = new DefaultValueConverter();
 
         /// <summary>
         /// Value format provider
