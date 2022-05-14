@@ -30,7 +30,6 @@
 namespace TinyCsv.Conversions
 {
     using System;
-    using System.Globalization;
 
     /// <summary>
     /// Provides a unified way of converting types of values to string, as well as for accessing standard values and subproperties.
