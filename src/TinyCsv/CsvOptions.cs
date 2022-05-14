@@ -1,4 +1,6 @@
-﻿/// <summary>
+﻿
+using System;
+/// <summary>
 /// 
 /// The MIT License (MIT)
 /// 
@@ -26,7 +28,6 @@
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
-
 namespace TinyCsv
 {
     /// <summary>
@@ -49,6 +50,21 @@ namespace TinyCsv
         /// Delimiter
         /// </summary>
         public string Delimiter { get; set; } = ";";
+
+        /// <summary>
+        /// Allows skipping of initial rows without csv data
+        /// </summary>
+        public int RowsToSkip { get; set; } = 0;
+
+        /// <summary>
+        /// Allows skipt row by condition
+        /// </summary>
+        public Func<string, int, bool> SkipRow { get; set; } = (s, i) => false;
+
+        /// <summary>
+        /// Can be used to trim each cell
+        /// </summary>
+        public bool TrimData { get; set; } = true;
 
         /// <summary>
         /// Create a CsvOptions

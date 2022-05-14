@@ -40,6 +40,11 @@ namespace CsvSampleConsoleApp
             {
                 options.HasHeaderRecord = true;
                 options.Delimiter = ";";
+
+                options.RowsToSkip = 0;
+                options.SkipRow = (row, idx) => string.IsNullOrEmpty(row);
+                options.TrimData = false;
+
                 options.Columns.AddColumn(m => m.Id, new MyIdConvert());
                 options.Columns.AddColumn(m => m.Name);
                 options.Columns.AddColumn(m => m.Price);
