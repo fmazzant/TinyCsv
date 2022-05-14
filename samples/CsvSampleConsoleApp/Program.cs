@@ -31,7 +31,7 @@ namespace CsvSampleConsoleApp
         }
     }
 
-    public class Program
+    internal class Program
     {
         static async Task Main(string[] args)
         {

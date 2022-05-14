@@ -45,7 +45,7 @@ namespace TinyCsv.Conversions
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public string Convert(object value, object parameter, IFormatProvider provider)
         {
-            return $"{System.Convert.ChangeType(value, typeof(string), provider)}";
+            return string.Format(provider, "{0}", value);
         }
 
         /// <summary>
