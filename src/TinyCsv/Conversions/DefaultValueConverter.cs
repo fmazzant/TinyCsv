@@ -35,7 +35,7 @@ namespace TinyCsv.Conversions
     /// <summary>
     /// Provides a unified way of converting types of values to string, as well as for accessing standard values and subproperties.
     /// </summary>
-    public class DefaultValueConverter : IValueConverter
+    public sealed class DefaultValueConverter : IValueConverter
     {
         /// <summary>
         /// Converts a value to string.
@@ -44,9 +44,9 @@ namespace TinyCsv.Conversions
         /// <param name="parameter">The converter parameter to use. In this case is DefaultValue</param>
         /// <param name="culture">The culture to use in the converter.</param>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public string Convert(object value, object parameter, CultureInfo culture)
+        public string Convert(object value, object parameter, IFormatProvider provider)
         {
-            return $"{System.Convert.ChangeType(value, typeof(string), culture)}";
+            return $"{System.Convert.ChangeType(value, typeof(string), provider)}";
         }
 
         /// <summary>
@@ -57,9 +57,9 @@ namespace TinyCsv.Conversions
         /// <param name="parameter">The converter parameter to use.</param>
         /// <param name="culture">The culture to use in the converter.</param>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public object ConvertBack(string value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
-            return System.Convert.ChangeType(value, targetType, culture);
+            return System.Convert.ChangeType(value, targetType, provider);
         }
     }
 }

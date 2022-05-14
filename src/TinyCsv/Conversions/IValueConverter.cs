@@ -30,7 +30,6 @@
 namespace TinyCsv.Conversions
 {
     using System;
-    using System.Globalization;
 
     /// <summary>
     /// Defines the interface to convert the types of values to string and the string to types of values
@@ -42,9 +41,9 @@ namespace TinyCsv.Conversions
         /// </summary>
         /// <param name="value">The value produced by the binding source.</param>
         /// <param name="parameter">The converter parameter to use. In this case is DefaultValue</param>
-        /// <param name="culture">The culture to use in the converter.</param>
+        /// <param name="provider">The IFormatProvider to use in the converter.</param>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        string Convert(object value, object parameter, CultureInfo culture);
+        string Convert(object value, object parameter, IFormatProvider provider);
 
         /// <summary>
         /// Converts a string to target type value.
@@ -52,8 +51,8 @@ namespace TinyCsv.Conversions
         /// <param name="value">The value that is produced by the binding target.</param>
         /// <param name="targetType">The type to convert to.</param>
         /// <param name="parameter">The converter parameter to use.</param>
-        /// <param name="culture">The culture to use in the converter.</param>
+        /// <param name="provider">The IFormatProvider to use in the converter.</param>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        object ConvertBack(string value, Type targetType, object parameter, CultureInfo culture);
+        object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider);
     }
 }
