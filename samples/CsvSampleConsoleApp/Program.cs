@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using TinyCsv;
+using TinyCsv.Conversions;
 
 namespace CsvSampleConsoleApp
 {
@@ -15,7 +16,22 @@ namespace CsvSampleConsoleApp
         public DateTime CreatedOn { get; set; }
     }
 
-    internal class Program
+    public class MyIdConvert : IValueConverter
+    {
+        public string Convert(object value, object parameter, IFormatProvider provider)
+        {
+            var number = value as int? ?? 0;
+            return $"{number + 10}";
+        }
+
+        public object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        {
+            var number = System.Convert.ToInt32(value);
+            return number - 10;
+        }
+    }
+
+    public class Program
     {
         static async Task Main(string[] args)
         {
@@ -24,7 +40,7 @@ namespace CsvSampleConsoleApp
             {
                 options.HasHeaderRecord = true;
                 options.Delimiter = ";";
-                options.Columns.AddColumn(m => m.Id);
+                options.Columns.AddColumn(m => m.Id, new MyIdConvert());
                 options.Columns.AddColumn(m => m.Name);
                 options.Columns.AddColumn(m => m.Price);
                 options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
