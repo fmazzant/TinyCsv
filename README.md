@@ -45,14 +45,18 @@ It is possible to define a custom converter for a column, like this:
 ```c#
 public class Base64Converter : IValueConverter
 {
-    public string Convert(object value, object parameter, IFormatProvider provider) => Base64Encode($"{value}");
-    public object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider) => Base64Decode(value);
+    public string Convert(object value, object parameter, IFormatProvider provider) 
+        => Base64Encode($"{value}");
+
+    public object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider) 
+        => Base64Decode(value);
 
     private string Base64Encode(string plainText)
     {
         var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
         return System.Convert.ToBase64String(plainTextBytes);
     }
+
     private string Base64Decode(string base64EncodedData)
     {
         var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
