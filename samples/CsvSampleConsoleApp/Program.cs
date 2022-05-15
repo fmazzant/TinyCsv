@@ -43,7 +43,7 @@ namespace CsvSampleConsoleApp
 
                 options.RowsToSkip = 0;
                 options.SkipRow = (row, idx) => string.IsNullOrEmpty(row);
-                options.TrimData = false;
+                options.TrimData = true;
 
                 options.Columns.AddColumn(m => m.Id, new MyIdConvert());
                 options.Columns.AddColumn(m => m.Name);

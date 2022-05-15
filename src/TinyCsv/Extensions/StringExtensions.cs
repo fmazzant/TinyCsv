@@ -1,6 +1,4 @@
-﻿
-using System;
-/// <summary>
+﻿/// <summary>
 /// 
 /// The MIT License (MIT)
 /// 
@@ -28,50 +26,34 @@ using System;
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
-namespace TinyCsv
+
+namespace TinyCsv.Extensions
 {
+    using System.Collections.Generic;
+
     /// <summary>
-    /// Csv Options definition
+    /// String extensions
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public sealed class CsvOptions<T>
+    public static class StringExtensions
     {
         /// <summary>
-        /// Has header record
+        /// Trim value if trimData is true
         /// </summary>
-        public bool HasHeaderRecord { get; set; }
-
-        /// <summary>
-        /// Columns
-        /// </summary>
-        public CsvOptionsColumns<T> Columns { get; internal set; }
-
-        /// <summary>
-        /// Delimiter
-        /// </summary>
-        public string Delimiter { get; set; } = ";";
-
-        /// <summary>
-        /// Allows skipping of initial rows without csv data
-        /// </summary>
-        public int RowsToSkip { get; set; } = 0;
-
-        /// <summary>
-        /// Allows skipt row by condition
-        /// </summary>
-        public Func<string, int, bool> SkipRow { get; set; } = (s, i) => false;
-
-        /// <summary>
-        /// Can be used to trim each cell
-        /// </summary>
-        public bool TrimData { get; set; } = false;
-
-        /// <summary>
-        /// Create a CsvOptions
-        /// </summary>
-        public CsvOptions()
+        /// <param name="value"></param>
+        /// <param name="trimData"></param>
+        /// <returns></returns>
+        public static string TrimData(this string value, bool trimData = false)
         {
-            Columns = new CsvOptionsColumns<T>();
+            if (!string.IsNullOrEmpty(value))
+            {
+                var chars = new List<char> { '"', '\'' };
+                if (trimData)
+                {
+                    chars.Add(' ');
+                }
+                return value.Trim(chars.ToArray());
+            }
+            return value;
         }
     }
 }
