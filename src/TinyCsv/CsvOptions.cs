@@ -54,7 +54,7 @@ namespace TinyCsv
         /// <summary>
         /// Allows skipping of initial rows without csv data
         /// </summary>
-        public int RowsToSkip { get; set; } = 0;
+        public uint RowsToSkip { get; set; } = 0;
 
         /// <summary>
         /// Allows skipt row by condition

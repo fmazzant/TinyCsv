@@ -14,20 +14,23 @@ namespace CsvSampleConsoleApp
         public string Name { get; set; }
         public decimal Price { get; set; }
         public DateTime CreatedOn { get; set; }
+        public string TextBase64 { get; set; }
     }
 
-    public class MyIdConvert : IValueConverter
+    public class Base64Converter : IValueConverter
     {
-        public string Convert(object value, object parameter, IFormatProvider provider)
-        {
-            var number = value as int? ?? 0;
-            return $"{number + 10}";
-        }
+        public string Convert(object value, object parameter, IFormatProvider provider) => Base64Encode($"{value}");
+        public object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider) => Base64Decode(value);
 
-        public object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        private string Base64Encode(string plainText)
         {
-            var number = System.Convert.ToInt32(value);
-            return number - 10;
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return System.Convert.ToBase64String(plainTextBytes);
+        }
+        private string Base64Decode(string base64EncodedData)
+        {
+            var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
+            return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
         }
     }
 
@@ -40,15 +43,14 @@ namespace CsvSampleConsoleApp
             {
                 options.HasHeaderRecord = true;
                 options.Delimiter = ";";
-
                 options.RowsToSkip = 0;
-                options.SkipRow = (row, idx) => string.IsNullOrEmpty(row);
+                options.SkipRow = (row, idx) => string.IsNullOrEmpty(row.Trim()) || row.StartsWith("#");
                 options.TrimData = true;
-
-                options.Columns.AddColumn(m => m.Id, new MyIdConvert());
+                options.Columns.AddColumn(m => m.Id);
                 options.Columns.AddColumn(m => m.Name);
                 options.Columns.AddColumn(m => m.Price);
                 options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
+                options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
             });
 
             // load from file

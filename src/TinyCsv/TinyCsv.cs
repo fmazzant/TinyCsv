@@ -69,13 +69,27 @@ namespace TinyCsv
             var models = new List<T>();
             using (StreamReader file = new StreamReader(path))
             {
-                SkipRowsWhenLoadingIfNecessary(file);
+                var index = 0;
 
-                var index = Options.RowsToSkip;
+                while (!file.EndOfStream)
+                {
+                    if (index++ < Options.RowsToSkip)
+                    {
+                        file.ReadLine();
+                        continue;
+                    }
+                    break;
+                }
 
                 if (Options.HasHeaderRecord)
                 {
-                    file.ReadLine();
+                    while (!file.EndOfStream)
+                    {
+                        var line = file.ReadLine();
+                        var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                        if (skip) continue;
+                        break;
+                    }
                 }
 
                 while (!file.EndOfStream)
@@ -103,14 +117,29 @@ namespace TinyCsv
 
             try
             {
-                SkipRowsWhenLoadingIfNecessary(streamReader);
+                var index = 0;
 
-                var index = Options.RowsToSkip;
+                while (!streamReader.EndOfStream)
+                {
+                    if (index++ < Options.RowsToSkip)
+                    {
+                        streamReader.ReadLine();
+                        continue;
+                    }
+                    break;
+                }
 
                 if (Options.HasHeaderRecord)
                 {
-                    streamReader.ReadLine();
+                    while (!streamReader.EndOfStream)
+                    {
+                        var line = streamReader.ReadLine();
+                        var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                        if (skip) continue;
+                        break;
+                    }
                 }
+                
                 while (!streamReader.EndOfStream)
                 {
                     var line = streamReader.ReadLine();
@@ -137,15 +166,31 @@ namespace TinyCsv
             var models = new List<T>();
             using (StreamReader file = new StreamReader(path))
             {
-                await SkipRowsWhenLoadingIfNecessaryAsync(file, cancellationToken);
+                var index = 0;
 
-                var index = Options.RowsToSkip;
+                while (!file.EndOfStream)
+                {
+                    if (index++ < Options.RowsToSkip)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        await file.ReadLineAsync().ConfigureAwait(false);
+                        continue;
+                    }
+                    break;
+                }
 
                 if (Options.HasHeaderRecord)
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    await file.ReadLineAsync().ConfigureAwait(false);
+                    while (!file.EndOfStream)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        var line = await file.ReadLineAsync().ConfigureAwait(false);
+                        var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                        if (skip) continue;
+                        break;
+                    }
                 }
+                
                 while (!file.EndOfStream)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -155,6 +200,7 @@ namespace TinyCsv
                     var model = this.GetModelFromLine(line);
                     models.Add(model);
                 }
+                
                 file.Close();
             }
             return models;
@@ -170,15 +216,31 @@ namespace TinyCsv
             var models = new List<T>();
             try
             {
-                await SkipRowsWhenLoadingIfNecessaryAsync(streamReader, cancellationToken);
+                var index = 0;
 
-                var index = Options.RowsToSkip;
+                while (!streamReader.EndOfStream)
+                {
+                    if (index++ < Options.RowsToSkip)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        await streamReader.ReadLineAsync().ConfigureAwait(false);
+                        continue;
+                    }
+                    break;
+                }
 
                 if (Options.HasHeaderRecord)
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    await streamReader.ReadLineAsync().ConfigureAwait(false);
+                    while (!streamReader.EndOfStream)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
+                        var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                        if (skip) continue;
+                        break;
+                    }
                 }
+
                 while (!streamReader.EndOfStream)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -215,37 +277,6 @@ namespace TinyCsv
                 property.SetValue(model, typedValue);
             }
             return model;
-        }
-
-        /// <summary>
-        /// Skip rows when loading if necessary
-        /// </summary>
-        /// <param name="streamReader"></param>
-        private void SkipRowsWhenLoadingIfNecessary(StreamReader streamReader)
-        {
-            var rowsToSkip = Options.RowsToSkip;
-            while (rowsToSkip > 0)
-            {
-                streamReader.ReadLine();
-                rowsToSkip--;
-            }
-        }
-
-        /// <summary>
-        /// Skip rows when loading if necessary
-        /// </summary>
-        /// <param name="streamReader"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        private async Task SkipRowsWhenLoadingIfNecessaryAsync(StreamReader streamReader, CancellationToken cancellationToken = new CancellationToken())
-        {
-            var rowsToSkip = Options.RowsToSkip;
-            while (rowsToSkip > 0)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await streamReader.ReadLineAsync();
-                rowsToSkip--;
-            }
         }
 
         /// <summary>
