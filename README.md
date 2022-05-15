@@ -67,8 +67,9 @@ public class Base64Converter : IValueConverter
 
 Base64Converter is used to convert the data column to a Base64 string and vice versa for TextBase64 column.
 
-
 A column is defined with the model's property only. The library get or set the value in automatically.
+
+### Read
 
 To read a csv file is only necessary invoke the load method, like this:
 
@@ -83,6 +84,8 @@ var models = await csv.LoadAsync("file.csv");
 ```
 
 The load method returns a collection of Model type items and takes as argument the file's path.
+
+### Write
 
 To write a csv file is only necessary invoke the Save method, like this:
 
