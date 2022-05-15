@@ -57,6 +57,11 @@ namespace TinyCsv
         public uint RowsToSkip { get; set; } = 0;
 
         /// <summary>
+        /// Allows skipping of initial columns without csv data
+        /// </summary>
+        public bool SkipEmptyRows { get; set; } = false;
+
+        /// <summary>
         /// Allows skipt row by condition
         /// </summary>
         public Func<string, int, bool> SkipRow { get; set; } = (row, index) => false;
