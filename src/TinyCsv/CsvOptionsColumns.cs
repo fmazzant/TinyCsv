@@ -29,6 +29,7 @@
 
 namespace TinyCsv
 {
+    using TinyCsv.Conversions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -94,6 +95,19 @@ namespace TinyCsv
         /// Add Column
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="columnIndex"></param>
+        /// <param name="columnName"></param>
+        /// <param name="expression"></param>
+        /// <param name="converter"></param>
+        public void AddColumn<T>(int columnIndex, string columnName, Expression<Func<M, T>> expression, IValueConverter converter)
+        {
+            this.AddColumn(columnIndex, columnName, expression, null, null, converter);
+        }
+
+        /// <summary>
+        /// Add Column
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="expression"></param>
         /// <param name="formatProvider"></param>
         public void AddColumn<T>(Expression<Func<M, T>> expression, IFormatProvider formatProvider)
@@ -105,12 +119,24 @@ namespace TinyCsv
         /// Add Column
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="expression"></param>
+        /// <param name=""></param>
+        /// <param name="converter"></param>
+        public void AddColumn<T>(Expression<Func<M, T>> expression, IValueConverter converter)
+        {
+            this.AddColumn(Columns.Count, expression.GetPropertyName(), expression, null, null, converter);
+        }
+
+        /// <summary>
+        /// Add Column
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="columnIndex"></param>
         /// <param name="columnName"></param>
         /// <param name="expression"></param>
         /// <param name="columnFormat"></param>
         /// <param name="formatProvider"></param>
-        private void AddColumn<T>(int columnIndex, string columnName, Expression<Func<M, T>> expression, string columnFormat = null, IFormatProvider formatProvider = null)
+        private void AddColumn<T>(int columnIndex, string columnName, Expression<Func<M, T>> expression, string columnFormat = null, IFormatProvider formatProvider = null, IValueConverter converter = null)
         {
             Columns.Add(new CsvColumn()
             {
@@ -119,7 +145,8 @@ namespace TinyCsv
                 ColumnType = typeof(T),
                 ColumnExpression = expression,
                 ColumnFormat = columnFormat,
-                ColumnFormatProvider = formatProvider
+                ColumnFormatProvider = formatProvider,
+                Converter = converter ?? new DefaultValueConverter()
             });
         }
 

@@ -34,7 +34,7 @@ namespace TinyCsv.Extensions
     using System.Reflection;
 
     /// <summary>
-    /// Expression Extentios
+    /// Expression extensions
     /// </summary>
     public static class ExpressionExtensions
     {

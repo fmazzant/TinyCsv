@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Threading;
 using System.Threading.Tasks;
 using TinyCsv;
+using TinyCsv.Conversions;
 
 namespace CsvSampleConsoleApp
 {
@@ -13,6 +11,24 @@ namespace CsvSampleConsoleApp
         public string Name { get; set; }
         public decimal Price { get; set; }
         public DateTime CreatedOn { get; set; }
+        public string TextBase64 { get; set; }
+    }
+
+    public class Base64Converter : IValueConverter
+    {
+        public string Convert(object value, object parameter, IFormatProvider provider) => Base64Encode($"{value}");
+        public object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider) => Base64Decode(value);
+
+        private string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return System.Convert.ToBase64String(plainTextBytes);
+        }
+        private string Base64Decode(string base64EncodedData)
+        {
+            var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
+            return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+        }
     }
 
     internal class Program
@@ -24,10 +40,14 @@ namespace CsvSampleConsoleApp
             {
                 options.HasHeaderRecord = true;
                 options.Delimiter = ";";
+                options.RowsToSkip = 0;
+                options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
+                options.TrimData = true;
                 options.Columns.AddColumn(m => m.Id);
                 options.Columns.AddColumn(m => m.Name);
                 options.Columns.AddColumn(m => m.Price);
                 options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
+                options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
             });
 
             // load from file

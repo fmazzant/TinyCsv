@@ -1,6 +1,4 @@
-﻿
-using System;
-/// <summary>
+﻿/// <summary>
 /// 
 /// The MIT License (MIT)
 /// 
@@ -28,50 +26,33 @@ using System;
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
-namespace TinyCsv
+
+namespace TinyCsv.Conversions
 {
+    using System;
+
     /// <summary>
-    /// Csv Options definition
+    /// Defines the interface to convert the types of values to string and the string to types of values
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public sealed class CsvOptions<T>
+    public interface IValueConverter
     {
         /// <summary>
-        /// Has header record
+        /// Converts a value to string.
         /// </summary>
-        public bool HasHeaderRecord { get; set; }
+        /// <param name="value">The value produced by the binding source.</param>
+        /// <param name="parameter">The converter parameter to use. In this case is DefaultValue</param>
+        /// <param name="provider">The IFormatProvider to use in the converter.</param>
+        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
+        string Convert(object value, object parameter, IFormatProvider provider);
 
         /// <summary>
-        /// Columns
+        /// Converts a string to target type value.
         /// </summary>
-        public CsvOptionsColumns<T> Columns { get; internal set; }
-
-        /// <summary>
-        /// Delimiter
-        /// </summary>
-        public string Delimiter { get; set; } = ";";
-
-        /// <summary>
-        /// Allows skipping of initial rows without csv data
-        /// </summary>
-        public uint RowsToSkip { get; set; } = 0;
-
-        /// <summary>
-        /// Allows skipt row by condition
-        /// </summary>
-        public Func<string, int, bool> SkipRow { get; set; } = (row, index) => false;
-
-        /// <summary>
-        /// Can be used to trim each cell
-        /// </summary>
-        public bool TrimData { get; set; } = false;
-
-        /// <summary>
-        /// Create a CsvOptions
-        /// </summary>
-        public CsvOptions()
-        {
-            Columns = new CsvOptionsColumns<T>();
-        }
+        /// <param name="value">The value that is produced by the binding target.</param>
+        /// <param name="targetType">The type to convert to.</param>
+        /// <param name="parameter">The converter parameter to use.</param>
+        /// <param name="provider">The IFormatProvider to use in the converter.</param>
+        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
+        object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider);
     }
 }

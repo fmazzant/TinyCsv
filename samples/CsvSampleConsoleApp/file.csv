@@ -1,17 +1,27 @@
-﻿"Id";"Name";"Price";CreatedOn;
-"1";"Name 1";"1.12";20/04/2022;
-"2";"Name 2";"2.2";20/04/2022;
-"3";"Name 3";"3.31";20/04/2022;
-"4";"Name 4";"4.78";20/04/2022;
-"5";"Name 5";"5.45";20/04/2022;
-"6";"Name 6";"6.65";20/04/2022;
-"7";"Name 7";"7.45";20/04/2022;
-"8";"Name 8";"8.12";20/04/2022;
-"9";"Name 9";"9.32";20/04/2022;
-"10";"Name 10";"10.1";20/04/2022;
-"11";"Name 11";"11.3";20/04/2022;
-"12";"Name 12";"12.2";20/04/2022;
-"13";"Name 13";"13.3";20/04/2022;
-"14";"Name 14";"14.6";20/04/2022;
-"15";"Name 15";"15.89";20/04/2022;
-"16";"Name 16";"16.99";20/04/2022;
+﻿# The following is the header format of the CSV file
+"Id";"Name";"Price";CreatedOn;TextBase64;
+     
+# The following is the format of the CSV file
+"1";"   Name 1   ";"1.12";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
+"2";"Name 2";"2.2";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
+"3";"Name 3";"3.31";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
+"4";"Name 4";"4.78";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
+"5";"Name 5";"5.45";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
+"6";"Name 6";"6.65";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
+"7";"Name 7";"7.45";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
+
+# The following is the format of the CSV file
+"8";"  Name 8  ";"8.12";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
+"9";"Name 9";"9.32";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
+"10";"Name 10";"10.1";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
+
+# The following is the format of the CSV file
+"11";"Name 11";"11.3";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
+"12";"Name 12";"12.2";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
+"13";"Name 13";"13.3";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
+"14";"Name 14";"14.6";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
+"15";"Name 15";"15.89";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
+"16";"Name 16";"16.99";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
+
+"17";"Name 17";"17.99";15/05/2022;"aGVsbG8sIHdvcmxkIQ==";
+"18";"Name 18";"120.99";15/05/2022;"aGVsbG8sIHdvcmxkIQ==";
