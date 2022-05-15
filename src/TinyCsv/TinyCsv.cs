@@ -266,6 +266,12 @@ namespace TinyCsv
         private T GetModelFromLine(string line)
         {
             var values = line.Split(new string[] { Options.Delimiter }, StringSplitOptions.None);
+
+            if (values.Length > Options.Columns.Count)
+            {
+               // TODO: to complete
+            }
+
             var model = new T();
             foreach (var column in Options.Columns)
             {
