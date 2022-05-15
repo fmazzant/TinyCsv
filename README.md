@@ -15,6 +15,7 @@ public class Model
     public string Name { get; set; }
     public decimal Price { get; set; }
     public DateTime CreatedOn { get; set; }
+    public string TextBase64 { get; set; }
 }
 ```
 
@@ -25,13 +26,43 @@ var csv = new TinyCsv<Model>(options =>
 {
     options.HasHeaderRecord = true;
     options.Delimiter = ";";
+    options.RowsToSkip = 0;
+    options.SkipRow = (row, idx) => string.IsNullOrEmpty(row.Trim()) || row.StartsWith("#");
+    options.TrimData = true;
     options.Columns.AddColumn(m => m.Id);
     options.Columns.AddColumn(m => m.Name);
     options.Columns.AddColumn(m => m.Price);
     options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
+    options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
 });
 ```
-The options defines that the file has the header in first row and the delimier char is ";", furthermore there are defined three columns.
+The options defines that the file has the header in first row and the delimier char is ";", furthermore there are defined some columns.
+RowsToSkip and SkipRow are used to skip the first rows of the file.
+TrimData is used to remove the white spaces from the data.
+
+It is possible to define a custom converter for a column, like this:
+
+```c#
+public class Base64Converter : IValueConverter
+{
+    public string Convert(object value, object parameter, IFormatProvider provider) => Base64Encode($"{value}");
+    public object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider) => Base64Decode(value);
+
+    private string Base64Encode(string plainText)
+    {
+        var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+        return System.Convert.ToBase64String(plainTextBytes);
+    }
+    private string Base64Decode(string base64EncodedData)
+    {
+        var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
+        return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+    }
+}
+```
+
+Base64Converter is used to convert the data from the file to a Base64 string and vice versa for TextBase64 column.
+
 
 A column is defined with the model's property only. The library get or set the value in automatically.
 
