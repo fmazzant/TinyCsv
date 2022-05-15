@@ -40,6 +40,8 @@ The options defines that the file has the header in first row and the delimier c
 RowsToSkip and SkipRow are used to skip the first rows of the file.
 TrimData is used to remove the white spaces from the data.
 
+## Custom Value Converter
+
 It is possible to define a custom converter for a column, like this:
 
 ```c#
@@ -69,7 +71,7 @@ Base64Converter is used to convert the data column to a Base64 string and vice v
 
 A column is defined with the model's property only. The library get or set the value in automatically.
 
-### Read
+## Read
 
 To read a csv file is only necessary invoke the load method, like this:
 
