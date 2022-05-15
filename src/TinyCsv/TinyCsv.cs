@@ -139,7 +139,7 @@ namespace TinyCsv
                         break;
                     }
                 }
-                
+
                 while (!streamReader.EndOfStream)
                 {
                     var line = streamReader.ReadLine();
@@ -190,7 +190,7 @@ namespace TinyCsv
                         break;
                     }
                 }
-                
+
                 while (!file.EndOfStream)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -200,7 +200,7 @@ namespace TinyCsv
                     var model = this.GetModelFromLine(line);
                     models.Add(model);
                 }
-                
+
                 file.Close();
             }
             return models;
@@ -376,6 +376,10 @@ namespace TinyCsv
                 var property = model.GetType().GetProperty(propertyName);
                 var value = property.GetValue(model);
                 var stringValue = column.Converter.Convert(value, null, column.ColumnFormatProvider);
+                if (stringValue?.Contains(Options.Delimiter) ?? false)
+                {
+                    stringValue = $"\"{stringValue}\"";
+                }
                 return stringValue;
             });
             var line = string.Join(Options.Delimiter, values);
