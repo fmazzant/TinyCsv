@@ -59,7 +59,7 @@ namespace TinyCsv
         /// <summary>
         /// Allows skipt row by condition
         /// </summary>
-        public Func<string, int, bool> SkipRow { get; set; } = (s, i) => false;
+        public Func<string, int, bool> SkipRow { get; set; } = (row, index) => false;
 
         /// <summary>
         /// Can be used to trim each cell
