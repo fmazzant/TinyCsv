@@ -87,7 +87,7 @@ var models = await csv.LoadAsync("file.csv");
 
 The load method returns a collection of Model type items and takes as argument the file's path.
 
-### Write
+## Write
 
 To write a csv file is only necessary invoke the Save method, like this:
 
