@@ -271,7 +271,7 @@ namespace TinyCsv
             var model = new T();
             foreach (var column in Options.Columns)
             {
-                var value = values[column.ColumnIndex].TrimData(Options.TrimData);
+                var value = values[column.ColumnIndex].TrimData(this.Options);
                 var columnExpression = column.ColumnExpression;
                 var propertyName = columnExpression.GetPropertyName();
                 var property = typeof(T).GetProperty(propertyName);

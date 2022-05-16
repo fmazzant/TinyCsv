@@ -44,12 +44,12 @@ namespace TinyCsv.Extensions
         /// <param name="value"></param>
         /// <param name="trimData"></param>
         /// <returns></returns>
-        public static string TrimData(this string value, bool trimData = false)
+        public static string TrimData<T>(this string value, CsvOptions<T> options)
         {
             if (!string.IsNullOrEmpty(value))
             {
                 var chars = new List<char> { '"', '\'' };
-                if (trimData)
+                if (options.TrimData)
                 {
                     chars.Add(' ');
                 }
