@@ -87,7 +87,7 @@ namespace TinyCsv
                     while (!file.EndOfStream)
                     {
                         var line = file.ReadLine();
-                        var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                        var skip = line.SkipRow(index++, this.Options);
                         if (skip) continue;
                         break;
                     }
@@ -96,7 +96,7 @@ namespace TinyCsv
                 while (!file.EndOfStream)
                 {
                     var line = file.ReadLine();
-                    var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                    var skip = line.SkipRow(index++, this.Options);
                     if (skip) continue;
                     var model = this.GetModelFromLine(line);
                     models.Add(model);
@@ -135,7 +135,7 @@ namespace TinyCsv
                     while (!streamReader.EndOfStream)
                     {
                         var line = streamReader.ReadLine();
-                        var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                        var skip = line.SkipRow(index++, this.Options);
                         if (skip) continue;
                         break;
                     }
@@ -144,7 +144,7 @@ namespace TinyCsv
                 while (!streamReader.EndOfStream)
                 {
                     var line = streamReader.ReadLine();
-                    var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                    var skip = line.SkipRow(index++, this.Options);
                     if (skip) continue;
                     var model = this.GetModelFromLine(line);
                     models.Add(model);
@@ -186,7 +186,7 @@ namespace TinyCsv
                     {
                         cancellationToken.ThrowIfCancellationRequested();
                         var line = await file.ReadLineAsync().ConfigureAwait(false);
-                        var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                        var skip = line.SkipRow(index++, this.Options);
                         if (skip) continue;
                         break;
                     }
@@ -196,7 +196,7 @@ namespace TinyCsv
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     var line = await file.ReadLineAsync().ConfigureAwait(false);
-                    var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                    var skip = line.SkipRow(index++, this.Options);
                     if (skip) continue;
                     var model = this.GetModelFromLine(line);
                     models.Add(model);
@@ -236,7 +236,7 @@ namespace TinyCsv
                     {
                         cancellationToken.ThrowIfCancellationRequested();
                         var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                        var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                        var skip = line.SkipRow(index++, this.Options);
                         if (skip) continue;
                         break;
                     }
@@ -246,7 +246,7 @@ namespace TinyCsv
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                    var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                    var skip = line.SkipRow(index++, this.Options);
                     if (skip) continue;
                     var model = this.GetModelFromLine(line);
                     models.Add(model);

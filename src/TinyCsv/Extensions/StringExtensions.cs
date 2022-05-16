@@ -115,5 +115,19 @@ namespace TinyCsv.Extensions
         {
             return value?.Contains(options.Delimiter) ?? false ? $"\"{value}\"" : value;
         }
+
+        /// <summary>
+        /// Defines that the line/row is to skip or not
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static bool SkipRow<T>(this string line, int index, CsvOptions<T> options)
+        {
+            var isEmpty = string.IsNullOrWhiteSpace(line);
+            if (options.SkipEmptyRows && isEmpty) return true;
+            return options.SkipRow?.Invoke(line, index) ?? false;
+        }
     }
 }
