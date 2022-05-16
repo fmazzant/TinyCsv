@@ -50,12 +50,12 @@ namespace CsvSampleConsoleApp
         public string Convert(object value, object parameter, IFormatProvider provider) => Base64Encode($"{value}");
         public object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider) => Base64Decode(value);
 
-        private string Base64Encode(string plainText)
+        private static string Base64Encode(string plainText)
         {
             var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
             return System.Convert.ToBase64String(plainTextBytes);
         }
-        private string Base64Decode(string base64EncodedData)
+        private static string Base64Decode(string base64EncodedData)
         {
             var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
             return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
@@ -64,7 +64,7 @@ namespace CsvSampleConsoleApp
 
     internal static class Program
     {
-        static async Task Main(string[] args)
+        static async Task Main()
         {
             // definitions
             var csv = new TinyCsv<Model>(options =>
