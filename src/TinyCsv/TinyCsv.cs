@@ -65,46 +65,13 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public IEnumerable<T> Load(string path)
+        public ICollection<T> Load(string path)
         {
-            var models = new List<T>();
-            using (StreamReader file = new StreamReader(path))
+            using (StreamReader streamReader = new StreamReader(path))
             {
-                var index = 0;
-
-                while (!file.EndOfStream)
-                {
-                    if (index++ < Options.RowsToSkip)
-                    {
-                        file.ReadLine();
-                        continue;
-                    }
-                    break;
-                }
-
-                if (Options.HasHeaderRecord)
-                {
-                    while (!file.EndOfStream)
-                    {
-                        var line = file.ReadLine();
-                        var skip = line.SkipRow(index++, this.Options);
-                        if (skip) continue;
-                        break;
-                    }
-                }
-
-                while (!file.EndOfStream)
-                {
-                    var line = file.ReadLine();
-                    var skip = line.SkipRow(index++, this.Options);
-                    if (skip) continue;
-                    var model = this.GetModelFromLine(line);
-                    models.Add(model);
-                }
-
-                file.Close();
+                var models = Load(streamReader);
+                return new List<T>(models);
             }
-            return models;
         }
 
         /// <summary>
@@ -114,47 +81,37 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<T> Load(StreamReader streamReader)
         {
-            var models = new List<T>();
+            var index = 0;
 
-            try
+            while (!streamReader.EndOfStream)
             {
-                var index = 0;
-
-                while (!streamReader.EndOfStream)
+                if (index++ < Options.RowsToSkip)
                 {
-                    if (index++ < Options.RowsToSkip)
-                    {
-                        streamReader.ReadLine();
-                        continue;
-                    }
-                    break;
+                    streamReader.ReadLine();
+                    continue;
                 }
+                break;
+            }
 
-                if (Options.HasHeaderRecord)
-                {
-                    while (!streamReader.EndOfStream)
-                    {
-                        var line = streamReader.ReadLine();
-                        var skip = line.SkipRow(index++, this.Options);
-                        if (skip) continue;
-                        break;
-                    }
-                }
-
+            if (Options.HasHeaderRecord)
+            {
                 while (!streamReader.EndOfStream)
                 {
                     var line = streamReader.ReadLine();
                     var skip = line.SkipRow(index++, this.Options);
                     if (skip) continue;
-                    var model = this.GetModelFromLine(line);
-                    models.Add(model);
+                    break;
                 }
             }
-            finally
+
+            while (!streamReader.EndOfStream)
             {
-                streamReader.Close();
+                var line = streamReader.ReadLine();
+                var skip = line.SkipRow(index++, this.Options);
+                if (skip) continue;
+                var model = this.GetModelFromLine(line);
+                yield return model;
             }
-            return models;
         }
 
         /// <summary>
