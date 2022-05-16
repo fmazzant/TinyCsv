@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using TinyCsv;
 using TinyCsv.Conversions;
+using TinyCsv.Extensions;
 
 namespace CsvSampleConsoleApp
 {
@@ -52,29 +54,11 @@ namespace CsvSampleConsoleApp
                 options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
             });
 
-            // Sync
-            var models_Load = csv.Load("file.csv");
-            foreach (var model in models_Load)
-            {
-                Console.WriteLine($"{model.Id} {model.Name}");
-            }
-
-            // Sync with stream
-            using (var streamReader = new StreamReader("file.csv"))
-            {
-                var models = csv.Load(streamReader);
-                foreach (var model in models)
-                {
-                    Console.WriteLine($"{model.Id} {model.Name}");
-                }
-            }
-
-
-            // load from file
-            var modelsAsync = await csv.LoadAsync("file.csv");
+            // read from file
+            var models = await csv.LoadAsync("file.csv");
 
             // write on file
-            await csv.SaveAsync("file_export.csv", modelsAsync);
+            await csv.SaveAsync("file_export.csv", models);
         }
     }
 }
