@@ -52,9 +52,19 @@ namespace TinyCsv
         public string Delimiter { get; set; } = ";";
 
         /// <summary>
+        /// Double quotes
+        /// </summary>
+        public char DoubleQuotes { get; set; } = '"';
+
+        /// <summary>
         /// Allows skipping of initial rows without csv data
         /// </summary>
         public uint RowsToSkip { get; set; } = 0;
+
+        /// <summary>
+        /// Allows skipping of initial columns without csv data
+        /// </summary>
+        public bool SkipEmptyRows { get; set; } = false;
 
         /// <summary>
         /// Allows skipt row by condition

@@ -33,6 +33,7 @@ namespace TinyCsv
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using TinyCsv.Extensions;
@@ -86,7 +87,7 @@ namespace TinyCsv
                     while (!file.EndOfStream)
                     {
                         var line = file.ReadLine();
-                        var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                        var skip = line.SkipRow(index++, this.Options);
                         if (skip) continue;
                         break;
                     }
@@ -95,7 +96,7 @@ namespace TinyCsv
                 while (!file.EndOfStream)
                 {
                     var line = file.ReadLine();
-                    var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                    var skip = line.SkipRow(index++, this.Options);
                     if (skip) continue;
                     var model = this.GetModelFromLine(line);
                     models.Add(model);
@@ -134,16 +135,16 @@ namespace TinyCsv
                     while (!streamReader.EndOfStream)
                     {
                         var line = streamReader.ReadLine();
-                        var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                        var skip = line.SkipRow(index++, this.Options);
                         if (skip) continue;
                         break;
                     }
                 }
-                
+
                 while (!streamReader.EndOfStream)
                 {
                     var line = streamReader.ReadLine();
-                    var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                    var skip = line.SkipRow(index++, this.Options);
                     if (skip) continue;
                     var model = this.GetModelFromLine(line);
                     models.Add(model);
@@ -185,22 +186,22 @@ namespace TinyCsv
                     {
                         cancellationToken.ThrowIfCancellationRequested();
                         var line = await file.ReadLineAsync().ConfigureAwait(false);
-                        var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                        var skip = line.SkipRow(index++, this.Options);
                         if (skip) continue;
                         break;
                     }
                 }
-                
+
                 while (!file.EndOfStream)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     var line = await file.ReadLineAsync().ConfigureAwait(false);
-                    var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                    var skip = line.SkipRow(index++, this.Options);
                     if (skip) continue;
                     var model = this.GetModelFromLine(line);
                     models.Add(model);
                 }
-                
+
                 file.Close();
             }
             return models;
@@ -235,7 +236,7 @@ namespace TinyCsv
                     {
                         cancellationToken.ThrowIfCancellationRequested();
                         var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                        var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                        var skip = line.SkipRow(index++, this.Options);
                         if (skip) continue;
                         break;
                     }
@@ -245,7 +246,7 @@ namespace TinyCsv
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                    var skip = Options.SkipRow?.Invoke(line, index++) ?? false;
+                    var skip = line.SkipRow(index++, this.Options);
                     if (skip) continue;
                     var model = this.GetModelFromLine(line);
                     models.Add(model);
@@ -265,11 +266,12 @@ namespace TinyCsv
         /// <returns></returns>
         private T GetModelFromLine(string line)
         {
-            var values = line.Split(new string[] { Options.Delimiter }, StringSplitOptions.None);
+            var values = line.SplitLine(this.Options);
+
             var model = new T();
             foreach (var column in Options.Columns)
             {
-                var value = values[column.ColumnIndex].TrimData(Options.TrimData);
+                var value = values[column.ColumnIndex].TrimData(this.Options);
                 var columnExpression = column.ColumnExpression;
                 var propertyName = columnExpression.GetPropertyName();
                 var property = typeof(T).GetProperty(propertyName);
@@ -376,7 +378,7 @@ namespace TinyCsv
                 var property = model.GetType().GetProperty(propertyName);
                 var value = property.GetValue(model);
                 var stringValue = column.Converter.Convert(value, null, column.ColumnFormatProvider);
-                return stringValue;
+                return stringValue?.EnclosedInDoubleQuotesIfNecessary(this.Options);
             });
             var line = string.Join(Options.Delimiter, values);
             return line;
