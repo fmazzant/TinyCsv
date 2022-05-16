@@ -266,8 +266,7 @@ namespace TinyCsv
         /// <returns></returns>
         private T GetModelFromLine(string line)
         {
-            //var values = line.Split(new string[] { Options.Delimiter }, StringSplitOptions.None);
-            var values = SplitLine(line, Options.Columns.Count());
+            var values = line.SplitLine(this.Options);
 
             var model = new T();
             foreach (var column in Options.Columns)
@@ -280,50 +279,6 @@ namespace TinyCsv
                 property.SetValue(model, typedValue);
             }
             return model;
-        }
-
-        /// <summary>
-        /// split line with delimiter separator and return list of values
-        /// </summary>
-        /// <param name="line"></param>
-        /// <param name="columnNumber"></param>
-        /// <returns></returns>
-        string[] SplitLine(string line, int columnNumber)
-        {
-            var values = new string[columnNumber];
-            var delimiter = Options.Delimiter;
-            var doubleQuote = '"';
-            int index = 0;
-            int cursor = 0;
-
-            bool openDoubleQuotes = false;
-            while (index < columnNumber)
-            {
-                var sb = new StringBuilder();
-
-                while (cursor < line.Length)
-                {
-                    var c = line[cursor++];
-
-                    if (c == doubleQuote)
-                    {
-                        openDoubleQuotes = !openDoubleQuotes;
-                    }
-
-                    if (c.ToString() == delimiter && !openDoubleQuotes)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        sb.Append(c);
-                    }
-                }
-
-                values[index++] = sb.ToString();
-            }
-
-            return values;
         }
 
         /// <summary>
@@ -423,11 +378,7 @@ namespace TinyCsv
                 var property = model.GetType().GetProperty(propertyName);
                 var value = property.GetValue(model);
                 var stringValue = column.Converter.Convert(value, null, column.ColumnFormatProvider);
-                if (stringValue?.Contains(Options.Delimiter) ?? false)
-                {
-                    stringValue = $"\"{stringValue}\"";
-                }
-                return stringValue;
+                return stringValue?.EnclosedInDoubleQuotesIfNecessary(this.Options);
             });
             var line = string.Join(Options.Delimiter, values);
             return line;

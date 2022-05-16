@@ -30,6 +30,8 @@
 namespace TinyCsv.Extensions
 {
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
 
     /// <summary>
     /// String extensions
@@ -54,6 +56,64 @@ namespace TinyCsv.Extensions
                 return value.Trim(chars.ToArray());
             }
             return value;
+        }
+
+        /// <summary>
+        /// Split line with delimiter separator and return list of values
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="line"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static string[] SplitLine<T>(this string line, CsvOptions<T> options)
+        {
+            var columnNumber = options.Columns.Count();
+            var values = new string[columnNumber];
+            var delimiter = options.Delimiter;
+            var doubleQuotes = options.DoubleQuotes;
+            int index = 0;
+            int cursor = 0;
+
+            bool openDoubleQuotes = false;
+            while (index < columnNumber)
+            {
+                var sb = new StringBuilder();
+
+                while (cursor < line.Length)
+                {
+                    var c = line[cursor++];
+
+                    if (c == doubleQuotes)
+                    {
+                        openDoubleQuotes = !openDoubleQuotes;
+                    }
+
+                    if (c.ToString() == delimiter && !openDoubleQuotes)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        sb.Append(c);
+                    }
+                }
+
+                values[index++] = sb.ToString();
+            }
+
+            return values;
+        }
+
+        /// <summary>
+        /// Enclosed in double quotes if the value contains the delimiter value
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static string EnclosedInDoubleQuotesIfNecessary<T>(this string value, CsvOptions<T> options)
+        {
+            return value?.Contains(options.Delimiter) ?? false ? $"\"{value}\"" : value;
         }
     }
 }
