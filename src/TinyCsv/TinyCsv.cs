@@ -173,10 +173,6 @@ namespace TinyCsv
                     models.Add(model);
                 }
             }
-            finally
-            {
-                streamReader.Close();
-            }
             return models;
         }
 #endif
@@ -344,10 +340,6 @@ namespace TinyCsv
                     await streamWriter.WriteLineAsync(line).ConfigureAwait(false);
                 }
                 await streamWriter.FlushAsync().ConfigureAwait(false);
-            }
-            finally
-            {
-                streamWriter.Close();
             }
         }
 
