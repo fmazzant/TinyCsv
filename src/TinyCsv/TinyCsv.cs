@@ -365,7 +365,7 @@ namespace TinyCsv
                 var property = model.GetType().GetProperty(propertyName);
                 var value = property.GetValue(model);
                 var stringValue = column.Converter.Convert(value, null, column.ColumnFormatProvider);
-                return stringValue?.EnclosedInDoubleQuotesIfNecessary(this.Options);
+                return stringValue?.EnclosedInQuotesIfNecessary(this.Options);
             });
             var line = string.Join(Options.Delimiter, values);
             return line;

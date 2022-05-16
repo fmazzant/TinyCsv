@@ -111,7 +111,7 @@ namespace TinyCsv.Extensions
         /// <param name="value"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public static string EnclosedInDoubleQuotesIfNecessary<T>(this string value, CsvOptions<T> options)
+        public static string EnclosedInQuotesIfNecessary<T>(this string value, CsvOptions<T> options)
         {
             return value?.Contains(options.Delimiter) ?? false ? $"\"{value}\"" : value;
         }
