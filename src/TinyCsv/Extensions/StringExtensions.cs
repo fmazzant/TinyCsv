@@ -113,7 +113,8 @@ namespace TinyCsv.Extensions
         /// <returns></returns>
         public static string EnclosedInQuotesIfNecessary<T>(this string value, CsvOptions<T> options)
         {
-            return value?.Contains(options.Delimiter) ?? false ? $"\"{value}\"" : value;
+            var encluseInQuotes = options.AllowRowEnclosedInDoubleQuotesValues && (value?.Contains(options.Delimiter) ?? false);
+            return encluseInQuotes ? $"\"{value}\"" : value;
         }
 
         /// <summary>
