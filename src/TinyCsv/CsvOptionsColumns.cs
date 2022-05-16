@@ -29,11 +29,11 @@
 
 namespace TinyCsv
 {
-    using TinyCsv.Conversions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq.Expressions;
+    using TinyCsv.Conversions;
     using TinyCsv.Extensions;
 
     /// <summary>

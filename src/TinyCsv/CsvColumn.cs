@@ -29,10 +29,10 @@
 
 namespace TinyCsv
 {
-    using TinyCsv.Conversions;
     using System;
     using System.Globalization;
     using System.Linq.Expressions;
+    using TinyCsv.Conversions;
 
     /// <summary>
     /// The column definition.

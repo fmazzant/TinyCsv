@@ -33,7 +33,6 @@ namespace TinyCsv
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using TinyCsv.Extensions;
@@ -195,17 +194,6 @@ namespace TinyCsv
                 var models = await this.LoadAsync(streamReader).ToListAsync(cancellationToken);
                 return models;
             }
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public async Task<ICollection<T>> LoadAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var models = await this.LoadAsync(streamReader).ToListAsync(cancellationToken);
-            return models;
         }
 
         /// <summary>
