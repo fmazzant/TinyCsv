@@ -30,9 +30,11 @@
 namespace CsvSampleConsoleApp
 {
     using System;
+    using System.IO;
     using System.Threading.Tasks;
     using TinyCsv;
     using TinyCsv.Conversions;
+    using TinyCsv.Extensions;
 
     public class Model
     {
@@ -80,10 +82,23 @@ namespace CsvSampleConsoleApp
                 options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
             });
 
-            // read from file
-            var models = await csv.LoadAsync("file.csv");
+            // read from file sync
+            var syncModels = csv.Load("file.csv");
 
-            // write on file
+            // read from file async
+            var models = await csv.LoadAsync("file.csv");
+            foreach (var model in models)
+            {
+                Console.WriteLine($"{model.Id} - {model.Name} - {model.Price} - {model.CreatedOn} - {model.TextBase64}");
+            }
+
+            // returns IAsyncEnumerable
+            await foreach (var model in csv.LoadAsync(new StreamReader("file.csv")))
+            {
+                Console.WriteLine($"{model.Id} - {model.Name} - {model.Price} - {model.CreatedOn} - {model.TextBase64}");
+            }
+
+            // write on file async
             await csv.SaveAsync("file_export.csv", models);
         }
     }
