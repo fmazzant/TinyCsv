@@ -84,6 +84,10 @@ namespace CsvSampleConsoleApp
 
             // read from file sync
             var syncModels = csv.Load("file.csv");
+            foreach (var model in syncModels)
+            {
+                Console.WriteLine($"{model.Id} - {model.Name} - {model.Price} - {model.CreatedOn} - {model.TextBase64}");
+            }
 
             // read from file async
             var models = await csv.LoadAsync("file.csv");

@@ -131,6 +131,13 @@ namespace TinyCsv.Extensions
             {
                 return true;
             }
+
+            var isComment = options.AllowComment && line.StartsWith(options.Comment.ToString());
+            if (isComment)
+            {
+                return true;
+            }
+
             return options.SkipRow?.Invoke(line, index) ?? false;
         }
     }

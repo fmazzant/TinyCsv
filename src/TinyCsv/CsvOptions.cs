@@ -57,6 +57,11 @@ namespace TinyCsv
         public char DoubleQuotes { get; set; } = '"';
 
         /// <summary>
+        /// Comment
+        /// </summary>
+        public char Comment { get; set; } = '#';
+
+        /// <summary>
         /// Allows skipping of initial rows without csv data
         /// </summary>
         public uint RowsToSkip { get; set; } = 0;
@@ -80,6 +85,12 @@ namespace TinyCsv
         /// Checks each row immediately for column count
         /// </summary>
         public bool ValidateColumnCount { get; set; } = false;
+
+
+        /// <summary>
+        /// Allows comment inside the content
+        /// </summary>
+        public bool AllowComment { get; } = true;
 
         /// <summary>
         /// Respects new line (either \r\n or \n) characters inside field values enclosed in double quotes.
