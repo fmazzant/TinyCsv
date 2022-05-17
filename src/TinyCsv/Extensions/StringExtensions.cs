@@ -133,8 +133,9 @@ namespace TinyCsv.Extensions
         /// <returns></returns>
         public static bool SkipRow<T>(this string line, int index, CsvOptions<T> options)
         {
+            var skipEmptyRows = options.SkipEmptyRows;
             var isEmpty = string.IsNullOrWhiteSpace(line);
-            if (options.SkipEmptyRows && isEmpty)
+            if (skipEmptyRows && isEmpty)
             {
                 return true;
             }
