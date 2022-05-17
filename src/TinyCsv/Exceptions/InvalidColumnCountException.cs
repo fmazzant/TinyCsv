@@ -30,7 +30,6 @@
 namespace TinyCsv.Exceptions
 {
     using System;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Defines Invalid Column Count Exception

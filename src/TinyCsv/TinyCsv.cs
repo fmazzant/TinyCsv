@@ -168,7 +168,7 @@ namespace TinyCsv
                 var model = this.GetModelFromLine(line);
                 models.Add(model);
             }
-            
+
             return models;
         }
 #endif
