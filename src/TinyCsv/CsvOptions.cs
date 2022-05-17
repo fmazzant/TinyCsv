@@ -86,26 +86,20 @@ namespace TinyCsv
         /// </summary>
         public bool ValidateColumnCount { get; set; } = false;
 
-
         /// <summary>
         /// Allows comment inside the content
         /// </summary>
-        public bool AllowComment { get; } = true;
+        public bool AllowComment { get; set; } = true;
 
         /// <summary>
         /// Respects new line (either \r\n or \n) characters inside field values enclosed in double quotes.
         /// </summary>
-        public bool AllowRowEnclosedInDoubleQuotesValues { get; } = true;
+        public bool AllowRowEnclosedInDoubleQuotesValues { get; set; } = true;
 
         /// <summary>
         /// Allows the sequence "\"" to be a valid quoted value (in addition to the standard """")
         /// </summary>
-        public bool AllowBackSlashToEscapeQuote { get; } = false;
-
-        /// <summary>
-        /// Allows the single-quote character to be used to enclose field values
-        /// </summary>
-        public bool AllowSingleQuoteToEncloseColumnValues { get; } = false;
+        public bool AllowBackSlashToEscapeQuote { get; set; } = false;
 
         /// <summary>
         /// Create a CsvOptions

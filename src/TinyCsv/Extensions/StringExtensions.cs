@@ -31,7 +31,8 @@ namespace TinyCsv.Extensions
 {
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
+    using System.Text.RegularExpressions;
+    using TinyCsv.Exceptions;
 
     /// <summary>
     /// String extensions
@@ -67,41 +68,45 @@ namespace TinyCsv.Extensions
         /// <returns></returns>
         public static string[] SplitLine<T>(this string line, CsvOptions<T> options)
         {
-            var columnNumber = options.Columns.Count();
-            var values = new string[columnNumber];
+            var validateColumnCount = options.ValidateColumnCount;
+            var allowBackSlashToEscapeQuote = options.AllowBackSlashToEscapeQuote;
+            var columnCount = options.Columns.Count();
             var delimiter = options.Delimiter;
-            var doubleQuotes = options.DoubleQuotes;
-            int index = 0;
-            int cursor = 0;
 
-            bool openDoubleQuotes = false;
-            while (index < columnNumber)
+            var expression = $"{delimiter}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))";
+            var regx = new Regex(expression);
+            var values = regx.Split(line);
+
+            if (validateColumnCount)
             {
-                var sb = new StringBuilder();
-
-                while (cursor < line.Length)
+                var endWithDelimiter = line.EndsWith(delimiter);
+                var valuesCount = values.Length - (endWithDelimiter ? 1 : 0);
+                if (valuesCount != columnCount)
                 {
-                    var c = line[cursor++];
-
-                    if (c == doubleQuotes)
-                    {
-                        openDoubleQuotes = !openDoubleQuotes;
-                    }
-
-                    if (c.ToString() == delimiter && !openDoubleQuotes)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        sb.Append(c);
-                    }
+                    throw new InvalidColumnCountException($"Invalid column count. Expected {columnCount} columns but found {valuesCount}.");
                 }
+            }
 
-                values[index++] = sb.ToString();
+            if (!allowBackSlashToEscapeQuote)
+            {
+                values.ThrowsIfAnyEscapedQuotes();
             }
 
             return values;
+        }
+
+        /// <summary>
+        /// Throw exception if any escaped quotes are found
+        /// </summary>
+        /// <param name="values"></param>
+        /// <exception cref="InvalidColumnValueException"></exception>
+        private static void ThrowsIfAnyEscapedQuotes(this string[] values)
+        {
+            var count = values.Count(x => x.Contains("\\\""));
+            if (count > 0)
+            {
+                throw new InvalidColumnValueException($"Invalid column value. Found {count} columns with escaped quotes.");
+            }
         }
 
         /// <summary>
@@ -113,7 +118,9 @@ namespace TinyCsv.Extensions
         /// <returns></returns>
         public static string EnclosedInQuotesIfNecessary<T>(this string value, CsvOptions<T> options)
         {
-            var encluseInQuotes = options.AllowRowEnclosedInDoubleQuotesValues && (value?.Contains(options.Delimiter) ?? false);
+            var delimiterIsContined = value?.Contains(options.Delimiter) ?? false;
+            var specialCharIsContined = value?.Contains("\"") ?? false;
+            var encluseInQuotes = options.AllowRowEnclosedInDoubleQuotesValues && (delimiterIsContined || specialCharIsContined);
             return encluseInQuotes ? $"\"{value}\"" : value;
         }
 
@@ -132,10 +139,18 @@ namespace TinyCsv.Extensions
                 return true;
             }
 
-            var isComment = options.AllowComment && line.StartsWith(options.Comment.ToString());
+            var allowComment = options.AllowComment;
+            var isComment = line.StartsWith(options.Comment.ToString());
             if (isComment)
             {
-                return true;
+                if (allowComment)
+                {
+                    return true;
+                }
+                else
+                {
+                    throw new NotAllowCommentException($"Invalid comment found at row {index}.");
+                }
             }
 
             return options.SkipRow?.Invoke(line, index) ?? false;
