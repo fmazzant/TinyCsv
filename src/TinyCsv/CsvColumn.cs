@@ -29,10 +29,10 @@
 
 namespace TinyCsv
 {
-    using TinyCsv.Conversions;
     using System;
     using System.Globalization;
     using System.Linq.Expressions;
+    using TinyCsv.Conversions;
 
     /// <summary>
     /// The column definition.
@@ -104,7 +104,7 @@ namespace TinyCsv
         /// <summary>
         /// Default Format Provider definition
         /// </summary>
-        private sealed class DefaultFormatProvider : IFormatProvider, ICustomFormatter
+        internal sealed class DefaultFormatProvider : IFormatProvider, ICustomFormatter
         {
             /// <summary>
             /// Column's format

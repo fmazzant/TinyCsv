@@ -33,7 +33,6 @@ namespace TinyCsv
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using TinyCsv.Extensions;
@@ -65,46 +64,11 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public IEnumerable<T> Load(string path)
+        public ICollection<T> Load(string path)
         {
-            var models = new List<T>();
-            using (StreamReader file = new StreamReader(path))
-            {
-                var index = 0;
-
-                while (!file.EndOfStream)
-                {
-                    if (index++ < Options.RowsToSkip)
-                    {
-                        file.ReadLine();
-                        continue;
-                    }
-                    break;
-                }
-
-                if (Options.HasHeaderRecord)
-                {
-                    while (!file.EndOfStream)
-                    {
-                        var line = file.ReadLine();
-                        var skip = line.SkipRow(index++, this.Options);
-                        if (skip) continue;
-                        break;
-                    }
-                }
-
-                while (!file.EndOfStream)
-                {
-                    var line = file.ReadLine();
-                    var skip = line.SkipRow(index++, this.Options);
-                    if (skip) continue;
-                    var model = this.GetModelFromLine(line);
-                    models.Add(model);
-                }
-
-                file.Close();
-            }
-            return models;
+            using var streamReader = new StreamReader(path);
+            var models = Load(streamReader);
+            return new List<T>(models);
         }
 
         /// <summary>
@@ -114,97 +78,52 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<T> Load(StreamReader streamReader)
         {
-            var models = new List<T>();
+            var index = 0;
 
-            try
+            while (!streamReader.EndOfStream)
             {
-                var index = 0;
-
-                while (!streamReader.EndOfStream)
+                if (index++ < Options.RowsToSkip)
                 {
-                    if (index++ < Options.RowsToSkip)
-                    {
-                        streamReader.ReadLine();
-                        continue;
-                    }
-                    break;
+                    streamReader.ReadLine();
+                    continue;
                 }
+                break;
+            }
 
-                if (Options.HasHeaderRecord)
-                {
-                    while (!streamReader.EndOfStream)
-                    {
-                        var line = streamReader.ReadLine();
-                        var skip = line.SkipRow(index++, this.Options);
-                        if (skip) continue;
-                        break;
-                    }
-                }
-
+            if (Options.HasHeaderRecord)
+            {
                 while (!streamReader.EndOfStream)
                 {
                     var line = streamReader.ReadLine();
                     var skip = line.SkipRow(index++, this.Options);
                     if (skip) continue;
-                    var model = this.GetModelFromLine(line);
-                    models.Add(model);
+                    break;
                 }
             }
-            finally
+
+            while (!streamReader.EndOfStream)
             {
-                streamReader.Close();
+                var line = streamReader.ReadLine();
+                var skip = line.SkipRow(index++, this.Options);
+                if (skip) continue;
+                var model = this.GetModelFromLine(line);
+                yield return model;
             }
-            return models;
         }
 
+#if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
         /// <summary>
         /// Reads a csv file and returns a list of objects asynchronously.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<T>> LoadAsync(string path, CancellationToken cancellationToken = new CancellationToken())
+        public async Task<ICollection<T>> LoadAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var models = new List<T>();
             using (StreamReader file = new StreamReader(path))
             {
-                var index = 0;
-
-                while (!file.EndOfStream)
-                {
-                    if (index++ < Options.RowsToSkip)
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        await file.ReadLineAsync().ConfigureAwait(false);
-                        continue;
-                    }
-                    break;
-                }
-
-                if (Options.HasHeaderRecord)
-                {
-                    while (!file.EndOfStream)
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        var line = await file.ReadLineAsync().ConfigureAwait(false);
-                        var skip = line.SkipRow(index++, this.Options);
-                        if (skip) continue;
-                        break;
-                    }
-                }
-
-                while (!file.EndOfStream)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var line = await file.ReadLineAsync().ConfigureAwait(false);
-                    var skip = line.SkipRow(index++, this.Options);
-                    if (skip) continue;
-                    var model = this.GetModelFromLine(line);
-                    models.Add(model);
-                }
-
-                file.Close();
+                var models = await this.LoadAsync(file, cancellationToken);
+                return new List<T>(models);
             }
-            return models;
         }
 
         /// <summary>
@@ -212,52 +131,103 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<T>> LoadAsync(StreamReader streamReader, CancellationToken cancellationToken = new CancellationToken())
+        public async Task<ICollection<T>> LoadAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken))
         {
             var models = new List<T>();
-            try
+            var index = 0;
+
+            while (!streamReader.EndOfStream)
             {
-                var index = 0;
-
-                while (!streamReader.EndOfStream)
+                if (index++ < Options.RowsToSkip)
                 {
-                    if (index++ < Options.RowsToSkip)
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        await streamReader.ReadLineAsync().ConfigureAwait(false);
-                        continue;
-                    }
-                    break;
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await streamReader.ReadLineAsync().ConfigureAwait(false);
+                    continue;
                 }
+                break;
+            }
 
-                if (Options.HasHeaderRecord)
-                {
-                    while (!streamReader.EndOfStream)
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                        var skip = line.SkipRow(index++, this.Options);
-                        if (skip) continue;
-                        break;
-                    }
-                }
-
+            if (Options.HasHeaderRecord)
+            {
                 while (!streamReader.EndOfStream)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
                     var skip = line.SkipRow(index++, this.Options);
                     if (skip) continue;
-                    var model = this.GetModelFromLine(line);
-                    models.Add(model);
+                    break;
                 }
             }
-            finally
+
+            while (!streamReader.EndOfStream)
             {
-                streamReader.Close();
+                cancellationToken.ThrowIfCancellationRequested();
+                var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
+                var skip = line.SkipRow(index++, this.Options);
+                if (skip) continue;
+                var model = this.GetModelFromLine(line);
+                models.Add(model);
             }
+
             return models;
         }
+#endif
+
+#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        /// <summary>
+        /// Reads a csv file and returns a list of objects asynchronously.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public async Task<ICollection<T>> LoadAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            using (StreamReader streamReader = new StreamReader(path))
+            {
+                var models = await this.LoadAsync(streamReader).ToListAsync(cancellationToken);
+                return models;
+            }
+        }
+
+        /// <summary>
+        /// Reads a csv file and returns a list of objects asynchronously.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public async IAsyncEnumerable<T> LoadAsync(StreamReader streamReader)
+        {
+            var index = 0;
+
+            while (!streamReader.EndOfStream)
+            {
+                if (index++ < Options.RowsToSkip)
+                {
+                    await streamReader.ReadLineAsync().ConfigureAwait(false);
+                    continue;
+                }
+                break;
+            }
+
+            if (Options.HasHeaderRecord)
+            {
+                while (!streamReader.EndOfStream)
+                {
+                    var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
+                    var skip = line.SkipRow(index++, this.Options);
+                    if (skip) continue;
+                    break;
+                }
+            }
+
+            while (!streamReader.EndOfStream)
+            {
+                var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
+                var skip = line.SkipRow(index++, this.Options);
+                if (skip) continue;
+                var model = this.GetModelFromLine(line);
+                yield return model;
+            }
+        }
+#endif
 
         /// <summary>
         /// Build T object from line
@@ -288,23 +258,32 @@ namespace TinyCsv
         /// <param name="models"></param>
         public void Save(string path, IEnumerable<T> models)
         {
-            using (StreamWriter file = new StreamWriter(path))
+            using (StreamWriter streamWriter = new StreamWriter(path))
             {
-                if (Options.HasHeaderRecord)
-                {
-                    var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
-                    file.WriteLine(headers);
-                }
-
-                foreach (var model in models)
-                {
-                    var line = this.GetLineFromModel(model);
-                    file.WriteLine(line);
-                }
-
-                file.Flush();
-                file.Close();
+                Save(streamWriter, models);
             }
+        }
+
+        /// <summary>
+        /// Writes a list of objects to a csv file.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="models"></param>
+        public void Save(StreamWriter streamWriter, IEnumerable<T> models)
+        {
+            if (Options.HasHeaderRecord)
+            {
+                var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
+                streamWriter.WriteLine(headers);
+            }
+
+            foreach (var model in models)
+            {
+                var line = this.GetLineFromModel(model);
+                streamWriter.WriteLine(line);
+            }
+
+            streamWriter.Flush();
         }
 
         /// <summary>
@@ -312,7 +291,7 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <param name="models"></param>
-        public async Task SaveAsync(string path, IEnumerable<T> models, CancellationToken cancellationToken = new CancellationToken())
+        public async Task SaveAsync(string path, IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken))
         {
             using (StreamWriter file = new StreamWriter(path))
             {
@@ -340,28 +319,21 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <param name="models"></param>
-        public async Task SaveAsync(StreamWriter streamWriter, IEnumerable<T> models, CancellationToken cancellationToken = new CancellationToken())
+        public async Task SaveAsync(StreamWriter streamWriter, IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken))
         {
-            try
+            if (Options.HasHeaderRecord)
             {
-                if (Options.HasHeaderRecord)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
-                    await streamWriter.WriteLineAsync(headers).ConfigureAwait(false);
-                }
-                foreach (var model in models)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var line = this.GetLineFromModel(model);
-                    await streamWriter.WriteLineAsync(line).ConfigureAwait(false);
-                }
-                await streamWriter.FlushAsync().ConfigureAwait(false);
+                cancellationToken.ThrowIfCancellationRequested();
+                var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
+                await streamWriter.WriteLineAsync(headers).ConfigureAwait(false);
             }
-            finally
+            foreach (var model in models)
             {
-                streamWriter.Close();
+                cancellationToken.ThrowIfCancellationRequested();
+                var line = this.GetLineFromModel(model);
+                await streamWriter.WriteLineAsync(line).ConfigureAwait(false);
             }
+            await streamWriter.FlushAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -378,7 +350,7 @@ namespace TinyCsv
                 var property = model.GetType().GetProperty(propertyName);
                 var value = property.GetValue(model);
                 var stringValue = column.Converter.Convert(value, null, column.ColumnFormatProvider);
-                return stringValue?.EnclosedInDoubleQuotesIfNecessary(this.Options);
+                return stringValue?.EnclosedInQuotesIfNecessary(this.Options);
             });
             var line = string.Join(Options.Delimiter, values);
             return line;

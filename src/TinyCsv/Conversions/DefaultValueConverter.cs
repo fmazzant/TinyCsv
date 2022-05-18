@@ -58,6 +58,12 @@ namespace TinyCsv.Conversions
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
+            if (targetType == typeof(DateTime) && provider is CsvColumn.DefaultFormatProvider)
+            {
+                var customFormat = (provider as CsvColumn.DefaultFormatProvider).CustomFormat;
+                return DateTime.ParseExact(value, customFormat, provider);
+            }
+
             return System.Convert.ChangeType(value, targetType, provider);
         }
     }

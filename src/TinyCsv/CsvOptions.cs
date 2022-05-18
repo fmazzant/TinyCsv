@@ -57,6 +57,11 @@ namespace TinyCsv
         public char DoubleQuotes { get; set; } = '"';
 
         /// <summary>
+        /// Comment
+        /// </summary>
+        public char Comment { get; set; } = '#';
+
+        /// <summary>
         /// Allows skipping of initial rows without csv data
         /// </summary>
         public uint RowsToSkip { get; set; } = 0;
@@ -75,6 +80,31 @@ namespace TinyCsv
         /// Can be used to trim each cell
         /// </summary>
         public bool TrimData { get; set; } = false;
+
+        /// <summary>
+        /// Checks each row immediately for column count
+        /// </summary>
+        public bool ValidateColumnCount { get; set; } = false;
+
+        /// <summary>
+        /// Allows comment inside the content
+        /// </summary>
+        public bool AllowComment { get; set; } = true;
+
+        /// <summary>
+        /// Respects new line (either \r\n or \n) characters inside field values enclosed in double quotes.
+        /// </summary>
+        public bool AllowRowEnclosedInDoubleQuotesValues { get; set; } = true;
+
+        /// <summary>
+        /// Allows the sequence "\"" to be a valid quoted value (in addition to the standard """")
+        /// </summary>
+        public bool AllowBackSlashToEscapeQuote { get; set; } = false;
+
+        /// <summary>
+        /// Allow the last char is the delimiter char
+        /// </summary>
+        public bool EndOfLineDelimiterChar { get; set; } = true;
 
         /// <summary>
         /// Create a CsvOptions
