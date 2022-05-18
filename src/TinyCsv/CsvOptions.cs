@@ -102,6 +102,11 @@ namespace TinyCsv
         public bool AllowBackSlashToEscapeQuote { get; set; } = false;
 
         /// <summary>
+        /// Allow the last char is the delimiter char
+        /// </summary>
+        public bool EndOfLineDelimiterChar { get; set; } = true;
+
+        /// <summary>
         /// Create a CsvOptions
         /// </summary>
         public CsvOptions()

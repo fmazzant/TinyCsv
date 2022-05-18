@@ -79,7 +79,8 @@ namespace TinyCsv.Extensions
 
             if (validateColumnCount)
             {
-                var endWithDelimiter = line.EndsWith(delimiter);
+                var endOfLineDelimiterChar = options.EndOfLineDelimiterChar;
+                var endWithDelimiter = endOfLineDelimiterChar && line.EndsWith(delimiter);
                 var valuesCount = values.Length - (endWithDelimiter ? 1 : 0);
                 if (valuesCount != columnCount)
                 {
