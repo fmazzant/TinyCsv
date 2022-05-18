@@ -104,7 +104,7 @@ namespace TinyCsv
         /// <summary>
         /// Default Format Provider definition
         /// </summary>
-        private sealed class DefaultFormatProvider : IFormatProvider, ICustomFormatter
+        internal sealed class DefaultFormatProvider : IFormatProvider, ICustomFormatter
         {
             /// <summary>
             /// Column's format
