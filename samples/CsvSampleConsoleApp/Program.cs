@@ -68,17 +68,30 @@ namespace CsvSampleConsoleApp
             // definitions
             var csv = new TinyCsv<Model>(options =>
             {
+                // Options
                 options.HasHeaderRecord = true;
                 options.Delimiter = ";";
                 options.RowsToSkip = 0;
                 options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
                 options.TrimData = true;
                 options.SkipEmptyRows = false;
+
+                // Columns
                 options.Columns.AddColumn(m => m.Id);
                 options.Columns.AddColumn(m => m.Name);
                 options.Columns.AddColumn(m => m.Price);
                 options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
                 options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
+
+                // Events
+                //options.OnStart += (s, e) => Console.WriteLine($"Started");
+                //options.OnRowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
+                //options.OnRowReading += (s, e) => { Console.WriteLine($"{e.Index}-{e.Row}"); };
+                //options.OnRowReaded += (s, e) => { Console.WriteLine($"{e.Index}-{e.Model}"); };
+                //options.OnRowWriting += (s, e) => { Console.WriteLine($"{e.Index}-{e.Model}"); };
+                //options.OnRowWrittin += (s, e) => { Console.WriteLine($"{e.Index}-{e.Row}"); };
+                //options.OnException += (s, e) => { Console.WriteLine(e.Exception); };
+                //options.OnCompleted += (s, e) => { Console.WriteLine($"Completed"); };
             });
 
             // read from file sync
