@@ -32,9 +32,10 @@ namespace TinyCsv.Args
     using System;
 
     /// <summary>
-    /// Defines Start Event Args
+    /// Defines Completed Event Args
     /// </summary>
-    public class StartEventArgs : EventArgs
+    public class CompletedEventArgs : EventArgs
     {
+
     }
 }

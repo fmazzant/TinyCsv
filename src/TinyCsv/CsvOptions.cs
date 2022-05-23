@@ -29,8 +29,9 @@
 
 namespace TinyCsv
 {
+    using TinyCsv.Args;
     using System;
-    
+
     /// <summary>
     /// Csv Options definition
     /// </summary>
@@ -106,6 +107,17 @@ namespace TinyCsv
         /// Allow the last char is the delimiter char
         /// </summary>
         public bool EndOfLineDelimiterChar { get; set; } = true;
+
+        /// <summary>
+        /// Event handler for start
+        /// </summary>
+        public event EventHandler<StartEventArgs> OnStart;
+
+
+        /// <summary>
+        /// Event handler for completed
+        /// </summary>
+        public event EventHandler<CompletedEventArgs> OnCompleted;
 
         /// <summary>
         /// Create a CsvOptions
