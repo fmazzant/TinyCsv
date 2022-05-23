@@ -111,13 +111,12 @@ namespace TinyCsv
         /// <summary>
         /// Event handler for start
         /// </summary>
-        public event EventHandler<StartEventArgs> OnStart;
-
+        public event EventHandler<StartEventArgs> Start;
 
         /// <summary>
         /// Event handler for completed
         /// </summary>
-        public event EventHandler<CompletedEventArgs> OnCompleted;
+        public event EventHandler<CompletedEventArgs> Completed;
 
         /// <summary>
         /// Create a CsvOptions
@@ -125,6 +124,24 @@ namespace TinyCsv
         public CsvOptions()
         {
             Columns = new CsvOptionsColumns<T>();
+        }
+
+        /// <summary>
+        /// Reise start event
+        /// </summary>
+        /// <param name="e"></param>
+        internal void OnStart(StartEventArgs e)
+        {
+            Start?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// Reise completed event
+        /// </summary>
+        /// <param name="e"></param>
+        internal void OnCompleted(CompletedEventArgs e)
+        {
+            Completed?.Invoke(this, e);
         }
     }
 }
