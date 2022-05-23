@@ -1,6 +1,4 @@
-﻿
-using System;
-/// <summary>
+﻿/// <summary>
 /// 
 /// The MIT License (MIT)
 /// 
@@ -28,8 +26,11 @@ using System;
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
+
 namespace TinyCsv
 {
+    using System;
+    
     /// <summary>
     /// Csv Options definition
     /// </summary>
