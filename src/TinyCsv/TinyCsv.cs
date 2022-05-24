@@ -105,7 +105,10 @@ namespace TinyCsv
             {
                 var line = streamReader.ReadLine();
                 var skip = line.SkipRow(index++, this.Options);
-                if (skip) continue;
+                if (skip)
+                {
+                    continue;
+                }
                 var model = this.GetModelFromLine(line);
                 yield return model;
             }
@@ -271,16 +274,19 @@ namespace TinyCsv
         /// <param name="models"></param>
         public void Save(StreamWriter streamWriter, IEnumerable<T> models)
         {
+            var index = 0;
             if (Options.HasHeaderRecord)
             {
                 var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
                 streamWriter.WriteLine(headers);
+                index++;
             }
 
             foreach (var model in models)
             {
                 var line = this.GetLineFromModel(model);
                 streamWriter.WriteLine(line);
+                index++;
             }
 
             streamWriter.Flush();
@@ -295,11 +301,14 @@ namespace TinyCsv
         {
             using (StreamWriter file = new StreamWriter(path))
             {
+                var index = 0;
+
                 if (Options.HasHeaderRecord)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
                     await file.WriteLineAsync(headers).ConfigureAwait(false);
+                    index++;
                 }
 
                 foreach (var model in models)
@@ -307,6 +316,7 @@ namespace TinyCsv
                     cancellationToken.ThrowIfCancellationRequested();
                     var line = this.GetLineFromModel(model);
                     await file.WriteLineAsync(line).ConfigureAwait(false);
+                    index++;
                 }
 
                 await file.FlushAsync().ConfigureAwait(false);
@@ -321,17 +331,22 @@ namespace TinyCsv
         /// <param name="models"></param>
         public async Task SaveAsync(StreamWriter streamWriter, IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken))
         {
+            var index = 0;
+
             if (Options.HasHeaderRecord)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
                 await streamWriter.WriteLineAsync(headers).ConfigureAwait(false);
+                index++;
             }
+
             foreach (var model in models)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 var line = this.GetLineFromModel(model);
                 await streamWriter.WriteLineAsync(line).ConfigureAwait(false);
+                index++;
             }
             await streamWriter.FlushAsync().ConfigureAwait(false);
         }

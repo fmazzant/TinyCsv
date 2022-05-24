@@ -83,35 +83,35 @@ namespace CsvSampleConsoleApp
                 options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
                 options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
 
-                // Events
-                options.Start += (s, e) => Console.WriteLine($"Started");
-                //options.OnRowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
-                //options.OnRowReading += (s, e) =>  Console.WriteLine($"{e.Index}-{e.Row}"); 
-                //options.OnRowRead += (s, e) =>  Console.WriteLine($"{e.Index}-{e.Model}"); 
-                //options.OnRowWriting += (s, e) =>  Console.WriteLine($"{e.Index}-{e.Model}"); 
-                //options.OnRowWrittin += (s, e) =>  Console.WriteLine($"{e.Index}-{e.Row}"); 
-                //options.OnException += (s, e) =>  Console.WriteLine(e.Exception); 
-                options.Completed += (s, e) => Console.WriteLine($"Completed");
+                // Event Handlers
+                options.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
+                options.Handlers.Read.RowReading += (s, e) => Console.WriteLine($"{e.Index}-{e.Row}");
+                options.Handlers.Read.RowRead += (s, e) => Console.WriteLine($"{e.Index}-{e.Model}");
+                
+                options.Handlers.Write.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
+                options.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index}-{e.Model}");
+                options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index}-{e.Row}");
+
             });
 
             // read from file sync
             var syncModels = csv.Load("file.csv");
-            foreach (var model in syncModels)
-            {
-                Console.WriteLine($"{model.Id} - {model.Name} - {model.Price} - {model.CreatedOn} - {model.TextBase64}");
-            }
+            //foreach (var model in syncModels)
+            //{
+            //    Console.WriteLine($"{model.Id} - {model.Name} - {model.Price} - {model.CreatedOn} - {model.TextBase64}");
+            //}
 
             // read from file async
             var models = await csv.LoadAsync("file.csv");
-            foreach (var model in models)
-            {
-                Console.WriteLine($"{model.Id} - {model.Name} - {model.Price} - {model.CreatedOn} - {model.TextBase64}");
-            }
+            //foreach (var model in models)
+            //{
+            //    Console.WriteLine($"{model.Id} - {model.Name} - {model.Price} - {model.CreatedOn} - {model.TextBase64}");
+            //}
 
             // returns IAsyncEnumerable
             await foreach (var model in csv.LoadAsync(new StreamReader("file.csv")))
             {
-                Console.WriteLine($"{model.Id} - {model.Name} - {model.Price} - {model.CreatedOn} - {model.TextBase64}");
+                //Console.WriteLine($"{model.Id} - {model.Name} - {model.Price} - {model.CreatedOn} - {model.TextBase64}");
             }
 
             // write on file async
