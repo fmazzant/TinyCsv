@@ -229,10 +229,11 @@ namespace TinyCsv
             /// Reise row header
             /// </summary>
             /// <param name="rowHeader"></param>
-            internal void OnRowHeader(string rowHeader)
+            internal void OnRowHeader(int index, string rowHeader)
             {
                 OnRowHeader(new RowHeaderReadingEventArgs
                 {
+                    Index = index,
                     RowHeader = rowHeader
                 });
             }

@@ -278,7 +278,7 @@ namespace TinyCsv
             if (Options.HasHeaderRecord)
             {
                 //var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
-                var headers = GetWriteHeaderFromOptions(index);
+                var headers = GetHeaderFromOptions(index);
                 streamWriter.WriteLine(headers);
                 index++;
             }
@@ -308,7 +308,7 @@ namespace TinyCsv
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     //var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
-                    var headers = GetWriteHeaderFromOptions(index);
+                    var headers = GetHeaderFromOptions(index);
                     await file.WriteLineAsync(headers).ConfigureAwait(false);
                     index++;
                 }
@@ -339,7 +339,7 @@ namespace TinyCsv
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 //var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
-                var headers = GetWriteHeaderFromOptions(index);
+                var headers = GetHeaderFromOptions(index);
                 await streamWriter.WriteLineAsync(headers).ConfigureAwait(false);
                 index++;
             }
@@ -360,12 +360,12 @@ namespace TinyCsv
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        private string GetWriteHeaderFromOptions(int index)
+        private string GetHeaderFromOptions(int index)
         {
             var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
             Options.Handlers.Write.OnRowHeader(index, headers);
             return headers;
-         }
+        }
 
         /// <summary>
         /// get line from model
