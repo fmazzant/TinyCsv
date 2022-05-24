@@ -277,7 +277,8 @@ namespace TinyCsv
             var index = 0;
             if (Options.HasHeaderRecord)
             {
-                var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
+                //var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
+                var headers = GetWriteHeaderFromOptions(index);
                 streamWriter.WriteLine(headers);
                 index++;
             }
@@ -306,7 +307,8 @@ namespace TinyCsv
                 if (Options.HasHeaderRecord)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
+                    //var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
+                    var headers = GetWriteHeaderFromOptions(index);
                     await file.WriteLineAsync(headers).ConfigureAwait(false);
                     index++;
                 }
@@ -336,7 +338,8 @@ namespace TinyCsv
             if (Options.HasHeaderRecord)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
+                //var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
+                var headers = GetWriteHeaderFromOptions(index);
                 await streamWriter.WriteLineAsync(headers).ConfigureAwait(false);
                 index++;
             }
@@ -350,6 +353,19 @@ namespace TinyCsv
             }
             await streamWriter.FlushAsync().ConfigureAwait(false);
         }
+
+
+        /// <summary>
+        /// get header from options
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        private string GetWriteHeaderFromOptions(int index)
+        {
+            var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
+            Options.Handlers.Write.OnRowHeader(index, headers);
+            return headers;
+         }
 
         /// <summary>
         /// get line from model

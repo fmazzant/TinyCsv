@@ -37,8 +37,14 @@ namespace TinyCsv.Args
     public class RowHeaderWritingEventArgs : EventArgs
     {
         /// <summary>
+        /// Header index
+        /// </summary>
+        public int Index { get; internal set; }
+
+        /// <summary>
         /// Row header
         /// </summary>
         public string RowHeader { get; internal set; }
+
     }
 }
