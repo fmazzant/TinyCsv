@@ -275,12 +275,13 @@ namespace TinyCsv
             /// </summary>
             /// <param name="index"></param>
             /// <param name="model"></param>
-            internal void OnRowRead(int index, T model)
+            internal void OnRowRead(int index, T model, string row)
             {
                 OnRowRead(new RowReadEventArgs<T>
                 {
                     Index = index,
-                    Model = model
+                    Model = model,
+                    Row = row
                 });
             }
         }
@@ -308,7 +309,7 @@ namespace TinyCsv
             /// <summary>
             /// Occors when row is written
             /// </summary>
-            public EventHandler<RowWrittinEventArgs> RowWrittin { get; set; }
+            public EventHandler<RowWrittinEventArgs<T>> RowWrittin { get; set; }
 
             /// <summary>
             /// Create an instance of Write event handlers
@@ -368,7 +369,7 @@ namespace TinyCsv
             /// Reise row is writtin event
             /// </summary>
             /// <param name="e"></param>
-            internal void OnRowWrittin(RowWrittinEventArgs e)
+            internal void OnRowWrittin(RowWrittinEventArgs<T> e)
             {
                 RowWrittin?.Invoke(this, e);
             }
@@ -378,11 +379,12 @@ namespace TinyCsv
             /// </summary>
             /// <param name="index"></param>
             /// <param name="row"></param>
-            internal void OnRowWrittin(int index, string row)
+            internal void OnRowWrittin(int index, T model, string row)
             {
-                OnRowWrittin(new RowWrittinEventArgs
+                OnRowWrittin(new RowWrittinEventArgs<T>
                 {
                     Index = index,
+                    Model = model,
                     Row = row
                 });
             }

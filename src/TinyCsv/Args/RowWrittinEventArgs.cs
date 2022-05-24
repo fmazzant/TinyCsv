@@ -34,7 +34,7 @@ namespace TinyCsv.Args
     /// <summary>
     /// Defines Row Writtin Event Args
     /// </summary>
-    public class RowWrittinEventArgs : EventArgs
+    public class RowWrittinEventArgs<T> : EventArgs
     {
         /// <summary>
         /// Row index
@@ -42,8 +42,14 @@ namespace TinyCsv.Args
         public int Index { get; internal set; }
 
         /// <summary>
+        /// Model
+        /// </summary>
+        public T Model { get; internal set; }
+
+        /// <summary>
         /// Row
         /// </summary>
         public string Row { get; internal set; }
+
     }
 }
