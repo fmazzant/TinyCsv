@@ -86,12 +86,12 @@ namespace CsvSampleConsoleApp
                 // Events
                 options.Start += (s, e) => Console.WriteLine($"Started");
                 //options.OnRowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
-                //options.OnRowReading += (s, e) => { Console.WriteLine($"{e.Index}-{e.Row}"); };
-                //options.OnRowReaded += (s, e) => { Console.WriteLine($"{e.Index}-{e.Model}"); };
-                //options.OnRowWriting += (s, e) => { Console.WriteLine($"{e.Index}-{e.Model}"); };
-                //options.OnRowWrittin += (s, e) => { Console.WriteLine($"{e.Index}-{e.Row}"); };
-                //options.OnException += (s, e) => { Console.WriteLine(e.Exception); };
-                options.Completed += (s, e) => { Console.WriteLine($"Completed"); };
+                //options.OnRowReading += (s, e) =>  Console.WriteLine($"{e.Index}-{e.Row}"); 
+                //options.OnRowRead += (s, e) =>  Console.WriteLine($"{e.Index}-{e.Model}"); 
+                //options.OnRowWriting += (s, e) =>  Console.WriteLine($"{e.Index}-{e.Model}"); 
+                //options.OnRowWrittin += (s, e) =>  Console.WriteLine($"{e.Index}-{e.Row}"); 
+                //options.OnException += (s, e) =>  Console.WriteLine(e.Exception); 
+                options.Completed += (s, e) => Console.WriteLine($"Completed");
             });
 
             // read from file sync
