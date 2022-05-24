@@ -233,6 +233,18 @@ namespace TinyCsv
 #endif
 
         /// <summary>
+        /// Get header from line
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        private string GetHeaderFromLine(int index, string line)
+        {
+            Options.Handlers.Read.OnRowHeader(index, line);
+            return line;
+        }
+
+        /// <summary>
         /// Build T object from line
         /// </summary>
         /// <param name="line"></param>
