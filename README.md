@@ -24,6 +24,7 @@ Now, is necessary to define the TinyCSV options, like this:
 ```c#
 var csv = new TinyCsv<Model>(options =>
 {
+    // Options
     options.HasHeaderRecord = true;
     options.Delimiter = ";";
     options.RowsToSkip = 0;
@@ -32,6 +33,8 @@ var csv = new TinyCsv<Model>(options =>
     options.SkipEmptyRows = false;
     options.AllowRowEnclosedInDoubleQuotesValues = true;
     options.ValidateColumnCount = true;
+
+    // Columns
     options.Columns.AddColumn(m => m.Id);
     options.Columns.AddColumn(m => m.Name);
     options.Columns.AddColumn(m => m.Price);
@@ -106,6 +109,24 @@ await csv.SaveAsync("file_export.csv", models);
 
 The save method takes the file's path and a collection of Model type. 
 The method saves the file.
+
+## Event handlers 
+
+It's possible to define event handlers for the events of the library, like this:
+
+```c#
+options.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
+options.Handlers.Read.RowReading += (s, e) => Console.WriteLine($"{e.Index}-{e.Row}");
+options.Handlers.Read.RowRead += (s, e) => Console.WriteLine($"{e.Index}-{e.Model}");
+```
+
+and the write handlers are:
+
+```c#
+options.Handlers.Write.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
+options.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {e.Model}");
+options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");```
+```
 
 The library is very very simple to use.
 
