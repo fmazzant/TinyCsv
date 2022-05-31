@@ -112,7 +112,7 @@ namespace CsvSampleConsoleApp
             // returns IAsyncEnumerable
             await foreach (var model in csv.LoadAsync(new StreamReader("file.csv")))
             {
-                Console.WriteLine($"{model.Id}");
+                Console.WriteLine($"{model.Id} - {model.Name} - {model.Price} - {model.CreatedOn} - {model.TextBase64}");
             }
 
             // load IAsyncEnumerable into a list
