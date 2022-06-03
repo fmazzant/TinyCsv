@@ -1,6 +1,4 @@
-﻿
-using System;
-/// <summary>
+﻿/// <summary>
 /// 
 /// The MIT License (MIT)
 /// 
@@ -28,8 +26,12 @@ using System;
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
+
 namespace TinyCsv
 {
+    using TinyCsv.Args;
+    using System;
+
     /// <summary>
     /// Csv Options definition
     /// </summary>
@@ -107,11 +109,286 @@ namespace TinyCsv
         public bool EndOfLineDelimiterChar { get; set; } = true;
 
         /// <summary>
+        /// Event Handlers
+        /// </summary>
+        public EventHandlers Handlers { get; }
+
+        /// <summary>
         /// Create a CsvOptions
         /// </summary>
         public CsvOptions()
         {
             Columns = new CsvOptionsColumns<T>();
+            Handlers = new EventHandlers(this);
         }
+
+        /// <summary>
+        /// Defines Event Handlers
+        /// </summary>
+        public sealed class EventHandlers
+        {
+            /// <summary>
+            /// Occors when TinyCsv is staring
+            /// </summary>
+            public event EventHandler<StartEventArgs> Start;
+
+            /// <summary>
+            /// Occors when TinyCsv is completed
+            /// </summary>
+            public event EventHandler<CompletedEventArgs> Completed;
+
+            /// <summary>
+            /// Options
+            /// </summary>
+            internal CsvOptions<T> Options { get; private set; }
+
+            /// <summary>
+            /// Read event handlers
+            /// </summary>
+            public ReadEventHandlers Read { get; private set; }
+
+            /// <summary>
+            /// Write event handlers
+            /// </summary>
+            public WriteEventHandlers Write { get; private set; }
+
+            /// <summary>
+            /// Create an instance of EventHandlers
+            /// </summary>
+            /// <param name="options"></param>
+            internal EventHandlers(CsvOptions<T> options)
+            {
+                Options = options;
+                Read = new ReadEventHandlers(options);
+                Write = new WriteEventHandlers(options);
+            }
+
+            /// <summary>
+            /// Reise start event
+            /// </summary>
+            /// <param name="e"></param>
+            internal void OnStart(StartEventArgs e)
+            {
+                Start?.Invoke(this, e);
+            }
+
+            /// <summary>
+            /// Reise completed event
+            /// </summary>
+            /// <param name="e"></param>
+            internal void OnCompleted(CompletedEventArgs e)
+            {
+                Completed?.Invoke(this, e);
+            }
+        }
+
+        /// <summary>
+        /// Defines Read Event Handlers
+        /// </summary>
+        public sealed class ReadEventHandlers
+        {
+            /// <summary>
+            /// Options
+            /// </summary>
+            internal CsvOptions<T> Options { get; private set; }
+
+            /// <summary>
+            /// Occors when row header is reading
+            /// </summary>
+            public EventHandler<RowHeaderReadingEventArgs> RowHeader { get; set; }
+
+            /// <summary>
+            /// Occors when row is reading
+            /// </summary>
+            public EventHandler<RowReadingEventArgs> RowReading { get; set; }
+
+            /// <summary>
+            /// Occors when row is read
+            /// </summary>
+            public EventHandler<RowReadEventArgs<T>> RowRead { get; set; }
+
+            /// <summary>
+            /// Create an instance of Read event handlers
+            /// </summary>
+            /// <param name="options"></param>
+            internal ReadEventHandlers(CsvOptions<T> options)
+            {
+                Options = options;
+            }
+
+            /// <summary>
+            /// Reise row header
+            /// </summary>
+            /// <param name="e"></param>
+            internal void OnRowHeader(RowHeaderReadingEventArgs e)
+            {
+                RowHeader?.Invoke(this, e);
+            }
+
+            /// <summary>
+            /// Reise row header
+            /// </summary>
+            /// <param name="rowHeader"></param>
+            internal void OnRowHeader(int index, string rowHeader)
+            {
+                OnRowHeader(new RowHeaderReadingEventArgs
+                {
+                    Index = index,
+                    RowHeader = rowHeader
+                });
+            }
+
+            /// <summary>
+            /// Reise row reading event
+            /// </summary>
+            /// <param name="e"></param>
+            internal void OnRowReading(RowReadingEventArgs e)
+            {
+                RowReading?.Invoke(this, e);
+            }
+
+            /// <summary>
+            /// Reise row reading event
+            /// </summary>
+            /// <param name="index"></param>
+            /// <param name="row"></param>
+            internal void OnRowReading(int index, string row)
+            {
+                OnRowReading(new RowReadingEventArgs
+                {
+                    Index = index,
+                    Row = row
+                });
+            }
+
+            /// <summary>
+            /// Reise row read event
+            /// </summary>
+            /// <param name="e"></param>
+            internal void OnRowRead(RowReadEventArgs<T> e)
+            {
+                RowRead?.Invoke(this, e);
+            }
+
+            /// <summary>
+            /// Reise row read event
+            /// </summary>
+            /// <param name="index"></param>
+            /// <param name="model"></param>
+            internal void OnRowRead(int index, T model, string row)
+            {
+                OnRowRead(new RowReadEventArgs<T>
+                {
+                    Index = index,
+                    Model = model,
+                    Row = row
+                });
+            }
+        }
+
+        /// <summary>
+        /// Defines Write Event Handlers
+        /// </summary>
+        public sealed class WriteEventHandlers
+        {
+            /// <summary>
+            /// Options
+            /// </summary>
+            internal CsvOptions<T> Options { get; private set; }
+
+            /// <summary>
+            /// Occors when row header is writing
+            /// </summary>
+            public EventHandler<RowHeaderWritingEventArgs> RowHeader { get; set; }
+
+            /// <summary>
+            /// Occors when row is writting
+            /// </summary>
+            public EventHandler<RowWritingEventArgs<T>> RowWriting { get; set; }
+
+            /// <summary>
+            /// Occors when row is written
+            /// </summary>
+            public EventHandler<RowWrittinEventArgs<T>> RowWrittin { get; set; }
+
+            /// <summary>
+            /// Create an instance of Write event handlers
+            /// </summary>
+            /// <param name="options"></param>
+            internal WriteEventHandlers(CsvOptions<T> options)
+            {
+                Options = options;
+            }
+
+            /// <summary>
+            /// Reise row header is writing
+            /// </summary>
+            /// <param name="e"></param>
+            internal void OnRowHeader(RowHeaderWritingEventArgs e)
+            {
+                RowHeader?.Invoke(this, e);
+            }
+
+            /// <summary>
+            /// Reise row header is writing
+            /// </summary>
+            /// <param name="rowHeader"></param>
+            internal void OnRowHeader(int index, string rowHeader)
+            {
+                OnRowHeader(new RowHeaderWritingEventArgs
+                {
+                    Index = index,
+                    RowHeader = rowHeader
+                });
+            }
+
+            /// <summary>
+            /// Reise row is writing event
+            /// </summary>
+            /// <param name="e"></param>
+            internal void OnRowWriting(RowWritingEventArgs<T> e)
+            {
+                RowWriting?.Invoke(this, e);
+            }
+
+            /// <summary>
+            /// Reise row is writing event
+            /// </summary>
+            /// <param name="index"></param>
+            /// <param name="model"></param>
+            internal void OnRowWriting(int index, T model)
+            {
+                OnRowWriting(new RowWritingEventArgs<T>
+                {
+                    Index = index,
+                    Model = model
+                });
+            }
+
+            /// <summary>
+            /// Reise row is writtin event
+            /// </summary>
+            /// <param name="e"></param>
+            internal void OnRowWrittin(RowWrittinEventArgs<T> e)
+            {
+                RowWrittin?.Invoke(this, e);
+            }
+
+            /// <summary>
+            /// Reise row is writtin event
+            /// </summary>
+            /// <param name="index"></param>
+            /// <param name="row"></param>
+            internal void OnRowWrittin(int index, T model, string row)
+            {
+                OnRowWrittin(new RowWrittinEventArgs<T>
+                {
+                    Index = index,
+                    Model = model,
+                    Row = row
+                });
+            }
+        }
+
     }
 }

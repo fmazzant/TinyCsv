@@ -82,9 +82,10 @@ namespace TinyCsv
 
             while (!streamReader.EndOfStream)
             {
-                if (index++ < Options.RowsToSkip)
+                if (index < Options.RowsToSkip)
                 {
                     streamReader.ReadLine();
+                    index++;
                     continue;
                 }
                 break;
@@ -97,6 +98,7 @@ namespace TinyCsv
                     var line = streamReader.ReadLine();
                     var skip = line.SkipRow(index++, this.Options);
                     if (skip) continue;
+                    GetHeaderFromLine(index - 1, line);
                     break;
                 }
             }
@@ -106,7 +108,7 @@ namespace TinyCsv
                 var line = streamReader.ReadLine();
                 var skip = line.SkipRow(index++, this.Options);
                 if (skip) continue;
-                var model = this.GetModelFromLine(line);
+                var model = this.GetModelFromLine(index - 1, line);
                 yield return model;
             }
         }
@@ -165,7 +167,7 @@ namespace TinyCsv
                 var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
                 var skip = line.SkipRow(index++, this.Options);
                 if (skip) continue;
-                var model = this.GetModelFromLine(line);
+                var model = this.GetModelFromLine(index - 1, line);
                 models.Add(model);
             }
 
@@ -223,19 +225,31 @@ namespace TinyCsv
                 var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
                 var skip = line.SkipRow(index++, this.Options);
                 if (skip) continue;
-                var model = this.GetModelFromLine(line);
+                var model = this.GetModelFromLine(index - 1, line);
                 yield return model;
             }
         }
 #endif
 
         /// <summary>
+        /// Get header from line
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        private void GetHeaderFromLine(int index, string line)
+        {
+            Options.Handlers.Read.OnRowHeader(index, line);
+        }
+
+        /// <summary>
         /// Build T object from line
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        private T GetModelFromLine(string line)
+        private T GetModelFromLine(int index, string line)
         {
+            Options.Handlers.Read.OnRowReading(index, line);
             var values = line.SplitLine(this.Options);
 
             var model = new T();
@@ -248,6 +262,7 @@ namespace TinyCsv
                 var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
                 property.SetValue(model, typedValue);
             }
+            Options.Handlers.Read.OnRowRead(index, model, line);
             return model;
         }
 
@@ -271,15 +286,16 @@ namespace TinyCsv
         /// <param name="models"></param>
         public void Save(StreamWriter streamWriter, IEnumerable<T> models)
         {
+            var index = 0;
             if (Options.HasHeaderRecord)
             {
-                var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
+                var headers = GetHeaderFromOptions(index++);
                 streamWriter.WriteLine(headers);
             }
 
             foreach (var model in models)
             {
-                var line = this.GetLineFromModel(model);
+                var line = this.GetLineFromModel(index++, model);
                 streamWriter.WriteLine(line);
             }
 
@@ -295,17 +311,19 @@ namespace TinyCsv
         {
             using (StreamWriter file = new StreamWriter(path))
             {
+                var index = 0;
+
                 if (Options.HasHeaderRecord)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
+                    var headers = GetHeaderFromOptions(index++);
                     await file.WriteLineAsync(headers).ConfigureAwait(false);
                 }
 
                 foreach (var model in models)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    var line = this.GetLineFromModel(model);
+                    var line = this.GetLineFromModel(index++, model);
                     await file.WriteLineAsync(line).ConfigureAwait(false);
                 }
 
@@ -321,19 +339,35 @@ namespace TinyCsv
         /// <param name="models"></param>
         public async Task SaveAsync(StreamWriter streamWriter, IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken))
         {
+            var index = 0;
+
             if (Options.HasHeaderRecord)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
+                var headers = GetHeaderFromOptions(index++);
                 await streamWriter.WriteLineAsync(headers).ConfigureAwait(false);
             }
+
             foreach (var model in models)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var line = this.GetLineFromModel(model);
+                var line = this.GetLineFromModel(index++, model);
                 await streamWriter.WriteLineAsync(line).ConfigureAwait(false);
             }
             await streamWriter.FlushAsync().ConfigureAwait(false);
+        }
+
+
+        /// <summary>
+        /// get header from options
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        private string GetHeaderFromOptions(int index)
+        {
+            var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
+            Options.Handlers.Write.OnRowHeader(index, headers);
+            return headers;
         }
 
         /// <summary>
@@ -341,8 +375,9 @@ namespace TinyCsv
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        private string GetLineFromModel(T model)
+        private string GetLineFromModel(int index, T model)
         {
+            Options.Handlers.Write.OnRowWriting(index, model);
             var values = Options.Columns.Select(column =>
             {
                 var columnExpression = column.ColumnExpression;
@@ -353,6 +388,7 @@ namespace TinyCsv
                 return stringValue?.EnclosedInQuotesIfNecessary(this.Options);
             });
             var line = string.Join(Options.Delimiter, values);
+            Options.Handlers.Write.OnRowWrittin(index, model, line);
             return line;
         }
     }

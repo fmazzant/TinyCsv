@@ -34,6 +34,7 @@ namespace CsvSampleConsoleApp
     using System.Threading.Tasks;
     using TinyCsv;
     using TinyCsv.Conversions;
+    using TinyCsv.Extensions;
 
     public class Model
     {
@@ -42,6 +43,11 @@ namespace CsvSampleConsoleApp
         public decimal Price { get; set; }
         public DateTime CreatedOn { get; set; }
         public string TextBase64 { get; set; }
+
+        public override string ToString()
+        {
+            return $"ToString: {Id}, {Name}, {Price}, {CreatedOn}, {TextBase64}";
+        }
     }
 
     public class Base64Converter : IValueConverter
@@ -68,32 +74,40 @@ namespace CsvSampleConsoleApp
             // definitions
             var csv = new TinyCsv<Model>(options =>
             {
+                // Options
                 options.HasHeaderRecord = true;
                 options.Delimiter = ";";
                 options.RowsToSkip = 0;
                 options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
                 options.TrimData = true;
                 options.SkipEmptyRows = false;
+
+                // Columns
                 options.Columns.AddColumn(m => m.Id);
                 options.Columns.AddColumn(m => m.Name);
                 options.Columns.AddColumn(m => m.Price);
                 options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
                 options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
+
+                // Event Handlers Read
+                options.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
+                options.Handlers.Read.RowReading += (s, e) => Console.WriteLine($"{e.Index}-{e.Row}");
+                options.Handlers.Read.RowRead += (s, e) => Console.WriteLine($"{e.Index}-{e.Model}");
+
+                // Event Handlers Write
+                options.Handlers.Write.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
+                options.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {e.Model}");
+                options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
+
             });
 
             // read from file sync
             var syncModels = csv.Load("file.csv");
-            foreach (var model in syncModels)
-            {
-                Console.WriteLine($"{model.Id} - {model.Name} - {model.Price} - {model.CreatedOn} - {model.TextBase64}");
-            }
+            Console.WriteLine($"Count:{syncModels.Count}");
 
             // read from file async
-            var models = await csv.LoadAsync("file.csv");
-            foreach (var model in models)
-            {
-                Console.WriteLine($"{model.Id} - {model.Name} - {model.Price} - {model.CreatedOn} - {model.TextBase64}");
-            }
+            var asyncModels = await csv.LoadAsync("file.csv");
+            Console.WriteLine($"Count:{asyncModels.Count}");
 
             // returns IAsyncEnumerable
             await foreach (var model in csv.LoadAsync(new StreamReader("file.csv")))
@@ -101,6 +115,10 @@ namespace CsvSampleConsoleApp
                 Console.WriteLine($"{model.Id} - {model.Name} - {model.Price} - {model.CreatedOn} - {model.TextBase64}");
             }
 
+            // load IAsyncEnumerable into a list
+            var models = await csv.LoadAsync(new StreamReader("file.csv")).ToListAsync();
+            Console.WriteLine($"Count:{models.Count}");
+            
             // write on file async
             await csv.SaveAsync("file_export.csv", models);
         }
