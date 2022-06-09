@@ -30,8 +30,6 @@
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
 namespace TinyCsv.Extensions
 {
-
-
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
