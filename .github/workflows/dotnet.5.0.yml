@@ -1,0 +1,52 @@
+name: .NET 6.0
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    name: .NET 5.0
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+ strategy:
+      matrix:
+        dotnet-version: [ '3.0', '3.1.x', '5.0.x' ]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version:  ${{ matrix.dotnet-version }}
+        
+    - name: Restore dependencies
+      run: dotnet restore src/TinyCsv/TinyCsv.csproj 
+      
+    - name: Build
+      run: dotnet build --no-restore src/TinyCsv/TinyCsv.csproj 
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+        
+    - name: Restore dependencies
+      run: dotnet restore src/TinyCsv/TinyCsv.csproj 
+      
+    - name: Build
+      run: dotnet build --no-restore src/TinyCsv/TinyCsv.csproj 
