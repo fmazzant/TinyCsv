@@ -60,6 +60,15 @@ namespace TinyCsv
         }
 
         /// <summary>
+        /// Create a new instance of TinyCsv
+        /// </summary>
+        /// <param name="options"></param>
+        public TinyCsv(CsvOptions<T> options)
+        {
+            Options = options;
+        }
+
+        /// <summary>
         /// Reads a csv file and returns a list of objects.
         /// </summary>
         /// <param name="path"></param>
