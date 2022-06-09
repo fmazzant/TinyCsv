@@ -32,7 +32,6 @@ var csv = new TinyCsv<Model>(options =>
     options.TrimData = true;
     options.SkipEmptyRows = false;
     options.AllowRowEnclosedInDoubleQuotesValues = true;
-    options.ValidateColumnCount = true;
 
     // Columns
     options.Columns.AddColumn(m => m.Id);
