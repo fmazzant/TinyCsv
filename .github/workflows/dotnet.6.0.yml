@@ -23,9 +23,3 @@ jobs:
       
     - name: Build
       run: dotnet build --no-restore src/TinyCsv/TinyCsv.csproj 
-    
-    - name: Test
-      run: dotnet test --no-build --verbosity normal src/TinyCsv/TinyCsv.csproj
-      
-    - name: Publish
-      run: dotnet publish src/TinyCsv/TinyCsv.csproj  -c Release -o website
