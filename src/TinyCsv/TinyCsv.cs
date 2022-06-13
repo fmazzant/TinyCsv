@@ -366,7 +366,6 @@ namespace TinyCsv
             await streamWriter.FlushAsync().ConfigureAwait(false);
         }
 
-
         /// <summary>
         /// get header from options
         /// </summary>
