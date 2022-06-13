@@ -163,8 +163,8 @@ namespace TinyCsv
                 while (!streamReader.EndOfStream)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                    var skip = line.SkipRow(index++, this.Options);
+                    var headerLine = await streamReader.ReadLineAsync().ConfigureAwait(false);
+                    var skip = headerLine.SkipRow(index++, this.Options);
                     if (skip) continue;
                     break;
                 }
