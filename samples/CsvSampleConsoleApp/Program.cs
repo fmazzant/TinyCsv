@@ -81,6 +81,7 @@ namespace CsvSampleConsoleApp
                 options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
                 options.TrimData = true;
                 options.SkipEmptyRows = false;
+                options.ValidateColumnCount = true;
 
                 // Columns
                 options.Columns.AddColumn(m => m.Id);
@@ -102,21 +103,21 @@ namespace CsvSampleConsoleApp
             });
 
             // read from file sync
-            var syncModels = csv.Load("file.csv");
+            var syncModels = csv.LoadFromFile("file.csv");
             Console.WriteLine($"Count:{syncModels.Count}");
 
             // read from file async
-            var asyncModels = await csv.LoadAsync("file.csv");
+            var asyncModels = await csv.LoadFromFileAsync("file.csv");
             Console.WriteLine($"Count:{asyncModels.Count}");
 
             // returns IAsyncEnumerable
-            await foreach (var model in csv.LoadAsync(new StreamReader("file.csv")))
+            await foreach (var model in csv.LoadFromStreamAsync(new StreamReader("file.csv")))
             {
                 Console.WriteLine($"{model.Id} - {model.Name} - {model.Price} - {model.CreatedOn} - {model.TextBase64}");
             }
 
             // load IAsyncEnumerable into a list
-            var models = await csv.LoadAsync(new StreamReader("file.csv")).ToListAsync();
+            var models = await csv.LoadFromStreamAsync(new StreamReader("file.csv")).ToListAsync();
             Console.WriteLine($"Count:{models.Count}");
             
             // write on file async
