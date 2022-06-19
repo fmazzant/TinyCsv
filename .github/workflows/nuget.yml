@@ -28,5 +28,5 @@ jobs:
       run: dotnet pack -c Release -o . src/TinyCsv/TinyCsv.csproj 
       
     - name: Publish on NuGet
-      run: dotnet nuget push *.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json  
+      run: dotnet nuget push ./*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
     
