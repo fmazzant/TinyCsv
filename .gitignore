@@ -23,3 +23,7 @@
 /src/TinyCsv/bin/Release
 /samples/CsvSampleConsoleApp/bin/Release/net5.0
 /samples/ConsoleApp1/obj
+/samples/.vs/CsvSampleConsoleApp/FileContentIndex
+/src/.vs/ProjectEvaluation/tinycsv.metadata.v2
+/samples/.vs/ProjectEvaluation
+/src/.vs/ProjectEvaluation
