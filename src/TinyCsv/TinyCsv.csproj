@@ -10,6 +10,7 @@
     <PackageProjectUrl>https://github.com/fmazzant/TinyCsv</PackageProjectUrl>
     <RepositoryUrl>https://github.com/fmazzant/TinyCsv</RepositoryUrl>
     <PackageTags>csv,import,export,c-sharp</PackageTags>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>Mafe.TinyCsv</PackageId>
     <Authors>Federico Mazzanti</Authors>
     <Copyright>Copyright (c) 2022 Federico Mazzanti</Copyright>
