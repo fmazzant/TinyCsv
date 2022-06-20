@@ -81,13 +81,13 @@ A column is defined with the model's property only. The library get or set the v
 To read a csv file is only necessary invoke the load method, like this:
 
 ```c#
-var models = csv.Load("file.csv");
+var models = csv.LoadFromFile("file.csv");
 ```
 
 or you can to use the asynchronously method, like this:
 
 ```c#
-var models = await csv.LoadAsync("file.csv");
+var models = await csv.LoadFromFileAsync("file.csv");
 ```
 
 The load method returns a collection of Model type items and takes as argument the file's path.
