@@ -43,7 +43,7 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public ICollection<T> LoadFromFile(string path);
+        ICollection<T> LoadFromFile(string path);
 
         /// <summary>
         /// Reads a csv file and returns a list of objects.
