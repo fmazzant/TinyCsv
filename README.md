@@ -128,5 +128,3 @@ options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {
 ```
 
 The library is very very simple to use.
-
-
