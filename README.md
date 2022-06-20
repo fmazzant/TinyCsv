@@ -1,6 +1,6 @@
 # TinyCsv
 
-TinyCsv is a .NET library to read and write CSV data in an easy way. 
+TinyCsv is a .NET library to read and write CSV data in an easy way.
 
 To use it in your project, add the Mafe.TinyCsv NuGet package to your project.
 
@@ -106,10 +106,10 @@ or you can to use the asynchronously method, like this:
 await csv.SaveAsync("file_export.csv", models);
 ```
 
-The save method takes the file's path and a collection of Model type. 
+The save method takes the file's path and a collection of Model type.
 The method saves the file.
 
-## Event handlers 
+## Event handlers
 
 It's possible to define event handlers for the events of the library, like this:
 
