@@ -73,7 +73,18 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
+        [Obsolete($"Use {nameof(LoadFromFile)} to load from file", false)]
         public ICollection<T> Load(string path)
+        {
+            return LoadFromFile(path);
+        }
+
+        /// <summary>
+        /// Reads a csv file and returns a list of objects.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public ICollection<T> LoadFromFile(string path)
         {
             using var streamReader = new StreamReader(path);
             var models = Load(streamReader);
@@ -83,9 +94,19 @@ namespace TinyCsv
         /// <summary>
         /// Reads a csv file and returns a list of objects.
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="streamReader"></param>
         /// <returns></returns>
         public IEnumerable<T> Load(StreamReader streamReader)
+        {
+            return LoadFromStream(streamReader);
+        }
+
+        /// <summary>
+        /// Reads a csv file and returns a list of objects.
+        /// </summary>
+        /// <param name="streamReader"></param>
+        /// <returns></returns>
+        public IEnumerable<T> LoadFromStream(StreamReader streamReader)
         {
             var index = 0;
 
@@ -123,18 +144,16 @@ namespace TinyCsv
         }
 
 #if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
+
         /// <summary>
         /// Reads a csv file and returns a list of objects asynchronously.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public async Task<ICollection<T>> LoadAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
+        [Obsolete($"Use {nameof(LoadFromFileAsync)} to load from file", false)]
+        public Task<ICollection<T>> LoadAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
         {
-            using (StreamReader file = new StreamReader(path))
-            {
-                var models = await this.LoadAsync(file, cancellationToken);
-                return new List<T>(models);
-            }
+            return LoadFromFileAsync(path, cancellationToken);
         }
 
         /// <summary>
@@ -142,7 +161,34 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public async Task<ICollection<T>> LoadAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ICollection<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            using (StreamReader file = new StreamReader(path))
+            {
+                var models = await this.LoadFromStreamAsync(file, cancellationToken);
+                return new List<T>(models);
+            }
+        }
+
+        /// <summary>
+        /// Reads a csv file and returns a list of objects asynchronously.
+        /// </summary>
+        /// <param name="streamReader"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [Obsolete($"Use {nameof(LoadFromFileAsync)} to load from file", false)]
+        public Task<ICollection<T>> LoadAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return LoadFromStreamAsync(streamReader, cancellationToken);
+        }
+
+        /// <summary>
+        /// Reads a csv file and returns a list of objects asynchronously.
+        /// </summary>
+        /// <param name="streamReader"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ICollection<T>> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken))
         {
             var models = new List<T>();
             var index = 0;
@@ -190,11 +236,11 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public async Task<ICollection<T>> LoadAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ICollection<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
         {
             using (StreamReader streamReader = new StreamReader(path))
             {
-                var models = await this.LoadAsync(streamReader).ToListAsync(cancellationToken);
+                var models = await this.LoadFromStreamAsync(streamReader).ToListAsync(cancellationToken);
                 return models;
             }
         }
@@ -202,9 +248,20 @@ namespace TinyCsv
         /// <summary>
         /// Reads a csv file and returns a list of objects asynchronously.
         /// </summary>
+        /// <param name="streamReader"></param>
+        /// <returns></returns>
+        [Obsolete($"Use {nameof(LoadFromStreamAsync)} to load from file", false)]
+        public IAsyncEnumerable<T> LoadAsync(StreamReader streamReader)
+        {
+            return this.LoadFromStreamAsync(streamReader);
+        }
+
+        /// <summary>
+        /// Reads a csv file and returns a list of objects asynchronously.
+        /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public async IAsyncEnumerable<T> LoadAsync(StreamReader streamReader)
+        public async IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader)
         {
             var index = 0;
 
