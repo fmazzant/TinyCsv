@@ -27,3 +27,5 @@
 /src/.vs/ProjectEvaluation/tinycsv.metadata.v2
 /samples/.vs/ProjectEvaluation
 /src/.vs/ProjectEvaluation
+/src/TinyCsv.Extensions/bin/Release
+/src/TinyCsv.Extensions/obj
