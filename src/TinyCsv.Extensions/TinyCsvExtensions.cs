@@ -30,6 +30,7 @@
 namespace TinyCsv.Extensions
 {
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.DependencyInjection.Extensions;
     using System;
 
     /// <summary>
@@ -58,12 +59,8 @@ namespace TinyCsv.Extensions
         /// <returns></returns>
         static ITinyCsvFactory GetTinyCsvFactory(this IServiceCollection services)
         {
+            services.TryAddSingleton<ITinyCsvFactory, TinyCsvFactory>();
             var tinyCsvFactory = services.BuildServiceProvider().GetService<ITinyCsvFactory>();
-            if (tinyCsvFactory == null)
-            {
-                services.AddSingleton<ITinyCsvFactory, TinyCsvFactory>();
-                tinyCsvFactory = services.BuildServiceProvider().GetService<ITinyCsvFactory>();
-            }
             return tinyCsvFactory;
         }
     }
