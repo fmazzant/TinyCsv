@@ -300,9 +300,9 @@ namespace TinyCsv
 
             if (Options.HasHeaderRecord)
             {
-                cancellationToken.ThrowIfCancellationRequested();
                 while (!streamReader.EndOfStream)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
                     var skip = line.SkipRow(index++, this.Options);
                     if (skip) continue;
