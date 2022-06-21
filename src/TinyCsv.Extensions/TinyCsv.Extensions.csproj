@@ -1,33 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;net46;net47;net48;netstandard2.0;netstandard2.1;net5.0;net6.0;</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net5.0;net6.0;</TargetFrameworks>
     <LangVersion>preview</LangVersion>
     <NeutralLanguage>en</NeutralLanguage>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <Description>TinyCsv is a .NET library to read and write CSV data in an easy way.</Description>
+    <Description>TinyCsv Extensions is a .NET library utilities to read and write CSV data in an easy way.</Description>
     <PackageProjectUrl>https://github.com/fmazzant/TinyCsv</PackageProjectUrl>
     <RepositoryUrl>https://github.com/fmazzant/TinyCsv</RepositoryUrl>
     <PackageTags>csv,import,export,c-sharp</PackageTags>
-    <PackageId>Mafe.TinyCsv</PackageId>
+    <PackageId>Mafe.TinyCsv.Extensions</PackageId>
     <Authors>Federico Mazzanti</Authors>
     <Copyright>Copyright (c) 2022 Federico Mazzanti</Copyright>
     <AssemblyName>Mafe.$(MSBuildProjectName)</AssemblyName>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Product>TinyCsv</Product>
-    <Version>1.4.3</Version>
+    <Product>TinyCsv.Extensions</Product>
+    <Version>1.0.0-beta1</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\LICENSE.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="..\..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TinyCsv\TinyCsv.csproj" />
   </ItemGroup>
 
 </Project>

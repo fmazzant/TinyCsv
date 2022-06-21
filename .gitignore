@@ -27,3 +27,9 @@
 /src/.vs/ProjectEvaluation/tinycsv.metadata.v2
 /samples/.vs/ProjectEvaluation
 /src/.vs/ProjectEvaluation
+/src/TinyCsv.Extensions/bin/Release
+/src/TinyCsv.Extensions/obj
+/samples/.vs/CsvSamples
+/samples/CsvSampleMinimalWebApiApp/bin/Debug/net6.0
+/samples/CsvSampleMinimalWebApiApp/obj
+/src/TinyCsv.Extensions/bin/Debug

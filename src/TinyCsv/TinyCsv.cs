@@ -41,8 +41,7 @@ namespace TinyCsv
     /// TinyCsv is a simple csv reader/writer library.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public sealed class TinyCsv<T>
-        where T : class, new()
+    public sealed class TinyCsv<T> : ITinyCsv<T> where T : class, new()
     {
         /// <summary>
         /// Options
