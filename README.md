@@ -127,4 +127,44 @@ options.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {
 options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");```
 ```
 
+## Extensions
+
+It's possible to use the extensions methods in your project, like this:
+
+```c#
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddTinyCsv<Model1>("Model1", options =>
+{
+    // Options
+    options.HasHeaderRecord = true;
+    options.Delimiter = ";";
+    options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
+   
+    // columns
+    options.Columns.AddColumn(m => m.Id);
+    options.Columns.AddColumn(m => m.Name);
+    options.Columns.AddColumn(m => m.Price);
+});
+
+var app = builder.Build();
+
+app.MapGet("/csv1", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
+{
+    var tinyCsv = tinyCsvFactory.Get<Model1>("Model1");
+    var result = await tinyCsv.LoadFromFileAsync("model1.csv");
+    Console.WriteLine($"{result?.Count}");
+    return result;
+});
+
+app.Run();
+```
+
+The AddTinyCsv method extension takes the name of the model (the name is a unique key) and the options. 
+The method defines a TinyCsv instance.
+
+The specific model is retriving with the Get method, like this:
+```c#
+var tinyCsv = tinyCsvFactory.Get<Model1>("Model1");
+```
 The library is very very simple to use.
