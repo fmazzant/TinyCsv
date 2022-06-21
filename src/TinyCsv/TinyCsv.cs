@@ -46,7 +46,7 @@ namespace TinyCsv
         /// <summary>
         /// Options
         /// </summary>
-        public CsvOptions<T> Options { get; private set; }
+        internal CsvOptions<T> Options { get; private set; }
 
         /// <summary>
         /// Create a new instance of TinyCsv

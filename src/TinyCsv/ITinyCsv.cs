@@ -27,17 +27,19 @@
 /// 
 /// </summary>
 
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace TinyCsv
 {
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    /// <summary>
+    /// ITinyCsv iterface
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface ITinyCsv<T> where T : class, new()
     {
-        CsvOptions<T> Options { get; }
-
         /// <summary>
         /// Reads a csv file and returns a list of objects.
         /// </summary>
