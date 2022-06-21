@@ -29,42 +29,25 @@
 
 namespace TinyCsv.Extensions
 {
-    using Microsoft.Extensions.DependencyInjection;
-    using System;
-
     /// <summary>
     /// 
     /// </summary>
-    public static class TinyCsvExtensions
+    public interface ITinyCsvFactory
     {
         /// <summary>
         /// 
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="services"></param>
         /// <param name="serviceName"></param>
-        /// <param name="options"></param>
-        public static void AddTinyCsv<T>(this IServiceCollection services, string serviceName, Action<CsvOptions<T>> options)
-            where T : class, new()
-        {
-            var tinyCsvFactory = services.GetCsvFactory();
-            tinyCsvFactory.Add(serviceName, new TinyCsv<T>(options));
-        }
+        /// <param name="tinyCsv"></param>
+        void Add<T>(string serviceName, ITinyCsv<T> tinyCsv) where T : class, new();
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="services"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="serviceName"></param>
         /// <returns></returns>
-        static ITinyCsvFactory GetCsvFactory(this IServiceCollection services)
-        {
-            var tinyCsvFactory = services.BuildServiceProvider().GetService<ITinyCsvFactory>();
-            if (tinyCsvFactory == null)
-            {
-                services.AddSingleton<ITinyCsvFactory, TinyCsvFactory>();
-                tinyCsvFactory = services.BuildServiceProvider().GetService<ITinyCsvFactory>();
-            }
-            return tinyCsvFactory;
-        }
+        ITinyCsv<T> Get<T>(string serviceName) where T : class, new();
     }
 }

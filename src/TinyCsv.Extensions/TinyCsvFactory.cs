@@ -29,42 +29,54 @@
 
 namespace TinyCsv.Extensions
 {
-    using Microsoft.Extensions.DependencyInjection;
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// 
     /// </summary>
-    public static class TinyCsvExtensions
+    public sealed class TinyCsvFactory : ITinyCsvFactory
     {
+        private static Dictionary<string, object> _tinyCsv = new Dictionary<string, object>();
+
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="services"></param>
-        /// <param name="serviceName"></param>
-        /// <param name="options"></param>
-        public static void AddTinyCsv<T>(this IServiceCollection services, string serviceName, Action<CsvOptions<T>> options)
-            where T : class, new()
+        public TinyCsvFactory()
         {
-            var tinyCsvFactory = services.GetCsvFactory();
-            tinyCsvFactory.Add(serviceName, new TinyCsv<T>(options));
+
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="services"></param>
-        /// <returns></returns>
-        static ITinyCsvFactory GetCsvFactory(this IServiceCollection services)
+        /// <typeparam name="T"></typeparam>
+        /// <param name="serviceName"></param>
+        /// <param name="tinyCsv"></param>
+        /// <exception cref="Exception"></exception>
+        public void Add<T>(string serviceName, ITinyCsv<T> tinyCsv) where T : class, new()
         {
-            var tinyCsvFactory = services.BuildServiceProvider().GetService<ITinyCsvFactory>();
-            if (tinyCsvFactory == null)
+            if (_tinyCsv.ContainsKey(serviceName))
             {
-                services.AddSingleton<ITinyCsvFactory, TinyCsvFactory>();
-                tinyCsvFactory = services.BuildServiceProvider().GetService<ITinyCsvFactory>();
+                throw new Exception($"TinyCsv with name {serviceName} already exists");
             }
-            return tinyCsvFactory;
+            _tinyCsv.Add(serviceName, tinyCsv);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="serviceName"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public ITinyCsv<T> Get<T>(string serviceName) where T : class, new()
+        {
+            if (!_tinyCsv.ContainsKey(serviceName))
+            {
+                throw new Exception($"TinyCsv with name {serviceName} does not exist");
+            }
+            return (ITinyCsv<T>)_tinyCsv[serviceName];
         }
     }
 }
