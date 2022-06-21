@@ -60,12 +60,12 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.MapGet("/", [AllowAnonymous] (HttpContext http) =>
+app.MapGet("/", [AllowAnonymous] () =>
 {
     return "Hello, world!";
 });
 
-app.MapGet("/csv1", [AllowAnonymous] async (HttpContext http, ITinyCsvFactory tinyCsvFactory) =>
+app.MapGet("/csv1", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
 {
     var tinyCsv = tinyCsvFactory.Get<Model1>("Model1");
     var result = await tinyCsv.LoadFromFileAsync("model1.csv");
@@ -73,7 +73,7 @@ app.MapGet("/csv1", [AllowAnonymous] async (HttpContext http, ITinyCsvFactory ti
     return result;
 });
 
-app.MapGet("/csv2", [AllowAnonymous] async (HttpContext http, ITinyCsvFactory tinyCsvFactory) =>
+app.MapGet("/csv2", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
 {
     var tinyCsv = tinyCsvFactory.Get<Model2>("Model2");
     var result = await tinyCsv.LoadFromFileAsync("model2.csv");
