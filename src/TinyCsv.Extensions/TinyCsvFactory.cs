@@ -33,14 +33,14 @@ namespace TinyCsv.Extensions
     using System.Collections.Generic;
 
     /// <summary>
-    /// 
+    /// TinyCsv Factory
     /// </summary>
     public sealed class TinyCsvFactory : ITinyCsvFactory
     {
         private static Dictionary<string, object> _tinyCsv = new Dictionary<string, object>();
 
         /// <summary>
-        /// 
+        /// TinyCsv Factory
         /// </summary>
         public TinyCsvFactory()
         {
@@ -48,7 +48,7 @@ namespace TinyCsv.Extensions
         }
 
         /// <summary>
-        /// 
+        /// Add TinyCsv with service's name
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="serviceName"></param>
@@ -64,7 +64,7 @@ namespace TinyCsv.Extensions
         }
 
         /// <summary>
-        /// 
+        /// Get TinyCsv by service's name
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="serviceName"></param>

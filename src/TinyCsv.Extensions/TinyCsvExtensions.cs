@@ -33,12 +33,12 @@ namespace TinyCsv.Extensions
     using System;
 
     /// <summary>
-    /// 
+    /// TinyCsv Extensions
     /// </summary>
     public static class TinyCsvExtensions
     {
         /// <summary>
-        /// 
+        /// Add TinyCsv to service
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="services"></param>
@@ -47,18 +47,17 @@ namespace TinyCsv.Extensions
         public static void AddTinyCsv<T>(this IServiceCollection services, string serviceName, Action<CsvOptions<T>> options)
             where T : class, new()
         {
-            var tinyCsvFactory = services.GetCsvFactory();
+            var tinyCsvFactory = services.GetTinyCsvFactory();
             tinyCsvFactory.Add(serviceName, new TinyCsv<T>(options));
         }
 
         /// <summary>
-        /// 
+        /// Get TinyCsvFactory
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        static ITinyCsvFactory GetCsvFactory(this IServiceCollection services)
+        static ITinyCsvFactory GetTinyCsvFactory(this IServiceCollection services)
         {
-            
             var tinyCsvFactory = services.BuildServiceProvider().GetService<ITinyCsvFactory>();
             if (tinyCsvFactory == null)
             {

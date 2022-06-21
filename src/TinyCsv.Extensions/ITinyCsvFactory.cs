@@ -30,12 +30,12 @@
 namespace TinyCsv.Extensions
 {
     /// <summary>
-    /// 
+    /// ITinyCsvFactory
     /// </summary>
     public interface ITinyCsvFactory
     {
         /// <summary>
-        /// 
+        /// Add TinyCsv with service's name
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="serviceName"></param>
@@ -43,7 +43,7 @@ namespace TinyCsv.Extensions
         void Add<T>(string serviceName, ITinyCsv<T> tinyCsv) where T : class, new();
 
         /// <summary>
-        /// 
+        /// Get TinyCsv by service's name
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="serviceName"></param>
