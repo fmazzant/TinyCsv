@@ -108,14 +108,14 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader);
+        IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Reads a csv file and returns a list of objects asynchronously.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        IAsyncEnumerable<T> LoadFromStreamAsync(Stream stream);
+        IAsyncEnumerable<T> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default(CancellationToken));
 
 #endif
 

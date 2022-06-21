@@ -147,7 +147,11 @@ namespace TinyCsv
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
-        public IEnumerable<T> LoadFromStream(Stream stream) => null;
+        public IEnumerable<T> LoadFromStream(Stream stream)
+        {
+            using var streamReader = new StreamReader(stream);
+            return LoadFromStream(streamReader);
+        }
 
 #if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
 
@@ -241,7 +245,11 @@ namespace TinyCsv
         /// <param name="stream"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<ICollection<T>> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default(CancellationToken)) => null;
+        public Task<ICollection<T>> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            using var streamReader = new StreamReader(stream);
+            return LoadFromStreamAsync(streamReader, cancellationToken);
+        }
 #endif
 
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
@@ -275,12 +283,13 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public async IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader)
+        public async IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken))
         {
             var index = 0;
 
             while (!streamReader.EndOfStream)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 if (index++ < Options.RowsToSkip)
                 {
                     await streamReader.ReadLineAsync().ConfigureAwait(false);
@@ -291,6 +300,7 @@ namespace TinyCsv
 
             if (Options.HasHeaderRecord)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 while (!streamReader.EndOfStream)
                 {
                     var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
@@ -302,6 +312,7 @@ namespace TinyCsv
 
             while (!streamReader.EndOfStream)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
                 var skip = line.SkipRow(index++, this.Options);
                 if (skip) continue;
@@ -315,7 +326,11 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public IAsyncEnumerable<T> LoadFromStreamAsync(Stream stream) => null;
+        public IAsyncEnumerable<T> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            using var streamReader = new StreamReader(stream);
+            return LoadFromStreamAsync(streamReader, cancellationToken);
+        }
 #endif
 
         /// <summary>
@@ -394,7 +409,13 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <param name="models"></param>
-        public void Save(Stream stream, IEnumerable<T> models) { }
+        public void Save(Stream stream, IEnumerable<T> models)
+        {
+            using (StreamWriter streamWriter = new StreamWriter(stream))
+            {
+                Save(streamWriter, models);
+            }
+        }
 
         /// <summary>
         /// Writes a list of objects to a csv file asynchronously.
@@ -456,7 +477,13 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <param name="models"></param>
-        public Task SaveAsync(Stream stream, IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken)) => null;
+        public Task SaveAsync(Stream stream, IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            using (StreamWriter streamWriter = new StreamWriter(stream))
+            {
+                return SaveAsync(streamWriter, models);
+            }
+        }
 
         /// <summary>
         /// get header from options
