@@ -42,6 +42,7 @@ builder.Services.AddTinyCsv<Model1>("Model1", options =>
     options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
     options.Columns.AddColumn(m => m.Id);
     options.Columns.AddColumn(m => m.Name);
+    options.Columns.AddColumn(m => m.Price);
 });
 builder.Services.AddTinyCsv<Model2>("Model2", options =>
 {
@@ -50,6 +51,7 @@ builder.Services.AddTinyCsv<Model2>("Model2", options =>
     options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
     options.Columns.AddColumn(m => m.Id);
     options.Columns.AddColumn(m => m.Name);
+    options.Columns.AddColumn(m => m.CreatedOn);
 });
 
 var app = builder.Build();
