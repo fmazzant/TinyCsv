@@ -64,6 +64,18 @@ namespace TinyCsv.Extensions
         }
 
         /// <summary>
+        /// Create new TinyCsv
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public ITinyCsv<T> Create<T>(Action<CsvOptions<T>> options) where T : class, new()
+        {
+            ITinyCsv<T> tinyCsv = new TinyCsv<T>(options);
+            return tinyCsv;
+        }
+
+        /// <summary>
         /// Get TinyCsv by service's name
         /// </summary>
         /// <typeparam name="T"></typeparam>

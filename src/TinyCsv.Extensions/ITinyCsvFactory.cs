@@ -29,11 +29,21 @@
 
 namespace TinyCsv.Extensions
 {
+    using System;
+
     /// <summary>
     /// ITinyCsvFactory
     /// </summary>
     public interface ITinyCsvFactory
     {
+        /// <summary>
+        /// Create new TinyCsv
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        ITinyCsv<T> Create<T>(Action<CsvOptions<T>> options) where T : class, new();
+
         /// <summary>
         /// Add TinyCsv with service's name
         /// </summary>
