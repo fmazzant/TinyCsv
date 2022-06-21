@@ -80,7 +80,6 @@ namespace CsvSampleConsoleApp
                 options.RowsToSkip = 0;
                 options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
                 options.TrimData = true;
-                options.SkipEmptyRows = false;
                 options.ValidateColumnCount = true;
 
                 // Columns
@@ -118,7 +117,7 @@ namespace CsvSampleConsoleApp
             // load IAsyncEnumerable into a list
             var models = await csv.LoadFromStreamAsync(new StreamReader("file.csv")).ToListAsync();
             Console.WriteLine($"Count:{models.Count}");
-            
+
             // write on file async
             await csv.SaveAsync("file_export.csv", models);
         }

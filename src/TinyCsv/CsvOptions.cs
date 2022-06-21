@@ -71,6 +71,7 @@ namespace TinyCsv
         /// <summary>
         /// Allows skipping of initial columns without csv data
         /// </summary>
+        [Obsolete($"Use: {nameof(SkipRow)} to skip the empty row", true)]
         public bool SkipEmptyRows { get; set; } = false;
 
         /// <summary>

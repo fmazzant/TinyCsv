@@ -31,7 +31,6 @@ var csv = new TinyCsv<Model>(options =>
     options.RowsToSkip = 0;
     options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
     options.TrimData = true;
-    options.SkipEmptyRows = false;
     options.AllowRowEnclosedInDoubleQuotesValues = true;
 
     // Columns
