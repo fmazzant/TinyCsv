@@ -58,6 +58,7 @@ namespace TinyCsv.Extensions
         /// <returns></returns>
         static ITinyCsvFactory GetCsvFactory(this IServiceCollection services)
         {
+            
             var tinyCsvFactory = services.BuildServiceProvider().GetService<ITinyCsvFactory>();
             if (tinyCsvFactory == null)
             {

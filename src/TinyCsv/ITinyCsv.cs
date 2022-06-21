@@ -59,6 +59,13 @@ namespace TinyCsv
         /// <returns></returns>
         IEnumerable<T> LoadFromStream(StreamReader streamReader);
 
+        /// <summary>
+        /// Reads a csv file and returns a list of objects.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        IEnumerable<T> LoadFromStream(Stream stream);
+
 #if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
 
         /// <summary>
@@ -75,7 +82,15 @@ namespace TinyCsv
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<ICollection<T>> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken));
-        
+
+        /// <summary>
+        /// Reads a csv file and returns a list of objects asynchronously.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ICollection<T>> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default(CancellationToken));
+
 #endif
 
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
@@ -94,7 +109,14 @@ namespace TinyCsv
         /// <param name="path"></param>
         /// <returns></returns>
         IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader);
-        
+
+        /// <summary>
+        /// Reads a csv file and returns a list of objects asynchronously.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        IAsyncEnumerable<T> LoadFromStreamAsync(Stream stream);
+
 #endif
 
         /// <summary>
@@ -112,6 +134,13 @@ namespace TinyCsv
         void Save(StreamWriter streamWriter, IEnumerable<T> models);
 
         /// <summary>
+        /// Writes a list of objects to a csv file.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="models"></param>
+        void Save(Stream stream, IEnumerable<T> models);
+
+        /// <summary>
         /// Writes a list of objects to a csv file asynchronously.
         /// </summary>
         /// <param name="path"></param>
@@ -124,5 +153,12 @@ namespace TinyCsv
         /// <param name="path"></param>
         /// <param name="models"></param>
         Task SaveAsync(StreamWriter streamWriter, IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Writes a list of objects to a csv file asynchronously.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="models"></param>
+        Task SaveAsync(Stream stream, IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -142,6 +142,13 @@ namespace TinyCsv
             }
         }
 
+        /// <summary>
+        /// Reads a csv file and returns a list of objects.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public IEnumerable<T> LoadFromStream(Stream stream) => null;
+
 #if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
 
         /// <summary>
@@ -227,6 +234,14 @@ namespace TinyCsv
 
             return models;
         }
+
+        /// <summary>
+        /// Reads a csv file and returns a list of objects asynchronously.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task<ICollection<T>> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default(CancellationToken)) => null;
 #endif
 
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
@@ -294,6 +309,13 @@ namespace TinyCsv
                 yield return model;
             }
         }
+
+        /// <summary>
+        /// Reads a csv file and returns a list of objects asynchronously.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public IAsyncEnumerable<T> LoadFromStreamAsync(Stream stream) => null;
 #endif
 
         /// <summary>
@@ -368,6 +390,13 @@ namespace TinyCsv
         }
 
         /// <summary>
+        /// Writes a list of objects to a csv file.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="models"></param>
+        public void Save(Stream stream, IEnumerable<T> models) { }
+
+        /// <summary>
         /// Writes a list of objects to a csv file asynchronously.
         /// </summary>
         /// <param name="path"></param>
@@ -421,6 +450,13 @@ namespace TinyCsv
             }
             await streamWriter.FlushAsync().ConfigureAwait(false);
         }
+
+        /// <summary>
+        /// Writes a list of objects to a csv file asynchronously.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="models"></param>
+        public Task SaveAsync(Stream stream, IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken)) => null;
 
         /// <summary>
         /// get header from options
