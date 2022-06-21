@@ -60,7 +60,7 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.MapGet("/", [AllowAnonymous] async (HttpContext http) =>
+app.MapGet("/", [AllowAnonymous] (HttpContext http) =>
 {
     return "Hello, world!";
 });
