@@ -83,7 +83,7 @@ namespace CsvSampleConsoleApp
                 options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
                 options.TrimData = true;
                 options.ValidateColumnCount = true;
-
+                
                 // Columns
                 options.Columns.AddColumn(m => m.Id);
                 options.Columns.AddColumn(m => m.Name);
