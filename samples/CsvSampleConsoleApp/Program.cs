@@ -134,7 +134,6 @@ namespace CsvSampleConsoleApp
             await csv.SaveAsync("file_export.csv", models);
         }
 
-
         public static class Memory
         {
             public static MemoryStream CreateMemoryStream()
