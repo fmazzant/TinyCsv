@@ -29,9 +29,9 @@
 
 namespace TinyCsv
 {
-    using TinyCsv.Args;
     using System;
     using System.Text;
+    using TinyCsv.Args;
 
     /// <summary>
     /// Csv Options definition
