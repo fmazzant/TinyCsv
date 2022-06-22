@@ -30,15 +30,16 @@
 namespace TinyCsv.Extensions
 {
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.DependencyInjection.Extensions;
     using System;
 
     /// <summary>
-    /// 
+    /// TinyCsv Extensions
     /// </summary>
     public static class TinyCsvExtensions
     {
         /// <summary>
-        /// 
+        /// Add TinyCsv to service for specific service name
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="services"></param>
@@ -47,23 +48,33 @@ namespace TinyCsv.Extensions
         public static void AddTinyCsv<T>(this IServiceCollection services, string serviceName, Action<CsvOptions<T>> options)
             where T : class, new()
         {
-            var tinyCsvFactory = services.GetCsvFactory();
-            tinyCsvFactory.Add(serviceName, new TinyCsv<T>(options));
+            var tinyCsvFactory = services.GetTinyCsvFactory();
+            var tinyCsv = new TinyCsv<T>(options);
+            tinyCsvFactory.Add(serviceName, tinyCsv);
         }
 
         /// <summary>
-        /// 
+        /// Add TinyCsv to service
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="serviceName"></param>
+        /// <param name="options"></param>
+        public static void AddTinyCsv(this IServiceCollection services)
+        {
+            services.TryAddSingleton<ITinyCsvFactory, TinyCsvFactory>();
+        }
+
+        /// <summary>
+        /// Get TinyCsvFactory
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        static ITinyCsvFactory GetCsvFactory(this IServiceCollection services)
+        static ITinyCsvFactory GetTinyCsvFactory(this IServiceCollection services)
         {
-            var tinyCsvFactory = services.BuildServiceProvider().GetService<ITinyCsvFactory>();
-            if (tinyCsvFactory == null)
-            {
-                services.AddSingleton<ITinyCsvFactory, TinyCsvFactory>();
-                tinyCsvFactory = services.BuildServiceProvider().GetService<ITinyCsvFactory>();
-            }
+            services.AddTinyCsv();
+            IServiceProvider serviceProvider = services.BuildServiceProvider();
+            var tinyCsvFactory = serviceProvider.GetService<ITinyCsvFactory>();
             return tinyCsvFactory;
         }
     }

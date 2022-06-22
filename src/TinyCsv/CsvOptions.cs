@@ -31,6 +31,7 @@ namespace TinyCsv
 {
     using TinyCsv.Args;
     using System;
+    using System.Text;
 
     /// <summary>
     /// Csv Options definition
@@ -64,6 +65,16 @@ namespace TinyCsv
         public char Comment { get; set; } = '#';
 
         /// <summary>
+        /// Gets or Set the newline string defined for this environment
+        /// </summary>
+        public string NewLine { get; set; } = Environment.NewLine;
+
+        /// <summary>
+        /// Represents a character encoding
+        /// </summary>
+        public Encoding TextEncoding { get; set; } = Encoding.UTF8;
+
+        /// <summary>
         /// Allows skipping of initial rows without csv data
         /// </summary>
         public uint RowsToSkip { get; set; } = 0;
@@ -71,6 +82,7 @@ namespace TinyCsv
         /// <summary>
         /// Allows skipping of initial columns without csv data
         /// </summary>
+        [Obsolete($"Use: {nameof(SkipRow)} to skip the empty row", true)]
         public bool SkipEmptyRows { get; set; } = false;
 
         /// <summary>

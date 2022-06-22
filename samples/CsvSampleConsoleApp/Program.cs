@@ -31,6 +31,9 @@ namespace CsvSampleConsoleApp
 {
     using System;
     using System.IO;
+    using System.Linq;
+    using System.Net.Sockets;
+    using System.Text;
     using System.Threading.Tasks;
     using TinyCsv;
     using TinyCsv.Conversions;
@@ -80,7 +83,6 @@ namespace CsvSampleConsoleApp
                 options.RowsToSkip = 0;
                 options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
                 options.TrimData = true;
-                options.SkipEmptyRows = false;
                 options.ValidateColumnCount = true;
 
                 // Columns
@@ -101,6 +103,18 @@ namespace CsvSampleConsoleApp
                 options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
             });
 
+            // read from memory stream
+            using (var memoryStream = Memory.CreateMemoryStream(Environment.NewLine))
+            {
+                var memoryModels = csv.LoadFromStream(memoryStream);
+                Console.WriteLine($"Count:{memoryModels.Count()}");
+            }
+
+            // read from text
+            var planText = $"Id;Name;Price;CreatedOn;TextBase64;{Environment.NewLine}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";";
+            var textModels = csv.LoadFromText(planText);
+            Console.WriteLine($"Count:{textModels.Count()}");
+
             // read from file sync
             var syncModels = csv.LoadFromFile("file.csv");
             Console.WriteLine($"Count:{syncModels.Count}");
@@ -118,9 +132,20 @@ namespace CsvSampleConsoleApp
             // load IAsyncEnumerable into a list
             var models = await csv.LoadFromStreamAsync(new StreamReader("file.csv")).ToListAsync();
             Console.WriteLine($"Count:{models.Count}");
-            
+
             // write on file async
             await csv.SaveAsync("file_export.csv", models);
+        }
+
+        public static class Memory
+        {
+            public static MemoryStream CreateMemoryStream(string newline)
+            {
+                var planText = $"Id;Name;Price;CreatedOn;TextBase64;{newline}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";";
+                var bytes = Encoding.ASCII.GetBytes(planText);
+                var memoryStream = new MemoryStream(bytes);
+                return memoryStream;
+            }
         }
     }
 }
