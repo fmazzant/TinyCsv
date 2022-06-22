@@ -46,6 +46,4 @@ namespace TinyCsv.Exceptions
         {
         }
     }
-
-
 }

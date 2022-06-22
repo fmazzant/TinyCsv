@@ -32,7 +32,6 @@ namespace CsvSampleConsoleApp
     using System;
     using System.IO;
     using System.Linq;
-    using System.Net.Sockets;
     using System.Text;
     using System.Threading.Tasks;
     using TinyCsv;
@@ -84,7 +83,7 @@ namespace CsvSampleConsoleApp
                 options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
                 options.TrimData = true;
                 options.ValidateColumnCount = true;
-
+                
                 // Columns
                 options.Columns.AddColumn(m => m.Id);
                 options.Columns.AddColumn(m => m.Name);

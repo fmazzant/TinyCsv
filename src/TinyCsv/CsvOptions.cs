@@ -29,9 +29,9 @@
 
 namespace TinyCsv
 {
-    using TinyCsv.Args;
     using System;
     using System.Text;
+    using TinyCsv.Args;
 
     /// <summary>
     /// Csv Options definition
@@ -82,7 +82,7 @@ namespace TinyCsv
         /// <summary>
         /// Allows skipping of initial columns without csv data
         /// </summary>
-        [Obsolete($"Use: {nameof(SkipRow)} to skip the empty row", true)]
+        [Obsolete($"Use: {nameof(SkipRow)} to skip the empty row.", true)]
         public bool SkipEmptyRows { get; set; } = false;
 
         /// <summary>
@@ -401,6 +401,5 @@ namespace TinyCsv
                 });
             }
         }
-
     }
 }

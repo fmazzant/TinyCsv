@@ -50,6 +50,5 @@ namespace TinyCsv.Args
         /// Row
         /// </summary>
         public string Row { get; internal set; }
-
     }
 }
