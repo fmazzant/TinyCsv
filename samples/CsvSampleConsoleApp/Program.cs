@@ -103,7 +103,7 @@ namespace CsvSampleConsoleApp
             });
 
             // read from memory stream
-            using (var memoryStream = Memory.CreateMemoryStream())
+            using (var memoryStream = Memory.CreateMemoryStream(Environment.NewLine))
             {
                 var x = csv.LoadFromStream(memoryStream);
                 foreach (var a in x)
@@ -136,9 +136,9 @@ namespace CsvSampleConsoleApp
 
         public static class Memory
         {
-            public static MemoryStream CreateMemoryStream()
+            public static MemoryStream CreateMemoryStream(string newline)
             {
-                var planText = $"Id;Name;Price;CreatedOn;TextBase64;{Environment.NewLine}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";";
+                var planText = $"Id;Name;Price;CreatedOn;TextBase64;{newline}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";";
                 var bytes = Encoding.ASCII.GetBytes(planText);
                 var memoryStream = new MemoryStream(bytes);
                 return memoryStream;
