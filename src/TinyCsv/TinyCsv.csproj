@@ -16,7 +16,7 @@
     <AssemblyName>Mafe.$(MSBuildProjectName)</AssemblyName>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Product>TinyCsv</Product>
-    <Version>1.5.0</Version>
+    <Version>1.5.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
