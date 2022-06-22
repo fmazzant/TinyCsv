@@ -401,6 +401,5 @@ namespace TinyCsv
                 });
             }
         }
-
     }
 }

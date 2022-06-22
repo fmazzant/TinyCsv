@@ -45,6 +45,10 @@ namespace TinyCsv.Args
         /// Model
         /// </summary>
         public T Model { get; internal set; }
+
+        /// <summary>
+        /// Row
+        /// </summary>
         public string Row { get; internal set; }
     }
 }

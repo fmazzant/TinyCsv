@@ -282,6 +282,7 @@ namespace TinyCsv
 #endif
 
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+
         /// <summary>
         /// Reads a csv file and returns a list of objects asynchronously.
         /// </summary>
