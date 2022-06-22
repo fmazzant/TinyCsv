@@ -64,6 +64,11 @@ namespace TinyCsv
         public char Comment { get; set; } = '#';
 
         /// <summary>
+        /// Gets or Set the newline string defined for this environment
+        /// </summary>
+        public string NewLine { get; set; } = Environment.NewLine;
+
+        /// <summary>
         /// Allows skipping of initial rows without csv data
         /// </summary>
         public uint RowsToSkip { get; set; } = 0;
