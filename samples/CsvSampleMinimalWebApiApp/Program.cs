@@ -81,4 +81,19 @@ app.MapGet("/csv2", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
     return result;
 });
 
+app.MapGet("/csv3", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
+{
+    var tinyCsv = tinyCsvFactory.Create<Model2>(options =>
+    {
+        options.HasHeaderRecord = true;
+        options.Delimiter = ";";
+        options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
+        options.Columns.AddColumn(m => m.Id);
+        options.Columns.AddColumn(m => m.Name);
+    });
+    var result = await tinyCsv.LoadFromFileAsync("model2.csv");
+    Console.WriteLine($"{result?.Count}");
+    return result;
+});
+
 app.Run();

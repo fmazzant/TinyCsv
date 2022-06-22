@@ -31,6 +31,8 @@ namespace CsvSampleConsoleApp
 {
     using System;
     using System.IO;
+    using System.Net.Sockets;
+    using System.Text;
     using System.Threading.Tasks;
     using TinyCsv;
     using TinyCsv.Conversions;
@@ -100,6 +102,16 @@ namespace CsvSampleConsoleApp
                 options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
             });
 
+            // read from memory stream
+            using (var memoryStream = Memory.CreateMemoryStream())
+            {
+                var x = csv.LoadFromStream(memoryStream);
+                foreach (var a in x)
+                {
+                    Console.WriteLine($"{a.Id}");
+                }
+            }
+
             // read from file sync
             var syncModels = csv.LoadFromFile("file.csv");
             Console.WriteLine($"Count:{syncModels.Count}");
@@ -120,6 +132,18 @@ namespace CsvSampleConsoleApp
 
             // write on file async
             await csv.SaveAsync("file_export.csv", models);
+        }
+
+
+        public static class Memory
+        {
+            public static MemoryStream CreateMemoryStream()
+            {
+                var planText = $"Id;Name;Price;CreatedOn;TextBase64;{Environment.NewLine}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";";
+                var bytes = Encoding.ASCII.GetBytes(planText);
+                var memoryStream = new MemoryStream(bytes);
+                return memoryStream;
+            }
         }
     }
 }

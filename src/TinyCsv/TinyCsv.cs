@@ -149,8 +149,8 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<T> LoadFromStream(Stream stream)
         {
-            using var streamReader = new StreamReader(stream);
-            return LoadFromStream(streamReader);
+            return LoadFromStream(new StreamReader(stream));
+
         }
 
 #if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
@@ -411,10 +411,7 @@ namespace TinyCsv
         /// <param name="models"></param>
         public void Save(Stream stream, IEnumerable<T> models)
         {
-            using (StreamWriter streamWriter = new StreamWriter(stream))
-            {
-                Save(streamWriter, models);
-            }
+            Save(new StreamWriter(stream), models);
         }
 
         /// <summary>
