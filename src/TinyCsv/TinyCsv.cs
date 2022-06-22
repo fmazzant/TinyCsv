@@ -33,6 +33,8 @@ namespace TinyCsv
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Runtime.CompilerServices;
+    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using TinyCsv.Extensions;
@@ -153,6 +155,19 @@ namespace TinyCsv
 
         }
 
+        /// <summary>
+        /// Reads a csv from text and returns a list of objects.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public IEnumerable<T> LoadFromText(string text, Encoding encoding = null)
+        {
+            var textEncoding = encoding ?? Options.TextEncoding;
+            var bytes = textEncoding.GetBytes(text);
+            var memoryStream = new MemoryStream(bytes);
+            return LoadFromStream(memoryStream);
+        }
+
 #if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
 
         /// <summary>
@@ -250,6 +265,20 @@ namespace TinyCsv
             using var streamReader = new StreamReader(stream);
             return LoadFromStreamAsync(streamReader, cancellationToken);
         }
+
+        /// <summary>
+        /// Reads a csv from text and returns a list of objects asynchronously.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="encoding">The default is UTF8</param>
+        /// <returns></returns>
+        public Task<ICollection<T>> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var textEncoding = encoding ?? Options.TextEncoding;
+            var bytes = textEncoding.GetBytes(text);
+            var memoryStream = new MemoryStream(bytes);
+            return LoadFromStreamAsync(memoryStream, cancellationToken);
+        }
 #endif
 
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
@@ -283,7 +312,7 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public async IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken))
+        public async IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             var index = 0;
 
@@ -330,6 +359,19 @@ namespace TinyCsv
         {
             using var streamReader = new StreamReader(stream);
             return LoadFromStreamAsync(streamReader, cancellationToken);
+        }
+
+        /// <summary>
+        /// Reads a csv from text and returns a list of objects asynchronously.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public IAsyncEnumerable<T> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var textEncoding = encoding ?? Options.TextEncoding;
+            var bytes = textEncoding.GetBytes(text);
+            var memoryStream = new MemoryStream(bytes);
+            return LoadFromStreamAsync(memoryStream, cancellationToken);
         }
 #endif
 

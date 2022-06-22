@@ -31,6 +31,7 @@ namespace CsvSampleConsoleApp
 {
     using System;
     using System.IO;
+    using System.Linq;
     using System.Net.Sockets;
     using System.Text;
     using System.Threading.Tasks;
@@ -105,12 +106,14 @@ namespace CsvSampleConsoleApp
             // read from memory stream
             using (var memoryStream = Memory.CreateMemoryStream(Environment.NewLine))
             {
-                var x = csv.LoadFromStream(memoryStream);
-                foreach (var a in x)
-                {
-                    Console.WriteLine($"{a.Id}");
-                }
+                var memoryModels = csv.LoadFromStream(memoryStream);
+                Console.WriteLine($"Count:{memoryModels.Count()}");
             }
+
+            // read from text
+            var planText = $"Id;Name;Price;CreatedOn;TextBase64;{Environment.NewLine}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";";
+            var textModels = csv.LoadFromText(planText);
+            Console.WriteLine($"Count:{textModels.Count()}");
 
             // read from file sync
             var syncModels = csv.LoadFromFile("file.csv");

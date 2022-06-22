@@ -31,6 +31,7 @@ namespace TinyCsv
 {
     using System.Collections.Generic;
     using System.IO;
+    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -48,25 +49,32 @@ namespace TinyCsv
         ICollection<T> LoadFromFile(string path);
 
         /// <summary>
-        /// Reads a csv file and returns a list of objects.
+        /// Reads a csv from streamreader and returns a list of objects.
         /// </summary>
         /// <param name="streamReader"></param>
         /// <returns></returns>
         IEnumerable<T> Load(StreamReader streamReader);
 
         /// <summary>
-        /// Reads a csv file and returns a list of objects.
+        /// Reads a csv from streamreader and returns a list of objects.
         /// </summary>
         /// <param name="streamReader"></param>
         /// <returns></returns>
         IEnumerable<T> LoadFromStream(StreamReader streamReader);
 
         /// <summary>
-        /// Reads a csv file and returns a list of objects.
+        /// Reads a csv from stream and returns a list of objects.
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
         IEnumerable<T> LoadFromStream(Stream stream);
+
+        /// <summary>
+        /// Reads a csv from text and returns a list of objects.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        IEnumerable<T> LoadFromText(string text, Encoding encoding = null);
 
 #if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
 
@@ -78,7 +86,7 @@ namespace TinyCsv
         Task<ICollection<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
+        /// Reads a csv from stream and returns a list of objects asynchronously.
         /// </summary>
         /// <param name="streamReader"></param>
         /// <param name="cancellationToken"></param>
@@ -86,13 +94,19 @@ namespace TinyCsv
         Task<ICollection<T>> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
+        /// Reads a csv from stream and returns a list of objects asynchronously.
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<ICollection<T>> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// Reads a csv from text and returns a list of objects asynchronously.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        Task<ICollection<T>> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default(CancellationToken));
 #endif
 
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
@@ -103,7 +117,6 @@ namespace TinyCsv
         /// <param name="path"></param>
         /// <returns></returns>
         Task<ICollection<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default(CancellationToken));
-
 
         /// <summary>
         /// Reads a csv file and returns a list of objects asynchronously.
@@ -118,6 +131,13 @@ namespace TinyCsv
         /// <param name="path"></param>
         /// <returns></returns>
         IAsyncEnumerable<T> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Reads a csv from text and returns a list of objects asynchronously.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        IAsyncEnumerable<T> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default(CancellationToken));
 
 #endif
 

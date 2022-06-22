@@ -31,6 +31,7 @@ namespace TinyCsv
 {
     using TinyCsv.Args;
     using System;
+    using System.Text;
 
     /// <summary>
     /// Csv Options definition
@@ -67,6 +68,11 @@ namespace TinyCsv
         /// Gets or Set the newline string defined for this environment
         /// </summary>
         public string NewLine { get; set; } = Environment.NewLine;
+
+        /// <summary>
+        /// Represents a character encoding
+        /// </summary>
+        public Encoding TextEncoding { get; set; } = Encoding.UTF8;
 
         /// <summary>
         /// Allows skipping of initial rows without csv data
