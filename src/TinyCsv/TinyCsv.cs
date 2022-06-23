@@ -558,5 +558,89 @@ namespace TinyCsv
             Options.Handlers.Write.OnRowWrittin(index, model, line);
             return line;
         }
+
+        /// <summary>
+        /// Get all csv text
+        /// </summary>
+        /// <param name="models"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public string GetAllText(IEnumerable<T> models)
+        {
+            var lines = GetAllLines(models);
+            return string.Join(Options.NewLine, lines);
+        }
+
+        /// <summary>
+        /// Get all csv lines
+        /// </summary>
+        /// <param name="models"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public string[] GetAllLines(IEnumerable<T> models)
+        {
+            var index = 0;
+
+            var count = models.Count() + (Options.HasHeaderRecord ? 1 : 0);
+            var lines = new string[count];
+
+            if (Options.HasHeaderRecord)
+            {
+                lines[index] = GetHeaderFromOptions(index);
+                index++;
+            }
+
+            foreach (var model in models)
+            {
+                lines[index] = this.GetLineFromModel(index, model);
+                index++;
+            }
+
+            return lines;
+        }
+
+        /// <summary>
+        /// Get all csv text
+        /// </summary>
+        /// <param name="models"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<string> GetAllTextAsync(IEnumerable<T> models, CancellationToken cancellationToken = default)
+        {
+            var lines = await GetAllLinesAsync(models, cancellationToken);
+            return string.Join(Options.NewLine, lines);
+        }
+
+        /// <summary>
+        /// Get all csv lines
+        /// </summary>
+        /// <param name="models"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public Task<string[]> GetAllLinesAsync(IEnumerable<T> models, CancellationToken cancellationToken = default)
+        {
+            var index = 0;
+
+            var count = models.Count() + (Options.HasHeaderRecord ? 1 : 0);
+            var lines = new string[count];
+
+            if (Options.HasHeaderRecord)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                lines[index] = GetHeaderFromOptions(index);
+                index++;
+            }
+
+            foreach (var model in models)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                lines[index] = this.GetLineFromModel(index, model);
+                index++;
+            }
+
+            return Task.FromResult(lines);
+        }
     }
 }
