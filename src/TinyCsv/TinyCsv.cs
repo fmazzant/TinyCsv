@@ -580,7 +580,9 @@ namespace TinyCsv
         public string[] GetAllLines(IEnumerable<T> models)
         {
             var index = 0;
-            var lines = new string[models.Count()];
+
+            var count = models.Count() + (Options.HasHeaderRecord ? 1 : 0);
+            var lines = new string[count];
 
             if (Options.HasHeaderRecord)
             {
@@ -622,7 +624,9 @@ namespace TinyCsv
         public Task<string[]> GetAllLinesAsync(IEnumerable<T> models, CancellationToken cancellationToken = default)
         {
             var index = 0;
-            var lines = new string[models.Count()];
+
+            var count = models.Count() + (Options.HasHeaderRecord ? 1 : 0);
+            var lines = new string[count];
 
             if (Options.HasHeaderRecord)
             {
