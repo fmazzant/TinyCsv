@@ -586,15 +586,13 @@ namespace TinyCsv
 
             if (Options.HasHeaderRecord)
             {
-                var headers = GetHeaderFromOptions(index);
-                lines[index] = headers;
+                lines[index] = GetHeaderFromOptions(index);
                 index++;
             }
 
             foreach (var model in models)
             {
-                var line = this.GetLineFromModel(index, model);
-                lines[index] = line;
+                lines[index] = this.GetLineFromModel(index, model);
                 index++;
             }
 
@@ -631,16 +629,14 @@ namespace TinyCsv
             if (Options.HasHeaderRecord)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var headers = GetHeaderFromOptions(index);
-                lines[index] = headers;
+                lines[index] = GetHeaderFromOptions(index);
                 index++;
             }
 
             foreach (var model in models)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var line = this.GetLineFromModel(index, model);
-                lines[index] = line;
+                lines[index] = this.GetLineFromModel(index, model);
                 index++;
             }
 
