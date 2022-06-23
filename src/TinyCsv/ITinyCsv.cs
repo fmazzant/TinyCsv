@@ -107,6 +107,7 @@ namespace TinyCsv
         /// <param name="text"></param>
         /// <returns></returns>
         Task<ICollection<T>> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default(CancellationToken));
+
 #endif
 
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
@@ -182,5 +183,37 @@ namespace TinyCsv
         /// <param name="path"></param>
         /// <param name="models"></param>
         Task SaveAsync(Stream stream, IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Get all csv text
+        /// </summary>
+        /// <param name="models"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        string GetAllText(IEnumerable<T> models);
+
+        /// <summary>
+        /// Get all csv lines
+        /// </summary>
+        /// <param name="models"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        string[] GetAllLines(IEnumerable<T> models);
+
+        /// <summary>
+        /// Get all csv text
+        /// </summary>
+        /// <param name="models"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<string> GetAllTextAsync(IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Get all csv lines
+        /// </summary>
+        /// <param name="models"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<string[]> GetAllLinesAsync(IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
