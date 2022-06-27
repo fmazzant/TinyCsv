@@ -10,6 +10,7 @@ To use it in your project, add the Mafe.TinyCsv NuGet package to your project.
 It is available an extention:
 
 [![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.Extensions?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.Extensions/1.0.0)
+![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.Extensions?style=flat-square)
 
 Define the model that you want to use, like this:
 
