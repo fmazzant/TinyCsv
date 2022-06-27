@@ -136,7 +136,8 @@ options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {
 
 Is available the Mafe.TinyCsv.Extensions library to use the TinyCsv in your project and it is downloadable in the NuGet package.
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.Extensions)](https://www.nuget.org/packages/Mafe.TinyCsv.Extensions/1.0.0)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.Extensions?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.Extensions/1.0.0)
+![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.Extensions?style=flat-square)
 
 It's possible to use the extensions methods in your project, like this:
 
