@@ -7,14 +7,14 @@
     <Description>TinyCsv Extensions is a .NET library utilities to read and write CSV data in an easy way.</Description>
     <PackageProjectUrl>https://github.com/fmazzant/TinyCsv</PackageProjectUrl>
     <RepositoryUrl>https://github.com/fmazzant/TinyCsv</RepositoryUrl>
-    <PackageTags>csv,import,export,c-sharp</PackageTags>
-    <PackageId>Mafe.TinyCsv.Extensions</PackageId>
+    <PackageTags>csv,import,export,c-sharp,aspnetcore,mvc, tinycsv</PackageTags>
+    <PackageId>Mafe.TinyCsv.Extensions.AspNetCore</PackageId>
     <Authors>Federico Mazzanti</Authors>
     <Copyright>Copyright (c) 2022 Federico Mazzanti</Copyright>
     <AssemblyName>Mafe.$(MSBuildProjectName)</AssemblyName>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Product>TinyCsv.Extensions</Product>
-    <Version>1.0.3</Version>
+    <Product>TinyCsv.Extensions.AspNetCore</Product>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
