@@ -33,3 +33,5 @@
 /samples/CsvSampleMinimalWebApiApp/bin/Debug/net6.0
 /samples/CsvSampleMinimalWebApiApp/obj
 /src/TinyCsv.Extensions/bin/Debug
+/src/TinyCsv.Extensions.AspNetCore/bin/Debug
+/src/TinyCsv.Extensions.AspNetCore/obj

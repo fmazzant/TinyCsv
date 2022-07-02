@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\TinyCsv.Extensions.AspNetCore\TinyCsv.Extensions.AspNetCore.csproj" />
     <ProjectReference Include="..\..\src\TinyCsv.Extensions\TinyCsv.Extensions.csproj" />
   </ItemGroup>
 
