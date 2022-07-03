@@ -27,25 +27,22 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.AspNetCore
+namespace TinyCsv
 {
     using System;
-    using System.Collections.Generic;
 
     /// <summary>
-    /// TinyCsv Factory
+    /// ITinyCsvFactory
     /// </summary>
-    public sealed class TinyCsvFactory : ITinyCsvFactory
+    public interface ITinyCsvFactory
     {
-        private static Dictionary<string, object> _tinyCsv = new Dictionary<string, object>();
-
         /// <summary>
-        /// TinyCsv Factory
+        /// Create new TinyCsv
         /// </summary>
-        public TinyCsvFactory()
-        {
-
-        }
+        /// <typeparam name="T"></typeparam>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        ITinyCsv<T> Create<T>(Action<CsvOptions<T>> options) where T : class, new();
 
         /// <summary>
         /// Add TinyCsv with service's name
@@ -53,27 +50,7 @@ namespace TinyCsv.AspNetCore
         /// <typeparam name="T"></typeparam>
         /// <param name="serviceName"></param>
         /// <param name="tinyCsv"></param>
-        /// <exception cref="Exception"></exception>
-        public void Add<T>(string serviceName, ITinyCsv<T> tinyCsv) where T : class, new()
-        {
-            if (_tinyCsv.ContainsKey(serviceName))
-            {
-                throw new Exception($"TinyCsv with name {serviceName} already exists");
-            }
-            _tinyCsv.Add(serviceName, tinyCsv);
-        }
-
-        /// <summary>
-        /// Create new TinyCsv
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="options"></param>
-        /// <returns></returns>
-        public ITinyCsv<T> Create<T>(Action<CsvOptions<T>> options) where T : class, new()
-        {
-            ITinyCsv<T> tinyCsv = new TinyCsv<T>(options);
-            return tinyCsv;
-        }
+        void Add<T>(string serviceName, ITinyCsv<T> tinyCsv) where T : class, new();
 
         /// <summary>
         /// Get TinyCsv by service's name
@@ -81,14 +58,6 @@ namespace TinyCsv.AspNetCore
         /// <typeparam name="T"></typeparam>
         /// <param name="serviceName"></param>
         /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        public ITinyCsv<T> Get<T>(string serviceName) where T : class, new()
-        {
-            if (!_tinyCsv.ContainsKey(serviceName))
-            {
-                throw new Exception($"TinyCsv with name {serviceName} does not exist");
-            }
-            return (ITinyCsv<T>)_tinyCsv[serviceName];
-        }
+        ITinyCsv<T> Get<T>(string serviceName) where T : class, new();
     }
 }

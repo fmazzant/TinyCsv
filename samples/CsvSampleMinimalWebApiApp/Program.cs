@@ -29,7 +29,8 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Models;
-using TinyCsv.Extensions;
+using TinyCsv;
+using TinyCsv.AspNetCore.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
