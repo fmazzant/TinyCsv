@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyCsv.Extensions", "..\sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvSampleMinimalWebApiApp", "CsvSampleMinimalWebApiApp\CsvSampleMinimalWebApiApp.csproj", "{E4CFB9E4-561E-46F2-994D-2E4BF7195AA8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyCsv.AspNetCore", "..\src\TinyCsv.Extensions.AspNetCore\TinyCsv.AspNetCore.csproj", "{3FE8B476-EAD8-49EB-8FE2-D837DCC3603B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyCsv.AspNetCore", "..\src\TinyCsv.AspNetCore\TinyCsv.AspNetCore.csproj", "{FD7C11F5-5F54-4174-9453-0D916255E2B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{E4CFB9E4-561E-46F2-994D-2E4BF7195AA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4CFB9E4-561E-46F2-994D-2E4BF7195AA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4CFB9E4-561E-46F2-994D-2E4BF7195AA8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3FE8B476-EAD8-49EB-8FE2-D837DCC3603B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3FE8B476-EAD8-49EB-8FE2-D837DCC3603B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3FE8B476-EAD8-49EB-8FE2-D837DCC3603B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3FE8B476-EAD8-49EB-8FE2-D837DCC3603B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD7C11F5-5F54-4174-9453-0D916255E2B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD7C11F5-5F54-4174-9453-0D916255E2B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD7C11F5-5F54-4174-9453-0D916255E2B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD7C11F5-5F54-4174-9453-0D916255E2B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

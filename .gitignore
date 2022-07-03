@@ -35,3 +35,5 @@
 /src/TinyCsv.Extensions/bin/Debug
 /src/TinyCsv.Extensions.AspNetCore/bin/Debug
 /src/TinyCsv.Extensions.AspNetCore/obj
+/src/TinyCsv.AspNetCore/bin/Debug
+/src/TinyCsv.AspNetCore/obj
