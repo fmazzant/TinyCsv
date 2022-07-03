@@ -4,13 +4,13 @@ TinyCsv is a .NET library to read and write CSV data in an easy way.
 
 To use it in your project, add the Mafe.TinyCsv NuGet package to your project.
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/1.4.3)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/1.0.0)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv?style=flat-square)
 
-It is available an extention:
+It is available an AspNetCore extention:
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.Extensions?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.Extensions/1.0.0)
-![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.Extensions?style=flat-square)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/1.0.0)
+![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.AspNetCore?style=flat-square)
 
 Define the model that you want to use, like this:
 
@@ -132,12 +132,12 @@ options.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {
 options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");```
 ```
 
-## Extensions
+## TinyCsv.AspNetCore Extensions
 
 Is available the Mafe.TinyCsv.Extensions library to use the TinyCsv in your project and it is downloadable in the NuGet package.
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.Extensions?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.Extensions/1.0.0)
-![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.Extensions?style=flat-square)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/1.0.0)
+![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.AspNetCore?style=flat-square)
 
 It's possible to use the extensions methods in your project, like this:
 
@@ -163,6 +163,21 @@ app.MapGet("/csv1", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
 {
     var tinyCsv = tinyCsvFactory.Get<Model1>("Model1");
     var result = await tinyCsv.LoadFromFileAsync("model1.csv");
+    Console.WriteLine($"{result?.Count}");
+    return result;
+});
+
+app.MapGet("/csv2", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
+{
+    var tinyCsv = tinyCsvFactory.Create<Model2>(options =>
+    {
+        options.HasHeaderRecord = true;
+        options.Delimiter = ";";
+        options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
+        options.Columns.AddColumn(m => m.Id);
+        options.Columns.AddColumn(m => m.Name);
+    });
+    var result = await tinyCsv.LoadFromFileAsync("model2.csv");
     Console.WriteLine($"{result?.Count}");
     return result;
 });

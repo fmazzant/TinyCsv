@@ -27,7 +27,7 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Extensions
+namespace TinyCsv.AspNetCore
 {
     using System;
     using System.Collections.Generic;
@@ -35,7 +35,6 @@ namespace TinyCsv.Extensions
     /// <summary>
     /// TinyCsv Factory
     /// </summary>
-    [Obsolete("Use: TinyCsv.AspNetCore nuget package!", true)]
     public sealed class TinyCsvFactory : ITinyCsvFactory
     {
         private static Dictionary<string, object> _tinyCsv = new Dictionary<string, object>();
