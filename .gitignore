@@ -38,3 +38,4 @@
 /src/TinyCsv.AspNetCore/bin/Debug
 /src/TinyCsv.AspNetCore/obj
 /src/TinyCsv.AspNetCore/bin/Release
+/samples/CsvSampleMinimalWebApiApp/bin/Release/net6.0
