@@ -36,6 +36,7 @@ namespace TinyCsv.Extensions
     /// <summary>
     /// TinyCsv Extensions
     /// </summary>
+    [Obsolete("Use: TinyCsv.AspNetCore nuget package!", true)]
     public static class TinyCsvExtensions
     {
         /// <summary>

@@ -34,6 +34,7 @@ namespace TinyCsv.Extensions
     /// <summary>
     /// ITinyCsvFactory
     /// </summary>
+    [Obsolete("Use: TinyCsv.AspNetCore nuget package!", true)]
     public interface ITinyCsvFactory
     {
         /// <summary>
