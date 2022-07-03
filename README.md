@@ -4,8 +4,13 @@ TinyCsv is a .NET library to read and write CSV data in an easy way.
 
 To use it in your project, add the Mafe.TinyCsv NuGet package to your project.
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv)](https://www.nuget.org/packages/Mafe.TinyCsv/1.0.0)
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/1.0.0)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/1.0.0)
+![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv?style=flat-square)
+
+It is available an AspNetCore extention:
+
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/1.0.0)
+![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.AspNetCore?style=flat-square)
 
 Define the model that you want to use, like this:
 
@@ -20,7 +25,7 @@ public class Model
 }
 ```
 
-Now, is necessary to define the TinyCSV options, like this:
+Now, it is necessary to define the TinyCSV options, like this:
 
 ```c#
 var csv = new TinyCsv<Model>(options =>
@@ -131,7 +136,8 @@ options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {
 
 Is available the Mafe.TinyCsv.Extensions library to use the TinyCsv in your project and it is downloadable in the NuGet package.
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/1.0.0)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/1.0.0)
+![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.AspNetCore?style=flat-square)
 
 It's possible to use the extensions methods in your project, like this:
 
