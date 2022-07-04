@@ -77,7 +77,7 @@ public class Base64Converter : IValueConverter
 }
 ```
 
-Base64Converter is used to convert the data column to a Base64 string and vice versa for TextBase64 column.
+Base64Converter is used to convert the data column to a base64 string and vice versa for TextBase64 column.
 
 A column is defined with the model's property only. The library get or set the value in automatically.
 
