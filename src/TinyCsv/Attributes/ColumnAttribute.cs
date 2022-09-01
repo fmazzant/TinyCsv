@@ -29,27 +29,54 @@
 
 namespace TinyCsv.Attributes
 {
+    using TinyCsv.Conversions;
     using System;
+    using System.Linq.Expressions;
 
     /// <summary>
     /// Allows comment inside the content
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public sealed class AllowCommentAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    public sealed class ColumnAttribute : Attribute
     {
         /// <summary>
-        /// Allows comment inside the content
+        /// Column's index
         /// </summary>
-        public bool AllowComment { get; private set; }
+        public int ColumnIndex { get; internal set; }
+
+        /// <summary>
+        /// Column's name
+        /// </summary>
+        public string ColumnName { get; internal set; }
+
+        /// <summary>
+        /// Column's type
+        /// </summary>
+        public Type ColumnType { get; internal set; }
+
+        /// <summary>
+        /// Column expression
+        /// </summary>
+        public Expression ColumnExpression { get; internal set; }
+
+        /// <summary>
+        /// Column's value format
+        /// </summary>
+        public string ColumnFormat { get; internal set; }
+
+        /// <summary>
+        /// Converter
+        /// </summary>
+        public IValueConverter Converter { get; internal set; } = new DefaultValueConverter();
 
         /// <summary>
         /// Contructor
         /// </summary>
         /// <param name="hasHeaderRecord"></param>
-        public AllowCommentAttribute(bool allowComment)
+        public ColumnAttribute()
             : base()
         {
-            AllowComment = allowComment;
+
         }
     }
 }
