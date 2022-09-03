@@ -35,8 +35,45 @@ namespace CsvSampleConsoleApp
     using System.Text;
     using System.Threading.Tasks;
     using TinyCsv;
+    using TinyCsv.Attributes;
+    using TinyCsv.Attributes.Interfaces;
     using TinyCsv.Conversions;
     using TinyCsv.Extensions;
+
+    [Delimiter(";")]
+    [RowsToSkip(0)]
+    [SkipRow(typeof(CustomSkipRow))]
+    [TrimData(true)]
+    [ValidateColumnCount(true)]
+    [HasHeaderRecord(true)]
+    public class AttributeModel
+    {
+        [Column]
+        public int Id { get; set; }
+
+        [Column]
+        public string Name { get; set; }
+
+        [Column]
+        public decimal Price { get; set; }
+
+        [Column(columnFormat: "dd/MM/yyyy")]
+        public DateTime CreatedOn { get; set; }
+
+        [Column(converter: typeof(Base64Converter))]
+        public string TextBase64 { get; set; }
+
+        public override string ToString()
+        {
+            return $"ToString: {Id}, {Name}, {Price}, {CreatedOn}, {TextBase64}";
+        }
+    }
+
+    class CustomSkipRow : ISkipRow
+    {
+        public Func<string, int, bool> SkipRow { get; } = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
+    }
+
 
     public class Model
     {
@@ -45,7 +82,6 @@ namespace CsvSampleConsoleApp
         public decimal Price { get; set; }
         public DateTime CreatedOn { get; set; }
         public string TextBase64 { get; set; }
-
         public override string ToString()
         {
             return $"ToString: {Id}, {Name}, {Price}, {CreatedOn}, {TextBase64}";
@@ -74,33 +110,38 @@ namespace CsvSampleConsoleApp
         static async Task Main()
         {
             // definitions
+            var csvFromAttributes = new TinyCsv<AttributeModel>();
+            var fromAttributesSyncModels = csvFromAttributes.LoadFromFile("file.csv");
+            Console.WriteLine($"Count:{fromAttributesSyncModels.Count}");
+
+            // definitions
             var csv = new TinyCsv<Model>(options =>
-            {
-                // Options
-                options.HasHeaderRecord = true;
-                options.Delimiter = ";";
-                options.RowsToSkip = 0;
-                options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
-                options.TrimData = true;
-                options.ValidateColumnCount = true;
-                
-                // Columns
-                options.Columns.AddColumn(m => m.Id);
-                options.Columns.AddColumn(m => m.Name);
-                options.Columns.AddColumn(m => m.Price);
-                options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
-                options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
+             {
+                 // Options
+                 options.HasHeaderRecord = true;
+                 options.Delimiter = ";";
+                 options.RowsToSkip = 0;
+                 options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
+                 options.TrimData = true;
+                 options.ValidateColumnCount = true;
 
-                // Event Handlers Read
-                options.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
-                options.Handlers.Read.RowReading += (s, e) => Console.WriteLine($"{e.Index}-{e.Row}");
-                options.Handlers.Read.RowRead += (s, e) => Console.WriteLine($"{e.Index}-{e.Model}");
+                 // Columns
+                 options.Columns.AddColumn(m => m.Id);
+                 options.Columns.AddColumn(m => m.Name);
+                 options.Columns.AddColumn(m => m.Price);
+                 options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
+                 options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
 
-                // Event Handlers Write
-                options.Handlers.Write.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
-                options.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {e.Model}");
-                options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
-            });
+                 // Event Handlers Read
+                 options.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
+                 options.Handlers.Read.RowReading += (s, e) => Console.WriteLine($"{e.Index}-{e.Row}");
+                 options.Handlers.Read.RowRead += (s, e) => Console.WriteLine($"{e.Index}-{e.Model}");
+
+                 // Event Handlers Write
+                 options.Handlers.Write.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
+                 options.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {e.Model}");
+                 options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
+             });
 
             // read from memory stream
             using (var memoryStream = Memory.CreateMemoryStream(Environment.NewLine))

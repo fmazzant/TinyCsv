@@ -37,6 +37,7 @@ namespace TinyCsv
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using TinyCsv.Attributes;
     using TinyCsv.Extensions;
 
     /// <summary>
@@ -74,7 +75,7 @@ namespace TinyCsv
         /// </summary>
         public TinyCsv()
         {
-            Options = new CsvOptions<T>();
+            Options = new CsvOptions<T>(typeof(T));
         }
 
         /// <summary>
@@ -410,7 +411,7 @@ namespace TinyCsv
             {
                 var value = values[column.ColumnIndex].TrimData(this.Options);
                 var columnExpression = column.ColumnExpression;
-                var propertyName = columnExpression.GetPropertyName();
+                var propertyName = columnExpression?.GetPropertyName() ?? column.ColumnName;
                 var property = typeof(T).GetProperty(propertyName);
                 var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
                 property.SetValue(model, typedValue);

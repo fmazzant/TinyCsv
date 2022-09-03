@@ -1,4 +1,6 @@
-﻿/// <summary>
+﻿
+using System;
+/// <summary>
 /// 
 /// The MIT License (MIT)
 /// 
@@ -29,7 +31,9 @@
 
 namespace TinyCsv.Attributes
 {
+    using TinyCsv.Exceptions;
     using System;
+    using TinyCsv.Attributes.Interfaces;
 
     /// <summary>
     /// Allows skipt row by condition
@@ -40,17 +44,50 @@ namespace TinyCsv.Attributes
         /// <summary>
         /// Allows skipt row by condition
         /// </summary>
-        public Func<string, int, bool> SkipRow { get; private set; }
+        public Func<string, int, bool> SkipRow { get; private set; } = (row, index) => false;
+
+        /// <summary>
+        /// Skip row type
+        /// </summary>
+        public Type SkipRowType { get; private set; }
 
         /// <summary>
         /// Contructor
         /// </summary>
         /// <param name="hasHeaderRecord"></param>
-        public SkipRowAttribute(Func<string, int, bool> skipRow)
-            : base()
+        public SkipRowAttribute(Type skipRowType)
+          : base()
         {
-            SkipRow = skipRow;
+            SkipRowType = skipRowType;
+
+            if (typeof(ISkipRow).IsAssignableFrom(skipRowType))
+            {
+                var skipRowModel = (ISkipRow)Activator.CreateInstance(skipRowType);
+                SkipRow = skipRowModel.SkipRow;
+            }
+            else
+            {
+                ThrowsUnsupportedTypeException();
+            }
+        }
+
+        /// <summary>
+        /// Throws Unsupported Type Exception 
+        /// </summary>
+        private void ThrowsUnsupportedTypeException()
+        {
+            throw new NotImplementedException($"skipRowType not implement the SkipRow function from ISkipRow interface");
         }
     }
+}
 
+namespace TinyCsv.Attributes.Interfaces
+{
+    /// <summary>
+    /// Skip row interface
+    /// </summary>
+    public interface ISkipRow
+    {
+        Func<string, int, bool> SkipRow { get; }
+    }
 }

@@ -32,6 +32,7 @@ namespace TinyCsv.Attributes
     using TinyCsv.Conversions;
     using System;
     using System.Linq.Expressions;
+    using TinyCsv.Extensions;
 
     /// <summary>
     /// Allows comment inside the content
@@ -65,6 +66,11 @@ namespace TinyCsv.Attributes
         public string ColumnFormat { get; internal set; }
 
         /// <summary>
+        /// Column's Format Provider
+        /// </summary>
+        public IFormatProvider ColumnFormatProvider { get; internal set; }
+
+        /// <summary>
         /// Converter
         /// </summary>
         public IValueConverter Converter { get; internal set; } = new DefaultValueConverter();
@@ -72,11 +78,29 @@ namespace TinyCsv.Attributes
         /// <summary>
         /// Contructor
         /// </summary>
-        /// <param name="hasHeaderRecord"></param>
-        public ColumnAttribute()
+        /// <param name="columnIndex"></param>
+        /// <param name="columnName"></param>
+        /// <param name="columnType"></param>
+        /// <param name="columnFormat"></param>
+        /// <param name="converter"></param>
+        public ColumnAttribute(int columnIndex = -1, string columnName = null, Type columnType = null, string columnFormat = null, Type formatProvider = null, Type converter = null)
             : base()
         {
+            ColumnIndex = columnIndex;
+            ColumnName = columnName;
+            ColumnType = columnType;
+            ColumnExpression = null;
+            ColumnFormat = columnFormat;
 
+            if (formatProvider != null)
+            {
+                ColumnFormatProvider = (IFormatProvider)Activator.CreateInstance(formatProvider);
+            }
+
+            if (converter != null)
+            {
+                Converter = (IValueConverter)Activator.CreateInstance(converter);
+            }
         }
     }
 }
