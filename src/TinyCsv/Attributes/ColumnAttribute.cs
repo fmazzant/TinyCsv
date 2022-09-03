@@ -78,19 +78,19 @@ namespace TinyCsv.Attributes
         /// <summary>
         /// Contructor
         /// </summary>
-        /// <param name="columnIndex"></param>
-        /// <param name="columnName"></param>
-        /// <param name="columnType"></param>
-        /// <param name="columnFormat"></param>
+        /// <param name="index"></param>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <param name="format"></param>
         /// <param name="converter"></param>
-        public ColumnAttribute(int columnIndex = -1, string columnName = null, Type columnType = null, string columnFormat = null, Type formatProvider = null, Type converter = null)
+        public ColumnAttribute(int index = -1, string name = null, Type type = null, string format = null, Type formatProvider = null, Type converter = null)
             : base()
         {
-            ColumnIndex = columnIndex;
-            ColumnName = columnName;
-            ColumnType = columnType;
+            ColumnIndex = index;
+            ColumnName = name;
+            ColumnType = type;
             ColumnExpression = null;
-            ColumnFormat = columnFormat;
+            ColumnFormat = format;
 
             if (formatProvider != null)
             {

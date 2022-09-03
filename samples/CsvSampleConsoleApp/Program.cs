@@ -57,7 +57,7 @@ namespace CsvSampleConsoleApp
         [Column]
         public decimal Price { get; set; }
 
-        [Column(columnFormat: "dd/MM/yyyy")]
+        [Column(format: "dd/MM/yyyy")]
         public DateTime CreatedOn { get; set; }
 
         [Column(converter: typeof(Base64Converter))]
