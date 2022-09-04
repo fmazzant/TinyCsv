@@ -32,48 +32,11 @@ namespace TinyCsv.Attributes
     using System;
 
     /// <summary>
-    /// Allows skipt row by condition
+    /// Skip row interface
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public sealed class SkipRowAttribute : Attribute
+    public interface ISkipRow
     {
-        /// <summary>
-        /// Allows skipt row by condition
-        /// </summary>
-        public Func<string, int, bool> SkipRow { get; private set; } = (row, index) => false;
-
-        /// <summary>
-        /// Skip row type
-        /// </summary>
-        public Type SkipRowType { get; private set; }
-
-        /// <summary>
-        /// Contructor
-        /// </summary>
-        /// <param name="hasHeaderRecord"></param>
-        public SkipRowAttribute(Type skipRowType)
-          : base()
-        {
-            SkipRowType = skipRowType;
-
-            if (typeof(ISkipRow).IsAssignableFrom(skipRowType))
-            {
-                var skipRowModel = (ISkipRow)Activator.CreateInstance(skipRowType);
-                SkipRow = skipRowModel.SkipRow;
-            }
-            else
-            {
-                ThrowsUnsupportedTypeException();
-            }
-        }
-
-        /// <summary>
-        /// Throws Unsupported Type Exception 
-        /// </summary>
-        private void ThrowsUnsupportedTypeException()
-        {
-            throw new NotImplementedException($"skipRowType not implement the SkipRow function from ISkipRow interface");
-        }
+        Func<string, int, bool> SkipRow { get; }
     }
 }
 
