@@ -73,7 +73,6 @@ namespace CsvSampleConsoleApp
         public Func<string, int, bool> SkipRow { get; } = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
     }
 
-
     public class Model
     {
         public int Id { get; set; }
