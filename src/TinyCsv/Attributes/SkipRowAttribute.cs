@@ -29,6 +29,7 @@
 
 namespace TinyCsv.Attributes
 {
+    using TinyCsv.Exceptions;
     using System;
 
     /// <summary>
@@ -38,7 +39,7 @@ namespace TinyCsv.Attributes
     public sealed class SkipRowAttribute : Attribute
     {
         /// <summary>
-        /// Allows skipt row by condition
+        /// Allows skip row by condition
         /// </summary>
         public Func<string, int, bool> SkipRow { get; private set; } = (row, index) => false;
 
@@ -50,7 +51,7 @@ namespace TinyCsv.Attributes
         /// <summary>
         /// Contructor
         /// </summary>
-        /// <param name="hasHeaderRecord"></param>
+        /// <param name="skipRowType"></param>
         public SkipRowAttribute(Type skipRowType)
           : base()
         {
@@ -72,7 +73,7 @@ namespace TinyCsv.Attributes
         /// </summary>
         private void ThrowsUnsupportedTypeException()
         {
-            throw new NotImplementedException($"skipRowType not implement the SkipRow function from ISkipRow interface");
+            throw new UnsupportedTypeException($"skipRowType not implement the SkipRow function from ISkipRow interface");
         }
     }
 }

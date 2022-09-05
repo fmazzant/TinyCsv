@@ -33,45 +33,45 @@ namespace TinyCsv.Exceptions
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// Defines Invalid Column Value Exception
+    /// Defines not allow Unsupported type exception
     /// </summary>
     [Serializable]
-    public class InvalidColumnValueException : Exception
+    public class UnsupportedTypeException : Exception
     {
         /// <summary>
-        /// Create a new instance of InvalidColumnValueException
+        /// Create a new instance of UnsupportedTypeException
         /// </summary>
-        public InvalidColumnValueException()
+        public UnsupportedTypeException()
             : base()
         {
 
         }
 
         /// <summary>
-        /// Create a new instance of InvalidColumnValueException
+        /// Create a new instance of UnsupportedTypeException
         /// </summary>
         /// <param name="message"></param>
-        public InvalidColumnValueException(string message)
+        public UnsupportedTypeException(string message)
             : base(message)
         {
         }
 
         /// <summary>
-        /// Create a new instance of InvalidColumnValueException
+        /// Create a new instance of UnsupportedTypeException
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-        public InvalidColumnValueException(string message, Exception innerException)
+        public UnsupportedTypeException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
         /// <summary>
-        /// Create a new instance of InvalidColumnValueException
+        /// Create a new instance of UnsupportedTypeException
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected InvalidColumnValueException(SerializationInfo info, StreamingContext context)
+        protected UnsupportedTypeException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
 
