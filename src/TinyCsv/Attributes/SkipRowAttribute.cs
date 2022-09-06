@@ -29,8 +29,8 @@
 
 namespace TinyCsv.Attributes
 {
-    using TinyCsv.Exceptions;
     using System;
+    using TinyCsv.Exceptions;
 
     /// <summary>
     /// Allows skipt row by condition

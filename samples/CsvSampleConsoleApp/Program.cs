@@ -35,7 +35,6 @@ namespace CsvSampleConsoleApp
     using System.Text;
     using System.Threading.Tasks;
     using TinyCsv;
-    using TinyCsv.Attributes;
     using TinyCsv.Conversions;
     using TinyCsv.Extensions;
 

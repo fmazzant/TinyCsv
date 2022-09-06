@@ -29,10 +29,10 @@
 
 namespace TinyCsv
 {
-    using TinyCsv.Attributes;
     using System;
     using System.Text;
     using TinyCsv.Args;
+    using TinyCsv.Attributes;
 
     /// <summary>
     /// Csv Options definition
