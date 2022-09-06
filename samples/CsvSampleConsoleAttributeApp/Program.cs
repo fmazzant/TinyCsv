@@ -27,7 +27,7 @@
 /// 
 /// </summary>
 
-namespace CsvSampleConsoleApp
+namespace CsvSampleConsoleAttributeApp
 {
     using System;
     using System.IO;
@@ -39,17 +39,38 @@ namespace CsvSampleConsoleApp
     using TinyCsv.Conversions;
     using TinyCsv.Extensions;
 
-    public class Model
+    [Delimiter(";")]
+    [RowsToSkip(0)]
+    [SkipRow(typeof(CustomSkipRow))]
+    [TrimData(true)]
+    [ValidateColumnCount(true)]
+    [HasHeaderRecord(true)]
+    public class AttributeModel
     {
+        [Column]
         public int Id { get; set; }
+
+        [Column]
         public string Name { get; set; }
+
+        [Column]
         public decimal Price { get; set; }
+
+        [Column(format: "dd/MM/yyyy")]
         public DateTime CreatedOn { get; set; }
+
+        [Column(converter: typeof(Base64Converter))]
         public string TextBase64 { get; set; }
+
         public override string ToString()
         {
             return $"ToString: {Id}, {Name}, {Price}, {CreatedOn}, {TextBase64}";
         }
+    }
+
+    class CustomSkipRow : ISkipRow
+    {
+        public Func<string, int, bool> SkipRow { get; } = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
     }
 
     public class Base64Converter : IValueConverter
@@ -69,38 +90,13 @@ namespace CsvSampleConsoleApp
         }
     }
 
-    internal static class Program
+
+    internal class Program
     {
-        static async Task Main()
+        static async Task Main(string[] args)
         {
             // definitions
-            var csv = new TinyCsv<Model>(options =>
-             {
-                 // Options
-                 options.HasHeaderRecord = true;
-                 options.Delimiter = ";";
-                 options.RowsToSkip = 0;
-                 options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
-                 options.TrimData = true;
-                 options.ValidateColumnCount = true;
-
-                 // Columns
-                 options.Columns.AddColumn(m => m.Id);
-                 options.Columns.AddColumn(m => m.Name);
-                 options.Columns.AddColumn(m => m.Price);
-                 options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
-                 options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
-
-                 // Event Handlers Read
-                 options.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
-                 options.Handlers.Read.RowReading += (s, e) => Console.WriteLine($"{e.Index}-{e.Row}");
-                 options.Handlers.Read.RowRead += (s, e) => Console.WriteLine($"{e.Index}-{e.Model}");
-
-                 // Event Handlers Write
-                 options.Handlers.Write.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
-                 options.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {e.Model}");
-                 options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
-             });
+            var csv = new TinyCsv<AttributeModel>();
 
             // read from memory stream
             using (var memoryStream = Memory.CreateMemoryStream(Environment.NewLine))
@@ -134,9 +130,10 @@ namespace CsvSampleConsoleApp
 
             // write on file async
             await csv.SaveAsync("file_export.csv", models);
+
         }
 
-        public static class Memory
+        static class Memory
         {
             public static MemoryStream CreateMemoryStream(string newline)
             {
