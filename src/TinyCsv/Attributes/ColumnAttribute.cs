@@ -29,10 +29,9 @@
 
 namespace TinyCsv.Attributes
 {
-    using TinyCsv.Conversions;
     using System;
     using System.Linq.Expressions;
-    using TinyCsv.Extensions;
+    using TinyCsv.Conversions;
 
     /// <summary>
     /// Allows comment inside the content
