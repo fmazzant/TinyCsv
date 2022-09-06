@@ -31,10 +31,8 @@ namespace TinyCsv
 {
     using TinyCsv.Attributes;
     using System;
-    using System.Linq;
     using System.Text;
     using TinyCsv.Args;
-    using System.CodeDom;
 
     /// <summary>
     /// Csv Options definition
