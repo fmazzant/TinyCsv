@@ -73,7 +73,7 @@ namespace CsvSampleConsoleAttributeApp
         public Func<string, int, bool> SkipRow { get; } = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
     }
 
-    public class Base64Converter : IValueConverter
+    class Base64Converter : IValueConverter
     {
         public string Convert(object value, object parameter, IFormatProvider provider) => Base64Encode($"{value}");
         public object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider) => Base64Decode(value);
