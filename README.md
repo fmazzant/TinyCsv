@@ -135,7 +135,7 @@ options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {
 
 ## Using attributes in the model definition
 
-You can use the attributes in the model definition, like this:
+You can use, in alternative way, the attributes in the model definition, like this:
 
 ```c#
 [Delimiter(";")]
