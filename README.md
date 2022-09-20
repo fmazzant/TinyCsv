@@ -242,7 +242,9 @@ The AddTinyCsv method extension takes the name of the model (the name is a uniqu
 The method defines a TinyCsv instance.
 
 The specific model is retriving with the Get method, like this:
+
 ```c#
 var tinyCsv = tinyCsvFactory.Get<Model1>("Model1");
 ```
+
 The library is very very simple to use.
