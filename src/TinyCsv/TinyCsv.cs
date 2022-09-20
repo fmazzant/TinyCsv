@@ -170,9 +170,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<T> LoadFromText(string text, Encoding encoding = null)
         {
-            var textEncoding = encoding ?? Options.TextEncoding;
-            var bytes = textEncoding.GetBytes(text);
-            var memoryStream = new MemoryStream(bytes);
+            var memoryStream = GetMemoryStreamFromText(text, encoding);
             return LoadFromStream(memoryStream);
         }
 
