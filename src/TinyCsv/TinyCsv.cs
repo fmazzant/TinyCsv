@@ -243,8 +243,8 @@ namespace TinyCsv
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     var headerLine = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                    var skip = headerLine.SkipRow(index++, this.Options);
-                    if (skip) continue;
+                    var skipHeaderLine = headerLine.SkipRow(index++, this.Options);
+                    if (skipHeaderLine) continue;
                     break;
                 }
             }
@@ -341,9 +341,9 @@ namespace TinyCsv
                 while (!streamReader.EndOfStream)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                    var skip = line.SkipRow(index++, this.Options);
-                    if (skip) continue;
+                    var headerLine = await streamReader.ReadLineAsync().ConfigureAwait(false);
+                    var skipHeader = headerLine.SkipRow(index++, this.Options);
+                    if (skipHeader) continue;
                     break;
                 }
             }
