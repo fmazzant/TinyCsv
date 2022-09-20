@@ -238,6 +238,7 @@ app.Run();
 ```
 
 The AddTinyCsv method extension takes the name of the model (the name is a unique key) and the options. 
+
 The method defines a TinyCsv instance.
 
 The specific model is retriving with the Get method, like this:
