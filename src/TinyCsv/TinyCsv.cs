@@ -282,9 +282,7 @@ namespace TinyCsv
         /// <returns></returns>
         public Task<ICollection<T>> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var textEncoding = encoding ?? Options.TextEncoding;
-            var bytes = textEncoding.GetBytes(text);
-            var memoryStream = new MemoryStream(bytes);
+            var memoryStream = GetMemoryStreamFromText(text, encoding);
             return LoadFromStreamAsync(memoryStream, cancellationToken);
         }
 #endif
@@ -379,9 +377,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IAsyncEnumerable<T> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var textEncoding = encoding ?? Options.TextEncoding;
-            var bytes = textEncoding.GetBytes(text);
-            var memoryStream = new MemoryStream(bytes);
+            var memoryStream = GetMemoryStreamFromText(text, encoding);
             return LoadFromStreamAsync(memoryStream, cancellationToken);
         }
 #endif
@@ -419,6 +415,20 @@ namespace TinyCsv
             }
             Options.Handlers.Read.OnRowRead(index, model, line);
             return model;
+        }
+
+        /// <summary>
+        /// Returns memory stream from text
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        private MemoryStream GetMemoryStreamFromText(string text, Encoding encoding = null)
+        {
+            var textEncoding = encoding ?? Options.TextEncoding;
+            var bytes = textEncoding.GetBytes(text);
+            var memoryStream = new MemoryStream(bytes);
+            return memoryStream;
         }
 
         /// <summary>
