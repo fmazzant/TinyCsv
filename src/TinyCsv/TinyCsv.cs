@@ -134,10 +134,10 @@ namespace TinyCsv
             {
                 while (!streamReader.EndOfStream)
                 {
-                    var line = streamReader.ReadLine();
-                    var skip = line.SkipRow(index++, this.Options);
-                    if (skip) continue;
-                    GetHeaderFromLine(index - 1, line);
+                    var headerLine = streamReader.ReadLine();
+                    var skipHeaderLine = headerLine.SkipRow(index++, this.Options);
+                    if (skipHeaderLine) continue;
+                    GetHeaderFromLine(index - 1, headerLine);
                     break;
                 }
             }
