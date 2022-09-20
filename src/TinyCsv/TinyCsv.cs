@@ -374,6 +374,8 @@ namespace TinyCsv
         /// Reads a csv from text and returns a list of objects asynchronously.
         /// </summary>
         /// <param name="text"></param>
+        /// <param name="encoding"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public IAsyncEnumerable<T> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default(CancellationToken))
         {
