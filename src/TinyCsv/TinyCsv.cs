@@ -219,45 +219,9 @@ namespace TinyCsv
         /// <param name="streamReader"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<ICollection<T>> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ICollection<T>> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var models = new List<T>();
-            var index = 0;
-
-            while (!streamReader.EndOfStream)
-            {
-                if (index++ < Options.RowsToSkip)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    await streamReader.ReadLineAsync().ConfigureAwait(false);
-                    continue;
-                }
-                break;
-            }
-
-            if (Options.HasHeaderRecord)
-            {
-                while (!streamReader.EndOfStream)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var headerLine = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                    var skipHeaderLine = headerLine.SkipRow(index++, this.Options);
-                    if (skipHeaderLine) continue;
-                    break;
-                }
-            }
-
-            while (!streamReader.EndOfStream)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                var skip = line.SkipRow(index++, this.Options);
-                if (skip) continue;
-                var model = this.GetModelFromLine(index - 1, line);
-                models.Add(model);
-            }
-
-            return models;
+            return LoadFromStreamInternalAsync(streamReader, cancellationToken);
         }
 
         /// <summary>
@@ -317,42 +281,9 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public async IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
         {
-            var index = 0;
-
-            while (!streamReader.EndOfStream)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                if (index++ < Options.RowsToSkip)
-                {
-                    await streamReader.ReadLineAsync().ConfigureAwait(false);
-                    continue;
-                }
-                break;
-            }
-
-            if (Options.HasHeaderRecord)
-            {
-                while (!streamReader.EndOfStream)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var headerLine = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                    var skipHeader = headerLine.SkipRow(index++, this.Options);
-                    if (skipHeader) continue;
-                    break;
-                }
-            }
-
-            while (!streamReader.EndOfStream)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                var skip = line.SkipRow(index++, this.Options);
-                if (skip) continue;
-                var model = this.GetModelFromLine(index - 1, line);
-                yield return model;
-            }
+            return LoadFromStreamInternalAsync(streamReader, cancellationToken);
         }
 
         /// <summary>
@@ -659,6 +590,62 @@ namespace TinyCsv
             }
 
             return Task.FromResult(lines);
+        }
+
+#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        async IAsyncEnumerable<T> LoadFromStreamInternalAsync(StreamReader streamReader, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+#endif
+#if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
+        async Task<ICollection<T>> LoadFromStreamInternalAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var models = new List<T>();
+#endif
+
+            var index = 0;
+
+            while (!streamReader.EndOfStream)
+            {
+                if (index++ < Options.RowsToSkip)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await streamReader.ReadLineAsync().ConfigureAwait(false);
+                    continue;
+                }
+                break;
+            }
+
+            if (Options.HasHeaderRecord)
+            {
+                while (!streamReader.EndOfStream)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var headerLine = await streamReader.ReadLineAsync().ConfigureAwait(false);
+                    var skipHeaderLine = headerLine.SkipRow(index++, this.Options);
+                    if (skipHeaderLine) continue;
+                    break;
+                }
+            }
+
+            while (!streamReader.EndOfStream)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
+                var skip = line.SkipRow(index++, this.Options);
+                if (skip) continue;
+                var model = this.GetModelFromLine(index - 1, line);
+
+#if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
+                models.Add(model);
+#endif
+#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+                yield return model;
+#endif
+
+            }
+#if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
+            return models;
+#endif
         }
     }
 }
