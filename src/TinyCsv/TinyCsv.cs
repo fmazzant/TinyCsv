@@ -33,7 +33,6 @@ namespace TinyCsv
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Reflection;
     using System.Runtime.CompilerServices;
     using System.Text;
     using System.Threading;
@@ -227,9 +226,9 @@ namespace TinyCsv
 
             while (!streamReader.EndOfStream)
             {
-                cancellationToken.ThrowIfCancellationRequested();
                 if (index++ < Options.RowsToSkip)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     await streamReader.ReadLineAsync().ConfigureAwait(false);
                     continue;
                 }
@@ -242,8 +241,8 @@ namespace TinyCsv
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     var headerLine = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                    var skipHeader = headerLine.SkipRow(index++, this.Options);
-                    if (skipHeader) continue;
+                    var skipHeaderLine = headerLine.SkipRow(index++, this.Options);
+                    if (skipHeaderLine) continue;
                     break;
                 }
             }
