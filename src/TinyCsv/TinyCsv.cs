@@ -591,7 +591,12 @@ namespace TinyCsv
 
             return Task.FromResult(lines);
         }
-#pragma warning disable CA2200 // Rethrow to preserve stack details
+
+
+
+
+
+
         /// <summary>
         /// Reads a csv file and returns a list of objects asynchronously.
         /// </summary>
@@ -651,6 +656,9 @@ namespace TinyCsv
             return models;
 #endif
         }
-#pragma warning restore CA2200 // Rethrow to preserve stack details
+
+
+
+
     }
 }
