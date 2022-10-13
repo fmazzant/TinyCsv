@@ -593,15 +593,26 @@ namespace TinyCsv
         }
 
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        /// <summary>
+        /// Reads a csv file and returns a list of objects asynchronousl
+        /// </summary>
+        /// <param name="streamReader"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         async IAsyncEnumerable<T> LoadFromStreamInternalAsync(StreamReader streamReader, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
 #endif
 #if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
+        /// <summary>
+        /// Reads a csv file and returns a list of objects asynchronously.
+        /// </summary>
+        /// <param name="streamReader"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         async Task<ICollection<T>> LoadFromStreamInternalAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken))
         {
             var models = new List<T>();
 #endif
-
             var index = 0;
 
             while (!streamReader.EndOfStream)
@@ -634,14 +645,12 @@ namespace TinyCsv
                 var skip = line.SkipRow(index++, this.Options);
                 if (skip) continue;
                 var model = this.GetModelFromLine(index - 1, line);
-
 #if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
                 models.Add(model);
 #endif
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
                 yield return model;
 #endif
-
             }
 #if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
             return models;
