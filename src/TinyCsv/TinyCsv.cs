@@ -227,10 +227,8 @@ namespace TinyCsv
 
             while (!streamReader.EndOfStream)
             {
-                if (index++ < Options.RowsToSkip)
+                if (await SkippingRowsAsync(index++, streamReader, cancellationToken))
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    await streamReader.ReadLineAsync().ConfigureAwait(false);
                     continue;
                 }
                 break;
@@ -240,10 +238,10 @@ namespace TinyCsv
             {
                 while (!streamReader.EndOfStream)
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var headerLine = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                    var skipHeaderLine = headerLine.SkipRow(index++, this.Options);
-                    if (skipHeaderLine) continue;
+                    if (await ReadingHeaderAsync(index++, streamReader, cancellationToken))
+                    {
+                        continue;
+                    }
                     break;
                 }
             }
@@ -328,7 +326,6 @@ namespace TinyCsv
                 {
                     continue;
                 }
-
                 break;
             }
 
@@ -340,7 +337,6 @@ namespace TinyCsv
                     {
                         continue;
                     }
-
                     break;
                 }
             }
@@ -354,26 +350,6 @@ namespace TinyCsv
                 var model = this.GetModelFromLine(index - 1, line);
                 yield return model;
             }
-        }
-
-        async Task<bool> SkippingRowsAsync(int index, StreamReader streamReader, CancellationToken cancellationToken = default)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            if (index < Options.RowsToSkip)
-            {
-                await streamReader.ReadLineAsync().ConfigureAwait(false);
-                return true;
-            }
-            return false;
-        }
-
-        async Task<bool> ReadingHeaderAsync(int index, StreamReader streamReader, CancellationToken cancellationToken = default)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            var headerLine = await streamReader.ReadLineAsync().ConfigureAwait(false);
-            var skipHeader = headerLine.SkipRow(index, this.Options);
-            if (skipHeader) return true;
-            return false;
         }
 
         /// <summary>
@@ -400,6 +376,40 @@ namespace TinyCsv
             return LoadFromStreamAsync(memoryStream, cancellationToken);
         }
 #endif
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="streamReader"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        async Task<bool> SkippingRowsAsync(int index, StreamReader streamReader, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (index < Options.RowsToSkip)
+            {
+                await streamReader.ReadLineAsync().ConfigureAwait(false);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="streamReader"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        async Task<bool> ReadingHeaderAsync(int index, StreamReader streamReader, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var headerLine = await streamReader.ReadLineAsync().ConfigureAwait(false);
+            var skipHeader = headerLine.SkipRow(index, this.Options);
+            if (skipHeader) return true;
+            return false;
+        }
 
         /// <summary>
         /// Get header from line
