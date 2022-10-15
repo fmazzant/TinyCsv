@@ -27,54 +27,30 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Exceptions
+namespace TinyCsv.Attributes
 {
     using System;
-    using System.Runtime.Serialization;
 
     /// <summary>
-    /// Defines Invalid Column Value Exception
+    /// Checks each row immediately for column count
     /// </summary>
-    [Serializable]
-    public class InvalidColumnValueException : Exception
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public sealed class ValidateColumnCountAttribute : Attribute
     {
         /// <summary>
-        /// Create a new instance of InvalidColumnValueException
+        /// Checks each row immediately for column count
         /// </summary>
-        public InvalidColumnValueException()
+        public bool ValidateColumnCount { get; private set; }
+
+        /// <summary>
+        /// Contructor
+        /// </summary>
+        /// <param name="hasHeaderRecord"></param>
+        public ValidateColumnCountAttribute(bool validateColumnCount)
             : base()
         {
-
-        }
-
-        /// <summary>
-        /// Create a new instance of InvalidColumnValueException
-        /// </summary>
-        /// <param name="message"></param>
-        public InvalidColumnValueException(string message)
-            : base(message)
-        {
-        }
-
-        /// <summary>
-        /// Create a new instance of InvalidColumnValueException
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="innerException"></param>
-        public InvalidColumnValueException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
-
-        /// <summary>
-        /// Create a new instance of InvalidColumnValueException
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        protected InvalidColumnValueException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-
+            ValidateColumnCount = validateColumnCount;
         }
     }
+
 }

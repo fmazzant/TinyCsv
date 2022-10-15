@@ -27,54 +27,29 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Exceptions
+namespace TinyCsv.Attributes
 {
     using System;
-    using System.Runtime.Serialization;
 
     /// <summary>
-    /// Defines Invalid Column Value Exception
+    /// Has header record
     /// </summary>
-    [Serializable]
-    public class InvalidColumnValueException : Exception
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public sealed class HasHeaderRecordAttribute : Attribute
     {
         /// <summary>
-        /// Create a new instance of InvalidColumnValueException
+        /// Has header record
         /// </summary>
-        public InvalidColumnValueException()
+        public bool HasHeaderRecord { get; private set; }
+
+        /// <summary>
+        /// Contructor
+        /// </summary>
+        /// <param name="hasHeaderRecord"></param>
+        public HasHeaderRecordAttribute(bool hasHeaderRecord)
             : base()
         {
-
-        }
-
-        /// <summary>
-        /// Create a new instance of InvalidColumnValueException
-        /// </summary>
-        /// <param name="message"></param>
-        public InvalidColumnValueException(string message)
-            : base(message)
-        {
-        }
-
-        /// <summary>
-        /// Create a new instance of InvalidColumnValueException
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="innerException"></param>
-        public InvalidColumnValueException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
-
-        /// <summary>
-        /// Create a new instance of InvalidColumnValueException
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        protected InvalidColumnValueException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-
+            HasHeaderRecord = hasHeaderRecord;
         }
     }
 }

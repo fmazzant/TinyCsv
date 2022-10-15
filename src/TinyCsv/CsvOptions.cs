@@ -32,6 +32,7 @@ namespace TinyCsv
     using System;
     using System.Text;
     using TinyCsv.Args;
+    using TinyCsv.Attributes;
 
     /// <summary>
     /// Csv Options definition
@@ -132,6 +133,85 @@ namespace TinyCsv
         {
             Columns = new CsvOptionsColumns<T>();
             Handlers = new EventHandlers(this);
+        }
+
+        /// <summary>
+        /// Create options from Type
+        /// </summary>
+        /// <param name="type"></param>
+        public CsvOptions(Type type)
+        {
+            Handlers = new EventHandlers(this);
+            Columns = new CsvOptionsColumns<T>(type);
+            this.SetOptionValueFromType(type);
+        }
+
+        /// <summary>
+        /// Set Option Value From Type
+        /// </summary>
+        /// <param name="attribute"></param>
+        private void SetOptionValueFromType(Type type)
+        {
+            Attribute[] attrs = Attribute.GetCustomAttributes(type);
+            foreach (var attribute in attrs)
+            {
+                if (attribute is DelimiterAttribute delimeter)
+                {
+                    this.Delimiter = delimeter.Delimiter;
+                }
+                if (attribute is AllowBackSlashToEscapeQuoteAttribute allowBackSlashToEscapeQuote)
+                {
+                    this.AllowBackSlashToEscapeQuote = allowBackSlashToEscapeQuote.AllowBackSlashToEscapeQuote;
+                }
+                if (attribute is AllowCommentAttribute allowComment)
+                {
+                    this.AllowComment = allowComment.AllowComment;
+                }
+                if (attribute is AllowRowEnclosedInDoubleQuotesValuesAttribute allowRowEnclosedInDoubleQuotesValues)
+                {
+                    this.AllowRowEnclosedInDoubleQuotesValues = allowRowEnclosedInDoubleQuotesValues.AllowRowEnclosedInDoubleQuotesValues;
+                }
+                if (attribute is CommentAttribute comment)
+                {
+                    this.Comment = comment.Comment;
+                }
+                if (attribute is DoubleQuotesAttribute doubleQuotes)
+                {
+                    this.DoubleQuotes = doubleQuotes.DoubleQuotes;
+                }
+                if (attribute is EndOfLineDelimiterCharAttribute endOfLineDelimiterChar)
+                {
+                    this.EndOfLineDelimiterChar = endOfLineDelimiterChar.EndOfLineDelimiterChar;
+                }
+                if (attribute is HasHeaderRecordAttribute hasHeaderRecord)
+                {
+                    this.HasHeaderRecord = hasHeaderRecord.HasHeaderRecord;
+                }
+                if (attribute is NewLineAttribute newLine)
+                {
+                    this.NewLine = newLine.NewLine;
+                }
+                if (attribute is RowsToSkipAttribute rowsToSkip)
+                {
+                    this.RowsToSkip = rowsToSkip.RowsToSkip;
+                }
+                if (attribute is SkipRowAttribute skipRow)
+                {
+                    this.SkipRow = skipRow.SkipRow;
+                }
+                if (attribute is TextEncodingAttribute textEncoding)
+                {
+                    this.TextEncoding = textEncoding.TextEncoding;
+                }
+                if (attribute is TrimDataAttribute trimData)
+                {
+                    this.TrimData = trimData.TrimData;
+                }
+                if (attribute is ValidateColumnCountAttribute validateColumnCount)
+                {
+                    this.ValidateColumnCount = validateColumnCount.ValidateColumnCount;
+                }
+            }
         }
 
         /// <summary>

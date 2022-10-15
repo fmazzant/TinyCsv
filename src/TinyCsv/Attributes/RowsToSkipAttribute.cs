@@ -27,54 +27,30 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Exceptions
+namespace TinyCsv.Attributes
 {
     using System;
-    using System.Runtime.Serialization;
 
     /// <summary>
-    /// Defines Invalid Column Value Exception
+    /// Allows skipping of initial rows without csv data
     /// </summary>
-    [Serializable]
-    public class InvalidColumnValueException : Exception
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public sealed class RowsToSkipAttribute : Attribute
     {
         /// <summary>
-        /// Create a new instance of InvalidColumnValueException
+        /// Allows skipping of initial rows without csv data
         /// </summary>
-        public InvalidColumnValueException()
+        public uint RowsToSkip { get; private set; }
+
+        /// <summary>
+        /// Contructor
+        /// </summary>
+        /// <param name="hasHeaderRecord"></param>
+        public RowsToSkipAttribute(uint rowToSkip)
             : base()
         {
-
-        }
-
-        /// <summary>
-        /// Create a new instance of InvalidColumnValueException
-        /// </summary>
-        /// <param name="message"></param>
-        public InvalidColumnValueException(string message)
-            : base(message)
-        {
-        }
-
-        /// <summary>
-        /// Create a new instance of InvalidColumnValueException
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="innerException"></param>
-        public InvalidColumnValueException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
-
-        /// <summary>
-        /// Create a new instance of InvalidColumnValueException
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        protected InvalidColumnValueException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-
+            RowsToSkip = rowToSkip;
         }
     }
+
 }

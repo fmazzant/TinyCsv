@@ -27,54 +27,31 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Exceptions
+namespace TinyCsv.Attributes
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Text;
 
     /// <summary>
-    /// Defines Invalid Column Value Exception
+    /// Represents a character encoding
     /// </summary>
-    [Serializable]
-    public class InvalidColumnValueException : Exception
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public sealed class TextEncodingAttribute : Attribute
     {
         /// <summary>
-        /// Create a new instance of InvalidColumnValueException
+        /// Represents a character encoding
         /// </summary>
-        public InvalidColumnValueException()
+        public Encoding TextEncoding { get; private set; }
+
+        /// <summary>
+        /// Contructor
+        /// </summary>
+        /// <param name="hasHeaderRecord"></param>
+        public TextEncodingAttribute(Encoding encoding = null)
             : base()
         {
-
-        }
-
-        /// <summary>
-        /// Create a new instance of InvalidColumnValueException
-        /// </summary>
-        /// <param name="message"></param>
-        public InvalidColumnValueException(string message)
-            : base(message)
-        {
-        }
-
-        /// <summary>
-        /// Create a new instance of InvalidColumnValueException
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="innerException"></param>
-        public InvalidColumnValueException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
-
-        /// <summary>
-        /// Create a new instance of InvalidColumnValueException
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        protected InvalidColumnValueException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-
+            TextEncoding = encoding ?? Encoding.UTF8;
         }
     }
+
 }

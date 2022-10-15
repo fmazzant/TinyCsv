@@ -1,3 +1,4 @@
+
 # TinyCsv
 
 TinyCsv is a .NET library to read and write CSV data in an easy way.
@@ -132,6 +133,57 @@ options.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {
 options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
 ```
 
+## Using attributes in the model definition
+
+You can use, in alternative way, the attributes in the model definition, like this:
+
+```c#
+[Delimiter(";")]
+[RowsToSkip(0)]
+[SkipRow(typeof(CustomSkipRow))]
+[TrimData(true)]
+[ValidateColumnCount(true)]
+[HasHeaderRecord(true)]
+public class AttributeModel
+{
+    [Column]
+    public int Id { get; set; }
+
+    [Column]
+    public string Name { get; set; }
+
+    [Column]
+    public decimal Price { get; set; }
+
+    [Column(format: "dd/MM/yyyy")]
+    public DateTime CreatedOn { get; set; }
+
+    [Column(converter: typeof(Base64Converter))]
+    public string TextBase64 { get; set; }
+
+    public override string ToString()
+    {
+        return $"ToString: {Id}, {Name}, {Price}, {CreatedOn}, {TextBase64}";
+    }
+}
+
+class CustomSkipRow : ISkipRow
+{
+    public Func<string, int, bool> SkipRow { get; } = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
+}
+
+class Base64Converter : IValueConverter {
+    ...
+}
+
+```
+
+and you can use it, like this
+
+```c#
+ var csv = new TinyCsv<AttributeModel>();
+```
+
 ## TinyCsv.AspNetCore Extensions
 
 Is available the Mafe.TinyCsv.Extensions library to use the TinyCsv in your project and it is downloadable in the NuGet package.
@@ -185,11 +237,13 @@ app.MapGet("/csv2", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
 app.Run();
 ```
 
-The AddTinyCsv method extension takes the name of the model (the name is a unique key) and the options. 
-The method defines a TinyCsv instance.
+The AddTinyCsv method extension takes the name of the model (the name is a unique key)
+and the options. The method defines a TinyCsv instance.
 
 The specific model is retriving with the Get method, like this:
+
 ```c#
 var tinyCsv = tinyCsvFactory.Get<Model1>("Model1");
 ```
+
 The library is very very simple to use.

@@ -37,7 +37,7 @@ namespace TinyCsv.AspNetCore
     /// </summary>
     public sealed class TinyCsvFactory : ITinyCsvFactory
     {
-        private static Dictionary<string, object> _tinyCsv = new Dictionary<string, object>();
+        private static readonly Dictionary<string, object> _tinyCsv = new Dictionary<string, object>();
 
         /// <summary>
         /// TinyCsv Factory

@@ -30,6 +30,7 @@
 namespace TinyCsv.Exceptions
 {
     using System;
+    using System.Runtime.Serialization;
 
     /// <summary>
     /// Defines not allow comment exception
@@ -40,10 +41,40 @@ namespace TinyCsv.Exceptions
         /// <summary>
         /// Create a new instance of NotAllowCommentException
         /// </summary>
+        public NotAllowCommentException()
+            : base()
+        {
+
+        }
+
+        /// <summary>
+        /// Create a new instance of NotAllowCommentException
+        /// </summary>
         /// <param name="message"></param>
         public NotAllowCommentException(string message)
             : base(message)
         {
+        }
+
+        /// <summary>
+        /// Create a new instance of NotAllowCommentException
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="innerException"></param>
+        public NotAllowCommentException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
+
+        /// <summary>
+        /// Create a new instance of NotAllowCommentException
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        protected NotAllowCommentException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+
         }
     }
 }

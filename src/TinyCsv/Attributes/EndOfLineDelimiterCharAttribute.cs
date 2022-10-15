@@ -27,54 +27,30 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Exceptions
+namespace TinyCsv.Attributes
 {
     using System;
-    using System.Runtime.Serialization;
 
     /// <summary>
-    /// Defines Invalid Column Value Exception
+    /// Allow the last char is the delimiter char
     /// </summary>
-    [Serializable]
-    public class InvalidColumnValueException : Exception
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public sealed class EndOfLineDelimiterCharAttribute : Attribute
     {
         /// <summary>
-        /// Create a new instance of InvalidColumnValueException
+        /// Allow the last char is the delimiter char
         /// </summary>
-        public InvalidColumnValueException()
+        public bool EndOfLineDelimiterChar { get; private set; }
+
+        /// <summary>
+        /// Contructor
+        /// </summary>
+        /// <param name="hasHeaderRecord"></param>
+        public EndOfLineDelimiterCharAttribute(bool endOfLineDelimiterChar)
             : base()
         {
-
-        }
-
-        /// <summary>
-        /// Create a new instance of InvalidColumnValueException
-        /// </summary>
-        /// <param name="message"></param>
-        public InvalidColumnValueException(string message)
-            : base(message)
-        {
-        }
-
-        /// <summary>
-        /// Create a new instance of InvalidColumnValueException
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="innerException"></param>
-        public InvalidColumnValueException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
-
-        /// <summary>
-        /// Create a new instance of InvalidColumnValueException
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        protected InvalidColumnValueException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-
+            EndOfLineDelimiterChar = endOfLineDelimiterChar;
         }
     }
+
 }

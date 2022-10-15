@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvSampleMinimalWebApiApp",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyCsv.AspNetCore", "..\src\TinyCsv.AspNetCore\TinyCsv.AspNetCore.csproj", "{FD7C11F5-5F54-4174-9453-0D916255E2B8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvSampleConsoleAttributeApp", "CsvSampleConsoleAttributeApp\CsvSampleConsoleAttributeApp.csproj", "{055117EE-93D9-40C2-B9C0-A942701D3839}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{FD7C11F5-5F54-4174-9453-0D916255E2B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD7C11F5-5F54-4174-9453-0D916255E2B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD7C11F5-5F54-4174-9453-0D916255E2B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{055117EE-93D9-40C2-B9C0-A942701D3839}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{055117EE-93D9-40C2-B9C0-A942701D3839}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{055117EE-93D9-40C2-B9C0-A942701D3839}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{055117EE-93D9-40C2-B9C0-A942701D3839}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

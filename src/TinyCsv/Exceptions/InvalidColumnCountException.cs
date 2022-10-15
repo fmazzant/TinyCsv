@@ -30,6 +30,7 @@
 namespace TinyCsv.Exceptions
 {
     using System;
+    using System.Runtime.Serialization;
 
     /// <summary>
     /// Defines Invalid Column Count Exception
@@ -38,12 +39,42 @@ namespace TinyCsv.Exceptions
     public class InvalidColumnCountException : Exception
     {
         /// <summary>
-        /// Create a new instance of InvalidColumnValueException
+        /// Create a new instance of InvalidColumnCountException
+        /// </summary>
+        public InvalidColumnCountException()
+            : base()
+        {
+
+        }
+
+        /// <summary>
+        /// Create a new instance of InvalidColumnCountException
         /// </summary>
         /// <param name="message"></param>
         public InvalidColumnCountException(string message)
             : base(message)
         {
+        }
+
+        /// <summary>
+        /// Create a new instance of InvalidColumnCountException
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="innerException"></param>
+        public InvalidColumnCountException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
+
+        /// <summary>
+        /// Create a new instance of InvalidColumnCountException
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        protected InvalidColumnCountException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+
         }
     }
 }

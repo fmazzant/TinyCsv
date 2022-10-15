@@ -32,7 +32,10 @@ namespace TinyCsv
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Linq.Expressions;
+    using System.Reflection;
+    using TinyCsv.Attributes;
     using TinyCsv.Conversions;
     using TinyCsv.Extensions;
 
@@ -53,6 +56,16 @@ namespace TinyCsv
         public CsvOptionsColumns()
         {
             Columns = new List<CsvColumn>();
+        }
+
+        /// <summary>
+        /// Create CsvOptionColumns
+        /// </summary>
+        /// <param name="props"></param>
+        public CsvOptionsColumns(Type type)
+        {
+            Columns = new List<CsvColumn>();
+            AddColumnsFromType(type);
         }
 
         /// <summary>
@@ -138,16 +151,78 @@ namespace TinyCsv
         /// <param name="formatProvider"></param>
         private void AddColumn<T>(int columnIndex, string columnName, Expression<Func<M, T>> expression, string columnFormat = null, IFormatProvider formatProvider = null, IValueConverter converter = null)
         {
+            //Columns.Add(new CsvColumn()
+            //{
+            //    ColumnIndex = columnIndex,
+            //    ColumnName = columnName,
+            //    ColumnType = typeof(T),
+            //    ColumnExpression = expression,
+            //    ColumnFormat = columnFormat,
+            //    ColumnFormatProvider = formatProvider,
+            //    Converter = converter ?? new DefaultValueConverter()
+            //});
+            AddColumn(typeof(T), columnIndex, columnName, expression, columnFormat, formatProvider, converter);
+        }
+
+        /// <summary>
+        /// Add Column
+        /// </summary>
+        /// <param name="columnIndex"></param>
+        /// <param name="columnName"></param>
+        /// <param name="expression"></param>
+        /// <param name="columnFormat"></param>
+        /// <param name="formatProvider"></param>
+        private void AddColumn(Type type, int columnIndex, string columnName, Expression expression, string columnFormat = null, IFormatProvider formatProvider = null, IValueConverter converter = null)
+        {
+            var index = columnIndex < 0 ? Columns.Count : columnIndex;
+
             Columns.Add(new CsvColumn()
             {
-                ColumnIndex = columnIndex,
+                ColumnIndex = index,
                 ColumnName = columnName,
-                ColumnType = typeof(T),
+                ColumnType = type,
                 ColumnExpression = expression,
                 ColumnFormat = columnFormat,
                 ColumnFormatProvider = formatProvider,
                 Converter = converter ?? new DefaultValueConverter()
             });
+        }
+
+        /// <summary>
+        /// Add Columns From Properties
+        /// </summary>
+        /// <param name="props"></param>
+        private void AddColumnsFromType(Type type)
+        {
+            var propertyWithColumnAttribute = type.GetProperties()
+                .Where(prop => Attribute.IsDefined(prop, typeof(ColumnAttribute)));
+
+            foreach (var property in propertyWithColumnAttribute)
+            {
+                AddColumnFromProperty(property);
+            }
+        }
+
+        /// <summary>
+        /// Add Column From Property
+        /// </summary>
+        /// <param name="propertyInfo"></param>
+        private void AddColumnFromProperty(PropertyInfo propertyInfo)
+        {
+            if (propertyInfo != null)
+            {
+                var attribute = propertyInfo.GetCustomAttribute(typeof(ColumnAttribute));
+                if (attribute is ColumnAttribute column)
+                {
+                    var columnIndex = column.ColumnIndex;
+                    var columnName = column.ColumnName ?? propertyInfo.Name;
+                    var columnFormat = column.ColumnFormat;
+                    var formatProvider = column.ColumnFormatProvider;
+                    var converter = column.Converter;
+
+                    AddColumn(propertyInfo.PropertyType, columnIndex, columnName, null, columnFormat, formatProvider, converter);
+                }
+            }
         }
 
         /// <summary>

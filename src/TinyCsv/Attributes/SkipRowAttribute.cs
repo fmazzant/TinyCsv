@@ -27,54 +27,55 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Exceptions
+namespace TinyCsv.Attributes
 {
     using System;
-    using System.Runtime.Serialization;
+    using TinyCsv.Exceptions;
 
     /// <summary>
-    /// Defines Invalid Column Value Exception
+    /// Allows skipt row by condition
     /// </summary>
-    [Serializable]
-    public class InvalidColumnValueException : Exception
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public sealed class SkipRowAttribute : Attribute
     {
         /// <summary>
-        /// Create a new instance of InvalidColumnValueException
+        /// Allows skip row by condition
         /// </summary>
-        public InvalidColumnValueException()
-            : base()
-        {
+        public Func<string, int, bool> SkipRow { get; private set; } = (row, index) => false;
 
+        /// <summary>
+        /// Skip row type
+        /// </summary>
+        public Type SkipRowType { get; private set; }
+
+        /// <summary>
+        /// Contructor
+        /// </summary>
+        /// <param name="skipRowType"></param>
+        public SkipRowAttribute(Type skipRowType)
+          : base()
+        {
+            SkipRowType = skipRowType;
+
+            if (typeof(ISkipRow).IsAssignableFrom(skipRowType))
+            {
+                var skipRowModel = (ISkipRow)Activator.CreateInstance(skipRowType);
+                SkipRow = skipRowModel.SkipRow;
+            }
+            else
+            {
+                ThrowsUnsupportedTypeException();
+            }
         }
 
         /// <summary>
-        /// Create a new instance of InvalidColumnValueException
+        /// Throws Unsupported Type Exception 
         /// </summary>
-        /// <param name="message"></param>
-        public InvalidColumnValueException(string message)
-            : base(message)
+        private void ThrowsUnsupportedTypeException()
         {
-        }
-
-        /// <summary>
-        /// Create a new instance of InvalidColumnValueException
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="innerException"></param>
-        public InvalidColumnValueException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
-
-        /// <summary>
-        /// Create a new instance of InvalidColumnValueException
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        protected InvalidColumnValueException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-
+            throw new UnsupportedTypeException($"skipRowType not implement the SkipRow function from ISkipRow interface");
         }
     }
 }
+
+
