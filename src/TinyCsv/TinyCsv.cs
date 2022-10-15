@@ -592,12 +592,15 @@ namespace TinyCsv
             return Task.FromResult(lines);
         }
 
-
-#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        async IAsyncEnumerable<T> LoadFromStreamInternalAsync(StreamReader streamReader, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        /// <summary>
+        /// Returns the index of line jumped
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="streamReader"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        async Task<int> GetIndexFromStreamReaderBySkipRowsAsync(int index, StreamReader streamReader, CancellationToken cancellationToken = default)
         {
-            var index = 0;
-
             while (!streamReader.EndOfStream)
             {
                 if (index++ < Options.RowsToSkip)
@@ -620,6 +623,14 @@ namespace TinyCsv
                     break;
                 }
             }
+            return index;
+        }
+
+
+#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        async IAsyncEnumerable<T> LoadFromStreamInternalAsync(StreamReader streamReader, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            var index = await GetIndexFromStreamReaderBySkipRowsAsync(0, streamReader, cancellationToken);
 
             while (!streamReader.EndOfStream)
             {
@@ -637,30 +648,7 @@ namespace TinyCsv
         {
             var models = new List<T>();
 
-            var index = 0;
-
-            while (!streamReader.EndOfStream)
-            {
-                if (index++ < Options.RowsToSkip)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    await streamReader.ReadLineAsync().ConfigureAwait(false);
-                    continue;
-                }
-                break;
-            }
-
-            if (Options.HasHeaderRecord)
-            {
-                while (!streamReader.EndOfStream)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var headerLine = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                    var skipHeaderLine = headerLine.SkipRow(index++, this.Options);
-                    if (skipHeaderLine) continue;
-                    break;
-                }
-            }
+            var index = await GetIndexFromStreamReaderBySkipRowsAsync(0, streamReader, cancellationToken);
 
             while (!streamReader.EndOfStream)
             {
