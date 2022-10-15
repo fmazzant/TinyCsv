@@ -626,6 +626,16 @@ namespace TinyCsv
             return index;
         }
 
+        async Task<T> GetModelAndIndexFromStreamReaderAsync(int index, StreamReader streamReader, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
+            var skip = line.SkipRow(index++, this.Options);
+            if (skip) return null;
+            var model = this.GetModelFromLine(index - 1, line);
+            return model;
+        }
+
 
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         async IAsyncEnumerable<T> LoadFromStreamInternalAsync(StreamReader streamReader, [EnumeratorCancellation] CancellationToken cancellationToken = default)
@@ -634,11 +644,8 @@ namespace TinyCsv
 
             while (!streamReader.EndOfStream)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                var skip = line.SkipRow(index++, this.Options);
-                if (skip) continue;
-                var model = this.GetModelFromLine(index - 1, line);
+                var model = await GetModelAndIndexFromStreamReaderAsync(index++, streamReader, cancellationToken);
+                if (model is null) continue;
                 yield return model;
             }
         }
@@ -652,15 +659,9 @@ namespace TinyCsv
 
             while (!streamReader.EndOfStream)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                var skip = line.SkipRow(index++, this.Options);
-                if (skip) continue;
-                var model = this.GetModelFromLine(index - 1, line);
-
+                var model = await GetModelAndIndexFromStreamReaderAsync(index++, streamReader, cancellationToken);
+                if (model is null) continue;
                 models.Add(model);
-
-
             }
 
             return models;
