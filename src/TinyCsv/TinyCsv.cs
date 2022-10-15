@@ -497,7 +497,7 @@ namespace TinyCsv
             var values = Options.Columns.Select(column =>
             {
                 var columnExpression = column.ColumnExpression;
-                var propertyName = columnExpression.GetPropertyName();
+                var propertyName = columnExpression?.GetPropertyName() ?? column.ColumnName;
                 var property = model.GetType().GetProperty(propertyName);
                 var value = property.GetValue(model);
                 var stringValue = column.Converter.Convert(value, null, column.ColumnFormatProvider);
