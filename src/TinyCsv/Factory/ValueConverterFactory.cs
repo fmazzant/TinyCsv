@@ -44,7 +44,7 @@ namespace TinyCsv.Factory
             switch (type)
             {
                 case Type _ when type == typeof(DateTime): return new DateTimeConverter();
-
+                case Type _ when type == typeof(TimeSpan): return new TimeSpanConverter();
                 case Type _ when type == typeof(ushort): return new UInt16Converter();
                 case Type _ when type == typeof(uint): return new UInt32Converter();
                 case Type _ when type == typeof(ulong): return new UInt64Converter();
@@ -52,14 +52,19 @@ namespace TinyCsv.Factory
                 case Type _ when type == typeof(int): return new Int32Converter();
                 case Type _ when type == typeof(long): return new Int64Converter();
                 case Type _ when type == typeof(BigInteger): return new BigIntegerConverter();
-
                 case Type _ when type == typeof(decimal): return new DecimalConverter();
-
+                case Type _ when type == typeof(float): return new FloatConverter();
+                case Type _ when type == typeof(double): return new DoubleConverter();
+                case Type _ when type == typeof(bool): return new BooleanConverter();
                 case Type _ when type == typeof(Uri): return new UriConverter();
+                case Type _ when type == typeof(Enum) || type.IsEnum: return new EnumConverter();
+                case Type _ when type == typeof(byte[]): return new ByteArrayConverter();
+                case Type _ when type == typeof(char): return new CharConverter();
+                case Type _ when type == typeof(Guid): return new GuidConverter();
 
 #if NET6_0_OR_GREATER
                 case Type _ when type == typeof(DateOnly): return new DateOnlyConverter();
-                case Type _ when type == typeof(TimeOnly): return new DateOnlyConverter();
+                case Type _ when type == typeof(TimeOnly): return new TimeOnlyConverter();
 #endif
 
                 default: return new DefaultValueConverter();

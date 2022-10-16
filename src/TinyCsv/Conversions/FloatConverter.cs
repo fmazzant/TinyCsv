@@ -31,9 +31,9 @@ namespace TinyCsv.Conversions
     using System;
 
     /// <summary>
-    /// Provides a unified way of converting TimeSpan of value to string
+    /// Provides a unified way of converting Float of values to string
     /// </summary>
-    public sealed class TimeSpanConverter : DefaultValueConverter, IValueConverter
+    public sealed class FloatConverter : DefaultValueConverter, IValueConverter
     {
         /// <summary>
         /// Converts a string to target type value.
@@ -45,12 +45,7 @@ namespace TinyCsv.Conversions
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
-            if (provider is CsvColumn.DefaultFormatProvider)
-            {
-                var customFormat = (provider as CsvColumn.DefaultFormatProvider).CustomFormat;
-                return TimeSpan.ParseExact(value, customFormat, provider);
-            }
-            return TimeSpan.Parse(value, provider);
+            return float.Parse(value, provider);
         }
     }
 }

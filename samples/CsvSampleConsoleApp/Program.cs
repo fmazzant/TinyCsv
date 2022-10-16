@@ -38,6 +38,8 @@ namespace CsvSampleConsoleApp
     using TinyCsv.Conversions;
     using TinyCsv.Extensions;
 
+    public enum RowType { A, B }
+
     public class Model
     {
         public int Id { get; set; }
@@ -46,6 +48,7 @@ namespace CsvSampleConsoleApp
         public DateTime CreatedOn { get; set; }
         public string TextBase64 { get; set; }
         public Uri WebSite { get; set; }
+        public RowType RowType { get; set; }
         public override string ToString()
         {
             return $"ToString: {Id}, {Name}, {Price}, {CreatedOn}, {TextBase64}";
@@ -91,6 +94,7 @@ namespace CsvSampleConsoleApp
                  options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
                  options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
                  options.Columns.AddColumn(m => m.WebSite);
+                 options.Columns.AddColumn(m => m.RowType);
 
                  // Event Handlers Read
                  options.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
@@ -111,7 +115,7 @@ namespace CsvSampleConsoleApp
             }
 
             // read from text
-            var planText = $"Id;Name;Price;CreatedOn;TextBase64;{Environment.NewLine}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";https://wwww.google.it";
+            var planText = $"Id;Name;Price;CreatedOn;TextBase64;{Environment.NewLine}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";https://wwww.google.it;A;";
             var textModels = csv.LoadFromText(planText);
             Console.WriteLine($"Count:{textModels.Count()}");
 
@@ -141,7 +145,7 @@ namespace CsvSampleConsoleApp
         {
             public static MemoryStream CreateMemoryStream(string newline)
             {
-                var planText = $"Id;Name;Price;CreatedOn;TextBase64;{newline}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";https://www.google.it";
+                var planText = $"Id;Name;Price;CreatedOn;TextBase64;{newline}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";https://www.google.it;B;";
                 var bytes = Encoding.ASCII.GetBytes(planText);
                 var memoryStream = new MemoryStream(bytes);
                 return memoryStream;

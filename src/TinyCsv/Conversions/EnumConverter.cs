@@ -29,11 +29,12 @@
 namespace TinyCsv.Conversions
 {
     using System;
+    using System.Linq;
 
     /// <summary>
-    /// Provides a unified way of converting TimeSpan of value to string
+    /// Provides a unified way of converting Enum of values to string
     /// </summary>
-    public sealed class TimeSpanConverter : DefaultValueConverter, IValueConverter
+    public sealed class EnumConverter : DefaultValueConverter, IValueConverter
     {
         /// <summary>
         /// Converts a string to target type value.
@@ -45,12 +46,13 @@ namespace TinyCsv.Conversions
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
-            if (provider is CsvColumn.DefaultFormatProvider)
+            var enumList = Enum.GetNames(targetType).ToList();
+            if (enumList.Contains(value))
             {
-                var customFormat = (provider as CsvColumn.DefaultFormatProvider).CustomFormat;
-                return TimeSpan.ParseExact(value, customFormat, provider);
+                return Enum.Parse(targetType, value);
             }
-            return TimeSpan.Parse(value, provider);
+            return null;
         }
     }
+
 }
