@@ -37,10 +37,9 @@ namespace TinyCsv.Extensions
     public static class TypeExtensions
     {
         /// <summary>
-        /// Trim value if trimData is true
+        ///  Returns true if type is nullable
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="trimData"></param>
+        /// <param name="type"></param>
         /// <returns></returns>
         public static bool IsNullable(this Type type)
         {
