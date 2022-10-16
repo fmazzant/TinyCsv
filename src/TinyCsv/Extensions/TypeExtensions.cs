@@ -26,33 +26,25 @@
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
-namespace TinyCsv.Conversions
+
+namespace TinyCsv.Extensions
 {
-    using TinyCsv.Extensions;
     using System;
 
     /// <summary>
-    /// Provides a unified way of converting DateTime of values to string
+    /// Type extensions
     /// </summary>
-    public sealed class DateTimeConverter : DefaultValueConverter, IValueConverter
+    public static class TypeExtensions
     {
         /// <summary>
-        /// Converts a string to target type value.
+        /// Trim value if trimData is true
         /// </summary>
-        /// <param name="value">The value that is produced by the binding target.</param>
-        /// <param name="targetType">The type to convert to.</param>
-        /// <param name="parameter">The converter parameter to use.</param>
-        /// <param name="culture">The culture to use in the converter.</param>
-        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        /// <param name="value"></param>
+        /// <param name="trimData"></param>
+        /// <returns></returns>
+        public static bool IsNullable(this Type type)
         {
-            var isNullable = targetType.IsNullable();
-            if (provider is CsvColumn.DefaultFormatProvider)
-            {
-                var customFormat = (provider as CsvColumn.DefaultFormatProvider).CustomFormat;
-                return DateTime.ParseExact(value, customFormat, provider);
-            }
-            return DateTime.Parse(value, provider);
+            return Nullable.GetUnderlyingType(type) != null;
         }
     }
 }

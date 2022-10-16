@@ -29,6 +29,7 @@
 namespace TinyCsv.Conversions
 {
     using System;
+    using TinyCsv.Extensions;
 
     /// <summary>
     /// Provides a unified way of converting Int32 (int) of values to string
@@ -45,6 +46,7 @@ namespace TinyCsv.Conversions
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
+            var isNullable = targetType.IsNullable();
             return int.Parse(value, provider);
         }
     }

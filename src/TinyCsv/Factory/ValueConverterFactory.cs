@@ -39,8 +39,9 @@ namespace TinyCsv.Factory
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static IValueConverter CreateValueConverterByType(Type type = null)
+        public static IValueConverter CreateValueConverterByType(Type valueType)
         {
+            var type = Nullable.GetUnderlyingType(valueType) ?? valueType;
             switch (type)
             {
                 case Type _ when type == typeof(DateTime): return new DateTimeConverter();
