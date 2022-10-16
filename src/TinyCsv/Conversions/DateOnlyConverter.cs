@@ -29,11 +29,11 @@
 namespace TinyCsv.Conversions
 {
     using System;
-
+#if NET6_0_OR_GREATER
     /// <summary>
-    /// Provides a unified way of converting Uri of value to string
+    /// Provides a unified way of converting DateOnly of values to string
     /// </summary>
-    public sealed class UriConverter : DefaultValueConverter, IValueConverter
+    public sealed class DateOnlyConverter : DefaultValueConverter, IValueConverter
     {
         /// <summary>
         /// Converts a string to target type value.
@@ -45,11 +45,15 @@ namespace TinyCsv.Conversions
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
-            if (Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var uri))
+            if (provider is CsvColumn.DefaultFormatProvider)
             {
-                return uri;
+                var customFormat = (provider as CsvColumn.DefaultFormatProvider).CustomFormat;
+                return DateOnly.ParseExact(value, customFormat, provider);
             }
-            return default(Uri);
+            return DateOnly.Parse(value, provider);
         }
     }
+#endif
+
+
 }

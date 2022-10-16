@@ -57,6 +57,11 @@ namespace TinyCsv.Factory
 
                 case Type _ when type == typeof(Uri): return new UriConverter();
 
+#if NET6_0_OR_GREATER
+                case Type _ when type == typeof(DateOnly): return new DateOnlyConverter();
+                case Type _ when type == typeof(TimeOnly): return new DateOnlyConverter();
+#endif
+
                 default: return new DefaultValueConverter();
             }
         }

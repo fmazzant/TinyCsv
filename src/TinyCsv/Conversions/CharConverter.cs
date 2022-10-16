@@ -31,10 +31,11 @@ namespace TinyCsv.Conversions
     using System;
 
     /// <summary>
-    /// Provides a unified way of converting Uri of value to string
+    /// Provides a unified way of converting Char of values to string
     /// </summary>
-    public sealed class UriConverter : DefaultValueConverter, IValueConverter
+    public sealed class CharConverter : DefaultValueConverter, IValueConverter
     {
+
         /// <summary>
         /// Converts a string to target type value.
         /// </summary>
@@ -45,11 +46,11 @@ namespace TinyCsv.Conversions
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
-            if (Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var uri))
+            if (Char.TryParse(value, out char ch))
             {
-                return uri;
+                return ch;
             }
-            return default(Uri);
+            return default(char);
         }
     }
 }
