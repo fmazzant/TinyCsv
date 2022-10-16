@@ -26,9 +26,12 @@
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
+
 namespace TinyCsv.Conversions
 {
+    using TinyCsv.Extensions;
     using System;
+    using System.Globalization;
 
     /// <summary>
     /// Provides a unified way of converting Int16 of values to string
@@ -45,7 +48,11 @@ namespace TinyCsv.Conversions
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
-            return short.Parse(value, provider);
+            if (short.TryParse(value, NumberStyles.None, provider, out short result))
+            {
+                return result;
+            }
+            return targetType.IsNullable() ? null : default(short);
         }
     }
 }

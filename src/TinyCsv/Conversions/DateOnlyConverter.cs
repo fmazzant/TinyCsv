@@ -26,10 +26,14 @@
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
+
+#if NET6_0_OR_GREATER
 namespace TinyCsv.Conversions
 {
     using System;
-#if NET6_0_OR_GREATER
+    using System.Globalization;
+    using TinyCsv.Extensions;
+
     /// <summary>
     /// Provides a unified way of converting DateOnly of values to string
     /// </summary>
@@ -41,19 +45,25 @@ namespace TinyCsv.Conversions
         /// <param name="value">The value that is produced by the binding target.</param>
         /// <param name="targetType">The type to convert to.</param>
         /// <param name="parameter">The converter parameter to use.</param>
-        /// <param name="culture">The culture to use in the converter.</param>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
-            if (provider is CsvColumn.DefaultFormatProvider)
+            if (!string.IsNullOrWhiteSpace(value))
             {
-                var customFormat = (provider as CsvColumn.DefaultFormatProvider).CustomFormat;
-                return DateOnly.ParseExact(value, customFormat, provider);
+                if (provider is CsvColumn.DefaultFormatProvider defaultFormatProvider)
+                {
+                    if (DateOnly.TryParseExact(value, defaultFormatProvider.CustomFormat, provider, DateTimeStyles.None, out var dateOnly))
+                    {
+                        return dateOnly;
+                    }
+                }
+                else if (DateOnly.TryParse(value, out var dateOnly))
+                {
+                    return dateOnly;
+                }
             }
-            return DateOnly.Parse(value, provider);
+            return targetType.IsNullable() ? null : default(DateOnly);
         }
     }
-#endif
-
-
 }
+#endif

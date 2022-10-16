@@ -26,9 +26,12 @@
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
+
 namespace TinyCsv.Conversions
 {
+    using TinyCsv.Extensions;
     using System;
+    using System.Globalization;
 
     /// <summary>
     /// Provides a unified way of converting TimeSpan of value to string
@@ -41,16 +44,24 @@ namespace TinyCsv.Conversions
         /// <param name="value">The value that is produced by the binding target.</param>
         /// <param name="targetType">The type to convert to.</param>
         /// <param name="parameter">The converter parameter to use.</param>
-        /// <param name="culture">The culture to use in the converter.</param>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
-            if (provider is CsvColumn.DefaultFormatProvider)
+            if (!string.IsNullOrWhiteSpace(value))
             {
-                var customFormat = (provider as CsvColumn.DefaultFormatProvider).CustomFormat;
-                return TimeSpan.ParseExact(value, customFormat, provider);
+                if (provider is CsvColumn.DefaultFormatProvider defaultFormatProvider)
+                {
+                    if (TimeSpan.TryParseExact(value, defaultFormatProvider.CustomFormat, provider, TimeSpanStyles.None, out var timeSpan))
+                    {
+                        return timeSpan;
+                    }
+                }
+                else if (TimeSpan.TryParse(value, out var timeSpan))
+                {
+                    return timeSpan;
+                }
             }
-            return TimeSpan.Parse(value, provider);
+            return targetType.IsNullable() ? null : default(TimeSpan);
         }
     }
 }

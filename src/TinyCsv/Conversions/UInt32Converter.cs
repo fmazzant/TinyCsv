@@ -26,9 +26,12 @@
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
+
 namespace TinyCsv.Conversions
 {
+    using TinyCsv.Extensions;
     using System;
+    using System.Globalization;
 
     /// <summary>
     /// Provides a unified way of converting UInt32 (int) of values to string
@@ -41,11 +44,14 @@ namespace TinyCsv.Conversions
         /// <param name="value">The value that is produced by the binding target.</param>
         /// <param name="targetType">The type to convert to.</param>
         /// <param name="parameter">The converter parameter to use.</param>
-        /// <param name="culture">The culture to use in the converter.</param>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
-            return uint.Parse(value, provider);
+            if (uint.TryParse(value, NumberStyles.None, provider, out uint result))
+            {
+                return result;
+            }
+            return targetType.IsNullable() ? null : default(uint);
         }
     }
 }

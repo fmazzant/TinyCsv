@@ -26,9 +26,12 @@
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
+
 namespace TinyCsv.Conversions
 {
     using System;
+    using System.Globalization;
+    using TinyCsv.Extensions;
 
     /// <summary>
     /// Provides a unified way of converting Decimal of values to string
@@ -41,11 +44,14 @@ namespace TinyCsv.Conversions
         /// <param name="value">The value that is produced by the binding target.</param>
         /// <param name="targetType">The type to convert to.</param>
         /// <param name="parameter">The converter parameter to use.</param>
-        /// <param name="culture">The culture to use in the converter.</param>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
-            return decimal.Parse(value, provider);
+            if (decimal.TryParse(value, NumberStyles.None, provider, out decimal result))
+            {
+                return result;
+            }
+            return targetType.IsNullable() ? null : default(decimal);
         }
     }
 }

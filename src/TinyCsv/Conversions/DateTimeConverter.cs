@@ -26,10 +26,12 @@
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
+
 namespace TinyCsv.Conversions
 {
     using TinyCsv.Extensions;
     using System;
+    using System.Globalization;
 
     /// <summary>
     /// Provides a unified way of converting DateTime of values to string
@@ -42,17 +44,24 @@ namespace TinyCsv.Conversions
         /// <param name="value">The value that is produced by the binding target.</param>
         /// <param name="targetType">The type to convert to.</param>
         /// <param name="parameter">The converter parameter to use.</param>
-        /// <param name="culture">The culture to use in the converter.</param>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
-            var isNullable = targetType.IsNullable();
-            if (provider is CsvColumn.DefaultFormatProvider)
+            if (!string.IsNullOrWhiteSpace(value))
             {
-                var customFormat = (provider as CsvColumn.DefaultFormatProvider).CustomFormat;
-                return DateTime.ParseExact(value, customFormat, provider);
+                if (provider is CsvColumn.DefaultFormatProvider defaultFormatProvider)
+                {
+                    if (DateTime.TryParseExact(value, defaultFormatProvider.CustomFormat, provider, DateTimeStyles.None, out var dateTime))
+                    {
+                        return dateTime;
+                    }
+                }
+                else if (DateTime.TryParse(value, out var dateTime))
+                {
+                    return dateTime;
+                }
             }
-            return DateTime.Parse(value, provider);
+            return targetType.IsNullable() ? null : default(DateTime);
         }
     }
 }
