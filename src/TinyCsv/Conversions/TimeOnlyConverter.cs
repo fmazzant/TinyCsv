@@ -30,9 +30,9 @@
 #if NET6_0_OR_GREATER
 namespace TinyCsv.Conversions
 {
-    using TinyCsv.Extensions;
     using System;
     using System.Globalization;
+    using TinyCsv.Extensions;
 
     /// <summary>
     /// Provides a unified way of converting TimeOnly of values to string

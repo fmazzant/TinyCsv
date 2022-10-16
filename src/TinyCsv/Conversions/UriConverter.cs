@@ -29,9 +29,56 @@
 
 namespace TinyCsv.Conversions
 {
+
+    /* Unmerged change from project 'TinyCsv (net46)'
+    Before:
+        using TinyCsv.Extensions;
+    After:
+        using System;
+    */
+
+    /* Unmerged change from project 'TinyCsv (net47)'
+    Before:
+        using TinyCsv.Extensions;
+    After:
+        using System;
+    */
+
+    /* Unmerged change from project 'TinyCsv (net48)'
+    Before:
+        using TinyCsv.Extensions;
+    After:
+        using System;
+    */
+
+    /* Unmerged change from project 'TinyCsv (netstandard2.0)'
+    Before:
+        using TinyCsv.Extensions;
+    After:
+        using System;
+    */
+
+    /* Unmerged change from project 'TinyCsv (netstandard2.1)'
+    Before:
+        using TinyCsv.Extensions;
+    After:
+        using System;
+    */
+
+    /* Unmerged change from project 'TinyCsv (net5.0)'
+    Before:
+        using TinyCsv.Extensions;
+    After:
+        using System;
+    */
+
+    /* Unmerged change from project 'TinyCsv (net6.0)'
+    Before:
+        using TinyCsv.Extensions;
+    After:
+        using System;
+    */
     using TinyCsv.Extensions;
-    using System;
-    using System.Globalization;
 
     /// <summary>
     /// Provides a unified way of converting Uri of value to string

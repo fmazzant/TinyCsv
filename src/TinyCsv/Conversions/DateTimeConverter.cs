@@ -29,9 +29,9 @@
 
 namespace TinyCsv.Conversions
 {
-    using TinyCsv.Extensions;
     using System;
     using System.Globalization;
+    using TinyCsv.Extensions;
 
     /// <summary>
     /// Provides a unified way of converting DateTime of values to string
