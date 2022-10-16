@@ -72,7 +72,7 @@ namespace TinyCsv.Attributes
         /// <summary>
         /// Converter
         /// </summary>
-        public IValueConverter Converter { get; internal set; } = new DefaultValueConverter();
+        public IValueConverter Converter { get; internal set; }
 
         /// <summary>
         /// Contructor

@@ -45,6 +45,7 @@ namespace CsvSampleConsoleApp
         public decimal Price { get; set; }
         public DateTime CreatedOn { get; set; }
         public string TextBase64 { get; set; }
+        public Uri WebSite { get; set; }
         public override string ToString()
         {
             return $"ToString: {Id}, {Name}, {Price}, {CreatedOn}, {TextBase64}";
@@ -89,6 +90,7 @@ namespace CsvSampleConsoleApp
                  options.Columns.AddColumn(m => m.Price);
                  options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
                  options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
+                 options.Columns.AddColumn(m => m.WebSite);
 
                  // Event Handlers Read
                  options.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
@@ -109,7 +111,7 @@ namespace CsvSampleConsoleApp
             }
 
             // read from text
-            var planText = $"Id;Name;Price;CreatedOn;TextBase64;{Environment.NewLine}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";";
+            var planText = $"Id;Name;Price;CreatedOn;TextBase64;{Environment.NewLine}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";https://wwww.google.it";
             var textModels = csv.LoadFromText(planText);
             Console.WriteLine($"Count:{textModels.Count()}");
 
@@ -139,7 +141,7 @@ namespace CsvSampleConsoleApp
         {
             public static MemoryStream CreateMemoryStream(string newline)
             {
-                var planText = $"Id;Name;Price;CreatedOn;TextBase64;{newline}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";";
+                var planText = $"Id;Name;Price;CreatedOn;TextBase64;{newline}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";https://www.google.it";
                 var bytes = Encoding.ASCII.GetBytes(planText);
                 var memoryStream = new MemoryStream(bytes);
                 return memoryStream;

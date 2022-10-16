@@ -67,7 +67,7 @@ namespace TinyCsv
         /// <summary>
         /// Converter
         /// </summary>
-        public IValueConverter Converter { get; internal set; } = new DefaultValueConverter();
+        public IValueConverter Converter { get; internal set; }
 
         /// <summary>
         /// Value format provider

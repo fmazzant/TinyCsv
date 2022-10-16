@@ -26,28 +26,15 @@
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
-
 namespace TinyCsv.Conversions
 {
     using System;
 
     /// <summary>
-    /// Provides a unified way of converting types of values to string, as well as for accessing standard values and subproperties.
+    /// Provides a unified way of converting DateTime of values to string
     /// </summary>
-    public class DefaultValueConverter : IValueConverter
+    public sealed class DateTimeConverter : DefaultValueConverter, IValueConverter
     {
-        /// <summary>
-        /// Converts a value to string.
-        /// </summary>
-        /// <param name="value">The value produced by the binding source.</param>
-        /// <param name="parameter">The converter parameter to use. In this case is DefaultValue</param>
-        /// <param name="culture">The culture to use in the converter.</param>
-        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public virtual string Convert(object value, object parameter, IFormatProvider provider)
-        {
-            return string.Format(provider, "{0}", value);
-        }
-
         /// <summary>
         /// Converts a string to target type value.
         /// </summary>
@@ -56,9 +43,14 @@ namespace TinyCsv.Conversions
         /// <param name="parameter">The converter parameter to use.</param>
         /// <param name="culture">The culture to use in the converter.</param>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public virtual object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
-            return System.Convert.ChangeType(value, targetType, provider);
+            if (provider is CsvColumn.DefaultFormatProvider)
+            {
+                var customFormat = (provider as CsvColumn.DefaultFormatProvider).CustomFormat;
+                return DateTime.ParseExact(value, customFormat, provider);
+            }
+            return DateTime.Parse(value, provider);
         }
     }
 }

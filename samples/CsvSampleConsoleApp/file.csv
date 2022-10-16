@@ -1,27 +1,27 @@
 ﻿# The following is the header format of the CSV file
-"Id";"Name";"Price";CreatedOn;TextBase64;
+"Id";"Name";"Price";CreatedOn;TextBase64;WebSite;
      
 # The following is the format of the CSV file
-"1";"   Name 1   ";"1.12";02/04/2022;"aGVsbG8sIHdvcmxkIQ==";
-"2";"Name "2.1";Name 2.2";"2.2";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
-"3";"Name 3";"3.31";21/04/2022;"aGVsbG8sIHdvcmxkIQ==";
-"4";"Name 4";"4.78";22/04/2022;"aGVsbG8sIHdvcmxkIQ==";
-"5";"Name 5";"5.45";23/04/2022;"aGVsbG8sIHdvcmxkIQ==";
-"6";"Name 6";"6.65";24/04/2022;"aGVsbG8sIHdvcmxkIQ==";
-"7";"Name 7";"7.45";25/04/2022;"aGVsbG8sIHdvcmxkIQ==";
+"1";"   Name 1   ";"1.12";02/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.google.it;
+"2";"Name "2.1";Name 2.2";"2.2";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.google.it;
+"3";"Name 3";"3.31";21/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.google.it;
+"4";"Name 4";"4.78";22/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.google.it;
+"5";"Name 5";"5.45";23/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.google.it;
+"6";"Name 6";"6.65";24/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.google.it;
+"7";"Name 7";"7.45";25/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.google.it;
 
 # The following is the format of the CSV file
-"8";"  Name 8  ";"8.12";27/04/2022;"aGVsbG8sIHdvcmxkIQ==";
-"9";"Name 9";"9.32";28/04/2022;"aGVsbG8sIHdvcmxkIQ==";
-"10";"Name 10";"10.1";29/04/2022;"aGVsbG8sIHdvcmxkIQ==";
+"8";"  Name 8  ";"8.12";27/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.google.it;
+"9";"Name 9";"9.32";28/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.google.it;
+"10";"Name 10";"10.1";29/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.google.it;
 
 # The following is the format of the CSV file
-"11";"Name 11";"11.3";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
-"12";"Name 12";"12.2";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
-"13";"Name 13";"13.3";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
-"14";"Name 14";"14.6";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
-"15";"Name 15";"15.89";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
-"16";"Name 16";"16.99";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";
+"11";"Name 11";"11.3";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.google.it;
+"12";"Name 12";"12.2";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.google.it;
+"13";"Name 13";"13.3";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.google.it;
+"14";"Name 14";"14.6";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.google.it;
+"15";"Name 15";"15.89";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.google.it;
+"16";"Name 16";"16.99";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.google.it;
 
-"17";"Name 17";"17.99";15/05/2022;"aGVsbG8sIHdvcmxkIQ==";
-"18";"Name 18";"120.99";15/05/2022;"aGVsbG8sIHdvcmxkIQ==";
+"17";"Name 17";"17.99";15/05/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.google.it;
+"18";"Name 18";"120.99";15/05/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.google.it;
