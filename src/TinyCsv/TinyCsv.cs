@@ -339,6 +339,7 @@ namespace TinyCsv
                 var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
                 property.SetValue(model, typedValue);
             }
+
             Options.Handlers.Read.OnRowRead(index, model, line);
             return model;
         }

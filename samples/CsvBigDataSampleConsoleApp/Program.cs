@@ -3,6 +3,9 @@
 using TinyCsv;
 using TinyCsv.Extensions;
 
+List<string> times = new List<string>();
+List<double> timesInMilliseconds = new List<double>();
+
 var csv = new TinyCsv<Model>(options =>
 {
     // Options
@@ -26,6 +29,24 @@ var csv = new TinyCsv<Model>(options =>
     options.Columns.AddColumn(m => m.DeletedBy);
     options.Columns.AddColumn(m => m.DeletedOn);
     options.Columns.AddColumn(m => m.IsDeleted);
+
+
+    options.Handlers.Start += (s, e) =>
+    {
+        times = new List<string>();
+        timesInMilliseconds = new List<double>();
+    };
+
+    DateTime d = DateTime.Now;
+    options.Handlers.Read.RowReading += (s, e) =>
+    {
+        d = DateTime.Now;
+    };
+    options.Handlers.Read.RowRead += (s, e) =>
+    {
+        times.Add($"{e.Model.Id} => {(DateTime.Now - d).TotalMilliseconds}ms");
+        timesInMilliseconds.Add((DateTime.Now - d).TotalMilliseconds);
+    };
 });
 
 var file = "C:\\Users\\fmazzant\\Desktop\\tabella.csv";
@@ -48,6 +69,8 @@ await RunWithTimeAsync("csv.SaveAsync", async () =>
     Console.WriteLine($"Save Elements: {allList.Count()}");
 });
 
+var avg = timesInMilliseconds.Average();
+Console.WriteLine($"AVG => {avg}");
 Console.WriteLine("....");
 
 async Task RunWithTimeAsync(string name, Func<Task> action)
