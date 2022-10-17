@@ -124,8 +124,8 @@ namespace CsvSampleConsoleApp
             Console.WriteLine($"Count:{syncModels.Count()}");
 
             // read from file async
-            var asyncModels = await csv.LoadFromFileAsync("file.csv");
-            Console.WriteLine($"Count:{asyncModels.Count()}");
+            var asyncModels = await csv.LoadFromFileAsync("file.csv").ToListAsync();
+            Console.WriteLine($"Count:{asyncModels.Count}");
 
             // returns IAsyncEnumerable
             await foreach (var model in csv.LoadFromStreamAsync(new StreamReader("file.csv")))

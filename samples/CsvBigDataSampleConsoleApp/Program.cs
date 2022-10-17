@@ -100,18 +100,18 @@ async Task RunWithTimeAsync(string name, Func<Task> action)
 
 public class Model
 {
-    public string Event { get; set; }
-    public string Operation { get; set; }
-    public string Note { get; set; }
-    public string IP { get; set; }
+    public string? Event { get; set; }
+    public string? Operation { get; set; }
+    public string? Note { get; set; }
+    public string? IP { get; set; }
     public Guid Id { get; set; }
-    public string CreatedBy { get; set; }
+    public string? CreatedBy { get; set; }
     public DateTime? CreatedOn { get; set; }
-    public string ModifiedBy { get; set; }
+    public string? ModifiedBy { get; set; }
     public DateTime? ModifiedOn { get; set; }
-    public string DeletedBy { get; set; }
+    public string? DeletedBy { get; set; }
     public DateTime? DeletedOn { get; set; }
-    public int IsDeleted { get; set; }
+    public int? IsDeleted { get; set; }
 }
 
 #endregion
