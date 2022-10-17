@@ -62,6 +62,7 @@ namespace TinyCsv.Factory
                 case Type _ when type == typeof(byte[]): return new ByteArrayConverter();
                 case Type _ when type == typeof(char): return new CharConverter();
                 case Type _ when type == typeof(Guid): return new GuidConverter();
+                case Type _ when type == typeof(string): return new StringConverter();
 
 #if NET6_0_OR_GREATER
                 case Type _ when type == typeof(DateOnly): return new DateOnlyConverter();

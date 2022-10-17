@@ -3,8 +3,8 @@
 using TinyCsv;
 using TinyCsv.Extensions;
 
-List<string> times = new List<string>();
-List<double> timesInMilliseconds = new List<double>();
+List<double> timesReadInMilliseconds = new List<double>();
+List<double> timesWriteInMilliseconds = new List<double>();
 
 var csv = new TinyCsv<Model>(options =>
 {
@@ -30,22 +30,30 @@ var csv = new TinyCsv<Model>(options =>
     options.Columns.AddColumn(m => m.DeletedOn);
     options.Columns.AddColumn(m => m.IsDeleted);
 
-
     options.Handlers.Start += (s, e) =>
     {
-        times = new List<string>();
-        timesInMilliseconds = new List<double>();
+        timesReadInMilliseconds = new List<double>();
+        timesWriteInMilliseconds = new List<double>();
     };
 
-    DateTime d = DateTime.Now;
+    DateTime readDateTime = DateTime.Now;
     options.Handlers.Read.RowReading += (s, e) =>
     {
-        d = DateTime.Now;
+        readDateTime = DateTime.Now;
     };
     options.Handlers.Read.RowRead += (s, e) =>
     {
-        times.Add($"{e.Model.Id} => {(DateTime.Now - d).TotalMilliseconds}ms");
-        timesInMilliseconds.Add((DateTime.Now - d).TotalMilliseconds);
+        timesReadInMilliseconds.Add((DateTime.Now - readDateTime).TotalMilliseconds);
+    };
+
+    DateTime writeDateTime = DateTime.Now;
+    options.Handlers.Write.RowWriting += (s, e) =>
+    {
+        writeDateTime = DateTime.Now;
+    };
+    options.Handlers.Write.RowWrittin += (s, e) =>
+    {
+        timesWriteInMilliseconds.Add((DateTime.Now - writeDateTime).TotalMilliseconds);
     };
 });
 
@@ -56,21 +64,27 @@ List<Model>? allList = null;
 
 await RunWithTimeAsync("File.ReadAllText", async () =>
 {
-    allText = File.ReadAllText(file);
+    allText = await File.ReadAllTextAsync(file).ConfigureAwait(false);
 });
-await RunWithTimeAsync("csv.LoadFromFile", async () =>
+await RunWithTimeAsync("csv.LoadFromTextAsync", async () =>
 {
-    allList = await csv.LoadFromTextAsync(allText).ToListAsync();
-    Console.WriteLine($"Load Elements: {allList.Count()}");
-});
-await RunWithTimeAsync("csv.SaveAsync", async () =>
-{
-    await csv.SaveAsync(file_export, allList);
-    Console.WriteLine($"Save Elements: {allList.Count()}");
+    allList = await csv.LoadFromTextAsync(allText).ToListAsync().ConfigureAwait(false);
+    Console.WriteLine($"Load Elements: {allList?.Count()}");
 });
 
-var avg = timesInMilliseconds.Average();
-Console.WriteLine($"AVG => {avg}");
+var avgRead = timesReadInMilliseconds.Average();
+Console.WriteLine($"AVG READ => {avgRead}");
+
+await RunWithTimeAsync("csv.SaveAsync", async () =>
+{
+    await csv.SaveAsync(file_export, allList).ConfigureAwait(false);
+    Console.WriteLine($"Save Elements: {allList?.Count()}");
+});
+
+var avgWrite = timesWriteInMilliseconds.Average();
+Console.WriteLine($"AVG WRITE => {avgWrite}");
+
+
 Console.WriteLine("....");
 
 async Task RunWithTimeAsync(string name, Func<Task> action)

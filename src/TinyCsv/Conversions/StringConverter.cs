@@ -29,13 +29,13 @@
 
 namespace TinyCsv.Conversions
 {
-    using System;
     using TinyCsv.Extensions;
+    using System;
 
     /// <summary>
-    /// Provides a unified way of converting Guid of values to string
+    /// Provides a unified way of converting String of values to string
     /// </summary>
-    public sealed class GuidConverter : DefaultValueConverter, IValueConverter
+    public sealed class StringConverter : DefaultValueConverter, IValueConverter
     {
         /// <summary>
         /// Converts a string to target type value.
@@ -46,11 +46,11 @@ namespace TinyCsv.Conversions
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
-            if (Guid.TryParse(value, out var guid))
+            if (value is not null)
             {
-                return guid;
+                return value;
             }
-            return targetType.IsNullable() ? null : default(Guid);
+            return targetType.IsNullable() ? null : default(string);
         }
     }
 }

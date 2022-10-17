@@ -30,6 +30,8 @@
 namespace TinyCsv
 {
     using System;
+    using System.Collections.Generic;
+    using System.Reflection;
     using System.Text;
     using TinyCsv.Args;
     using TinyCsv.Attributes;
@@ -127,12 +129,18 @@ namespace TinyCsv
         public EventHandlers Handlers { get; }
 
         /// <summary>
+        /// Object's properties
+        /// </summary>
+        internal Dictionary<string, PropertyInfo> Properties { get; set; }
+
+        /// <summary>
         /// Create a CsvOptions
         /// </summary>
         public CsvOptions()
         {
             Columns = new CsvOptionsColumns<T>();
             Handlers = new EventHandlers(this);
+            this.SetOptionPropertiesFromType(typeof(T));
         }
 
         /// <summary>
@@ -144,6 +152,21 @@ namespace TinyCsv
             Handlers = new EventHandlers(this);
             Columns = new CsvOptionsColumns<T>(type);
             this.SetOptionValueFromType(type);
+            this.SetOptionPropertiesFromType(type);
+        }
+
+        /// <summary>
+        /// Set Option Properties From Type
+        /// </summary>
+        /// <param name="type"></param>
+        private void SetOptionPropertiesFromType(Type type)
+        {
+            Properties = new Dictionary<string, PropertyInfo>();
+            var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            foreach (var property in properties)
+            {
+                Properties.Add(property.Name, property);
+            }
         }
 
         /// <summary>

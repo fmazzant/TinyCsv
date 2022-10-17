@@ -117,7 +117,7 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        Task<IEnumerable<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default(CancellationToken));
+        IAsyncEnumerable<T> LoadFromFileAsync(string path, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Reads a csv file and returns a list of objects asynchronously.

@@ -253,13 +253,10 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default)
+        public IAsyncEnumerable<T> LoadFromFileAsync(string path, CancellationToken cancellationToken = default)
         {
-            using (StreamReader streamReader = new StreamReader(path))
-            {
-                var models = await this.LoadFromStreamAsync(streamReader).ToListAsync(cancellationToken);
-                return models;
-            }
+            var streamReader = new StreamReader(path);
+            return LoadFromStreamAsync(streamReader, cancellationToken);
         }
 
         /// <summary>
@@ -334,8 +331,10 @@ namespace TinyCsv
             {
                 var value = values[column.ColumnIndex].TrimData(this.Options);
                 var columnExpression = column.ColumnExpression;
-                var propertyName = columnExpression?.GetPropertyName() ?? column.ColumnName;
-                var property = typeof(T).GetProperty(propertyName);
+                //var propertyName = columnExpression?.GetPropertyName() ?? column.ColumnName;
+                //var property = typeof(T).GetProperty(propertyName);
+                var propertyName = column.ColumnName ?? columnExpression?.GetPropertyName();
+                var property = Options.Properties[propertyName];
                 var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
                 property.SetValue(model, typedValue);
             }
