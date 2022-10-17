@@ -34,6 +34,7 @@ namespace TinyCsv
     using System.IO;
     using System.Linq;
     using System.Runtime.CompilerServices;
+    using System.Runtime.InteropServices.ComTypes;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
@@ -95,8 +96,8 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<T> LoadFromFile(string path)
         {
-            var allText = File.ReadAllText(path);
-            return LoadFromText(allText);
+            var streamReader = new StreamReader(path);
+            return LoadFromStream(streamReader);
 
         }
 
@@ -160,7 +161,6 @@ namespace TinyCsv
         public IEnumerable<T> LoadFromStream(Stream stream)
         {
             return LoadFromStream(new StreamReader(stream));
-
         }
 
         /// <summary>
@@ -194,8 +194,8 @@ namespace TinyCsv
         /// <returns></returns>
         public Task<IEnumerable<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default)
         {
-            var allText = File.ReadAllText(path);
-            return LoadFromTextAsync(allText, cancellationToken: cancellationToken);
+            var streamReader = new StreamReader(path);
+            return LoadFromStreamAsync(streamReader, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace TinyCsv
         /// <param name="streamReader"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [Obsolete($"Use {nameof(LoadFromFileAsync)} to load from file", false)]
+        [Obsolete($"Use {nameof(LoadFromStreamAsync)} to load from file", false)]
         public Task<IEnumerable<T>> LoadAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
         {
             return LoadFromStreamAsync(streamReader, cancellationToken);
@@ -475,8 +475,8 @@ namespace TinyCsv
             var values = Options.Columns.Select(column =>
             {
                 var columnExpression = column.ColumnExpression;
-                var propertyName = columnExpression?.GetPropertyName() ?? column.ColumnName;
-                var property = model.GetType().GetProperty(propertyName);
+                var propertyName = column.ColumnName ?? columnExpression?.GetPropertyName();
+                var property = Options.Properties[propertyName];
                 var value = property.GetValue(model);
                 var stringValue = column.Converter.Convert(value, null, column.ColumnFormatProvider);
                 return stringValue?.EnclosedInQuotesIfNecessary(this.Options);
