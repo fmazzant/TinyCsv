@@ -70,7 +70,7 @@ app.MapGet("/csv1", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
 {
     var tinyCsv = tinyCsvFactory.Get<Model1>("Model1");
     var result = await tinyCsv.LoadFromFileAsync("model1.csv");
-    Console.WriteLine($"{result?.Count}");
+    Console.WriteLine($"{result?.Count()}");
     return result;
 });
 
@@ -78,7 +78,7 @@ app.MapGet("/csv2", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
 {
     var tinyCsv = tinyCsvFactory.Get<Model2>("Model2");
     var result = await tinyCsv.LoadFromFileAsync("model2.csv");
-    Console.WriteLine($"{result?.Count}");
+    Console.WriteLine($"{result?.Count()}");
     return result;
 });
 
@@ -93,7 +93,7 @@ app.MapGet("/csv3", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
         options.Columns.AddColumn(m => m.Name);
     });
     var result = await tinyCsv.LoadFromFileAsync("model2.csv");
-    Console.WriteLine($"{result?.Count}");
+    Console.WriteLine($"{result?.Count()}");
     return result;
 });
 

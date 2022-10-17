@@ -83,7 +83,7 @@ namespace TinyCsv
         /// <param name="path"></param>
         /// <returns></returns>
         [Obsolete($"Use {nameof(LoadFromFile)} to load from file", false)]
-        public ICollection<T> Load(string path)
+        public IEnumerable<T> Load(string path)
         {
             return LoadFromFile(path);
         }
@@ -93,11 +93,11 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public ICollection<T> LoadFromFile(string path)
+        public IEnumerable<T> LoadFromFile(string path)
         {
-            using var streamReader = new StreamReader(path);
-            var models = Load(streamReader);
-            return new List<T>(models);
+            var allText = File.ReadAllText(path);
+            return LoadFromText(allText);
+
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace TinyCsv
         /// <param name="path"></param>
         /// <returns></returns>
         [Obsolete($"Use {nameof(LoadFromFileAsync)} to load from file", false)]
-        public Task<ICollection<T>> LoadAsync(string path, CancellationToken cancellationToken = default)
+        public Task<IEnumerable<T>> LoadAsync(string path, CancellationToken cancellationToken = default)
         {
             return LoadFromFileAsync(path, cancellationToken);
         }
@@ -192,7 +192,7 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public async Task<ICollection<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default)
         {
             using (StreamReader file = new StreamReader(path))
             {
@@ -208,7 +208,7 @@ namespace TinyCsv
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [Obsolete($"Use {nameof(LoadFromFileAsync)} to load from file", false)]
-        public Task<ICollection<T>> LoadAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
+        public Task<IEnumerable<T>> LoadAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
         {
             return LoadFromStreamAsync(streamReader, cancellationToken);
         }
@@ -219,7 +219,7 @@ namespace TinyCsv
         /// <param name="streamReader"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<ICollection<T>> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
+        public Task<IEnumerable<T>> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
         {
             return LoadFromStreamInternalAsync(streamReader, cancellationToken);
         }
@@ -230,7 +230,7 @@ namespace TinyCsv
         /// <param name="stream"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<ICollection<T>> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default)
+        public Task<IEnumerable<T>> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default)
         {
             using var streamReader = new StreamReader(stream);
             return LoadFromStreamAsync(streamReader, cancellationToken);
@@ -242,7 +242,7 @@ namespace TinyCsv
         /// <param name="text"></param>
         /// <param name="encoding">The default is UTF8</param>
         /// <returns></returns>
-        public Task<ICollection<T>> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default)
+        public Task<IEnumerable<T>> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default)
         {
             var memoryStream = GetMemoryStreamFromText(text, encoding);
             return LoadFromStreamAsync(memoryStream, cancellationToken);
@@ -256,7 +256,7 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public async Task<ICollection<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default)
         {
             using (StreamReader streamReader = new StreamReader(path))
             {
@@ -634,7 +634,7 @@ namespace TinyCsv
         }
 #endif
 #if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
-        async Task<ICollection<T>> LoadFromStreamInternalAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
+        async Task<IEnumerable<T>> LoadFromStreamInternalAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
         {
             var models = new List<T>();
 
