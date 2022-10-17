@@ -44,3 +44,4 @@
 *.user
 /samples/CsvBigDataSampleConsoleApp/bin/Debug/net6.0
 /samples/CsvBigDataSampleConsoleApp/obj
+/Benchmark/.vs/Benchmark
