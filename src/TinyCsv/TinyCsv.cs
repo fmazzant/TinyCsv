@@ -192,13 +192,10 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default)
+        public Task<IEnumerable<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default)
         {
-            using (StreamReader file = new StreamReader(path))
-            {
-                var models = await this.LoadFromStreamAsync(file, cancellationToken);
-                return new List<T>(models);
-            }
+            var allText = File.ReadAllText(path);
+            return LoadFromTextAsync(allText, cancellationToken: cancellationToken);
         }
 
         /// <summary>
