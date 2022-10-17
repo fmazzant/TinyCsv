@@ -58,18 +58,18 @@ var csv = new TinyCsv<Model>(options =>
 });
 
 var file = "C:\\Users\\fmazzant\\Desktop\\tabella.csv";
-//var file = "C:\\Users\\fmazzant\\Desktop\\file_export_2.csv";
+//file = "C:\\Users\\fmazzant\\Desktop\\file_export_2.csv";
 var file_export = "C:\\Users\\fmazzant\\Desktop\\file_export.csv";
 string allText = "";
 List<Model>? allList = null;
 
 await RunWithTimeAsync("File.ReadAllText", async () =>
 {
-    allText = await File.ReadAllTextAsync(file).ConfigureAwait(false);
+    allText = await File.ReadAllTextAsync(file);
 });
 await RunWithTimeAsync("csv.LoadFromTextAsync", async () =>
 {
-    allList = await csv.LoadFromTextAsync(allText).ToListAsync().ConfigureAwait(false);
+    allList = await csv.LoadFromTextAsync(allText).ToListAsync();
     Console.WriteLine($"Load Elements: {allList?.Count()}");
 });
 
