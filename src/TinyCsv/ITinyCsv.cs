@@ -83,7 +83,7 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        Task<IEnumerable<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Reads a csv from stream and returns a list of objects asynchronously.
@@ -91,7 +91,7 @@ namespace TinyCsv
         /// <param name="streamReader"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<T>> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<T>> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Reads a csv from stream and returns a list of objects asynchronously.
@@ -99,14 +99,14 @@ namespace TinyCsv
         /// <param name="stream"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<T>> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<T>> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Reads a csv from text and returns a list of objects asynchronously.
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        Task<IEnumerable<T>> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<T>> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default);
 
 #endif
 
@@ -117,28 +117,28 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        IAsyncEnumerable<T> LoadFromFileAsync(string path, CancellationToken cancellationToken = default(CancellationToken));
+        IAsyncEnumerable<T> LoadFromFileAsync(string path, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Reads a csv file and returns a list of objects asynchronously.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken));
+        IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Reads a csv file and returns a list of objects asynchronously.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        IAsyncEnumerable<T> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default(CancellationToken));
+        IAsyncEnumerable<T> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Reads a csv from text and returns a list of objects asynchronously.
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        IAsyncEnumerable<T> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default(CancellationToken));
+        IAsyncEnumerable<T> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default);
 
 #endif
 
@@ -168,21 +168,21 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <param name="models"></param>
-        Task SaveAsync(string path, IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken));
+        Task SaveAsync(string path, IEnumerable<T> models, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Writes a list of objects to a csv file asynchronously.
         /// </summary>
         /// <param name="path"></param>
         /// <param name="models"></param>
-        Task SaveAsync(StreamWriter streamWriter, IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken));
+        Task SaveAsync(StreamWriter streamWriter, IEnumerable<T> models, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Writes a list of objects to a csv file asynchronously.
         /// </summary>
         /// <param name="path"></param>
         /// <param name="models"></param>
-        Task SaveAsync(Stream stream, IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken));
+        Task SaveAsync(Stream stream, IEnumerable<T> models, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get all csv text
@@ -206,7 +206,7 @@ namespace TinyCsv
         /// <param name="models"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<string> GetAllTextAsync(IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken));
+        Task<string> GetAllTextAsync(IEnumerable<T> models, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get all csv lines
@@ -214,6 +214,6 @@ namespace TinyCsv
         /// <param name="models"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<string[]> GetAllLinesAsync(IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken));
+        Task<string[]> GetAllLinesAsync(IEnumerable<T> models, CancellationToken cancellationToken = default);
     }
 }
