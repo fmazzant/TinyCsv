@@ -1,6 +1,8 @@
 ﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 using System.Text;
+using TinyCsv;
 
 namespace BenchmarkConsoleApp
 {
@@ -8,35 +10,64 @@ namespace BenchmarkConsoleApp
     {
         static void Main(string[] args)
         {
-            var summary = BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
+            var summary = BenchmarkRunner.Run<LoadFromFileBenchmarker>();
         }
     }
 
-
-    [MemoryDiagnoser]
-    public class MemoryBenchmarkerDemo
+    public class LoadFromFileBenchmarker: Benchmarker
     {
-        int NumberOfItems = 100000;
+        [Params("C:\\Users\\fmazzant\\Desktop\\tabella.csv", "C:\\Users\\fmazzant\\Desktop\\tabella2.csv")]
+        public string? fileName;
 
         [Benchmark]
-        public string ConcatStringsUsingStringBuilder()
+        public object LoadFromFile() => Csv().LoadFromFile(fileName);
+    }
+
+
+    public abstract class Benchmarker
+    {
+        protected TinyCsv<Model> Csv()
         {
-            var sb = new StringBuilder();
-            for (int i = 0; i < NumberOfItems; i++)
+            return new TinyCsv<Model>(options =>
             {
-                sb.Append("Hello World!" + i);
-            }
-            return sb.ToString();
+                // Options
+                options.HasHeaderRecord = true;
+                options.Delimiter = ",";
+                options.RowsToSkip = 0;
+                options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
+                options.TrimData = true;
+                options.ValidateColumnCount = true;
+
+                // Columns
+                options.Columns.AddColumn(m => m.Id);
+                options.Columns.AddColumn(m => m.Operation);
+                options.Columns.AddColumn(m => m.Event);
+                options.Columns.AddColumn(m => m.IP);
+                options.Columns.AddColumn(m => m.Note);
+                options.Columns.AddColumn(m => m.CreatedBy);
+                options.Columns.AddColumn(m => m.CreatedOn);
+                options.Columns.AddColumn(m => m.ModifiedBy);
+                options.Columns.AddColumn(m => m.ModifiedOn);
+                options.Columns.AddColumn(m => m.DeletedBy);
+                options.Columns.AddColumn(m => m.DeletedOn);
+                options.Columns.AddColumn(m => m.IsDeleted);
+            });
         }
-        [Benchmark]
-        public string ConcatStringsUsingGenericList()
-        {
-            var list = new List<string>(NumberOfItems);
-            for (int i = 0; i < NumberOfItems; i++)
-            {
-                list.Add("Hello World!" + i);
-            }
-            return list.ToString();
-        }
+    }
+
+    public class Model
+    {
+        public string? Event { get; set; }
+        public string? Operation { get; set; }
+        public string? Note { get; set; }
+        public string? IP { get; set; }
+        public Guid Id { get; set; }
+        public string? CreatedBy { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public string? ModifiedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public string? DeletedBy { get; set; }
+        public DateTime? DeletedOn { get; set; }
+        public int? IsDeleted { get; set; }
     }
 }
