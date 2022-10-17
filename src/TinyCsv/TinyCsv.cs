@@ -331,8 +331,6 @@ namespace TinyCsv
             {
                 var value = values[column.ColumnIndex].TrimData(this.Options);
                 var columnExpression = column.ColumnExpression;
-                //var propertyName = columnExpression?.GetPropertyName() ?? column.ColumnName;
-                //var property = typeof(T).GetProperty(propertyName);
                 var propertyName = column.ColumnName ?? columnExpression?.GetPropertyName();
                 var property = Options.Properties[propertyName];
                 var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);

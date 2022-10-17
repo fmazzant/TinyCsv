@@ -57,8 +57,8 @@ var csv = new TinyCsv<Model>(options =>
     };
 });
 
-//var file = "C:\\Users\\fmazzant\\Desktop\\tabella.csv";
-var file = "C:\\Users\\fmazzant\\Desktop\\file_export_2.csv";
+var file = "C:\\Users\\fmazzant\\Desktop\\tabella.csv";
+//var file = "C:\\Users\\fmazzant\\Desktop\\file_export_2.csv";
 var file_export = "C:\\Users\\fmazzant\\Desktop\\file_export.csv";
 string allText = "";
 List<Model>? allList = null;
@@ -78,7 +78,7 @@ Console.WriteLine($"AVG READ => {avgRead}");
 
 await RunWithTimeAsync("csv.SaveAsync", async () =>
 {
-    await csv.SaveAsync(file_export, allList).ConfigureAwait(false);
+    await csv.SaveAsync(file_export, allList);
     Console.WriteLine($"Save Elements: {allList?.Count()}");
 });
 
