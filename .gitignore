@@ -45,3 +45,5 @@
 /samples/CsvBigDataSampleConsoleApp/bin/Debug/net6.0
 /samples/CsvBigDataSampleConsoleApp/obj
 /Benchmark/.vs/Benchmark
+/Benchmark/BenchmarkConsoleApp/bin/Release/net6.0
+/Benchmark/BenchmarkConsoleApp/obj
