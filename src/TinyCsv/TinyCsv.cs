@@ -229,7 +229,7 @@ namespace TinyCsv
         /// <returns></returns>
         public Task<IEnumerable<T>> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default)
         {
-            using var streamReader = new StreamReader(stream);
+            var streamReader = new StreamReader(stream);
             return LoadFromStreamAsync(streamReader, cancellationToken);
         }
 
@@ -290,7 +290,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IAsyncEnumerable<T> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default)
         {
-            using var streamReader = new StreamReader(stream);
+            var streamReader = new StreamReader(stream);
             return LoadFromStreamAsync(streamReader, cancellationToken);
         }
 
