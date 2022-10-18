@@ -70,7 +70,7 @@ namespace TinyCsv.Extensions
         {
             var validateColumnCount = options.ValidateColumnCount;
             var allowBackSlashToEscapeQuote = options.AllowBackSlashToEscapeQuote;
-            var columnCount = options.Columns.Count();
+            var columnCount = options.Columns.Count;
             var delimiter = options.Delimiter;
 
             var expression = $"{delimiter}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))";

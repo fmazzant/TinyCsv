@@ -52,6 +52,11 @@ namespace TinyCsv
         private List<CsvColumn> Columns { get; set; }
 
         /// <summary>
+        /// Number of Columns
+        /// </summary>
+        public int Count => Columns.Count;
+
+        /// <summary>
         /// Create CsvOptionColumns
         /// </summary>
         public CsvOptionsColumns()
