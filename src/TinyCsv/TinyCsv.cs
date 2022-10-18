@@ -34,11 +34,11 @@ namespace TinyCsv
     using System.IO;
     using System.Linq;
     using System.Runtime.CompilerServices;
-    using System.Runtime.InteropServices.ComTypes;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using TinyCsv.Extensions;
+    using TinyCsv.Streams;
 
     /// <summary>
     /// TinyCsv is a simple csv reader/writer library.
@@ -170,7 +170,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<T> LoadFromText(string text, Encoding encoding = null)
         {
-            var memoryStream = GetMemoryStreamFromText(text, encoding);
+            var memoryStream = new TextMemoryStream(text, encoding ?? Options.TextEncoding);
             return LoadFromStream(memoryStream);
         }
 
@@ -241,7 +241,7 @@ namespace TinyCsv
         /// <returns></returns>
         public Task<IEnumerable<T>> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default)
         {
-            var memoryStream = GetMemoryStreamFromText(text, encoding);
+            var memoryStream = new TextMemoryStream(text, encoding ?? Options.TextEncoding);
             return LoadFromStreamAsync(memoryStream, cancellationToken);
         }
 #endif
@@ -300,7 +300,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IAsyncEnumerable<T> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default)
         {
-            var memoryStream = GetMemoryStreamFromText(text, encoding);
+            var memoryStream = new TextMemoryStream(text, encoding ?? Options.TextEncoding);
             return LoadFromStreamAsync(memoryStream, cancellationToken);
         }
 #endif
@@ -339,20 +339,6 @@ namespace TinyCsv
 
             Options.Handlers.Read.OnRowRead(index, model, line);
             return model;
-        }
-
-        /// <summary>
-        /// Returns memory stream from text
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="encoding"></param>
-        /// <returns></returns>
-        private MemoryStream GetMemoryStreamFromText(string text, Encoding encoding = null)
-        {
-            var textEncoding = encoding ?? Options.TextEncoding;
-            var bytes = textEncoding.GetBytes(text);
-            var memoryStream = new MemoryStream(bytes);
-            return memoryStream;
         }
 
         /// <summary>
