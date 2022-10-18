@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.InteropServices;
-using TinyCsv.Extensions;
-/// <summary>
+﻿/// <summary>
 /// 
 /// The MIT License (MIT)
 /// 
@@ -31,8 +26,12 @@ using TinyCsv.Extensions;
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
+
 namespace TinyCsv.Data
 {
+    using System.Collections.Generic;
+    using System.IO;
+
     /// <summary>
     /// CsvDataReader
     /// </summary>
@@ -57,5 +56,13 @@ namespace TinyCsv.Data
         }
 
 
+        public IEnumerable<string[]> GetFields(string line)
+        {
+            var fields = line.Split(options.Delimiter[0]);
+
+
+
+            yield return fields;
+        }
     }
 }
