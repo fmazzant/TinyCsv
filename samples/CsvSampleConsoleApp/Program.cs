@@ -45,6 +45,7 @@ namespace CsvSampleConsoleApp
         public decimal Price { get; set; }
         public DateTime CreatedOn { get; set; }
         public string TextBase64 { get; set; }
+
         public override string ToString()
         {
             return $"ToString: {Id}, {Name}, {Price}, {CreatedOn}, {TextBase64}";
