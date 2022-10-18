@@ -32,8 +32,25 @@ namespace TinyCsv.Streams
     using System.IO;
     using System.Text;
 
+    /// <summary>
+    /// Text Memory Stream
+    /// </summary>
     public class TextMemoryStream : MemoryStream
     {
+        /// <summary>
+        /// Create an instance of TextMemoryStream from UTF8 text
+        /// </summary>
+        /// <param name="text"></param>
+        public TextMemoryStream(string text)
+          : this(text, Encoding.UTF8)
+        {
+        }
+
+        /// <summary>
+        /// Create an instance of TextMemoryStream from text and encoding
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="encoding"></param>
         public TextMemoryStream(string text, Encoding encoding)
             : base(encoding.GetBytes(text))
         {
