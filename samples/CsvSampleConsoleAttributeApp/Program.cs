@@ -43,7 +43,7 @@ namespace CsvSampleConsoleAttributeApp
     [RowsToSkip(0)]
     [SkipRow(typeof(CustomSkipRow))]
     [TrimData(true)]
-    [ValidateColumnCount(true)]
+    [ValidateColumnCount(false)]
     [HasHeaderRecord(true)]
     public class AttributeModel
     {
@@ -130,7 +130,6 @@ namespace CsvSampleConsoleAttributeApp
 
             // write on file async
             await csv.SaveAsync("file_export.csv", models);
-
         }
 
         static class Memory
