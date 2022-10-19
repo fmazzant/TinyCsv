@@ -31,6 +31,7 @@ using Microsoft.AspNetCore.Authorization;
 using Models;
 using TinyCsv;
 using TinyCsv.AspNetCore.Extensions;
+using TinyCsv.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,7 +70,7 @@ app.MapGet("/", [AllowAnonymous] () =>
 app.MapGet("/csv1", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
 {
     var tinyCsv = tinyCsvFactory.Get<Model1>("Model1");
-    var result = await tinyCsv.LoadFromFileAsync("model1.csv");
+    var result = await tinyCsv.LoadFromFileAsync("model1.csv").ToListAsync();
     Console.WriteLine($"{result?.Count}");
     return result;
 });
@@ -77,7 +78,7 @@ app.MapGet("/csv1", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
 app.MapGet("/csv2", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
 {
     var tinyCsv = tinyCsvFactory.Get<Model2>("Model2");
-    var result = await tinyCsv.LoadFromFileAsync("model2.csv");
+    var result = await tinyCsv.LoadFromFileAsync("model2.csv").ToListAsync();
     Console.WriteLine($"{result?.Count}");
     return result;
 });
@@ -92,7 +93,7 @@ app.MapGet("/csv3", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
         options.Columns.AddColumn(m => m.Id);
         options.Columns.AddColumn(m => m.Name);
     });
-    var result = await tinyCsv.LoadFromFileAsync("model2.csv");
+    var result = await tinyCsv.LoadFromFileAsync("model2.csv").ToListAsync();
     Console.WriteLine($"{result?.Count}");
     return result;
 });

@@ -43,7 +43,7 @@ namespace CsvSampleConsoleAttributeApp
     [RowsToSkip(0)]
     [SkipRow(typeof(CustomSkipRow))]
     [TrimData(true)]
-    [ValidateColumnCount(true)]
+    [ValidateColumnCount(false)]
     [HasHeaderRecord(true)]
     public class AttributeModel
     {
@@ -112,11 +112,11 @@ namespace CsvSampleConsoleAttributeApp
 
             // read from file sync
             var syncModels = csv.LoadFromFile("file.csv");
-            Console.WriteLine($"Count:{syncModels.Count}");
+            Console.WriteLine($"Count:{syncModels.Count()}");
 
             // read from file async
-            var asyncModels = await csv.LoadFromFileAsync("file.csv");
-            Console.WriteLine($"Count:{asyncModels.Count}");
+            var asyncModels = await csv.LoadFromFileAsync("file.csv").ToListAsync();
+            Console.WriteLine($"Count:{asyncModels.Count()}");
 
             // returns IAsyncEnumerable
             await foreach (var model in csv.LoadFromStreamAsync(new StreamReader("file.csv")))
@@ -130,7 +130,6 @@ namespace CsvSampleConsoleAttributeApp
 
             // write on file async
             await csv.SaveAsync("file_export.csv", models);
-
         }
 
         static class Memory

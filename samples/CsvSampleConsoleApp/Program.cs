@@ -38,13 +38,17 @@ namespace CsvSampleConsoleApp
     using TinyCsv.Conversions;
     using TinyCsv.Extensions;
 
+    public enum RowType { A, B }
+
     public class Model
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
         public DateTime CreatedOn { get; set; }
         public string TextBase64 { get; set; }
+        public Uri WebSite { get; set; }
+        public RowType RowType { get; set; }
         public override string ToString()
         {
             return $"ToString: {Id}, {Name}, {Price}, {CreatedOn}, {TextBase64}";
@@ -89,6 +93,8 @@ namespace CsvSampleConsoleApp
                  options.Columns.AddColumn(m => m.Price);
                  options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
                  options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
+                 options.Columns.AddColumn(m => m.WebSite);
+                 options.Columns.AddColumn(m => m.RowType);
 
                  // Event Handlers Read
                  options.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
@@ -109,17 +115,17 @@ namespace CsvSampleConsoleApp
             }
 
             // read from text
-            var planText = $"Id;Name;Price;CreatedOn;TextBase64;{Environment.NewLine}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";";
+            var planText = $"Id;Name;Price;CreatedOn;TextBase64;{Environment.NewLine}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";https://wwww.google.it;A;";
             var textModels = csv.LoadFromText(planText);
             Console.WriteLine($"Count:{textModels.Count()}");
 
             // read from file sync
             var syncModels = csv.LoadFromFile("file.csv");
-            Console.WriteLine($"Count:{syncModels.Count}");
+            Console.WriteLine($"Count:{syncModels.Count()}");
 
             // read from file async
-            var asyncModels = await csv.LoadFromFileAsync("file.csv");
-            Console.WriteLine($"Count:{asyncModels.Count}");
+            var asyncModels = await csv.LoadFromFileAsync("file.csv").ToListAsync();
+            Console.WriteLine($"Count:{asyncModels.Count()}");
 
             // returns IAsyncEnumerable
             await foreach (var model in csv.LoadFromStreamAsync(new StreamReader("file.csv")))
@@ -129,7 +135,7 @@ namespace CsvSampleConsoleApp
 
             // load IAsyncEnumerable into a list
             var models = await csv.LoadFromStreamAsync(new StreamReader("file.csv")).ToListAsync();
-            Console.WriteLine($"Count:{models.Count}");
+            Console.WriteLine($"Count:{models.Count()}");
 
             // write on file async
             await csv.SaveAsync("file_export.csv", models);
@@ -139,7 +145,7 @@ namespace CsvSampleConsoleApp
         {
             public static MemoryStream CreateMemoryStream(string newline)
             {
-                var planText = $"Id;Name;Price;CreatedOn;TextBase64;{newline}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";";
+                var planText = $"Id;Name;Price;CreatedOn;TextBase64;{newline}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";https://www.google.it;B;";
                 var bytes = Encoding.ASCII.GetBytes(planText);
                 var memoryStream = new MemoryStream(bytes);
                 return memoryStream;

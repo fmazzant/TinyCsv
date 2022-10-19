@@ -27,26 +27,18 @@
 /// 
 /// </summary>
 
+#if NET6_0_OR_GREATER
 namespace TinyCsv.Conversions
 {
     using System;
+    using System.Globalization;
+    using TinyCsv.Extensions;
 
     /// <summary>
-    /// Provides a unified way of converting types of values to string, as well as for accessing standard values and subproperties.
+    /// Provides a unified way of converting TimeOnly of values to string
     /// </summary>
-    public class DefaultValueConverter : IValueConverter
+    public sealed class TimeOnlyConverter : DefaultValueConverter, IValueConverter
     {
-        /// <summary>
-        /// Converts a value to string.
-        /// </summary>
-        /// <param name="value">The value produced by the binding source.</param>
-        /// <param name="parameter">The converter parameter to use. In this case is DefaultValue</param>
-        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public virtual string Convert(object value, object parameter, IFormatProvider provider)
-        {
-            return string.Format(provider, "{0}", value);
-        }
-
         /// <summary>
         /// Converts a string to target type value.
         /// </summary>
@@ -54,9 +46,25 @@ namespace TinyCsv.Conversions
         /// <param name="targetType">The type to convert to.</param>
         /// <param name="parameter">The converter parameter to use.</param>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public virtual object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
-            return System.Convert.ChangeType(value, targetType, provider);
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                if (provider is CsvColumn.DefaultFormatProvider defaultFormatProvider)
+                {
+                    if (TimeOnly.TryParseExact(value, defaultFormatProvider.CustomFormat, provider, DateTimeStyles.None, out var timeOnly))
+                    {
+                        return timeOnly;
+                    }
+                }
+                else if (TimeOnly.TryParse(value, out var timeOnly))
+                {
+                    return timeOnly;
+                }
+            }
+            return targetType.IsNullable() ? null : default(TimeOnly);
         }
     }
+
 }
+#endif
