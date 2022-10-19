@@ -29,38 +29,24 @@
 
 namespace TinyCsv.Data
 {
-    using System.Collections.Generic;
-    using System.IO;
-
     /// <summary>
-    /// CsvDataReader
+    /// TinyCsv Data Reader Options definition
     /// </summary>
-    public class TinyCsvDataReader<T> : ICsvDataReader<T>
+    public interface ITinyCsvDataReaderOptions
     {
-        private ITinyCsvDataReaderOptions options;
-        private readonly StreamReader reader;
+        /// <summary>
+        /// Delimiter
+        /// </summary>
+        char Delimiter { get; }
 
-        public TinyCsvDataReader(ITinyCsvDataReaderOptions options, StreamReader reader)
-        {
-            this.options = options;
-            this.reader = reader;
-        }
+        /// <summary>
+        /// Respects new line (either \r\n or \n) characters inside field values enclosed in double quotes.
+        /// </summary>
+        bool AllowRowEnclosedInDoubleQuotesValues { get; }
 
-        public IEnumerable<string> GetLines()
-        {
-            var line = string.Empty;
-            while ((line = reader.ReadLine()) != null)
-            {
-                yield return line;
-            }
-        }
-
-        public IEnumerable<string[]> GetFields(string line)
-        {
-            var fields = line.Split(options.Delimiter);
-
-
-            yield return fields;
-        }
+        /// <summary>
+        /// Allows the sequence "\"" to be a valid quoted value (in addition to the standard """")
+        /// </summary>
+        bool AllowBackSlashToEscapeQuote { get; }
     }
 }

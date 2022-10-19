@@ -37,10 +37,31 @@ namespace TinyCsv
     using TinyCsv.Attributes;
 
     /// <summary>
+    ///  Csv Options abstract definition
+    /// </summary>
+    public abstract class CsvOptions
+    {
+        /// <summary>
+        /// Delimiter
+        /// </summary>
+        public string Delimiter { get; set; } = ";";
+
+        /// <summary>
+        /// Respects new line (either \r\n or \n) characters inside field values enclosed in double quotes.
+        /// </summary>
+        public bool AllowRowEnclosedInDoubleQuotesValues { get; set; } = true;
+
+        /// <summary>
+        /// Allows the sequence "\"" to be a valid quoted value (in addition to the standard """")
+        /// </summary>
+        public bool AllowBackSlashToEscapeQuote { get; set; } = false;
+    }
+
+    /// <summary>
     /// Csv Options definition
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public sealed class CsvOptions<T>
+    public sealed class CsvOptions<T> : CsvOptions
     {
         /// <summary>
         /// Has header record
@@ -51,11 +72,6 @@ namespace TinyCsv
         /// Columns
         /// </summary>
         public CsvOptionsColumns<T> Columns { get; internal set; }
-
-        /// <summary>
-        /// Delimiter
-        /// </summary>
-        public string Delimiter { get; set; } = ";";
 
         /// <summary>
         /// Double quotes
@@ -107,16 +123,6 @@ namespace TinyCsv
         /// Allows comment inside the content
         /// </summary>
         public bool AllowComment { get; set; } = true;
-
-        /// <summary>
-        /// Respects new line (either \r\n or \n) characters inside field values enclosed in double quotes.
-        /// </summary>
-        public bool AllowRowEnclosedInDoubleQuotesValues { get; set; } = true;
-
-        /// <summary>
-        /// Allows the sequence "\"" to be a valid quoted value (in addition to the standard """")
-        /// </summary>
-        public bool AllowBackSlashToEscapeQuote { get; set; } = false;
 
         /// <summary>
         /// Allow the last char is the delimiter char

@@ -29,7 +29,9 @@
 
 namespace TinyCsv.Extensions
 {
+    using TinyCsv.Data;
     using System;
+    using System.Linq;
 
     /// <summary>
     /// Type extensions

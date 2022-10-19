@@ -27,40 +27,27 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Data
+namespace TinyCsv.Extensions
 {
-    using System.Collections.Generic;
-    using System.IO;
+    using TinyCsv.Data;
+    using System.Linq;
 
     /// <summary>
-    /// CsvDataReader
+    /// CsvOptions Extensions
     /// </summary>
-    public class TinyCsvDataReader<T> : ICsvDataReader<T>
+    public static class CsvOptionsExtensions
     {
-        private ITinyCsvDataReaderOptions options;
-        private readonly StreamReader reader;
-
-        public TinyCsvDataReader(ITinyCsvDataReaderOptions options, StreamReader reader)
+        public static TinyCsvDataReaderOptions AsTinyCsvDataReaderOptions<T>(this CsvOptions options)
         {
-            this.options = options;
-            this.reader = reader;
-        }
-
-        public IEnumerable<string> GetLines()
-        {
-            var line = string.Empty;
-            while ((line = reader.ReadLine()) != null)
+            var model = new TinyCsvDataReaderOptions
             {
-                yield return line;
-            }
+                Delimiter = options.Delimiter.FirstOrDefault(),
+                AllowBackSlashToEscapeQuote = options.AllowBackSlashToEscapeQuote,
+                AllowRowEnclosedInDoubleQuotesValues = options.AllowRowEnclosedInDoubleQuotesValues
+            };
+            return model;
         }
 
-        public IEnumerable<string[]> GetFields(string line)
-        {
-            var fields = line.Split(options.Delimiter);
 
-
-            yield return fields;
-        }
     }
 }
