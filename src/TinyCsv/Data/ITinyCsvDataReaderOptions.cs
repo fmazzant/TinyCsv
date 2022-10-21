@@ -48,5 +48,10 @@ namespace TinyCsv.Data
         /// Allows the sequence "\"" to be a valid quoted value (in addition to the standard """")
         /// </summary>
         bool AllowBackSlashToEscapeQuote { get; }
+
+        /// <summary>
+        /// Number of columns
+        /// </summary>
+        int ColumnCount { get; }
     }
 }

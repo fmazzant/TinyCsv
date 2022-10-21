@@ -29,8 +29,11 @@
 
 namespace TinyCsv.Data
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
+    using System.Text;
 
     /// <summary>
     /// CsvDataReader
@@ -55,12 +58,67 @@ namespace TinyCsv.Data
             }
         }
 
-        public IEnumerable<string[]> GetFields(string line)
+        public string[] GetFields(string line)
         {
-            var fields = line.Split(options.Delimiter);
+            var result = new List<string>();
+            var sb = new StringBuilder(string.Empty);
+            bool inQuotes = false;
 
+            for (int i = 0; i < line.Length; i++)
+            {
+                var isLast = i == line.Length - 1;
+                var isBackspace = line[i] == '\\';
+                var isQuotes = line[i] == '\"';
+                var isDelimiter = line[i] == options.Delimiter;
 
-            yield return fields;
+                if (isQuotes)
+                {
+                    if (!isLast && line[i + 1] == '\"')
+                    {
+                        sb.Append(line[i]);
+                    }
+                    else
+                    {
+                        inQuotes = !inQuotes;
+                    }
+                }
+                else if (isBackspace)
+                {
+                    sb.Append(line[i + 1]);
+                    i++;
+                }
+                else if (isDelimiter)
+                {
+                    if (i < line.Length - 1)
+                    {
+                        if (!inQuotes)
+                        {
+                            result.Add(sb.ToString());
+                            sb.Clear();
+                        }
+                        else
+                        {
+                            sb.Append(line[i]);
+                        }
+                    }
+                }
+                else
+                {
+                    sb.Append(line[i]);
+                }
+            }
+            result.Add(sb.ToString());
+
+            return result.ToArray();
+        }
+
+        public IEnumerable<string[]> GetLinesField()
+        {
+            foreach (var line in GetLines())
+            {
+                var fields = GetFields(line);
+                yield return fields;
+            }
         }
     }
 }

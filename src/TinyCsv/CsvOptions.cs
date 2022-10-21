@@ -42,6 +42,11 @@ namespace TinyCsv
     public abstract class CsvOptions
     {
         /// <summary>
+        /// Has header record
+        /// </summary>
+        public bool HasHeaderRecord { get; set; }
+
+        /// <summary>
         /// Delimiter
         /// </summary>
         public string Delimiter { get; set; } = ";";
@@ -55,23 +60,6 @@ namespace TinyCsv
         /// Allows the sequence "\"" to be a valid quoted value (in addition to the standard """")
         /// </summary>
         public bool AllowBackSlashToEscapeQuote { get; set; } = false;
-    }
-
-    /// <summary>
-    /// Csv Options definition
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public sealed class CsvOptions<T> : CsvOptions
-    {
-        /// <summary>
-        /// Has header record
-        /// </summary>
-        public bool HasHeaderRecord { get; set; }
-
-        /// <summary>
-        /// Columns
-        /// </summary>
-        public CsvOptionsColumns<T> Columns { get; internal set; }
 
         /// <summary>
         /// Double quotes
@@ -128,6 +116,18 @@ namespace TinyCsv
         /// Allow the last char is the delimiter char
         /// </summary>
         public bool EndOfLineDelimiterChar { get; set; } = true;
+    }
+
+    /// <summary>
+    /// Csv Options definition
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public sealed class CsvOptions<T> : CsvOptions
+    {
+        /// <summary>
+        /// Columns
+        /// </summary>
+        public CsvOptionsColumns<T> Columns { get; internal set; }
 
         /// <summary>
         /// Event Handlers
