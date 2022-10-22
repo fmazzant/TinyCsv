@@ -29,35 +29,55 @@
 
 namespace TinyCsv.Data
 {
-    using System;
+    using TinyCsv.Exceptions;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Text;
+    using TinyCsv.Extensions;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// CsvDataReader
     /// </summary>
     public class TinyCsvDataReader<T> : ICsvDataReader<T>
     {
-        private ITinyCsvDataReaderOptions options;
+        private readonly ICsvOptions options;
         private readonly StreamReader reader;
 
-        public TinyCsvDataReader(ITinyCsvDataReaderOptions options, StreamReader reader)
+        /// <summary>
+        /// Create a TinyCsvDataReader instance
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="reader"></param>
+        public TinyCsvDataReader(ICsvOptions options, StreamReader reader)
         {
             this.options = options;
             this.reader = reader;
         }
 
+        /// <summary>
+        /// Get lines
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<string> GetLines()
         {
+            var index = 0;
             var line = string.Empty;
             while ((line = reader.ReadLine()) != null)
             {
+                if (options.RowsToSkip > 0 && options.RowsToSkip > index++)
+                {
+                    continue;
+                }
                 yield return line;
             }
         }
 
+        /// <summary>
+        /// Get fields by line
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
         public string[] GetFields(string line)
         {
             var result = new List<string>();
@@ -67,11 +87,16 @@ namespace TinyCsv.Data
             for (int i = 0; i < line.Length; i++)
             {
                 var isLast = i == line.Length - 1;
-                var isBackspace = line[i] == '\\';
-                var isQuotes = line[i] == '\"';
-                var isDelimiter = line[i] == options.Delimiter;
+                var isBackslash = line[i] == '\\' && options.AllowBackSlashToEscapeQuote;
+                var isQuotes = line[i] == '\"' && options.AllowRowEnclosedInDoubleQuotesValues;
+                var isDelimiter = line[i] == options.Delimiter[0];
+                var isComment = line[0] == options.Comment;
 
-                if (isQuotes)
+                if (isComment && !options.AllowComment)
+                {
+                    throw new NotAllowCommentException();
+                }
+                else if (isQuotes)
                 {
                     if (!isLast && line[i + 1] == '\"')
                     {
@@ -82,7 +107,7 @@ namespace TinyCsv.Data
                         inQuotes = !inQuotes;
                     }
                 }
-                else if (isBackspace)
+                else if (isBackslash)
                 {
                     sb.Append(line[i + 1]);
                     i++;
@@ -93,12 +118,19 @@ namespace TinyCsv.Data
                     {
                         if (!inQuotes)
                         {
-                            result.Add(sb.ToString());
+                            result.Add(sb.ToString().TrimData(options));
                             sb.Clear();
                         }
                         else
                         {
                             sb.Append(line[i]);
+                        }
+                    }
+                    else
+                    {
+                        if (!options.EndOfLineDelimiterChar)
+                        {
+                            throw new EndOfLineDelimiterCharException($"The delimiter{options.Delimiter} in the end of line is not valid!");
                         }
                     }
                 }
@@ -107,17 +139,24 @@ namespace TinyCsv.Data
                     sb.Append(line[i]);
                 }
             }
-            result.Add(sb.ToString());
+            result.Add(sb.ToString().TrimData(options));
 
             return result.ToArray();
         }
 
-        public IEnumerable<string[]> GetLinesField()
+        /// <summary>
+        /// Get lines field
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string[]> GetLineFields()
         {
             foreach (var line in GetLines())
             {
-                var fields = GetFields(line);
-                yield return fields;
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    var fields = GetFields(line);
+                    yield return fields;
+                }
             }
         }
     }

@@ -27,31 +27,54 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Data
+namespace TinyCsv.Exceptions
 {
+    using System;
+    using System.Runtime.Serialization;
+
     /// <summary>
-    /// TinyCsv Data Reader Options definition
+    /// Defines End Of Line Delimiter Char exception
     /// </summary>
-    public interface ITinyCsvDataReaderOptions
+    [Serializable]
+    public class EndOfLineDelimiterCharException : Exception
     {
         /// <summary>
-        /// Delimiter
+        /// Create a new instance of EndOfLineDelimiterCharException
         /// </summary>
-        char Delimiter { get; }
+        public EndOfLineDelimiterCharException()
+            : base()
+        {
+
+        }
 
         /// <summary>
-        /// Respects new line (either \r\n or \n) characters inside field values enclosed in double quotes.
+        /// Create a new instance of EndOfLineDelimiterCharException
         /// </summary>
-        bool AllowRowEnclosedInDoubleQuotesValues { get; }
+        /// <param name="message"></param>
+        public EndOfLineDelimiterCharException(string message)
+            : base(message)
+        {
+        }
 
         /// <summary>
-        /// Allows the sequence "\"" to be a valid quoted value (in addition to the standard """")
+        /// Create a new instance of EndOfLineDelimiterCharException
         /// </summary>
-        bool AllowBackSlashToEscapeQuote { get; }
+        /// <param name="message"></param>
+        /// <param name="innerException"></param>
+        public EndOfLineDelimiterCharException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
 
         /// <summary>
-        /// Number of columns
+        /// Create a new instance of EndOfLineDelimiterCharException
         /// </summary>
-        int ColumnCount { get; }
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        protected EndOfLineDelimiterCharException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+
+        }
     }
 }

@@ -60,6 +60,26 @@ namespace TinyCsv.Extensions
         }
 
         /// <summary>
+        /// Trim value if trimData is true
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static string TrimData(this string value, ICsvOptions options)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                var chars = new List<char> { '"', '\'' };
+                if (options.TrimData)
+                {
+                    chars.Add(' ');
+                }
+                return value.Trim(chars.ToArray());
+            }
+            return value;
+        }
+
+        /// <summary>
         /// Split line with delimiter separator and return list of values
         /// </summary>
         /// <typeparam name="T"></typeparam>

@@ -39,7 +39,83 @@ namespace TinyCsv
     /// <summary>
     ///  Csv Options abstract definition
     /// </summary>
-    public abstract class CsvOptions
+    public interface ICsvOptions
+    {
+        /// <summary>
+        /// Has header record
+        /// </summary>
+        bool HasHeaderRecord { get; set; }
+
+        /// <summary>
+        /// Delimiter
+        /// </summary>
+        string Delimiter { get; set; }
+
+        /// <summary>
+        /// Respects new line (either \r\n or \n) characters inside field values enclosed in double quotes.
+        /// </summary>
+        bool AllowRowEnclosedInDoubleQuotesValues { get; set; }
+
+        /// <summary>
+        /// Allows the sequence "\"" to be a valid quoted value (in addition to the standard """")
+        /// </summary>
+        bool AllowBackSlashToEscapeQuote { get; set; }
+
+        /// <summary>
+        /// Double quotes
+        /// </summary>
+        char DoubleQuotes { get; set; }
+
+        /// <summary>
+        /// Comment
+        /// </summary>
+        char Comment { get; set; }
+
+        /// <summary>
+        /// Gets or Set the newline string defined for this environment
+        /// </summary>
+        string NewLine { get; set; }
+
+        /// <summary>
+        /// Represents a character encoding
+        /// </summary>
+        Encoding TextEncoding { get; set; }
+
+        /// <summary>
+        /// Allows skipping of initial rows without csv data
+        /// </summary>
+        uint RowsToSkip { get; set; }
+
+        /// <summary>
+        /// Allows skipt row by condition
+        /// </summary>
+        Func<string, int, bool> SkipRow { get; set; }
+
+        /// <summary>
+        /// Can be used to trim each cell
+        /// </summary>
+        bool TrimData { get; set; }
+
+        /// <summary>
+        /// Checks each row immediately for column count
+        /// </summary>
+        bool ValidateColumnCount { get; set; }
+
+        /// <summary>
+        /// Allows comment inside the content
+        /// </summary>
+        bool AllowComment { get; set; }
+
+        /// <summary>
+        /// Allow the last char is the delimiter char
+        /// </summary>
+        bool EndOfLineDelimiterChar { get; set; }
+    }
+
+    /// <summary>
+    ///  Csv Options abstract definition
+    /// </summary>
+    public abstract class CsvOptions : ICsvOptions
     {
         /// <summary>
         /// Has header record

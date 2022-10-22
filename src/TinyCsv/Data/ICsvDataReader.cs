@@ -28,11 +28,31 @@
 /// </summary>
 namespace TinyCsv.Data
 {
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+
     /// <summary>
     /// ICsvDataReader
     /// </summary>
     public interface ICsvDataReader<T>
     {
+        /// <summary>
+        /// Get lines
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<string> GetLines();
 
+        /// <summary>
+        /// Get fields by line
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public string[] GetFields(string line);
+
+        /// <summary>
+        /// Get lines field
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string[]> GetLineFields();
     }
 }
