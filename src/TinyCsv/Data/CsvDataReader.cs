@@ -29,17 +29,18 @@
 
 namespace TinyCsv.Data
 {
-    using TinyCsv.Exceptions;
     using System.Collections.Generic;
     using System.IO;
+    using System.Runtime.CompilerServices;
     using System.Text;
+    using System.Threading;
+    using TinyCsv.Exceptions;
     using TinyCsv.Extensions;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// CsvDataReader
     /// </summary>
-    public class TinyCsvDataReader<T> : ICsvDataReader<T>
+    public class TinyCsvDataReader<T> : ICsvDataReader
     {
         private readonly ICsvOptions options;
         private readonly StreamReader reader;
@@ -56,10 +57,10 @@ namespace TinyCsv.Data
         }
 
         /// <summary>
-        /// Get lines
+        /// Read Lines 
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<string> GetLines()
+        public IEnumerable<string> ReadLines()
         {
             var index = 0;
             var line = string.Empty;
@@ -69,6 +70,12 @@ namespace TinyCsv.Data
                 {
                     continue;
                 }
+
+                if (options.SkipRow(line, index))
+                {
+                    continue;
+                }
+
                 yield return line;
             }
         }
@@ -78,7 +85,7 @@ namespace TinyCsv.Data
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        public string[] GetFields(string line)
+        public string[] GetFieldsByLine(string line)
         {
             var result = new List<string>();
             var sb = new StringBuilder(string.Empty);
@@ -148,16 +155,45 @@ namespace TinyCsv.Data
         /// Get lines field
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<string[]> GetLineFields()
+        public IEnumerable<string[]> ReadLinesAndFields()
         {
-            foreach (var line in GetLines())
+            foreach (var line in ReadLines())
             {
                 if (!string.IsNullOrWhiteSpace(line))
                 {
-                    var fields = GetFields(line);
+                    var fields = GetFieldsByLine(line);
                     yield return fields;
                 }
             }
         }
+
+
+#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        /// <summary>
+        /// Read Lines 
+        /// </summary>
+        /// <returns></returns>
+        public async IAsyncEnumerable<string> ReadLinesAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            var index = 0;
+            var line = string.Empty;
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                if (options.RowsToSkip > 0 && options.RowsToSkip > index++)
+                {
+                    continue;
+                }
+
+                if (options.SkipRow(line, index))
+                {
+                    continue;
+                }
+
+                yield return line;
+            }
+        }
+#endif
     }
 }

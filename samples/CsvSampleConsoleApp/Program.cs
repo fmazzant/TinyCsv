@@ -51,7 +51,7 @@ namespace CsvSampleConsoleApp
         public RowType RowType { get; set; }
         public override string ToString()
         {
-            return $"ToString: {Id}, {Name}, {Price}, {CreatedOn}, {TextBase64}";
+            return $"Object -> {Id}, {Name}, {Price}, {CreatedOn}, {TextBase64}, {WebSite}, {RowType}";
         }
     }
 
@@ -107,6 +107,10 @@ namespace CsvSampleConsoleApp
                  options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
              });
 
+            // read from file sync
+            var syncModels = csv.LoadFromFile("file.csv");
+            Console.WriteLine($"Count:{syncModels.Count()}");
+
             // read from memory stream
             using (var memoryStream = Memory.CreateMemoryStream(Environment.NewLine))
             {
@@ -118,10 +122,6 @@ namespace CsvSampleConsoleApp
             var planText = $"Id;Name;Price;CreatedOn;TextBase64;{Environment.NewLine}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";https://wwww.google.it;A;";
             var textModels = csv.LoadFromText(planText);
             Console.WriteLine($"Count:{textModels.Count()}");
-
-            // read from file sync
-            var syncModels = csv.LoadFromFile("file.csv");
-            Console.WriteLine($"Count:{syncModels.Count()}");
 
             // read from file async
             var asyncModels = await csv.LoadFromFileAsync("file.csv").ToListAsync();

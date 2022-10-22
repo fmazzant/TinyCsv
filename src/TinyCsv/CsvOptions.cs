@@ -370,12 +370,33 @@ namespace TinyCsv
             }
 
             /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="e"></param>
+            internal void OnStart()
+            {
+                OnStart(new StartEventArgs() { });
+            }
+
+            /// <summary>
             /// Reise completed event
             /// </summary>
             /// <param name="e"></param>
             internal void OnCompleted(CompletedEventArgs e)
             {
                 Completed?.Invoke(this, e);
+            }
+
+            /// <summary>
+            /// Reise completed event
+            /// </summary>
+            /// <param name="e"></param>
+            internal void OnCompleted(int elements)
+            {
+                OnCompleted(new CompletedEventArgs
+                {
+                    Elements = elements
+                });
             }
         }
 

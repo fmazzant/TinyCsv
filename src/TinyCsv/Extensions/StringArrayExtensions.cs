@@ -26,41 +26,36 @@
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
-namespace TinyCsv.Data
-{
-    using System.Collections.Generic;
-    using System.Threading;
 
+namespace TinyCsv.Extensions
+{
     /// <summary>
-    /// ICsvDataReader
+    /// String extensions
     /// </summary>
-    public interface ICsvDataReader
+    public static class StringArrayExtensions
     {
         /// <summary>
-        /// Get lines
+        /// Trim value if trimData is true
         /// </summary>
+        /// <param name="value"></param>
+        /// <param name="trimData"></param>
         /// <returns></returns>
-        IEnumerable<string> ReadLines();
+        public static T CreateModel<T>(this string[] values, CsvOptions<T> options)
+            where T : new()
+        {
+            var model = new T();
 
-        /// <summary>
-        /// Get fields by line
-        /// </summary>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        public string[] GetFieldsByLine(string line);
+            foreach (var column in options.Columns)
+            {
+                var value = values[column.ColumnIndex];//.TrimData(options);
+                var columnExpression = column.ColumnExpression;
+                var propertyName = column.ColumnName ?? columnExpression?.GetPropertyName();
+                var property = options.Properties[propertyName];
+                var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
+                property.SetValue(model, typedValue);
+            }
 
-        /// <summary>
-        /// Get lines field
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<string[]> ReadLinesAndFields();
-
-#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        /// <summary>
-        /// Read Lines 
-        /// </summary>
-        /// <returns></returns>
-        IAsyncEnumerable<string> ReadLinesAsync(CancellationToken cancellationToken = default);
-#endif
+            return model;
+        }
     }
 }

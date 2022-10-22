@@ -38,6 +38,8 @@ namespace TinyCsv
     using System.Text;
     using System.Threading;
     using System.Runtime.CompilerServices;
+    using TinyCsv.Data;
+    using TinyCsv.Extensions;
 
     public sealed partial class TinyCsv<T>
     {
@@ -68,9 +70,31 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            return LoadFromStreamInternalAsync(streamReader, cancellationToken);
+            var index = 0;
+            Options.Handlers.OnStart();
+            var dataReader = new TinyCsvDataReader<T>(this.Options, streamReader);
+            await foreach (var line in dataReader.ReadLinesAsync(cancellationToken))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var currentIndex = index;
+                index++;
+
+                if (currentIndex == 0 && Options.HasHeaderRecord)
+                {
+                    Options.Handlers.Read.OnRowReading(currentIndex, line);
+                    Options.Handlers.Read.OnRowHeader(currentIndex, line);
+                    continue;
+                }
+                Options.Handlers.Read.OnRowReading(currentIndex, line);
+                var fields = dataReader.GetFieldsByLine(line);
+                var model = fields.CreateModel<T>(Options);
+                Options.Handlers.Read.OnRowRead(currentIndex, model, line);
+                yield return model;
+            }
+            Options.Handlers.OnCompleted(index);
         }
 
         /// <summary>
@@ -95,24 +119,6 @@ namespace TinyCsv
         {
             var memoryStream = new TextMemoryStream(text, encoding ?? Options.TextEncoding);
             return LoadFromStreamAsync(memoryStream, cancellationToken);
-        }
-
-        /// <summary>
-        /// Load From Stream Internal asynchronously
-        /// </summary>
-        /// <param name="streamReader"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        async IAsyncEnumerable<T> LoadFromStreamInternalAsync(StreamReader streamReader, [EnumeratorCancellation] CancellationToken cancellationToken = default)
-        {
-            var index = await GetIndexFromStreamReaderBySkipRowsAsync(0, streamReader, cancellationToken);
-
-            while (!streamReader.EndOfStream)
-            {
-                var model = await GetModelAndIndexFromStreamReaderAsync(index++, streamReader, cancellationToken);
-                if (model is null) continue;
-                yield return model;
-            }
         }
     }
 }

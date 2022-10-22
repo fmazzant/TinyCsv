@@ -33,10 +33,12 @@ namespace TinyCsv
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
     using System.Runtime.CompilerServices;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using TinyCsv.Data;
     using TinyCsv.Extensions;
     using TinyCsv.Streams;
 
@@ -112,45 +114,35 @@ namespace TinyCsv
         }
 
         /// <summary>
-        /// Reads a csv file and returns a list of objects.
+        /// Reads a csv file and returns a list of generic objects T.
         /// </summary>
         /// <param name="streamReader"></param>
         /// <returns></returns>
         public IEnumerable<T> LoadFromStream(StreamReader streamReader)
         {
             var index = 0;
-
-            while (!streamReader.EndOfStream)
+            Options.Handlers.OnStart();
+            var dataReader = new TinyCsvDataReader<T>(this.Options, streamReader);
+            foreach (var line in dataReader.ReadLines())
             {
-                if (index < Options.RowsToSkip)
+                var currentIndex = index;
+                index++;
+
+                if (currentIndex == 0 && Options.HasHeaderRecord)
                 {
-                    streamReader.ReadLine();
-                    index++;
+                    Options.Handlers.Read.OnRowReading(currentIndex, line);
+                    Options.Handlers.Read.OnRowHeader(currentIndex, line);
                     continue;
                 }
-                break;
-            }
 
-            if (Options.HasHeaderRecord)
-            {
-                while (!streamReader.EndOfStream)
-                {
-                    var headerLine = streamReader.ReadLine();
-                    var skipHeaderLine = headerLine.SkipRow(index++, this.Options);
-                    if (skipHeaderLine) continue;
-                    GetHeaderFromLine(index - 1, headerLine);
-                    break;
-                }
-            }
-
-            while (!streamReader.EndOfStream)
-            {
-                var line = streamReader.ReadLine();
-                var skip = line.SkipRow(index++, this.Options);
-                if (skip) continue;
-                var model = this.GetModelFromLine(index - 1, line);
+                Options.Handlers.Read.OnRowReading(currentIndex, line);
+                var fields = dataReader.GetFieldsByLine(line);
+                var model = fields.CreateModel<T>(Options);
+                Options.Handlers.Read.OnRowRead(currentIndex, model, line);
+                
                 yield return model;
             }
+            Options.Handlers.OnCompleted(index);
         }
 
         /// <summary>
