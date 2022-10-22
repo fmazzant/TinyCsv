@@ -34,11 +34,12 @@ namespace TinyCsv.Data
     using System.Runtime.CompilerServices;
     using System.Text;
     using System.Threading;
+    using System.Threading.Tasks;
     using TinyCsv.Exceptions;
     using TinyCsv.Extensions;
 
     /// <summary>
-    /// CsvDataReader
+    /// TinyCsvDataReader
     /// </summary>
     public class TinyCsvDataReader<T> : ICsvDataReader<T>
     {
