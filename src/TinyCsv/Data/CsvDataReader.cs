@@ -40,7 +40,7 @@ namespace TinyCsv.Data
     /// <summary>
     /// CsvDataReader
     /// </summary>
-    public class TinyCsvDataReader<T> : ICsvDataReader
+    public class TinyCsvDataReader<T> : ICsvDataReader<T>
     {
         private readonly ICsvOptions options;
         private readonly StreamReader reader;

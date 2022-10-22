@@ -34,7 +34,7 @@ namespace TinyCsv.Data
     /// <summary>
     /// ICsvDataReader
     /// </summary>
-    public interface ICsvDataReader
+    public interface ICsvDataReader<T>
     {
         /// <summary>
         /// Get lines
