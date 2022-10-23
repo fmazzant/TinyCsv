@@ -115,6 +115,7 @@ namespace CsvSampleConsoleApp
             using (var memoryStream = Memory.CreateMemoryStream(Environment.NewLine))
             {
                 var memoryModels = csv.LoadFromStream(memoryStream);
+                var list = memoryModels.ToList();
                 Console.WriteLine($"Count:{memoryModels.Count()}");
             }
 
