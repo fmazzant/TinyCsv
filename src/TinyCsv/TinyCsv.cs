@@ -33,8 +33,6 @@ namespace TinyCsv
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Reflection;
-    using System.Runtime.CompilerServices;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
@@ -121,28 +119,31 @@ namespace TinyCsv
         public IEnumerable<T> LoadFromStream(StreamReader streamReader)
         {
             var index = 0;
-            Options.Handlers.OnStart();
-            var dataReader = new TinyCsvDataReader<T>(this.Options, streamReader);
-            foreach (var line in dataReader.ReadLines())
+            var options = this.Options;
+            var dataReader = new TinyCsvDataReader<T>(options, streamReader);
+            var hasHeaderRecord = options.HasHeaderRecord;
+
+            options.Handlers.OnStart();
+            var lines = dataReader.ReadLines();
+            foreach (var line in lines)
             {
                 var currentIndex = index;
                 index++;
 
-                if (currentIndex == 0 && Options.HasHeaderRecord)
+                if (currentIndex == 0 && hasHeaderRecord)
                 {
-                    Options.Handlers.Read.OnRowReading(currentIndex, line);
-                    Options.Handlers.Read.OnRowHeader(currentIndex, line);
+                    options.Handlers.Read.OnRowReading(currentIndex, line);
+                    options.Handlers.Read.OnRowHeader(currentIndex, line);
                     continue;
                 }
 
-                Options.Handlers.Read.OnRowReading(currentIndex, line);
+                options.Handlers.Read.OnRowReading(currentIndex, line);
                 var fields = dataReader.GetFieldsByLine(line);
-                var model = fields.CreateModel<T>(Options);
-                Options.Handlers.Read.OnRowRead(currentIndex, model, line);
-                
+                var model = fields.CreateModel<T>(options);
                 yield return model;
+                options.Handlers.Read.OnRowRead(currentIndex, model, line);
             }
-            Options.Handlers.OnCompleted(index);
+            options.Handlers.OnCompleted(index);
         }
 
         /// <summary>

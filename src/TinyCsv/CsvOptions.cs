@@ -192,6 +192,11 @@ namespace TinyCsv
         /// Allow the last char is the delimiter char
         /// </summary>
         public bool EndOfLineDelimiterChar { get; set; } = true;
+
+        /// <summary>
+        /// Enable handlers if necessary
+        /// </summary>
+        public bool EnableHandlers { get; set; } = false;
     }
 
     /// <summary>
@@ -350,6 +355,11 @@ namespace TinyCsv
             public WriteEventHandlers Write { get; private set; }
 
             /// <summary>
+            /// Handlers is enabled
+            /// </summary>
+            public bool Enabled => Options?.EnableHandlers ?? false;
+
+            /// <summary>
             /// Create an instance of EventHandlers
             /// </summary>
             /// <param name="options"></param>
@@ -366,6 +376,7 @@ namespace TinyCsv
             /// <param name="e"></param>
             internal void OnStart(StartEventArgs e)
             {
+                if (!Enabled) return;
                 Start?.Invoke(this, e);
             }
 
@@ -375,6 +386,7 @@ namespace TinyCsv
             /// <param name="e"></param>
             internal void OnStart()
             {
+                if (!Enabled) return;
                 OnStart(new StartEventArgs() { });
             }
 
@@ -384,6 +396,7 @@ namespace TinyCsv
             /// <param name="e"></param>
             internal void OnCompleted(CompletedEventArgs e)
             {
+                if (!Enabled) return;
                 Completed?.Invoke(this, e);
             }
 
@@ -393,6 +406,7 @@ namespace TinyCsv
             /// <param name="e"></param>
             internal void OnCompleted(int elements)
             {
+                if (!Enabled) return;
                 OnCompleted(new CompletedEventArgs
                 {
                     Elements = elements
@@ -435,11 +449,17 @@ namespace TinyCsv
             }
 
             /// <summary>
+            /// Handlers is enabled
+            /// </summary>
+            public bool Enabled => Options?.EnableHandlers ?? false;
+
+            /// <summary>
             /// Reise row header
             /// </summary>
             /// <param name="e"></param>
             internal void OnRowHeader(RowHeaderReadingEventArgs e)
             {
+                if (!Enabled) return;
                 RowHeader?.Invoke(this, e);
             }
 
@@ -449,6 +469,7 @@ namespace TinyCsv
             /// <param name="rowHeader"></param>
             internal void OnRowHeader(int index, string rowHeader)
             {
+                if (!Enabled) return;
                 OnRowHeader(new RowHeaderReadingEventArgs
                 {
                     Index = index,
@@ -462,6 +483,7 @@ namespace TinyCsv
             /// <param name="e"></param>
             internal void OnRowReading(RowReadingEventArgs e)
             {
+                if (!Enabled) return;
                 RowReading?.Invoke(this, e);
             }
 
@@ -472,6 +494,7 @@ namespace TinyCsv
             /// <param name="row"></param>
             internal void OnRowReading(int index, string row)
             {
+                if (!Enabled) return;
                 OnRowReading(new RowReadingEventArgs
                 {
                     Index = index,
@@ -485,6 +508,7 @@ namespace TinyCsv
             /// <param name="e"></param>
             internal void OnRowRead(RowReadEventArgs<T> e)
             {
+                if (!Enabled) return;
                 RowRead?.Invoke(this, e);
             }
 
@@ -495,6 +519,7 @@ namespace TinyCsv
             /// <param name="model"></param>
             internal void OnRowRead(int index, T model, string row)
             {
+                if (!Enabled) return;
                 OnRowRead(new RowReadEventArgs<T>
                 {
                     Index = index,
@@ -530,6 +555,11 @@ namespace TinyCsv
             public EventHandler<RowWrittinEventArgs<T>> RowWrittin { get; set; }
 
             /// <summary>
+            /// Handlers is enabled
+            /// </summary>
+            public bool Enabled => Options?.EnableHandlers ?? false;
+
+            /// <summary>
             /// Create an instance of Write event handlers
             /// </summary>
             /// <param name="options"></param>
@@ -544,6 +574,7 @@ namespace TinyCsv
             /// <param name="e"></param>
             internal void OnRowHeader(RowHeaderWritingEventArgs e)
             {
+                if (!Enabled) return;
                 RowHeader?.Invoke(this, e);
             }
 
@@ -553,6 +584,7 @@ namespace TinyCsv
             /// <param name="rowHeader"></param>
             internal void OnRowHeader(int index, string rowHeader)
             {
+                if (!Enabled) return;
                 OnRowHeader(new RowHeaderWritingEventArgs
                 {
                     Index = index,
@@ -566,6 +598,7 @@ namespace TinyCsv
             /// <param name="e"></param>
             internal void OnRowWriting(RowWritingEventArgs<T> e)
             {
+                if (!Enabled) return;
                 RowWriting?.Invoke(this, e);
             }
 
@@ -576,6 +609,7 @@ namespace TinyCsv
             /// <param name="model"></param>
             internal void OnRowWriting(int index, T model)
             {
+                if (!Enabled) return;
                 OnRowWriting(new RowWritingEventArgs<T>
                 {
                     Index = index,
@@ -589,6 +623,7 @@ namespace TinyCsv
             /// <param name="e"></param>
             internal void OnRowWrittin(RowWrittinEventArgs<T> e)
             {
+                if (!Enabled) return;
                 RowWrittin?.Invoke(this, e);
             }
 
@@ -599,6 +634,7 @@ namespace TinyCsv
             /// <param name="row"></param>
             internal void OnRowWrittin(int index, T model, string row)
             {
+                if (!Enabled) return;
                 OnRowWrittin(new RowWrittinEventArgs<T>
                 {
                     Index = index,
