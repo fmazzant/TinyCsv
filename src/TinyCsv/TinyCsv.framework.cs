@@ -87,26 +87,29 @@ namespace TinyCsv
         {
             var models = new List<T>();
             var index = 0;
-            Options.Handlers.OnStart();
-            var dataReader = new TinyCsvDataReader<T>(this.Options, streamReader);
+            var options = this.Options;
+            var dataReader = new TinyCsvDataReader<T>(options, streamReader);
+            var hasHeaderRecord = options.HasHeaderRecord;
+
+            options.Handlers.OnStart();
             foreach (var line in dataReader.ReadLines())
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 var currentIndex = index;
                 index++;
 
-                if (currentIndex == 0 && Options.HasHeaderRecord)
+                if (currentIndex == 0 && hasHeaderRecord)
                 {
-                    Options.Handlers.Read.OnRowReading(currentIndex, line);
-                    Options.Handlers.Read.OnRowHeader(currentIndex, line);
+                    options.Handlers.Read.OnRowReading(currentIndex, line);
+                    options.Handlers.Read.OnRowHeader(currentIndex, line);
                     continue;
                 }
 
-                Options.Handlers.Read.OnRowReading(currentIndex, line);
+                options.Handlers.Read.OnRowReading(currentIndex, line);
                 var fields = dataReader.GetFieldsByLine(line);
-                var model = fields.CreateModel<T>(Options);
+                var model = fields.GetModelFromStringArray<T>(options);
                 models.Add(model);
-                Options.Handlers.Read.OnRowRead(currentIndex, model, line);
+                options.Handlers.Read.OnRowRead(currentIndex, model, line);
             }
             Options.Handlers.OnCompleted(index);
             return await Task.FromResult(models);

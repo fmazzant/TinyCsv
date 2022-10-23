@@ -31,6 +31,7 @@ namespace TinyCsv
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using System.Text;
     using TinyCsv.Args;
@@ -322,6 +323,16 @@ namespace TinyCsv
                     this.ValidateColumnCount = validateColumnCount.ValidateColumnCount;
                 }
             }
+        }
+
+        /// <summary>
+        /// get header as string line 
+        /// </summary>
+        /// <returns></returns>
+        public string AsColumnsHeaderLine()
+        {
+            var headers = string.Join(this.Delimiter, this.Columns.Select(x => $"{x.ColumnName}"));
+            return headers;
         }
 
         /// <summary>

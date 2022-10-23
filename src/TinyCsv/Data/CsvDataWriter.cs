@@ -29,6 +29,7 @@
 
 namespace TinyCsv.Data
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -134,6 +135,22 @@ namespace TinyCsv.Data
                 index += await this.WriteLineAsync(line, cancellationToken);
             }
             return index;
+        }
+
+        /// <summary>
+        /// Clears all buffers for the current writer and causes any buffered data to be written to the underlying stream.
+        /// </summary>
+        public void Flush()
+        {
+            writer.Flush();
+        }
+
+        /// <summary>
+        /// Clears all buffers for the current writer and causes any buffered data to be written to the underlying stream.
+        /// </summary>
+        public Task FlushAsync()
+        {
+            return writer.FlushAsync();
         }
     }
 }

@@ -139,7 +139,7 @@ namespace TinyCsv
 
                 options.Handlers.Read.OnRowReading(currentIndex, line);
                 var fields = dataReader.GetFieldsByLine(line);
-                var model = fields.CreateModel<T>(options);
+                var model = fields.GetModelFromStringArray<T>(options);
                 yield return model;
                 options.Handlers.Read.OnRowRead(currentIndex, model, line);
             }
@@ -210,10 +210,8 @@ namespace TinyCsv
         /// <param name="models"></param>
         public void Save(string path, IEnumerable<T> models)
         {
-            using (StreamWriter streamWriter = new StreamWriter(path))
-            {
-                Save(streamWriter, models);
-            }
+            var streamWriter = new StreamWriter(path);
+            Save(streamWriter, models);
         }
 
         /// <summary>
@@ -224,19 +222,28 @@ namespace TinyCsv
         public void Save(StreamWriter streamWriter, IEnumerable<T> models)
         {
             var index = 0;
-            if (Options.HasHeaderRecord)
+            var options = this.Options;
+            var writer = new CsvDataWriter<T>(options, streamWriter);
+
+            options.Handlers.OnStart();
+            if (options.HasHeaderRecord)
             {
-                var headers = GetHeaderFromOptions(index++);
-                streamWriter.WriteLine(headers);
+                var headers = options.AsColumnsHeaderLine();
+                options.Handlers.Write.OnRowHeader(index, headers);
+                writer.WriteLine(headers);
+                index++;
             }
 
             foreach (var model in models)
             {
-                var line = this.GetLineFromModel(index++, model);
-                streamWriter.WriteLine(line);
+                options.Handlers.Write.OnRowWriting(index, model);
+                var line = model.GetLineFromGenericType(options);
+                writer.WriteLine(line);
+                options.Handlers.Write.OnRowWrittin(index, model, line);
+                index++;
             }
-
-            streamWriter.Flush();
+            options.Handlers.OnCompleted(index);
+            writer.Flush();
         }
 
         /// <summary>
@@ -246,7 +253,8 @@ namespace TinyCsv
         /// <param name="models"></param>
         public void Save(Stream stream, IEnumerable<T> models)
         {
-            Save(new StreamWriter(stream), models);
+            var streamWriter = new StreamWriter(stream);
+            Save(streamWriter, models);
         }
 
         /// <summary>
@@ -256,10 +264,8 @@ namespace TinyCsv
         /// <param name="models"></param>
         public async Task SaveAsync(string path, IEnumerable<T> models, CancellationToken cancellationToken = default)
         {
-            using (StreamWriter file = new StreamWriter(path))
-            {
-                await SaveAsync(file, models, cancellationToken).ConfigureAwait(false);
-            }
+            var file = new StreamWriter(path);
+            await SaveAsync(file, models, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -294,10 +300,8 @@ namespace TinyCsv
         /// <param name="models"></param>
         public Task SaveAsync(Stream stream, IEnumerable<T> models, CancellationToken cancellationToken = default)
         {
-            using (StreamWriter streamWriter = new StreamWriter(stream))
-            {
-                return SaveAsync(streamWriter, models);
-            }
+            var streamWriter = new StreamWriter(stream);
+            return SaveAsync(streamWriter, models);
         }
 
         /// <summary>

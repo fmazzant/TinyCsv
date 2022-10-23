@@ -31,32 +31,44 @@ using System.Linq;
 namespace TinyCsv.Extensions
 {
     /// <summary>
-    /// String extensions
+    /// Generic Type extensions
     /// </summary>
-    public static class StringArrayExtensions
+    public static class GenericTypeExtensions
     {
         /// <summary>
-        /// Get model from string array
+        /// Get fields from model
         /// </summary>
         /// <param name="value"></param>
         /// <param name="trimData"></param>
         /// <returns></returns>
-        public static T GetModelFromStringArray<T>(this string[] values, CsvOptions<T> options)
+        public static string[] GetFieldsFromGenericType<T>(this T model, CsvOptions<T> options)
             where T : new()
         {
-            var model = new T();
-
-            foreach (var column in options.Columns)
+            var values = options.Columns.Select(column =>
             {
-                var value = values[column.ColumnIndex];
                 var columnExpression = column.ColumnExpression;
                 var propertyName = column.ColumnName ?? columnExpression?.GetPropertyName();
                 var property = options.Properties[propertyName];
-                var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
-                property.SetValue(model, typedValue);
-            }
+                var value = property.GetValue(model);
+                var stringValue = column.Converter.Convert(value, null, column.ColumnFormatProvider);
+                return stringValue?.EnclosedInQuotesIfNecessary(options);
+            });
+            return values.ToArray();
+        }
 
-            return model;
+        /// <summary>
+        /// Get line from model
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="model"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static string GetLineFromGenericType<T>(this T model, CsvOptions<T> options)
+            where T : new()
+        {
+            var values = model.GetFieldsFromGenericType(options);
+            var line = string.Join(options.Delimiter, values);
+            return line;
         }
     }
 }
