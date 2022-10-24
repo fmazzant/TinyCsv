@@ -29,6 +29,7 @@
 
 namespace TinyCsv
 {
+    using TinyCsv.Exceptions;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -122,6 +123,8 @@ namespace TinyCsv
             var options = this.Options;
             var dataReader = new TinyCsvDataReader<T>(options, streamReader);
             var hasHeaderRecord = options.HasHeaderRecord;
+            var validateColumnCount = options.ValidateColumnCount;
+            var columnsCount = options.Columns.Count;
 
             options.Handlers.OnStart();
             var lines = dataReader.ReadLines();
@@ -139,6 +142,12 @@ namespace TinyCsv
 
                 options.Handlers.Read.OnRowReading(currentIndex, line);
                 var fields = dataReader.GetFieldsByLine(line);
+
+                if (validateColumnCount && columnsCount != fields.Length)
+                {
+                    throw new InvalidColumnCountException($"Invalid column count at {index} line.");
+                }
+
                 var model = fields.GetModelFromStringArray<T>(options);
                 yield return model;
                 options.Handlers.Read.OnRowRead(currentIndex, model, line);
@@ -233,7 +242,6 @@ namespace TinyCsv
                 writer.WriteLine(headers);
                 index++;
             }
-
             foreach (var model in models)
             {
                 options.Handlers.Write.OnRowWriting(index, model);
@@ -277,20 +285,30 @@ namespace TinyCsv
         {
             var index = 0;
 
+            var options = this.Options;
+            var writer = new CsvDataWriter<T>(options, streamWriter);
+
+            options.Handlers.OnStart();
             if (Options.HasHeaderRecord)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var headers = GetHeaderFromOptions(index++);
-                await streamWriter.WriteLineAsync(headers).ConfigureAwait(false);
+                var headers = options.AsColumnsHeaderLine();
+                options.Handlers.Write.OnRowHeader(index, headers);
+                await writer.WriteLineAsync(headers).ConfigureAwait(false);
+                index++;
             }
 
             foreach (var model in models)
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                options.Handlers.Write.OnRowWriting(index, model);
                 var line = this.GetLineFromModel(index++, model);
-                await streamWriter.WriteLineAsync(line).ConfigureAwait(false);
+                await writer.WriteLineAsync(line).ConfigureAwait(false);
+                options.Handlers.Write.OnRowWrittin(index, model, line);
+                index++;
             }
-            await streamWriter.FlushAsync().ConfigureAwait(false);
+            options.Handlers.OnCompleted(index);
+            await writer.FlushAsync().ConfigureAwait(false);
         }
 
         /// <summary>

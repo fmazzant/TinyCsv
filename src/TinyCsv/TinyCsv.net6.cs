@@ -40,6 +40,7 @@ namespace TinyCsv
     using System.Runtime.CompilerServices;
     using TinyCsv.Data;
     using TinyCsv.Extensions;
+    using TinyCsv.Exceptions;
 
     public sealed partial class TinyCsv<T>
     {
@@ -76,6 +77,8 @@ namespace TinyCsv
             var options = this.Options;
             var dataReader = new TinyCsvDataReader<T>(options, streamReader);
             var hasHeaderRecord = options.HasHeaderRecord;
+            var validateColumnCount = options.ValidateColumnCount;
+            var columnsCount = options.Columns.Count;
 
             options.Handlers.OnStart();
             await foreach (var line in dataReader.ReadLinesAsync(cancellationToken))
@@ -93,6 +96,12 @@ namespace TinyCsv
                 }
                 options.Handlers.Read.OnRowReading(currentIndex, line);
                 var fields = dataReader.GetFieldsByLine(line);
+
+                if (validateColumnCount && columnsCount != fields.Length)
+                {
+                    throw new InvalidColumnCountException($"Invalid column count at {index} line.");
+                }
+
                 var model = fields.GetModelFromStringArray<T>(options);
                 options.Handlers.Read.OnRowRead(currentIndex, model, line);
                 yield return model;
