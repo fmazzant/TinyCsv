@@ -177,42 +177,6 @@ namespace TinyCsv
         }
 
         /// <summary>
-        /// Get header from line
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        private void GetHeaderFromLine(int index, string line)
-        {
-            Options.Handlers.Read.OnRowHeader(index, line);
-        }
-
-        /// <summary>
-        /// Build T object from line
-        /// </summary>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        private T GetModelFromLine(int index, string line)
-        {
-            Options.Handlers.Read.OnRowReading(index, line);
-            var values = line.SplitLine(this.Options);
-
-            var model = new T();
-            foreach (var column in Options.Columns)
-            {
-                var value = values[column.ColumnIndex].TrimData(this.Options);
-                var columnExpression = column.ColumnExpression;
-                var propertyName = column.ColumnName ?? columnExpression?.GetPropertyName();
-                var property = Options.Properties[propertyName];
-                var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
-                property.SetValue(model, typedValue);
-            }
-
-            Options.Handlers.Read.OnRowRead(index, model, line);
-            return model;
-        }
-
-        /// <summary>
         /// Writes a list of objects to a csv file.
         /// </summary>
         /// <param name="path"></param>
@@ -438,50 +402,6 @@ namespace TinyCsv
             }
 
             return Task.FromResult(lines);
-        }
-
-        /// <summary>
-        /// Returns the index of line jumped
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="streamReader"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        async Task<int> GetIndexFromStreamReaderBySkipRowsAsync(int index, StreamReader streamReader, CancellationToken cancellationToken = default)
-        {
-            while (!streamReader.EndOfStream)
-            {
-                if (index++ < Options.RowsToSkip)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    await streamReader.ReadLineAsync().ConfigureAwait(false);
-                    continue;
-                }
-                break;
-            }
-
-            if (Options.HasHeaderRecord)
-            {
-                while (!streamReader.EndOfStream)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var headerLine = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                    var skipHeaderLine = headerLine.SkipRow(index++, this.Options);
-                    if (skipHeaderLine) continue;
-                    break;
-                }
-            }
-            return index;
-        }
-
-        async Task<T> GetModelAndIndexFromStreamReaderAsync(int index, StreamReader streamReader, CancellationToken cancellationToken = default)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
-            var skip = line.SkipRow(index++, this.Options);
-            if (skip) return null;
-            var model = this.GetModelFromLine(index - 1, line);
-            return model;
         }
     }
 }
