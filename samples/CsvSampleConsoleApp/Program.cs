@@ -139,6 +139,13 @@ namespace CsvSampleConsoleApp
             var models = await csv.LoadFromStreamAsync(new StreamReader("file.csv")).ToListAsync();
             Console.WriteLine($"Count:{models.Count()}");
 
+            // get all lines from file
+            var lines = csv.GetAllLinesFromFile("file.csv");
+            foreach (var line in lines)
+            {
+                Console.WriteLine(line);
+            }
+
             // write on file async
             await csv.SaveAsync("file_export.csv", models);
         }
