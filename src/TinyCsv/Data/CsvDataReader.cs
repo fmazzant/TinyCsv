@@ -72,7 +72,7 @@ namespace TinyCsv.Data
                     continue;
                 }
 
-                if (options.SkipRow(line, index))
+                if (options.SkipRow(line, index++))
                 {
                     continue;
                 }
