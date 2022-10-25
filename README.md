@@ -38,6 +38,8 @@ var csv = new TinyCsv<Model>(options =>
     options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
     options.TrimData = true;
     options.AllowRowEnclosedInDoubleQuotesValues = true;
+    options.EnableHandlers = false;
+    options.ValidateColumnCount = true;
 
     // Columns
     options.Columns.AddColumn(m => m.Id);
@@ -88,12 +90,18 @@ To read a csv file is only necessary invoke the load method, like this:
 
 ```c#
 var models = csv.LoadFromFile("file.csv");
+foreach(var model in models){
+    // processing
+}
 ```
 
 or you can to use the asynchronously method, like this:
 
 ```c#
 var models = await csv.LoadFromFileAsync("file.csv");
+await foreach(var model in models){
+    // processing
+}
 ```
 
 The load method returns a collection of Model type items and takes as argument the file's path.
@@ -215,7 +223,7 @@ app.MapGet("/csv1", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
 {
     var tinyCsv = tinyCsvFactory.Get<Model1>("Model1");
     var result = await tinyCsv.LoadFromFileAsync("model1.csv");
-    Console.WriteLine($"{result?.Count}");
+    Console.WriteLine($"{result?.Count()}");
     return result;
 });
 
@@ -230,7 +238,7 @@ app.MapGet("/csv2", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
         options.Columns.AddColumn(m => m.Name);
     });
     var result = await tinyCsv.LoadFromFileAsync("model2.csv");
-    Console.WriteLine($"{result?.Count}");
+    Console.WriteLine($"{result?.Count()}");
     return result;
 });
 
