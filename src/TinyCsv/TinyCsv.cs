@@ -253,7 +253,7 @@ namespace TinyCsv
             var writer = new CsvDataWriter<T>(options, streamWriter);
 
             options.Handlers.OnStart();
-            if (Options.HasHeaderRecord)
+            if (options.HasHeaderRecord)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 var headers = options.AsColumnsHeaderLine();
