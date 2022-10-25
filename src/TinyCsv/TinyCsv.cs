@@ -40,6 +40,7 @@ namespace TinyCsv
     using TinyCsv.Data;
     using TinyCsv.Extensions;
     using TinyCsv.Streams;
+    using System.Runtime.InteropServices.ComTypes;
 
     /// <summary>
     /// TinyCsv is a simple csv reader/writer library.
@@ -99,7 +100,6 @@ namespace TinyCsv
         {
             var streamReader = new StreamReader(path);
             return LoadFromStream(streamReader);
-
         }
 
         /// <summary>
@@ -107,6 +107,7 @@ namespace TinyCsv
         /// </summary>
         /// <param name="streamReader"></param>
         /// <returns></returns>
+        [Obsolete($"Use {nameof(LoadFromStream)} to load from file", false)]
         public IEnumerable<T> Load(StreamReader streamReader)
         {
             return LoadFromStream(streamReader);
@@ -402,6 +403,101 @@ namespace TinyCsv
             }
 
             return Task.FromResult(lines);
+        }
+
+        /// <summary>
+        /// Get all lines
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public IEnumerable<string> GetAllLinesFromFile(string path)
+        {
+            var streamReader = new StreamReader(path);
+            return GetAllLinesFromStream(streamReader);
+        }
+
+        /// <summary>
+        /// Get all lines
+        /// </summary>
+        /// <param name="streamReader"></param>
+        /// <returns></returns>
+        public IEnumerable<string> GetAllLinesFromStream(StreamReader streamReader)
+        {
+            var options = this.Options;
+            var dataReader = new TinyCsvDataReader<T>(options, streamReader);
+            return dataReader.ReadLines();
+        }
+
+        /// <summary>
+        /// Get all lines
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public IEnumerable<string> GetAllLinesFromStream(Stream stream)
+        {
+            var streamReader = new StreamReader(stream);
+            return GetAllLinesFromStream(streamReader);
+        }
+
+        /// <summary>
+        /// Get all lines
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        public IEnumerable<string> GetAllLinesFromText(string text, Encoding encoding = null)
+        {
+            var options = this.Options;
+            var memoryStream = new TextMemoryStream(text, encoding ?? options.TextEncoding);
+            return GetAllLinesFromStream(memoryStream);
+        }
+
+        /// <summary>
+        /// Get all lines and fields
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public IEnumerable<string[]> GetAllLinesAndFieldsFromFile(string path)
+        {
+            var streamReader = new StreamReader(path);
+            return GetAllLinesAndFieldsFromStream(streamReader);
+        }
+
+        /// <summary>
+        /// Get all lines and fields
+        /// </summary>
+        /// <param name="streamReader"></param>
+        /// <returns></returns>
+        public IEnumerable<string[]> GetAllLinesAndFieldsFromStream(StreamReader streamReader)
+        {
+            var options = this.Options;
+            var dataReader = new TinyCsvDataReader<T>(options, streamReader);
+            return dataReader.ReadLinesAndFields();
+        }
+
+        /// <summary>
+        /// Get all lines and fields
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public IEnumerable<string[]> GetAllLinesAndFieldsFromStream(Stream stream)
+        {
+            var streamReader = new StreamReader(stream);
+            return GetAllLinesAndFieldsFromStream(streamReader);
+        }
+
+        /// <summary>
+        /// Get all lines and fields
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        public IEnumerable<string[]> GetAlGetAllLinesAndFieldslLinesFromText(string text, Encoding encoding = null)
+        {
+            var options = this.Options;
+            var memoryStream = new TextMemoryStream(text, encoding ?? options.TextEncoding);
+            return GetAllLinesAndFieldsFromStream(memoryStream);
         }
     }
 }
