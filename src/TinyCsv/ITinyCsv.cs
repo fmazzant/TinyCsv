@@ -51,19 +51,19 @@ namespace TinyCsv
         IEnumerable<T> Load(string path);
 
         /// <summary>
-        /// Reads a csv file and returns a list of objects.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        IEnumerable<T> LoadFromFile(string path);
-
-        /// <summary>
         /// Reads a csv from streamreader and returns a list of objects.
         /// </summary>
         /// <param name="streamReader"></param>
         /// <returns></returns>
         [Obsolete($"Use {nameof(LoadFromStream)} to load from file", false)]
         IEnumerable<T> Load(StreamReader streamReader);
+
+        /// <summary>
+        /// Reads a csv file and returns a list of objects.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        IEnumerable<T> LoadFromFile(string path);
 
         /// <summary>
         /// Reads a csv from streamreader and returns a list of objects.
@@ -87,7 +87,7 @@ namespace TinyCsv
         IEnumerable<T> LoadFromText(string text, Encoding encoding = null);
 
         /// <summary>
-        /// Get all csv lines
+        /// Get all lines
         /// </summary>
         /// <param name="models"></param>
         /// <param name="cancellationToken"></param>
@@ -116,7 +116,7 @@ namespace TinyCsv
         IEnumerable<string> GetAllLinesFromStream(Stream stream);
 
         /// <summary>
-        /// 
+        /// Get all lines
         /// </summary>
         /// <param name="text"></param>
         /// <param name="encoding"></param>
