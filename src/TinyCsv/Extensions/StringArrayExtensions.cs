@@ -1,6 +1,4 @@
-﻿
-using System.Linq;
-/// <summary>
+﻿/// <summary>
 /// 
 /// The MIT License (MIT)
 /// 

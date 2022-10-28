@@ -34,7 +34,6 @@ namespace TinyCsv.Data
     using System.Runtime.CompilerServices;
     using System.Text;
     using System.Threading;
-    using System.Threading.Tasks;
     using TinyCsv.Exceptions;
     using TinyCsv.Extensions;
 
@@ -138,7 +137,7 @@ namespace TinyCsv.Data
                     {
                         if (!options.EndOfLineDelimiterChar)
                         {
-                            throw new EndOfLineDelimiterCharException($"The delimiter{options.Delimiter} in the end of line is not valid!");
+                            throw new EndOfLineDelimiterCharException($"The delimiter {options.Delimiter} in the end of line is not valid!");
                         }
                     }
                 }
