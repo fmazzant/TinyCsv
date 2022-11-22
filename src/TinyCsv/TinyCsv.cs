@@ -146,7 +146,7 @@ namespace TinyCsv
 
                 if (validateColumnCount && columnsCount != fields.Length)
                 {
-                    throw new InvalidColumnCountException($"Invalid column count at {index} line.");
+                    throw new InvalidColumnCountException($"Invalid column count {fields.Length} at {index} line, required {columnsCount} columns");
                 }
 
                 var model = fields.GetModelFromStringArray<T>(options);
@@ -267,7 +267,7 @@ namespace TinyCsv
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 options.Handlers.Write.OnRowWriting(index, model);
-                var line = this.GetLineFromModel(index++, model);
+                var line = model.GetLineFromGenericType(options);
                 await writer.WriteLineAsync(line).ConfigureAwait(false);
                 options.Handlers.Write.OnRowWrittin(index, model, line);
                 index++;
@@ -348,13 +348,13 @@ namespace TinyCsv
 
             if (Options.HasHeaderRecord)
             {
-                lines[index] = GetHeaderFromOptions(index);
+                lines[index] = Options.AsColumnsHeaderLine();
                 index++;
             }
 
             foreach (var model in models)
             {
-                lines[index] = this.GetLineFromModel(index, model);
+                lines[index] = model.GetLineFromGenericType(Options);
                 index++;
             }
 
