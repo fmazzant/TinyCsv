@@ -29,10 +29,9 @@
 
 namespace Models
 {
-    public class Model1 : Model
+    public interface Model
     {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public decimal Price { get; set; }
+        int Id { get; set; }
+        string? Name { get; set; }
     }
 }

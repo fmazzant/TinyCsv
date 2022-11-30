@@ -36,19 +36,8 @@ using TinyCsv.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddTinyCsv<Model1>("Model1", options => InitOptionsModel1(options));
 builder.Services.AddTinyCsv<Model2>("Model2", options => InitOptionsModel2(options));
 
-void InitOptionsModel1(CsvOptions<Model1> options)
-{
-    options.HasHeaderRecord = true;
-    options.Delimiter = ";";
-    options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
-    options.Columns.AddColumn(m => m.Id);
-    options.Columns.AddColumn(m => m.Name);
-    options.Columns.AddColumn(m => m.Price);
-}
 void InitOptionsModel2(CsvOptions<Model2> options)
 {
     options.HasHeaderRecord = true;
@@ -68,14 +57,6 @@ app.UseHttpsRedirection();
 app.MapGet("/", [AllowAnonymous] () =>
 {
     return "Hello, world!";
-});
-
-app.MapGet("/csv1", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
-{
-    var tinyCsv = tinyCsvFactory.Get<Model1>("Model1");
-    var result = await tinyCsv.LoadFromFileAsync("model1.csv").ToListAsync();
-    Console.WriteLine($"{result?.Count}");
-    return result;
 });
 
 app.MapGet("/csv2", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
