@@ -53,7 +53,7 @@ namespace CsvSampleConsoleApp
         {
             return $"Object -> {Id}, {Name}, {Price}, {CreatedOn}, {TextBase64}, {WebSite}, {RowType}";
         }
-    }
+     }
 
     public class Base64Converter : IValueConverter
     {

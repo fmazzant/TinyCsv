@@ -40,7 +40,6 @@ namespace TinyCsv
     using TinyCsv.Data;
     using TinyCsv.Extensions;
     using TinyCsv.Streams;
-    using System.Runtime.InteropServices.ComTypes;
 
     /// <summary>
     /// TinyCsv is a simple csv reader/writer library.
