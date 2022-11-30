@@ -53,7 +53,7 @@ namespace CsvSampleConsoleApp
         {
             return $"Object -> {Id}, {Name}, {Price}, {CreatedOn}, {TextBase64}, {WebSite}, {RowType}";
         }
-     }
+    }
 
     public class Base64Converter : IValueConverter
     {
@@ -117,7 +117,7 @@ namespace CsvSampleConsoleApp
             {
                 var memoryModels = csv.LoadFromStream(memoryStream);
                 var list = memoryModels.ToList();
-                Console.WriteLine($"Count:{memoryModels.Count()}");
+                Console.WriteLine($"Count:{list.Count()}");
             }
 
             // read from text

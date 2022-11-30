@@ -287,40 +287,6 @@ namespace TinyCsv
         }
 
         /// <summary>
-        /// get header from options
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        private string GetHeaderFromOptions(int index)
-        {
-            var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
-            Options.Handlers.Write.OnRowHeader(index, headers);
-            return headers;
-        }
-
-        /// <summary>
-        /// get line from model
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        private string GetLineFromModel(int index, T model)
-        {
-            Options.Handlers.Write.OnRowWriting(index, model);
-            var values = Options.Columns.Select(column =>
-            {
-                var columnExpression = column.ColumnExpression;
-                var propertyName = column.ColumnName ?? columnExpression?.GetPropertyName();
-                var property = Options.Properties[propertyName];
-                var value = property.GetValue(model);
-                var stringValue = column.Converter.Convert(value, null, column.ColumnFormatProvider);
-                return stringValue?.EnclosedInQuotesIfNecessary(this.Options);
-            });
-            var line = string.Join(Options.Delimiter, values);
-            Options.Handlers.Write.OnRowWrittin(index, model, line);
-            return line;
-        }
-
-        /// <summary>
         /// Get all csv text
         /// </summary>
         /// <param name="models"></param>
@@ -390,14 +356,14 @@ namespace TinyCsv
             if (Options.HasHeaderRecord)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                lines[index] = GetHeaderFromOptions(index);
+                lines[index] = Options.AsColumnsHeaderLine();
                 index++;
             }
 
             foreach (var model in models)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                lines[index] = this.GetLineFromModel(index, model);
+                lines[index] = model.GetLineFromGenericType(Options);
                 index++;
             }
 
