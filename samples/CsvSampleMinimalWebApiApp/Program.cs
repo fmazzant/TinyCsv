@@ -37,7 +37,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddTinyCsv<Model1>("Model1", options =>
+builder.Services.AddTinyCsv<Model1>("Model1", options => InitOptionsModel1(options));
+builder.Services.AddTinyCsv<Model2>("Model2", options => InitOptionsModel2(options));
+
+void InitOptionsModel1(CsvOptions<Model1> options)
 {
     options.HasHeaderRecord = true;
     options.Delimiter = ";";
@@ -45,8 +48,8 @@ builder.Services.AddTinyCsv<Model1>("Model1", options =>
     options.Columns.AddColumn(m => m.Id);
     options.Columns.AddColumn(m => m.Name);
     options.Columns.AddColumn(m => m.Price);
-});
-builder.Services.AddTinyCsv<Model2>("Model2", options =>
+}
+void InitOptionsModel2(CsvOptions<Model2> options)
 {
     options.HasHeaderRecord = true;
     options.Delimiter = ";";
@@ -54,7 +57,7 @@ builder.Services.AddTinyCsv<Model2>("Model2", options =>
     options.Columns.AddColumn(m => m.Id);
     options.Columns.AddColumn(m => m.Name);
     options.Columns.AddColumn(m => m.CreatedOn);
-});
+}
 
 var app = builder.Build();
 
@@ -85,14 +88,7 @@ app.MapGet("/csv2", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
 
 app.MapGet("/csv3", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
 {
-    var tinyCsv = tinyCsvFactory.Create<Model2>(options =>
-    {
-        options.HasHeaderRecord = true;
-        options.Delimiter = ";";
-        options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
-        options.Columns.AddColumn(m => m.Id);
-        options.Columns.AddColumn(m => m.Name);
-    });
+    var tinyCsv = tinyCsvFactory.Create<Model2>(options => InitOptionsModel2(options));
     var result = await tinyCsv.LoadFromFileAsync("model2.csv").ToListAsync();
     Console.WriteLine($"{result?.Count}");
     return result;
