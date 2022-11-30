@@ -27,31 +27,54 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Conversions
+namespace TinyCsv.Exceptions
 {
     using System;
-    using System.Globalization;
-    using TinyCsv.Extensions;
+    using System.Runtime.Serialization;
 
     /// <summary>
-    /// Provides a unified way of converting UInt16 of values to string
+    /// Defines End Of Line Delimiter Char exception
     /// </summary>
-    public sealed class UInt16Converter : DefaultValueConverter, IValueConverter
+    [Serializable]
+    public class EndOfLineDelimiterCharException : Exception
     {
         /// <summary>
-        /// Converts a string to target type value.
+        /// Create a new instance of EndOfLineDelimiterCharException
         /// </summary>
-        /// <param name="value">The value that is produced by the binding target.</param>
-        /// <param name="targetType">The type to convert to.</param>
-        /// <param name="parameter">The converter parameter to use.</param>
-        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        public EndOfLineDelimiterCharException()
+            : base()
         {
-            if (ushort.TryParse(value, NumberStyles.Any, provider, out ushort result))
-            {
-                return result;
-            }
-            return targetType.IsNullable() ? null : default(ushort);
+
+        }
+
+        /// <summary>
+        /// Create a new instance of EndOfLineDelimiterCharException
+        /// </summary>
+        /// <param name="message"></param>
+        public EndOfLineDelimiterCharException(string message)
+            : base(message)
+        {
+        }
+
+        /// <summary>
+        /// Create a new instance of EndOfLineDelimiterCharException
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="innerException"></param>
+        public EndOfLineDelimiterCharException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
+
+        /// <summary>
+        /// Create a new instance of EndOfLineDelimiterCharException
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        protected EndOfLineDelimiterCharException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+
         }
     }
 }

@@ -26,32 +26,35 @@
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
-
-namespace TinyCsv.Conversions
+namespace TinyCsv.Extensions
 {
-    using System;
-    using System.Globalization;
-    using TinyCsv.Extensions;
-
     /// <summary>
-    /// Provides a unified way of converting UInt16 of values to string
+    /// String extensions
     /// </summary>
-    public sealed class UInt16Converter : DefaultValueConverter, IValueConverter
+    public static class StringArrayExtensions
     {
         /// <summary>
-        /// Converts a string to target type value.
+        /// Get model from string array
         /// </summary>
-        /// <param name="value">The value that is produced by the binding target.</param>
-        /// <param name="targetType">The type to convert to.</param>
-        /// <param name="parameter">The converter parameter to use.</param>
-        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        /// <param name="value"></param>
+        /// <param name="trimData"></param>
+        /// <returns></returns>
+        public static T GetModelFromStringArray<T>(this string[] values, CsvOptions<T> options)
+            where T : new()
         {
-            if (ushort.TryParse(value, NumberStyles.Any, provider, out ushort result))
+            var model = new T();
+
+            foreach (var column in options.Columns)
             {
-                return result;
+                var value = values[column.ColumnIndex];
+                var columnExpression = column.ColumnExpression;
+                var propertyName = column.ColumnName ?? columnExpression?.GetPropertyName();
+                var property = options.Properties[propertyName];
+                var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
+                property.SetValue(model, typedValue);
             }
-            return targetType.IsNullable() ? null : default(ushort);
+
+            return model;
         }
     }
 }

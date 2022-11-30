@@ -27,31 +27,11 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Conversions
+namespace Models
 {
-    using System;
-    using System.Globalization;
-    using TinyCsv.Extensions;
-
-    /// <summary>
-    /// Provides a unified way of converting UInt16 of values to string
-    /// </summary>
-    public sealed class UInt16Converter : DefaultValueConverter, IValueConverter
+    public interface Model
     {
-        /// <summary>
-        /// Converts a string to target type value.
-        /// </summary>
-        /// <param name="value">The value that is produced by the binding target.</param>
-        /// <param name="targetType">The type to convert to.</param>
-        /// <param name="parameter">The converter parameter to use.</param>
-        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
-        {
-            if (ushort.TryParse(value, NumberStyles.Any, provider, out ushort result))
-            {
-                return result;
-            }
-            return targetType.IsNullable() ? null : default(ushort);
-        }
+        int Id { get; set; }
+        string? Name { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿/// <summary>
+﻿#if NET6_0_OR_GREATER
+/// <summary>
 /// 
 /// The MIT License (MIT)
 /// 
@@ -27,7 +28,6 @@
 /// 
 /// </summary>
 
-#if NET6_0_OR_GREATER
 namespace TinyCsv.Conversions
 {
     using System;

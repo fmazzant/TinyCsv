@@ -38,6 +38,9 @@ namespace TinyCsv
     using System;
     using TinyCsv.Streams;
     using System.Threading;
+    using TinyCsv.Data;
+    using TinyCsv.Extensions;
+    using TinyCsv.Exceptions;
 
     public sealed partial class TinyCsv<T>
     {
@@ -81,9 +84,44 @@ namespace TinyCsv
         /// <param name="streamReader"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<IEnumerable<T>> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<T>> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
         {
-            return LoadFromStreamInternalAsync(streamReader, cancellationToken);
+            var models = new List<T>();
+            var index = 0;
+            var options = this.Options;
+            var dataReader = new TinyCsvDataReader<T>(options, streamReader);
+            var hasHeaderRecord = options.HasHeaderRecord;
+            var validateColumnCount = options.ValidateColumnCount;
+            var columnsCount = options.Columns.Count;
+
+            options.Handlers.OnStart();
+            foreach (var line in dataReader.ReadLines())
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var currentIndex = index;
+                index++;
+
+                if (currentIndex == 0 && hasHeaderRecord)
+                {
+                    options.Handlers.Read.OnRowReading(currentIndex, line);
+                    options.Handlers.Read.OnRowHeader(currentIndex, line);
+                    continue;
+                }
+
+                options.Handlers.Read.OnRowReading(currentIndex, line);
+                var fields = dataReader.GetFieldsByLine(line);
+                
+                if (validateColumnCount && columnsCount != fields.Length)
+                {
+                    throw new InvalidColumnCountException($"Invalid column count at {index} line.");
+                }
+                
+                var model = fields.GetModelFromStringArray<T>(options);
+                models.Add(model);
+                options.Handlers.Read.OnRowRead(currentIndex, model, line);
+            }
+            Options.Handlers.OnCompleted(index);
+            return await Task.FromResult(models);
         }
 
         /// <summary>
@@ -109,25 +147,6 @@ namespace TinyCsv
             var memoryStream = new TextMemoryStream(text, encoding ?? Options.TextEncoding);
             return LoadFromStreamAsync(memoryStream, cancellationToken);
         }
-
-
-
-        async Task<IEnumerable<T>> LoadFromStreamInternalAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
-        {
-            var models = new List<T>();
-
-            var index = await GetIndexFromStreamReaderBySkipRowsAsync(0, streamReader, cancellationToken);
-
-            while (!streamReader.EndOfStream)
-            {
-                var model = await GetModelAndIndexFromStreamReaderAsync(index++, streamReader, cancellationToken);
-                if (model is null) continue;
-                models.Add(model);
-            }
-
-            return models;
-        }
-
     }
 }
 #endif

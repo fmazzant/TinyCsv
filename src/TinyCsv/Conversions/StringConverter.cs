@@ -29,8 +29,8 @@
 
 namespace TinyCsv.Conversions
 {
-    using TinyCsv.Extensions;
     using System;
+    using TinyCsv.Extensions;
 
     /// <summary>
     /// Provides a unified way of converting String of values to string

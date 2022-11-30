@@ -51,7 +51,7 @@ namespace CsvSampleConsoleApp
         public RowType RowType { get; set; }
         public override string ToString()
         {
-            return $"ToString: {Id}, {Name}, {Price}, {CreatedOn}, {TextBase64}";
+            return $"Object -> {Id}, {Name}, {Price}, {CreatedOn}, {TextBase64}, {WebSite}, {RowType}";
         }
     }
 
@@ -86,6 +86,7 @@ namespace CsvSampleConsoleApp
                  options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
                  options.TrimData = true;
                  options.ValidateColumnCount = true;
+                 options.EnableHandlers = false;
 
                  // Columns
                  options.Columns.AddColumn(m => m.Id);
@@ -107,21 +108,22 @@ namespace CsvSampleConsoleApp
                  options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
              });
 
+            // read from file sync
+            var syncModels = csv.LoadFromFile("file.csv");
+            Console.WriteLine($"Count:{syncModels.Count()}");
+
             // read from memory stream
             using (var memoryStream = Memory.CreateMemoryStream(Environment.NewLine))
             {
                 var memoryModels = csv.LoadFromStream(memoryStream);
-                Console.WriteLine($"Count:{memoryModels.Count()}");
+                var list = memoryModels.ToList();
+                Console.WriteLine($"Count:{list.Count()}");
             }
 
             // read from text
             var planText = $"Id;Name;Price;CreatedOn;TextBase64;{Environment.NewLine}\"1\";\"   Name 1   \";\"1.12\";02/04/2022;\"aGVsbG8sIHdvcmxkIQ == \";https://wwww.google.it;A;";
             var textModels = csv.LoadFromText(planText);
             Console.WriteLine($"Count:{textModels.Count()}");
-
-            // read from file sync
-            var syncModels = csv.LoadFromFile("file.csv");
-            Console.WriteLine($"Count:{syncModels.Count()}");
 
             // read from file async
             var asyncModels = await csv.LoadFromFileAsync("file.csv").ToListAsync();
@@ -136,6 +138,13 @@ namespace CsvSampleConsoleApp
             // load IAsyncEnumerable into a list
             var models = await csv.LoadFromStreamAsync(new StreamReader("file.csv")).ToListAsync();
             Console.WriteLine($"Count:{models.Count()}");
+
+            // get all lines from file
+            var lines = csv.GetAllLinesFromFile("file.csv");
+            foreach (var line in lines)
+            {
+                Console.WriteLine(line);
+            }
 
             // load to fix 
             var allText = File.ReadAllText("file.csv");

@@ -47,7 +47,7 @@ namespace TinyCsv.Conversions
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
-            if (float.TryParse(value, NumberStyles.None, provider, out float result))
+            if (float.TryParse(value, NumberStyles.Any, provider, out float result))
             {
                 return result;
             }

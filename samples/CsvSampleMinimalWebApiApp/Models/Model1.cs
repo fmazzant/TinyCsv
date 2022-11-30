@@ -29,7 +29,7 @@
 
 namespace Models
 {
-    public class Model1
+    public class Model1 : Model
     {
         public int Id { get; set; }
         public string? Name { get; set; }

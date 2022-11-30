@@ -30,37 +30,47 @@ namespace TinyCsv.Data
 {
     using System.Collections.Generic;
     using System.Threading;
+    using System.Threading.Tasks;
 
-    /// <summary>
-    /// ICsvDataReader
-    /// </summary>
-    public interface ICsvDataReader<T>
+    public interface ICsvDataWriter<T>
     {
         /// <summary>
-        /// Get lines
+        /// Write lines
         /// </summary>
         /// <returns></returns>
-        IEnumerable<string> ReadLines();
+        int WriteLines(IEnumerable<string> lines);
 
         /// <summary>
-        /// Get fields by line
+        /// write line
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        string[] GetFieldsByLine(string line);
+        int WriteLine(string line);
 
         /// <summary>
-        /// Get lines field
+        /// Write lines and fields
         /// </summary>
         /// <returns></returns>
-        IEnumerable<string[]> ReadLinesAndFields();
+        int WriteLinesAndFields(IEnumerable<string[]> lines);
 
-#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         /// <summary>
-        /// Read Lines 
+        /// Write lines
         /// </summary>
         /// <returns></returns>
-        IAsyncEnumerable<string> ReadLinesAsync(CancellationToken cancellationToken = default);
-#endif
+        Task<int> WriteLinesAsync(IEnumerable<string> lines, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// write line
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        Task<int> WriteLineAsync(string line, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Write lines and fields
+        /// </summary>
+        /// <returns></returns>
+        Task<int> WriteLinesAndFieldsAsync(IEnumerable<string[]> lines, CancellationToken cancellationToken = default);
     }
+
 }
