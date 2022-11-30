@@ -31,16 +31,16 @@
 
 namespace TinyCsv
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Threading.Tasks;
     using System.Text;
-    using System;
-    using TinyCsv.Streams;
     using System.Threading;
+    using System.Threading.Tasks;
     using TinyCsv.Data;
-    using TinyCsv.Extensions;
     using TinyCsv.Exceptions;
+    using TinyCsv.Extensions;
+    using TinyCsv.Streams;
 
     public sealed partial class TinyCsv<T>
     {
@@ -110,12 +110,12 @@ namespace TinyCsv
 
                 options.Handlers.Read.OnRowReading(currentIndex, line);
                 var fields = dataReader.GetFieldsByLine(line);
-                
+
                 if (validateColumnCount && columnsCount != fields.Length)
                 {
                     throw new InvalidColumnCountException($"Invalid column count at {index} line.");
                 }
-                
+
                 var model = fields.GetModelFromStringArray<T>(options);
                 models.Add(model);
                 options.Handlers.Read.OnRowRead(currentIndex, model, line);
