@@ -38,6 +38,7 @@ namespace TinyCsv
     using TinyCsv.Attributes;
     using TinyCsv.Conversions;
     using TinyCsv.Extensions;
+    using TinyCsv.Factory;
 
     /// <summary>
     /// Csv Options Collection Columns
@@ -49,6 +50,11 @@ namespace TinyCsv
         /// Columns
         /// </summary>
         private List<CsvColumn> Columns { get; set; }
+
+        /// <summary>
+        /// Number of Columns
+        /// </summary>
+        public int Count => Columns.Count;
 
         /// <summary>
         /// Create CsvOptionColumns
@@ -151,16 +157,6 @@ namespace TinyCsv
         /// <param name="formatProvider"></param>
         private void AddColumn<T>(int columnIndex, string columnName, Expression<Func<M, T>> expression, string columnFormat = null, IFormatProvider formatProvider = null, IValueConverter converter = null)
         {
-            //Columns.Add(new CsvColumn()
-            //{
-            //    ColumnIndex = columnIndex,
-            //    ColumnName = columnName,
-            //    ColumnType = typeof(T),
-            //    ColumnExpression = expression,
-            //    ColumnFormat = columnFormat,
-            //    ColumnFormatProvider = formatProvider,
-            //    Converter = converter ?? new DefaultValueConverter()
-            //});
             AddColumn(typeof(T), columnIndex, columnName, expression, columnFormat, formatProvider, converter);
         }
 
@@ -184,7 +180,7 @@ namespace TinyCsv
                 ColumnExpression = expression,
                 ColumnFormat = columnFormat,
                 ColumnFormatProvider = formatProvider,
-                Converter = converter ?? new DefaultValueConverter()
+                Converter = converter ?? ValueConverterFactory.CreateValueConverterByType(type)
             });
         }
 

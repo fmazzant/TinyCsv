@@ -27,36 +27,33 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Conversions
+namespace TinyCsv.Streams
 {
-    using System;
+    using System.IO;
+    using System.Text;
 
     /// <summary>
-    /// Provides a unified way of converting types of values to string, as well as for accessing standard values and subproperties.
+    /// Text Memory Stream
     /// </summary>
-    public class DefaultValueConverter : IValueConverter
+    public class TextMemoryStream : MemoryStream
     {
         /// <summary>
-        /// Converts a value to string.
+        /// Create an instance of TextMemoryStream from UTF8 text
         /// </summary>
-        /// <param name="value">The value produced by the binding source.</param>
-        /// <param name="parameter">The converter parameter to use. In this case is DefaultValue</param>
-        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public virtual string Convert(object value, object parameter, IFormatProvider provider)
+        /// <param name="text"></param>
+        public TextMemoryStream(string text)
+          : this(text, Encoding.UTF8)
         {
-            return string.Format(provider, "{0}", value);
         }
 
         /// <summary>
-        /// Converts a string to target type value.
+        /// Create an instance of TextMemoryStream from text and encoding
         /// </summary>
-        /// <param name="value">The value that is produced by the binding target.</param>
-        /// <param name="targetType">The type to convert to.</param>
-        /// <param name="parameter">The converter parameter to use.</param>
-        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public virtual object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        /// <param name="text"></param>
+        /// <param name="encoding"></param>
+        public TextMemoryStream(string text, Encoding encoding)
+            : base(encoding.GetBytes(text))
         {
-            return System.Convert.ChangeType(value, targetType, provider);
         }
     }
 }

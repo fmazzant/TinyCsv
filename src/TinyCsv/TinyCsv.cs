@@ -38,12 +38,13 @@ namespace TinyCsv
     using System.Threading;
     using System.Threading.Tasks;
     using TinyCsv.Extensions;
+    using TinyCsv.Streams;
 
     /// <summary>
     /// TinyCsv is a simple csv reader/writer library.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public sealed class TinyCsv<T> : ITinyCsv<T> where T : class, new()
+    public sealed partial class TinyCsv<T> : ITinyCsv<T> where T : class, new()
     {
         /// <summary>
         /// Options
@@ -83,7 +84,7 @@ namespace TinyCsv
         /// <param name="path"></param>
         /// <returns></returns>
         [Obsolete($"Use {nameof(LoadFromFile)} to load from file", false)]
-        public ICollection<T> Load(string path)
+        public IEnumerable<T> Load(string path)
         {
             return LoadFromFile(path);
         }
@@ -93,11 +94,11 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public ICollection<T> LoadFromFile(string path)
+        public IEnumerable<T> LoadFromFile(string path)
         {
-            using var streamReader = new StreamReader(path);
-            var models = Load(streamReader);
-            return new List<T>(models);
+            var streamReader = new StreamReader(path);
+            return LoadFromStream(streamReader);
+
         }
 
         /// <summary>
@@ -160,7 +161,6 @@ namespace TinyCsv
         public IEnumerable<T> LoadFromStream(Stream stream)
         {
             return LoadFromStream(new StreamReader(stream));
-
         }
 
         /// <summary>
@@ -170,146 +170,9 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<T> LoadFromText(string text, Encoding encoding = null)
         {
-            var memoryStream = GetMemoryStreamFromText(text, encoding);
+            var memoryStream = new TextMemoryStream(text, encoding ?? Options.TextEncoding);
             return LoadFromStream(memoryStream);
         }
-
-#if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        [Obsolete($"Use {nameof(LoadFromFileAsync)} to load from file", false)]
-        public Task<ICollection<T>> LoadAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return LoadFromFileAsync(path, cancellationToken);
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public async Task<ICollection<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            using (StreamReader file = new StreamReader(path))
-            {
-                var models = await this.LoadFromStreamAsync(file, cancellationToken);
-                return new List<T>(models);
-            }
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="streamReader"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete($"Use {nameof(LoadFromFileAsync)} to load from file", false)]
-        public Task<ICollection<T>> LoadAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return LoadFromStreamAsync(streamReader, cancellationToken);
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="streamReader"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public Task<ICollection<T>> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return LoadFromStreamInternalAsync(streamReader, cancellationToken);
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public Task<ICollection<T>> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            using var streamReader = new StreamReader(stream);
-            return LoadFromStreamAsync(streamReader, cancellationToken);
-        }
-
-        /// <summary>
-        /// Reads a csv from text and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="encoding">The default is UTF8</param>
-        /// <returns></returns>
-        public Task<ICollection<T>> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var memoryStream = GetMemoryStreamFromText(text, encoding);
-            return LoadFromStreamAsync(memoryStream, cancellationToken);
-        }
-#endif
-
-#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public async Task<ICollection<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            using (StreamReader streamReader = new StreamReader(path))
-            {
-                var models = await this.LoadFromStreamAsync(streamReader).ToListAsync(cancellationToken);
-                return models;
-            }
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="streamReader"></param>
-        /// <returns></returns>
-        [Obsolete($"Use {nameof(LoadFromStreamAsync)} to load from file", false)]
-        public IAsyncEnumerable<T> LoadAsync(StreamReader streamReader)
-        {
-            return this.LoadFromStreamAsync(streamReader);
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
-        {
-            return LoadFromStreamInternalAsync(streamReader, cancellationToken);
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public IAsyncEnumerable<T> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var streamReader = new StreamReader(stream);
-            return LoadFromStreamAsync(streamReader, cancellationToken);
-        }
-
-        /// <summary>
-        /// Reads a csv from text and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="encoding"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public IAsyncEnumerable<T> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var memoryStream = GetMemoryStreamFromText(text, encoding);
-            return LoadFromStreamAsync(memoryStream, cancellationToken);
-        }
-#endif
 
         /// <summary>
         /// Get header from line
@@ -337,27 +200,14 @@ namespace TinyCsv
             {
                 var value = values[column.ColumnIndex].TrimData(this.Options);
                 var columnExpression = column.ColumnExpression;
-                var propertyName = columnExpression?.GetPropertyName() ?? column.ColumnName;
-                var property = typeof(T).GetProperty(propertyName);
+                var propertyName = column.ColumnName ?? columnExpression?.GetPropertyName();
+                var property = Options.Properties[propertyName];
                 var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
                 property.SetValue(model, typedValue);
             }
+
             Options.Handlers.Read.OnRowRead(index, model, line);
             return model;
-        }
-
-        /// <summary>
-        /// Returns memory stream from text
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="encoding"></param>
-        /// <returns></returns>
-        private MemoryStream GetMemoryStreamFromText(string text, Encoding encoding = null)
-        {
-            var textEncoding = encoding ?? Options.TextEncoding;
-            var bytes = textEncoding.GetBytes(text);
-            var memoryStream = new MemoryStream(bytes);
-            return memoryStream;
         }
 
         /// <summary>
@@ -411,28 +261,11 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <param name="models"></param>
-        public async Task SaveAsync(string path, IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task SaveAsync(string path, IEnumerable<T> models, CancellationToken cancellationToken = default)
         {
             using (StreamWriter file = new StreamWriter(path))
             {
-                var index = 0;
-
-                if (Options.HasHeaderRecord)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var headers = GetHeaderFromOptions(index++);
-                    await file.WriteLineAsync(headers).ConfigureAwait(false);
-                }
-
-                foreach (var model in models)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var line = this.GetLineFromModel(index++, model);
-                    await file.WriteLineAsync(line).ConfigureAwait(false);
-                }
-
-                await file.FlushAsync().ConfigureAwait(false);
-                file.Close();
+                await SaveAsync(file, models, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -441,7 +274,7 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <param name="models"></param>
-        public async Task SaveAsync(StreamWriter streamWriter, IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task SaveAsync(StreamWriter streamWriter, IEnumerable<T> models, CancellationToken cancellationToken = default)
         {
             var index = 0;
 
@@ -466,7 +299,7 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <param name="models"></param>
-        public Task SaveAsync(Stream stream, IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken))
+        public Task SaveAsync(Stream stream, IEnumerable<T> models, CancellationToken cancellationToken = default)
         {
             using (StreamWriter streamWriter = new StreamWriter(stream))
             {
@@ -497,8 +330,8 @@ namespace TinyCsv
             var values = Options.Columns.Select(column =>
             {
                 var columnExpression = column.ColumnExpression;
-                var propertyName = columnExpression?.GetPropertyName() ?? column.ColumnName;
-                var property = model.GetType().GetProperty(propertyName);
+                var propertyName = column.ColumnName ?? columnExpression?.GetPropertyName();
+                var property = Options.Properties[propertyName];
                 var value = property.GetValue(model);
                 var stringValue = column.Converter.Convert(value, null, column.ColumnFormatProvider);
                 return stringValue?.EnclosedInQuotesIfNecessary(this.Options);
@@ -635,37 +468,5 @@ namespace TinyCsv
             var model = this.GetModelFromLine(index - 1, line);
             return model;
         }
-
-
-#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        async IAsyncEnumerable<T> LoadFromStreamInternalAsync(StreamReader streamReader, [EnumeratorCancellation] CancellationToken cancellationToken = default)
-        {
-            var index = await GetIndexFromStreamReaderBySkipRowsAsync(0, streamReader, cancellationToken);
-
-            while (!streamReader.EndOfStream)
-            {
-                var model = await GetModelAndIndexFromStreamReaderAsync(index++, streamReader, cancellationToken);
-                if (model is null) continue;
-                yield return model;
-            }
-        }
-#endif
-#if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
-        async Task<ICollection<T>> LoadFromStreamInternalAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
-        {
-            var models = new List<T>();
-
-            var index = await GetIndexFromStreamReaderBySkipRowsAsync(0, streamReader, cancellationToken);
-
-            while (!streamReader.EndOfStream)
-            {
-                var model = await GetModelAndIndexFromStreamReaderAsync(index++, streamReader, cancellationToken);
-                if (model is null) continue;
-                models.Add(model);
-            }
-
-            return models;
-        }
-#endif
     }
 }
