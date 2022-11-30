@@ -104,6 +104,12 @@ await foreach(var model in models){
 }
 ```
 
+for NET5_0_OR_GREATER or NETSTANDARD2_1_OR_GREATER, like this:
+
+```c#
+var models = await csv.LoadFromFileAsync("file.csv").ToListAsync();
+```
+
 The load method returns a collection of Model type items and takes as argument the file's path.
 
 ## Write
