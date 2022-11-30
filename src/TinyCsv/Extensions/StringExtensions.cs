@@ -43,26 +43,6 @@ namespace TinyCsv.Extensions
         /// Trim value if trimData is true
         /// </summary>
         /// <param name="value"></param>
-        /// <param name="trimData"></param>
-        /// <returns></returns>
-        public static string TrimData<T>(this string value, CsvOptions<T> options)
-        {
-            if (!string.IsNullOrEmpty(value))
-            {
-                var chars = new List<char> { '"', '\'' };
-                if (options.TrimData)
-                {
-                    chars.Add(' ');
-                }
-                return value.Trim(chars.ToArray());
-            }
-            return value;
-        }
-
-        /// <summary>
-        /// Trim value if trimData is true
-        /// </summary>
-        /// <param name="value"></param>
         /// <param name="options"></param>
         /// <returns></returns>
         public static string TrimData(this string value, ICsvOptions options)
@@ -90,7 +70,7 @@ namespace TinyCsv.Extensions
         {
             var validateColumnCount = options.ValidateColumnCount;
             var allowBackSlashToEscapeQuote = options.AllowBackSlashToEscapeQuote;
-            var columnCount = options.Columns.Count;
+            var columnCount = options.Columns.Count();
             var delimiter = options.Delimiter;
 
             var expression = $"{delimiter}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))";
