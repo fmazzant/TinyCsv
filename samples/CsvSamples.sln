@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvSampleMinimalWebApiApp",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyCsv.AspNetCore", "..\src\TinyCsv.AspNetCore\TinyCsv.AspNetCore.csproj", "{FD7C11F5-5F54-4174-9453-0D916255E2B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvSampleConsoleAttributeApp", "CsvSampleConsoleAttributeApp\CsvSampleConsoleAttributeApp.csproj", "{055117EE-93D9-40C2-B9C0-A942701D3839}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvSampleConsoleAttributeApp", "CsvSampleConsoleAttributeApp\CsvSampleConsoleAttributeApp.csproj", "{055117EE-93D9-40C2-B9C0-A942701D3839}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

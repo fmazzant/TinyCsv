@@ -27,12 +27,32 @@
 /// 
 /// </summary>
 
-namespace Models
+namespace TinyCsv.Conversions
 {
-    public class Model1 : Model
+    using System;
+    using System.Globalization;
+    using TinyCsv.Extensions;
+
+    /// <summary>
+    /// Provides a unified way of converting Int16 of values to string
+    /// </summary>
+    public sealed class Int16Converter : DefaultValueConverter, IValueConverter
     {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public decimal Price { get; set; }
+        /// <summary>
+        /// Converts a string to target type value.
+        /// </summary>
+        /// <param name="value">The value that is produced by the binding target.</param>
+        /// <param name="targetType">The type to convert to.</param>
+        /// <param name="parameter">The converter parameter to use.</param>
+        /// <param name="culture">The culture to use in the converter.</param>
+        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
+        public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        {
+            if (short.TryParse(value, NumberStyles.Any, provider, out short result))
+            {
+                return result;
+            }
+            return targetType.IsNullable() ? null : default(short);
+        }
     }
 }

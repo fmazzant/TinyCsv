@@ -27,36 +27,54 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Conversions
+namespace TinyCsv.Exceptions
 {
     using System;
+    using System.Runtime.Serialization;
 
     /// <summary>
-    /// Provides a unified way of converting types of values to string, as well as for accessing standard values and subproperties.
+    /// Defines End Of Line Delimiter Char exception
     /// </summary>
-    public class DefaultValueConverter : IValueConverter
+    [Serializable]
+    public class EndOfLineDelimiterCharException : Exception
     {
         /// <summary>
-        /// Converts a value to string.
+        /// Create a new instance of EndOfLineDelimiterCharException
         /// </summary>
-        /// <param name="value">The value produced by the binding source.</param>
-        /// <param name="parameter">The converter parameter to use. In this case is DefaultValue</param>
-        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public virtual string Convert(object value, object parameter, IFormatProvider provider)
+        public EndOfLineDelimiterCharException()
+            : base()
         {
-            return string.Format(provider, "{0}", value);
+
         }
 
         /// <summary>
-        /// Converts a string to target type value.
+        /// Create a new instance of EndOfLineDelimiterCharException
         /// </summary>
-        /// <param name="value">The value that is produced by the binding target.</param>
-        /// <param name="targetType">The type to convert to.</param>
-        /// <param name="parameter">The converter parameter to use.</param>
-        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public virtual object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        /// <param name="message"></param>
+        public EndOfLineDelimiterCharException(string message)
+            : base(message)
         {
-            return System.Convert.ChangeType(value, targetType, provider);
+        }
+
+        /// <summary>
+        /// Create a new instance of EndOfLineDelimiterCharException
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="innerException"></param>
+        public EndOfLineDelimiterCharException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
+
+        /// <summary>
+        /// Create a new instance of EndOfLineDelimiterCharException
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        protected EndOfLineDelimiterCharException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+
         }
     }
 }

@@ -26,13 +26,35 @@
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
-
-namespace Models
+namespace TinyCsv.Extensions
 {
-    public class Model1 : Model
+    /// <summary>
+    /// String extensions
+    /// </summary>
+    public static class StringArrayExtensions
     {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public decimal Price { get; set; }
+        /// <summary>
+        /// Get model from string array
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="trimData"></param>
+        /// <returns></returns>
+        public static T GetModelFromStringArray<T>(this string[] values, CsvOptions<T> options)
+            where T : new()
+        {
+            var model = new T();
+
+            foreach (var column in options.Columns)
+            {
+                var value = values[column.ColumnIndex];
+                var columnExpression = column.ColumnExpression;
+                var propertyName = column.ColumnName ?? columnExpression?.GetPropertyName();
+                var property = options.Properties[propertyName];
+                var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
+                property.SetValue(model, typedValue);
+            }
+
+            return model;
+        }
     }
 }

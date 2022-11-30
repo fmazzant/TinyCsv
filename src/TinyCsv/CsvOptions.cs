@@ -30,15 +30,93 @@
 namespace TinyCsv
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
     using System.Text;
     using TinyCsv.Args;
     using TinyCsv.Attributes;
 
     /// <summary>
-    /// Csv Options definition
+    ///  Csv Options abstract definition
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public sealed class CsvOptions<T>
+    public interface ICsvOptions
+    {
+        /// <summary>
+        /// Has header record
+        /// </summary>
+        bool HasHeaderRecord { get; set; }
+
+        /// <summary>
+        /// Delimiter
+        /// </summary>
+        string Delimiter { get; set; }
+
+        /// <summary>
+        /// Respects new line (either \r\n or \n) characters inside field values enclosed in double quotes.
+        /// </summary>
+        bool AllowRowEnclosedInDoubleQuotesValues { get; set; }
+
+        /// <summary>
+        /// Allows the sequence "\"" to be a valid quoted value (in addition to the standard """")
+        /// </summary>
+        bool AllowBackSlashToEscapeQuote { get; set; }
+
+        /// <summary>
+        /// Double quotes
+        /// </summary>
+        char DoubleQuotes { get; set; }
+
+        /// <summary>
+        /// Comment
+        /// </summary>
+        char Comment { get; set; }
+
+        /// <summary>
+        /// Gets or Set the newline string defined for this environment
+        /// </summary>
+        string NewLine { get; set; }
+
+        /// <summary>
+        /// Represents a character encoding
+        /// </summary>
+        Encoding TextEncoding { get; set; }
+
+        /// <summary>
+        /// Allows skipping of initial rows without csv data
+        /// </summary>
+        uint RowsToSkip { get; set; }
+
+        /// <summary>
+        /// Allows skipt row by condition
+        /// </summary>
+        Func<string, int, bool> SkipRow { get; set; }
+
+        /// <summary>
+        /// Can be used to trim each cell
+        /// </summary>
+        bool TrimData { get; set; }
+
+        /// <summary>
+        /// Checks each row immediately for column count
+        /// </summary>
+        bool ValidateColumnCount { get; set; }
+
+        /// <summary>
+        /// Allows comment inside the content
+        /// </summary>
+        bool AllowComment { get; set; }
+
+        /// <summary>
+        /// Allow the last char is the delimiter char
+        /// </summary>
+        bool EndOfLineDelimiterChar { get; set; }
+    }
+
+    /// <summary>
+    ///  Csv Options abstract definition
+    /// </summary>
+    public abstract class CsvOptions : ICsvOptions
     {
         /// <summary>
         /// Has header record
@@ -46,14 +124,19 @@ namespace TinyCsv
         public bool HasHeaderRecord { get; set; }
 
         /// <summary>
-        /// Columns
-        /// </summary>
-        public CsvOptionsColumns<T> Columns { get; internal set; }
-
-        /// <summary>
         /// Delimiter
         /// </summary>
         public string Delimiter { get; set; } = ";";
+
+        /// <summary>
+        /// Respects new line (either \r\n or \n) characters inside field values enclosed in double quotes.
+        /// </summary>
+        public bool AllowRowEnclosedInDoubleQuotesValues { get; set; } = true;
+
+        /// <summary>
+        /// Allows the sequence "\"" to be a valid quoted value (in addition to the standard """")
+        /// </summary>
+        public bool AllowBackSlashToEscapeQuote { get; set; } = false;
 
         /// <summary>
         /// Double quotes
@@ -107,24 +190,36 @@ namespace TinyCsv
         public bool AllowComment { get; set; } = true;
 
         /// <summary>
-        /// Respects new line (either \r\n or \n) characters inside field values enclosed in double quotes.
-        /// </summary>
-        public bool AllowRowEnclosedInDoubleQuotesValues { get; set; } = true;
-
-        /// <summary>
-        /// Allows the sequence "\"" to be a valid quoted value (in addition to the standard """")
-        /// </summary>
-        public bool AllowBackSlashToEscapeQuote { get; set; } = false;
-
-        /// <summary>
         /// Allow the last char is the delimiter char
         /// </summary>
         public bool EndOfLineDelimiterChar { get; set; } = true;
 
         /// <summary>
+        /// Enable handlers if necessary
+        /// </summary>
+        public bool EnableHandlers { get; set; } = false;
+    }
+
+    /// <summary>
+    /// Csv Options definition
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public sealed class CsvOptions<T> : CsvOptions
+    {
+        /// <summary>
+        /// Columns
+        /// </summary>
+        public CsvOptionsColumns<T> Columns { get; internal set; }
+
+        /// <summary>
         /// Event Handlers
         /// </summary>
         public EventHandlers Handlers { get; }
+
+        /// <summary>
+        /// Object's properties
+        /// </summary>
+        internal Dictionary<string, PropertyInfo> Properties { get; set; }
 
         /// <summary>
         /// Create a CsvOptions
@@ -133,6 +228,7 @@ namespace TinyCsv
         {
             Columns = new CsvOptionsColumns<T>();
             Handlers = new EventHandlers(this);
+            this.SetOptionPropertiesFromType(typeof(T));
         }
 
         /// <summary>
@@ -144,6 +240,21 @@ namespace TinyCsv
             Handlers = new EventHandlers(this);
             Columns = new CsvOptionsColumns<T>(type);
             this.SetOptionValueFromType(type);
+            this.SetOptionPropertiesFromType(type);
+        }
+
+        /// <summary>
+        /// Set Option Properties From Type
+        /// </summary>
+        /// <param name="type"></param>
+        private void SetOptionPropertiesFromType(Type type)
+        {
+            Properties = new Dictionary<string, PropertyInfo>();
+            var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            foreach (var property in properties)
+            {
+                Properties.Add(property.Name, property);
+            }
         }
 
         /// <summary>
@@ -215,6 +326,16 @@ namespace TinyCsv
         }
 
         /// <summary>
+        /// get header as string line 
+        /// </summary>
+        /// <returns></returns>
+        public string AsColumnsHeaderLine()
+        {
+            var headers = string.Join(this.Delimiter, this.Columns.Select(x => $"{x.ColumnName}"));
+            return headers;
+        }
+
+        /// <summary>
         /// Defines Event Handlers
         /// </summary>
         public sealed class EventHandlers
@@ -245,6 +366,11 @@ namespace TinyCsv
             public WriteEventHandlers Write { get; private set; }
 
             /// <summary>
+            /// Handlers is enabled
+            /// </summary>
+            public bool Enabled => Options?.EnableHandlers ?? false;
+
+            /// <summary>
             /// Create an instance of EventHandlers
             /// </summary>
             /// <param name="options"></param>
@@ -261,7 +387,18 @@ namespace TinyCsv
             /// <param name="e"></param>
             internal void OnStart(StartEventArgs e)
             {
+                if (!Enabled) return;
                 Start?.Invoke(this, e);
+            }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="e"></param>
+            internal void OnStart()
+            {
+                if (!Enabled) return;
+                OnStart(new StartEventArgs() { });
             }
 
             /// <summary>
@@ -270,7 +407,21 @@ namespace TinyCsv
             /// <param name="e"></param>
             internal void OnCompleted(CompletedEventArgs e)
             {
+                if (!Enabled) return;
                 Completed?.Invoke(this, e);
+            }
+
+            /// <summary>
+            /// Reise completed event
+            /// </summary>
+            /// <param name="e"></param>
+            internal void OnCompleted(int elements)
+            {
+                if (!Enabled) return;
+                OnCompleted(new CompletedEventArgs
+                {
+                    Elements = elements
+                });
             }
         }
 
@@ -309,11 +460,17 @@ namespace TinyCsv
             }
 
             /// <summary>
+            /// Handlers is enabled
+            /// </summary>
+            public bool Enabled => Options?.EnableHandlers ?? false;
+
+            /// <summary>
             /// Reise row header
             /// </summary>
             /// <param name="e"></param>
             internal void OnRowHeader(RowHeaderReadingEventArgs e)
             {
+                if (!Enabled) return;
                 RowHeader?.Invoke(this, e);
             }
 
@@ -323,6 +480,7 @@ namespace TinyCsv
             /// <param name="rowHeader"></param>
             internal void OnRowHeader(int index, string rowHeader)
             {
+                if (!Enabled) return;
                 OnRowHeader(new RowHeaderReadingEventArgs
                 {
                     Index = index,
@@ -336,6 +494,7 @@ namespace TinyCsv
             /// <param name="e"></param>
             internal void OnRowReading(RowReadingEventArgs e)
             {
+                if (!Enabled) return;
                 RowReading?.Invoke(this, e);
             }
 
@@ -346,6 +505,7 @@ namespace TinyCsv
             /// <param name="row"></param>
             internal void OnRowReading(int index, string row)
             {
+                if (!Enabled) return;
                 OnRowReading(new RowReadingEventArgs
                 {
                     Index = index,
@@ -359,6 +519,7 @@ namespace TinyCsv
             /// <param name="e"></param>
             internal void OnRowRead(RowReadEventArgs<T> e)
             {
+                if (!Enabled) return;
                 RowRead?.Invoke(this, e);
             }
 
@@ -369,6 +530,7 @@ namespace TinyCsv
             /// <param name="model"></param>
             internal void OnRowRead(int index, T model, string row)
             {
+                if (!Enabled) return;
                 OnRowRead(new RowReadEventArgs<T>
                 {
                     Index = index,
@@ -404,6 +566,11 @@ namespace TinyCsv
             public EventHandler<RowWrittinEventArgs<T>> RowWrittin { get; set; }
 
             /// <summary>
+            /// Handlers is enabled
+            /// </summary>
+            public bool Enabled => Options?.EnableHandlers ?? false;
+
+            /// <summary>
             /// Create an instance of Write event handlers
             /// </summary>
             /// <param name="options"></param>
@@ -418,6 +585,7 @@ namespace TinyCsv
             /// <param name="e"></param>
             internal void OnRowHeader(RowHeaderWritingEventArgs e)
             {
+                if (!Enabled) return;
                 RowHeader?.Invoke(this, e);
             }
 
@@ -427,6 +595,7 @@ namespace TinyCsv
             /// <param name="rowHeader"></param>
             internal void OnRowHeader(int index, string rowHeader)
             {
+                if (!Enabled) return;
                 OnRowHeader(new RowHeaderWritingEventArgs
                 {
                     Index = index,
@@ -440,6 +609,7 @@ namespace TinyCsv
             /// <param name="e"></param>
             internal void OnRowWriting(RowWritingEventArgs<T> e)
             {
+                if (!Enabled) return;
                 RowWriting?.Invoke(this, e);
             }
 
@@ -450,6 +620,7 @@ namespace TinyCsv
             /// <param name="model"></param>
             internal void OnRowWriting(int index, T model)
             {
+                if (!Enabled) return;
                 OnRowWriting(new RowWritingEventArgs<T>
                 {
                     Index = index,
@@ -463,6 +634,7 @@ namespace TinyCsv
             /// <param name="e"></param>
             internal void OnRowWrittin(RowWrittinEventArgs<T> e)
             {
+                if (!Enabled) return;
                 RowWrittin?.Invoke(this, e);
             }
 
@@ -473,6 +645,7 @@ namespace TinyCsv
             /// <param name="row"></param>
             internal void OnRowWrittin(int index, T model, string row)
             {
+                if (!Enabled) return;
                 OnRowWrittin(new RowWrittinEventArgs<T>
                 {
                     Index = index,

@@ -43,9 +43,9 @@ namespace TinyCsv.Extensions
         /// Trim value if trimData is true
         /// </summary>
         /// <param name="value"></param>
-        /// <param name="trimData"></param>
+        /// <param name="options"></param>
         /// <returns></returns>
-        public static string TrimData<T>(this string value, CsvOptions<T> options)
+        public static string TrimData(this string value, ICsvOptions options)
         {
             if (!string.IsNullOrEmpty(value))
             {

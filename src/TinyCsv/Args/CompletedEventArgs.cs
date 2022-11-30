@@ -36,6 +36,6 @@ namespace TinyCsv.Args
     /// </summary>
     public class CompletedEventArgs : EventArgs
     {
-
+        public int Elements { get; internal set; }
     }
 }

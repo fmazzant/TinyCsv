@@ -27,12 +27,30 @@
 /// 
 /// </summary>
 
-namespace Models
+namespace TinyCsv.Conversions
 {
-    public class Model1 : Model
+    using System;
+    using TinyCsv.Extensions;
+
+    /// <summary>
+    /// Provides a unified way of converting Uri of value to string
+    /// </summary>
+    public sealed class UriConverter : DefaultValueConverter, IValueConverter
     {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public decimal Price { get; set; }
+        /// <summary>
+        /// Converts a string to target type value.
+        /// </summary>
+        /// <param name="value">The value that is produced by the binding target.</param>
+        /// <param name="targetType">The type to convert to.</param>
+        /// <param name="parameter">The converter parameter to use.</param>
+        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
+        public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        {
+            if (Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var uri))
+            {
+                return uri;
+            }
+            return targetType.IsNullable() ? null : default(Uri);
+        }
     }
 }

@@ -29,21 +29,23 @@
 
 namespace TinyCsv
 {
+    using TinyCsv.Exceptions;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Runtime.CompilerServices;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using TinyCsv.Data;
     using TinyCsv.Extensions;
+    using TinyCsv.Streams;
 
     /// <summary>
     /// TinyCsv is a simple csv reader/writer library.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public sealed class TinyCsv<T> : ITinyCsv<T> where T : class, new()
+    public sealed partial class TinyCsv<T> : ITinyCsv<T> where T : class, new()
     {
         /// <summary>
         /// Options
@@ -83,7 +85,7 @@ namespace TinyCsv
         /// <param name="path"></param>
         /// <returns></returns>
         [Obsolete($"Use {nameof(LoadFromFile)} to load from file", false)]
-        public ICollection<T> Load(string path)
+        public IEnumerable<T> Load(string path)
         {
             return LoadFromFile(path);
         }
@@ -93,20 +95,9 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public ICollection<T> LoadFromFile(string path)
+        public IEnumerable<T> LoadFromFile(string path)
         {
-            using var streamReader = new StreamReader(path);
-            var models = Load(streamReader);
-            return new List<T>(models);
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects.
-        /// </summary>
-        /// <param name="streamReader"></param>
-        /// <returns></returns>
-        public IEnumerable<T> Load(StreamReader streamReader)
-        {
+            var streamReader = new StreamReader(path);
             return LoadFromStream(streamReader);
         }
 
@@ -115,41 +106,53 @@ namespace TinyCsv
         /// </summary>
         /// <param name="streamReader"></param>
         /// <returns></returns>
+        [Obsolete($"Use {nameof(LoadFromStream)} to load from file", false)]
+        public IEnumerable<T> Load(StreamReader streamReader)
+        {
+            return LoadFromStream(streamReader);
+        }
+
+        /// <summary>
+        /// Reads a csv file and returns a list of generic objects T.
+        /// </summary>
+        /// <param name="streamReader"></param>
+        /// <returns></returns>
         public IEnumerable<T> LoadFromStream(StreamReader streamReader)
         {
             var index = 0;
+            var options = this.Options;
+            var dataReader = new TinyCsvDataReader<T>(options, streamReader);
+            var hasHeaderRecord = options.HasHeaderRecord;
+            var validateColumnCount = options.ValidateColumnCount;
+            var columnsCount = options.Columns.Count;
 
-            while (!streamReader.EndOfStream)
+            options.Handlers.OnStart();
+            var lines = dataReader.ReadLines();
+            foreach (var line in lines)
             {
-                if (index < Options.RowsToSkip)
+                var currentIndex = index;
+                index++;
+
+                if (currentIndex == 0 && hasHeaderRecord)
                 {
-                    streamReader.ReadLine();
-                    index++;
+                    options.Handlers.Read.OnRowReading(currentIndex, line);
+                    options.Handlers.Read.OnRowHeader(currentIndex, line);
                     continue;
                 }
-                break;
-            }
 
-            if (Options.HasHeaderRecord)
-            {
-                while (!streamReader.EndOfStream)
+                options.Handlers.Read.OnRowReading(currentIndex, line);
+                var fields = dataReader.GetFieldsByLine(line);
+
+                if (validateColumnCount && columnsCount != fields.Length)
                 {
-                    var headerLine = streamReader.ReadLine();
-                    var skipHeaderLine = headerLine.SkipRow(index++, this.Options);
-                    if (skipHeaderLine) continue;
-                    GetHeaderFromLine(index - 1, headerLine);
-                    break;
+                    throw new InvalidColumnCountException($"Invalid column count {fields.Length} at {index} line, required {columnsCount} columns");
                 }
-            }
 
-            while (!streamReader.EndOfStream)
-            {
-                var line = streamReader.ReadLine();
-                var skip = line.SkipRow(index++, this.Options);
-                if (skip) continue;
-                var model = this.GetModelFromLine(index - 1, line);
+                var model = fields.GetModelFromStringArray<T>(options);
                 yield return model;
+                options.Handlers.Read.OnRowRead(currentIndex, model, line);
             }
+            options.Handlers.OnCompleted(index);
         }
 
         /// <summary>
@@ -160,7 +163,6 @@ namespace TinyCsv
         public IEnumerable<T> LoadFromStream(Stream stream)
         {
             return LoadFromStream(new StreamReader(stream));
-
         }
 
         /// <summary>
@@ -170,194 +172,8 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<T> LoadFromText(string text, Encoding encoding = null)
         {
-            var memoryStream = GetMemoryStreamFromText(text, encoding);
+            var memoryStream = new TextMemoryStream(text, encoding ?? Options.TextEncoding);
             return LoadFromStream(memoryStream);
-        }
-
-#if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        [Obsolete($"Use {nameof(LoadFromFileAsync)} to load from file", false)]
-        public Task<ICollection<T>> LoadAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return LoadFromFileAsync(path, cancellationToken);
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public async Task<ICollection<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            using (StreamReader file = new StreamReader(path))
-            {
-                var models = await this.LoadFromStreamAsync(file, cancellationToken);
-                return new List<T>(models);
-            }
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="streamReader"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete($"Use {nameof(LoadFromFileAsync)} to load from file", false)]
-        public Task<ICollection<T>> LoadAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return LoadFromStreamAsync(streamReader, cancellationToken);
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="streamReader"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public Task<ICollection<T>> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return LoadFromStreamInternalAsync(streamReader, cancellationToken);
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public Task<ICollection<T>> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            using var streamReader = new StreamReader(stream);
-            return LoadFromStreamAsync(streamReader, cancellationToken);
-        }
-
-        /// <summary>
-        /// Reads a csv from text and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="encoding">The default is UTF8</param>
-        /// <returns></returns>
-        public Task<ICollection<T>> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var memoryStream = GetMemoryStreamFromText(text, encoding);
-            return LoadFromStreamAsync(memoryStream, cancellationToken);
-        }
-#endif
-
-#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public async Task<ICollection<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            using (StreamReader streamReader = new StreamReader(path))
-            {
-                var models = await this.LoadFromStreamAsync(streamReader).ToListAsync(cancellationToken);
-                return models;
-            }
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="streamReader"></param>
-        /// <returns></returns>
-        [Obsolete($"Use {nameof(LoadFromStreamAsync)} to load from file", false)]
-        public IAsyncEnumerable<T> LoadAsync(StreamReader streamReader)
-        {
-            return this.LoadFromStreamAsync(streamReader);
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
-        {
-            return LoadFromStreamInternalAsync(streamReader, cancellationToken);
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public IAsyncEnumerable<T> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var streamReader = new StreamReader(stream);
-            return LoadFromStreamAsync(streamReader, cancellationToken);
-        }
-
-        /// <summary>
-        /// Reads a csv from text and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="encoding"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public IAsyncEnumerable<T> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var memoryStream = GetMemoryStreamFromText(text, encoding);
-            return LoadFromStreamAsync(memoryStream, cancellationToken);
-        }
-#endif
-
-        /// <summary>
-        /// Get header from line
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        private void GetHeaderFromLine(int index, string line)
-        {
-            Options.Handlers.Read.OnRowHeader(index, line);
-        }
-
-        /// <summary>
-        /// Build T object from line
-        /// </summary>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        private T GetModelFromLine(int index, string line)
-        {
-            Options.Handlers.Read.OnRowReading(index, line);
-            var values = line.SplitLine(this.Options);
-
-            var model = new T();
-            foreach (var column in Options.Columns)
-            {
-                var value = values[column.ColumnIndex].TrimData(this.Options);
-                var columnExpression = column.ColumnExpression;
-                var propertyName = columnExpression?.GetPropertyName() ?? column.ColumnName;
-                var property = typeof(T).GetProperty(propertyName);
-                var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
-                property.SetValue(model, typedValue);
-            }
-            Options.Handlers.Read.OnRowRead(index, model, line);
-            return model;
-        }
-
-        /// <summary>
-        /// Returns memory stream from text
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="encoding"></param>
-        /// <returns></returns>
-        private MemoryStream GetMemoryStreamFromText(string text, Encoding encoding = null)
-        {
-            var textEncoding = encoding ?? Options.TextEncoding;
-            var bytes = textEncoding.GetBytes(text);
-            var memoryStream = new MemoryStream(bytes);
-            return memoryStream;
         }
 
         /// <summary>
@@ -367,10 +183,8 @@ namespace TinyCsv
         /// <param name="models"></param>
         public void Save(string path, IEnumerable<T> models)
         {
-            using (StreamWriter streamWriter = new StreamWriter(path))
-            {
-                Save(streamWriter, models);
-            }
+            var streamWriter = new StreamWriter(path);
+            Save(streamWriter, models);
         }
 
         /// <summary>
@@ -381,19 +195,27 @@ namespace TinyCsv
         public void Save(StreamWriter streamWriter, IEnumerable<T> models)
         {
             var index = 0;
-            if (Options.HasHeaderRecord)
-            {
-                var headers = GetHeaderFromOptions(index++);
-                streamWriter.WriteLine(headers);
-            }
+            var options = this.Options;
+            var writer = new CsvDataWriter<T>(options, streamWriter);
 
+            options.Handlers.OnStart();
+            if (options.HasHeaderRecord)
+            {
+                var headers = options.AsColumnsHeaderLine();
+                options.Handlers.Write.OnRowHeader(index, headers);
+                writer.WriteLine(headers);
+                index++;
+            }
             foreach (var model in models)
             {
-                var line = this.GetLineFromModel(index++, model);
-                streamWriter.WriteLine(line);
+                options.Handlers.Write.OnRowWriting(index, model);
+                var line = model.GetLineFromGenericType(options);
+                writer.WriteLine(line);
+                options.Handlers.Write.OnRowWrittin(index, model, line);
+                index++;
             }
-
-            streamWriter.Flush();
+            options.Handlers.OnCompleted(index);
+            writer.Flush();
         }
 
         /// <summary>
@@ -403,7 +225,8 @@ namespace TinyCsv
         /// <param name="models"></param>
         public void Save(Stream stream, IEnumerable<T> models)
         {
-            Save(new StreamWriter(stream), models);
+            var streamWriter = new StreamWriter(stream);
+            Save(streamWriter, models);
         }
 
         /// <summary>
@@ -411,29 +234,10 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <param name="models"></param>
-        public async Task SaveAsync(string path, IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task SaveAsync(string path, IEnumerable<T> models, CancellationToken cancellationToken = default)
         {
-            using (StreamWriter file = new StreamWriter(path))
-            {
-                var index = 0;
-
-                if (Options.HasHeaderRecord)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var headers = GetHeaderFromOptions(index++);
-                    await file.WriteLineAsync(headers).ConfigureAwait(false);
-                }
-
-                foreach (var model in models)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var line = this.GetLineFromModel(index++, model);
-                    await file.WriteLineAsync(line).ConfigureAwait(false);
-                }
-
-                await file.FlushAsync().ConfigureAwait(false);
-                file.Close();
-            }
+            var file = new StreamWriter(path);
+            await SaveAsync(file, models, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -441,24 +245,34 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <param name="models"></param>
-        public async Task SaveAsync(StreamWriter streamWriter, IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task SaveAsync(StreamWriter streamWriter, IEnumerable<T> models, CancellationToken cancellationToken = default)
         {
             var index = 0;
 
-            if (Options.HasHeaderRecord)
+            var options = this.Options;
+            var writer = new CsvDataWriter<T>(options, streamWriter);
+
+            options.Handlers.OnStart();
+            if (options.HasHeaderRecord)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var headers = GetHeaderFromOptions(index++);
-                await streamWriter.WriteLineAsync(headers).ConfigureAwait(false);
+                var headers = options.AsColumnsHeaderLine();
+                options.Handlers.Write.OnRowHeader(index, headers);
+                await writer.WriteLineAsync(headers).ConfigureAwait(false);
+                index++;
             }
 
             foreach (var model in models)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var line = this.GetLineFromModel(index++, model);
-                await streamWriter.WriteLineAsync(line).ConfigureAwait(false);
+                options.Handlers.Write.OnRowWriting(index, model);
+                var line = model.GetLineFromGenericType(options);
+                await writer.WriteLineAsync(line).ConfigureAwait(false);
+                options.Handlers.Write.OnRowWrittin(index, model, line);
+                index++;
             }
-            await streamWriter.FlushAsync().ConfigureAwait(false);
+            options.Handlers.OnCompleted(index);
+            await writer.FlushAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -466,46 +280,10 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <param name="models"></param>
-        public Task SaveAsync(Stream stream, IEnumerable<T> models, CancellationToken cancellationToken = default(CancellationToken))
+        public Task SaveAsync(Stream stream, IEnumerable<T> models, CancellationToken cancellationToken = default)
         {
-            using (StreamWriter streamWriter = new StreamWriter(stream))
-            {
-                return SaveAsync(streamWriter, models);
-            }
-        }
-
-        /// <summary>
-        /// get header from options
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        private string GetHeaderFromOptions(int index)
-        {
-            var headers = string.Join(Options.Delimiter, Options.Columns.Select(x => $"{x.ColumnName}"));
-            Options.Handlers.Write.OnRowHeader(index, headers);
-            return headers;
-        }
-
-        /// <summary>
-        /// get line from model
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        private string GetLineFromModel(int index, T model)
-        {
-            Options.Handlers.Write.OnRowWriting(index, model);
-            var values = Options.Columns.Select(column =>
-            {
-                var columnExpression = column.ColumnExpression;
-                var propertyName = columnExpression?.GetPropertyName() ?? column.ColumnName;
-                var property = model.GetType().GetProperty(propertyName);
-                var value = property.GetValue(model);
-                var stringValue = column.Converter.Convert(value, null, column.ColumnFormatProvider);
-                return stringValue?.EnclosedInQuotesIfNecessary(this.Options);
-            });
-            var line = string.Join(Options.Delimiter, values);
-            Options.Handlers.Write.OnRowWrittin(index, model, line);
-            return line;
+            var streamWriter = new StreamWriter(stream);
+            return SaveAsync(streamWriter, models);
         }
 
         /// <summary>
@@ -535,13 +313,13 @@ namespace TinyCsv
 
             if (Options.HasHeaderRecord)
             {
-                lines[index] = GetHeaderFromOptions(index);
+                lines[index] = Options.AsColumnsHeaderLine();
                 index++;
             }
 
             foreach (var model in models)
             {
-                lines[index] = this.GetLineFromModel(index, model);
+                lines[index] = model.GetLineFromGenericType(Options);
                 index++;
             }
 
@@ -578,14 +356,14 @@ namespace TinyCsv
             if (Options.HasHeaderRecord)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                lines[index] = GetHeaderFromOptions(index);
+                lines[index] = Options.AsColumnsHeaderLine();
                 index++;
             }
 
             foreach (var model in models)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                lines[index] = this.GetLineFromModel(index, model);
+                lines[index] = model.GetLineFromGenericType(Options);
                 index++;
             }
 
@@ -593,79 +371,98 @@ namespace TinyCsv
         }
 
         /// <summary>
-        /// Returns the index of line jumped
+        /// Get all lines
         /// </summary>
-        /// <param name="index"></param>
-        /// <param name="streamReader"></param>
-        /// <param name="cancellationToken"></param>
+        /// <param name="path"></param>
         /// <returns></returns>
-        async Task<int> GetIndexFromStreamReaderBySkipRowsAsync(int index, StreamReader streamReader, CancellationToken cancellationToken = default)
+        /// <exception cref="NotImplementedException"></exception>
+        public IEnumerable<string> GetAllLinesFromFile(string path)
         {
-            while (!streamReader.EndOfStream)
-            {
-                if (index++ < Options.RowsToSkip)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    await streamReader.ReadLineAsync().ConfigureAwait(false);
-                    continue;
-                }
-                break;
-            }
-
-            if (Options.HasHeaderRecord)
-            {
-                while (!streamReader.EndOfStream)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var headerLine = await streamReader.ReadLineAsync().ConfigureAwait(false);
-                    var skipHeaderLine = headerLine.SkipRow(index++, this.Options);
-                    if (skipHeaderLine) continue;
-                    break;
-                }
-            }
-            return index;
+            var streamReader = new StreamReader(path);
+            return GetAllLinesFromStream(streamReader);
         }
 
-        async Task<T> GetModelAndIndexFromStreamReaderAsync(int index, StreamReader streamReader, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// Get all lines
+        /// </summary>
+        /// <param name="streamReader"></param>
+        /// <returns></returns>
+        public IEnumerable<string> GetAllLinesFromStream(StreamReader streamReader)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
-            var skip = line.SkipRow(index++, this.Options);
-            if (skip) return null;
-            var model = this.GetModelFromLine(index - 1, line);
-            return model;
+            var options = this.Options;
+            var dataReader = new TinyCsvDataReader<T>(options, streamReader);
+            return dataReader.ReadLines();
         }
 
-
-#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        async IAsyncEnumerable<T> LoadFromStreamInternalAsync(StreamReader streamReader, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        /// <summary>
+        /// Get all lines
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public IEnumerable<string> GetAllLinesFromStream(Stream stream)
         {
-            var index = await GetIndexFromStreamReaderBySkipRowsAsync(0, streamReader, cancellationToken);
-
-            while (!streamReader.EndOfStream)
-            {
-                var model = await GetModelAndIndexFromStreamReaderAsync(index++, streamReader, cancellationToken);
-                if (model is null) continue;
-                yield return model;
-            }
+            var streamReader = new StreamReader(stream);
+            return GetAllLinesFromStream(streamReader);
         }
-#endif
-#if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
-        async Task<ICollection<T>> LoadFromStreamInternalAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
+
+        /// <summary>
+        /// Get all lines
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        public IEnumerable<string> GetAllLinesFromText(string text, Encoding encoding = null)
         {
-            var models = new List<T>();
-
-            var index = await GetIndexFromStreamReaderBySkipRowsAsync(0, streamReader, cancellationToken);
-
-            while (!streamReader.EndOfStream)
-            {
-                var model = await GetModelAndIndexFromStreamReaderAsync(index++, streamReader, cancellationToken);
-                if (model is null) continue;
-                models.Add(model);
-            }
-
-            return models;
+            var options = this.Options;
+            var memoryStream = new TextMemoryStream(text, encoding ?? options.TextEncoding);
+            return GetAllLinesFromStream(memoryStream);
         }
-#endif
+
+        /// <summary>
+        /// Get all lines and fields
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public IEnumerable<string[]> GetAllLinesAndFieldsFromFile(string path)
+        {
+            var streamReader = new StreamReader(path);
+            return GetAllLinesAndFieldsFromStream(streamReader);
+        }
+
+        /// <summary>
+        /// Get all lines and fields
+        /// </summary>
+        /// <param name="streamReader"></param>
+        /// <returns></returns>
+        public IEnumerable<string[]> GetAllLinesAndFieldsFromStream(StreamReader streamReader)
+        {
+            var options = this.Options;
+            var dataReader = new TinyCsvDataReader<T>(options, streamReader);
+            return dataReader.ReadLinesAndFields();
+        }
+
+        /// <summary>
+        /// Get all lines and fields
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public IEnumerable<string[]> GetAllLinesAndFieldsFromStream(Stream stream)
+        {
+            var streamReader = new StreamReader(stream);
+            return GetAllLinesAndFieldsFromStream(streamReader);
+        }
+
+        /// <summary>
+        /// Get all lines and fields
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        public IEnumerable<string[]> GetAlGetAllLinesAndFieldslLinesFromText(string text, Encoding encoding = null)
+        {
+            var options = this.Options;
+            var memoryStream = new TextMemoryStream(text, encoding ?? options.TextEncoding);
+            return GetAllLinesAndFieldsFromStream(memoryStream);
+        }
     }
 }

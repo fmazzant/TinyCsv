@@ -27,12 +27,23 @@
 /// 
 /// </summary>
 
-namespace Models
+namespace TinyCsv.Extensions
 {
-    public class Model1 : Model
+    using System;
+
+    /// <summary>
+    /// Type extensions
+    /// </summary>
+    public static class TypeExtensions
     {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public decimal Price { get; set; }
+        /// <summary>
+        ///  Returns true if type is nullable
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsNullable(this Type type)
+        {
+            return Nullable.GetUnderlyingType(type) != null;
+        }
     }
 }

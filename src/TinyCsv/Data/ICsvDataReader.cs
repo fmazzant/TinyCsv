@@ -26,13 +26,41 @@
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
-
-namespace Models
+namespace TinyCsv.Data
 {
-    public class Model1 : Model
+    using System.Collections.Generic;
+    using System.Threading;
+
+    /// <summary>
+    /// ICsvDataReader
+    /// </summary>
+    public interface ICsvDataReader<T>
     {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public decimal Price { get; set; }
+        /// <summary>
+        /// Get lines
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<string> ReadLines();
+
+        /// <summary>
+        /// Get fields by line
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        string[] GetFieldsByLine(string line);
+
+        /// <summary>
+        /// Get lines field
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<string[]> ReadLinesAndFields();
+
+#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        /// <summary>
+        /// Read Lines 
+        /// </summary>
+        /// <returns></returns>
+        IAsyncEnumerable<string> ReadLinesAsync(CancellationToken cancellationToken = default);
+#endif
     }
 }
