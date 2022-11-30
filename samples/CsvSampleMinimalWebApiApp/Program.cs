@@ -55,7 +55,6 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 
 app.MapGet("/", [AllowAnonymous] () => "Hello, world!");
-
 app.MapGet("/csv2", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
 {
     var tinyCsv = tinyCsvFactory.Get<Model2>("Model2");
@@ -63,7 +62,6 @@ app.MapGet("/csv2", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
     Console.WriteLine($"{result?.Count}");
     return result;
 });
-
 app.MapGet("/csv3", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
 {
     var tinyCsv = tinyCsvFactory.Create<Model2>(options => InitOptionsModel2(options));
