@@ -28,6 +28,7 @@
 /// </summary>
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Models;
 using TinyCsv;
 using TinyCsv.AspNetCore.Extensions;
@@ -43,9 +44,9 @@ void InitOptionsModel2(CsvOptions<Model2> options)
     options.HasHeaderRecord = true;
     options.Delimiter = ";";
     options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
-    options.Columns.AddColumn(m => m.Id);
-    options.Columns.AddColumn(m => m.Name);
-    options.Columns.AddColumn(m => m.CreatedOn);
+    options.Columns.AddColumn(0, m => m.Id);
+    options.Columns.AddColumn(1, m => m.Name);
+    options.Columns.AddColumn(3, m => m.CreatedOn, "dd/MM/yyyy");
 }
 
 var app = builder.Build();
