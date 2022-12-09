@@ -31,16 +31,16 @@
 
 namespace TinyCsv
 {
-    using TinyCsv.Streams;
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Runtime.CompilerServices;
     using System.Text;
     using System.Threading;
-    using System.Runtime.CompilerServices;
     using TinyCsv.Data;
-    using TinyCsv.Extensions;
     using TinyCsv.Exceptions;
+    using TinyCsv.Extensions;
+    using TinyCsv.Streams;
 
     public sealed partial class TinyCsv<T>
     {

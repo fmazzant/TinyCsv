@@ -28,12 +28,26 @@
 /// </summary>
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Models;
 using TinyCsv;
 using TinyCsv.AspNetCore.Extensions;
 using TinyCsv.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddTinyCsv<Model1>("Model1", options =>
+{
+    // Options
+    options.HasHeaderRecord = true;
+    options.Delimiter = ";";
+    options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
+
+    // columns
+    options.Columns.AddColumn(m => m.Id);
+    options.Columns.AddColumn(m => m.Name);
+    options.Columns.AddColumn(m => m.Price);
+});
 
 // Add services to the container.
 builder.Services.AddTinyCsv<Model2>("Model2", options => InitOptionsModel2(options));
@@ -43,9 +57,9 @@ void InitOptionsModel2(CsvOptions<Model2> options)
     options.HasHeaderRecord = true;
     options.Delimiter = ";";
     options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
-    options.Columns.AddColumn(m => m.Id);
-    options.Columns.AddColumn(m => m.Name);
-    options.Columns.AddColumn(m => m.CreatedOn);
+    options.Columns.AddColumn(0, m => m.Id);
+    options.Columns.AddColumn(1, m => m.Name);
+    options.Columns.AddColumn(3, m => m.CreatedOn, "dd/MM/yyyy");
 }
 
 var app = builder.Build();
@@ -54,7 +68,14 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.MapGet("/", [AllowAnonymous] () => "Hello, world!");
+app.MapGet("/", [AllowAnonymous] async () => await Task.FromResult("Hello, world!"));
+app.MapGet("/csv1", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
+{
+    var tinyCsv = tinyCsvFactory.Get<Model1>("Model1");
+    var result = await tinyCsv.LoadFromFileAsync("model1.csv").ToListAsync();
+    Console.WriteLine($"{result?.Count()}");
+    return result;
+});
 app.MapGet("/csv2", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
 {
     var tinyCsv = tinyCsvFactory.Get<Model2>("Model2");

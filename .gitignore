@@ -42,6 +42,9 @@
 /samples/CsvSampleConsoleAttributeApp/bin/Debug/net5.0
 /samples/CsvSampleConsoleAttributeApp/obj
 *.user
+/samples/CsvSampleConsoleApp/bin/Debug/net7.0
+/samples/CsvSampleConsoleAttributeApp/bin/Debug/net7.0
+/samples/CsvSampleMinimalWebApiApp/bin/Debug/net7.0
 /samples/CsvBigDataSampleConsoleApp/bin/Debug/net6.0
 /samples/CsvBigDataSampleConsoleApp/obj
 /Benchmark/.vs/Benchmark

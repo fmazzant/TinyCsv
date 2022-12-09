@@ -29,7 +29,6 @@
 
 namespace TinyCsv
 {
-    using TinyCsv.Exceptions;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -38,6 +37,7 @@ namespace TinyCsv
     using System.Threading;
     using System.Threading.Tasks;
     using TinyCsv.Data;
+    using TinyCsv.Exceptions;
     using TinyCsv.Extensions;
     using TinyCsv.Streams;
 

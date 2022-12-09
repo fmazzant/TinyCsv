@@ -148,7 +148,7 @@ namespace CsvSampleConsoleApp
 
             // load to fix 
             var allText = File.ReadAllText("file.csv");
-            var x = await csv.LoadFromTextAsync(allText).ToListAsync();
+            var loadAsList = await csv.LoadFromTextAsync(allText).ToListAsync();
 
             // write on file async
             await csv.SaveAsync("file_export.csv", models);
