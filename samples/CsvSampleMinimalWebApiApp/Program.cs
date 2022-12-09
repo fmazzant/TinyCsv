@@ -68,7 +68,7 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.MapGet("/", [AllowAnonymous] () => "Hello, world!");
+app.MapGet("/", [AllowAnonymous] async () => await Task.FromResult("Hello, world!"));
 app.MapGet("/csv1", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
 {
     var tinyCsv = tinyCsvFactory.Get<Model1>("Model1");
