@@ -45,6 +45,7 @@ namespace TinyCsv.Factory
             switch (type)
             {
                 case Type _ when type == typeof(DateTime): return new DateTimeConverter();
+                case Type _ when type == typeof(DateTimeOffset): return new DateTimeOffsetConverter();
                 case Type _ when type == typeof(TimeSpan): return new TimeSpanConverter();
                 case Type _ when type == typeof(ushort): return new UInt16Converter();
                 case Type _ when type == typeof(uint): return new UInt32Converter();
