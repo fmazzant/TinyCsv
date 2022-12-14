@@ -60,6 +60,8 @@ namespace TinyCsv.Factory
                 case Type _ when type == typeof(bool): return new BooleanConverter();
                 case Type _ when type == typeof(Uri): return new UriConverter();
                 case Type _ when type == typeof(Enum) || type.IsEnum: return new EnumConverter();
+                case Type _ when type == typeof(sbyte): return new SByteConverter();
+                case Type _ when type == typeof(byte): return new ByteConverter();
                 case Type _ when type == typeof(byte[]): return new ByteArrayConverter();
                 case Type _ when type == typeof(char): return new CharConverter();
                 case Type _ when type == typeof(Guid): return new GuidConverter();
