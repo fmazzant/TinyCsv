@@ -49,6 +49,7 @@ var csv = new TinyCsv<Model>(options =>
     options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
 });
 ```
+
 The options defines that the file has the header in first row and the delimier char is ";", furthermore there are defined some columns.
 RowsToSkip and SkipRow are used to skip the first rows of the file.
 TrimData is used to remove the white spaces from the data.
@@ -147,6 +148,20 @@ options.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {
 options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
 ```
 
+The handlers are enabled if the option "EnableHandlers" is set true value, like this:
+
+```c#
+var csv = new TinyCsv<Model>(options =>
+{
+    // Options
+    // ...
+    options.EnableHandlers = true;
+    //...
+
+    // Columns
+    // ...
+});
+```
 ## Using attributes in the model definition
 
 You can use, in alternative way, the attributes in the model definition, like this:
