@@ -148,6 +148,11 @@ namespace TinyCsv.Data
             }
             result.Add(sb.ToString().TrimData(options));
 
+            if (options.EndOfLineDelimiterChar)
+            {
+                result.Add(string.Empty);
+            }
+
             return result.ToArray();
         }
 
