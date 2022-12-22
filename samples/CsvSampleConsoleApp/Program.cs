@@ -55,6 +55,17 @@ namespace CsvSampleConsoleApp
         }
     }
 
+    public class ModelBig
+    {
+        public string Year { get; set; }
+        public string Age { get; set; }
+        public string Ethnic { get; set; }
+        public string Sex { get; set; }
+        public string Area { get; set; }
+        public string count { get; set; }
+
+    }
+
     public class Base64Converter : IValueConverter
     {
         public string Convert(object value, object parameter, IFormatProvider provider) => Base64Encode($"{value}");
@@ -77,36 +88,84 @@ namespace CsvSampleConsoleApp
         static async Task Main()
         {
             // definitions
+            var csvBig = new TinyCsv<ModelBig>(options =>
+            {
+                // Options
+                options.HasHeaderRecord = true;
+                options.Delimiter = ",";
+                options.RowsToSkip = 0;
+                options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
+                options.TrimData = true;
+                options.ValidateColumnCount = true;
+                options.EnableHandlers = false;
+
+                //Year,Age,Ethnic,Sex,Area,count
+                //2018,000,1,1,01,795
+                options.Columns.AddColumn(m => m.Year);
+                options.Columns.AddColumn(m => m.Age);
+                options.Columns.AddColumn(m => m.Ethnic);
+                options.Columns.AddColumn(m => m.Sex);
+                options.Columns.AddColumn(m => m.Area);
+                options.Columns.AddColumn(m => m.count);
+
+                // Event Handlers Read
+                options.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
+                options.Handlers.Read.RowReading += (s, e) => Console.WriteLine($"{e.Index}-{e.Row}");
+                options.Handlers.Read.RowRead += (s, e) => Console.WriteLine($"{e.Index}-{e.Model}");
+
+                // Event Handlers Write
+                options.Handlers.Write.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
+                options.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {e.Model}");
+                options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
+            });
+
+            int index = 0;
+            var now = DateTime.Now;
+            var tdt = now;
+            var pdt = now;
+            var temporary = csvBig.LoadFromFile("C:\\Users\\fmazzant\\Desktop\\Data8277.csv");
+            foreach (var t in temporary)
+            {
+               
+                index++;
+                if (index % 1000000 == 0)
+                {
+                    Console.WriteLine($"-> {index} in {(DateTime.Now - pdt).TotalMilliseconds} ms");
+                    pdt = DateTime.Now;
+                }
+            }
+            Console.WriteLine($"-> {(DateTime.Now - tdt).TotalSeconds}");
+
             var csv = new TinyCsv<Model>(options =>
-             {
-                 // Options
-                 options.HasHeaderRecord = true;
-                 options.Delimiter = ";";
-                 options.RowsToSkip = 0;
-                 options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
-                 options.TrimData = true;
-                 options.ValidateColumnCount = true;
-                 options.EnableHandlers = false;
+            {
+                // Options
+                options.HasHeaderRecord = true;
+                options.Delimiter = ";";
+                options.RowsToSkip = 0;
+                options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
+                options.TrimData = true;
+                options.ValidateColumnCount = true;
+                options.EnableHandlers = false;
 
-                 // Columns
-                 options.Columns.AddColumn(m => m.Id);
-                 options.Columns.AddColumn(m => m.Name);
-                 options.Columns.AddColumn(m => m.Price);
-                 options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
-                 options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
-                 options.Columns.AddColumn(m => m.WebSite);
-                 options.Columns.AddColumn(m => m.RowType);
+                // Columns
+                options.Columns.AddColumn(m => m.Id);
+                options.Columns.AddColumn(m => m.Name);
+                options.Columns.AddColumn(m => m.Price);
+                options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
+                options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
+                options.Columns.AddColumn(m => m.WebSite);
+                options.Columns.AddColumn(m => m.RowType);
 
-                 // Event Handlers Read
-                 options.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
-                 options.Handlers.Read.RowReading += (s, e) => Console.WriteLine($"{e.Index}-{e.Row}");
-                 options.Handlers.Read.RowRead += (s, e) => Console.WriteLine($"{e.Index}-{e.Model}");
+                // Event Handlers Read
+                options.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
+                options.Handlers.Read.RowReading += (s, e) => Console.WriteLine($"{e.Index}-{e.Row}");
+                options.Handlers.Read.RowRead += (s, e) => Console.WriteLine($"{e.Index}-{e.Model}");
 
-                 // Event Handlers Write
-                 options.Handlers.Write.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
-                 options.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {e.Model}");
-                 options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
-             });
+                // Event Handlers Write
+                options.Handlers.Write.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
+                options.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {e.Model}");
+                options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
+            });
 
             // read from file sync
             var syncModels = csv.LoadFromFile("file.csv");
