@@ -55,7 +55,7 @@ namespace CsvSampleConsoleApp
         }
     }
 
-    public class ModelBig
+    public class BigModel
     {
         public string Year { get; set; }
         public string Age { get; set; }
@@ -91,7 +91,7 @@ namespace CsvSampleConsoleApp
             if (bigFileRun)
             {
                 // definitions
-                var csvBig = new TinyCsv<ModelBig>(options =>
+                var csvBig = new TinyCsv<BigModel>(options =>
                 {
                     // Options
                     options.HasHeaderRecord = true;
