@@ -126,11 +126,11 @@ namespace CsvSampleConsoleApp
                 var now = DateTime.Now;
                 var tdt = now;
                 var pdt = now;
-                var temporary = csvBig.LoadFromFile("C:\\Users\\fmazzant\\Desktop\\Data8277.csv");
+                var temporary = csvBig.LoadFromFile("../../../../../../../../Data8277.csv");
                 foreach (var t in temporary)
                 {
                     index++;
-                    if (index % 1000000 == 0)
+                    if (index % 5000000 == 0)
                     {
                         Console.WriteLine($"-> {index} in {(DateTime.Now - pdt).TotalMilliseconds} ms");
                         pdt = DateTime.Now;
@@ -142,7 +142,7 @@ namespace CsvSampleConsoleApp
                 now = DateTime.Now;
                 tdt = now;
                 pdt = now;
-                await foreach (var r in csvBig.LoadFromFileAsync("C:\\Users\\fmazzant\\Desktop\\Data8277.csv"))
+                await foreach (var r in csvBig.LoadFromFileAsync("../../../../../../../../Data8277.csv"))
                 {
                     index++;
                     if (index % 1000000 == 0)
