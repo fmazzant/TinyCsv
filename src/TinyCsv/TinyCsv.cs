@@ -143,7 +143,7 @@ namespace TinyCsv
                 options.Handlers.Read.OnRowReading(currentIndex, line);
                 var fields = dataReader.GetFieldsByLine(line);
 
-                if (validateColumnCount && columnsCount != fields.Length)
+                if (validateColumnCount && columnsCount > fields.Length)
                 {
                     throw new InvalidColumnCountException($"Invalid column count {fields.Length} at {index} line, required {columnsCount} columns");
                 }

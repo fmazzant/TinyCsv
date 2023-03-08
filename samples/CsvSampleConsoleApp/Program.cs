@@ -55,6 +55,17 @@ namespace CsvSampleConsoleApp
         }
     }
 
+    public class BigModel
+    {
+        public string Year { get; set; }
+        public string Age { get; set; }
+        public string Ethnic { get; set; }
+        public string Sex { get; set; }
+        public string Area { get; set; }
+        public string count { get; set; }
+
+    }
+
     public class Base64Converter : IValueConverter
     {
         public string Convert(object value, object parameter, IFormatProvider provider) => Base64Encode($"{value}");
@@ -76,37 +87,103 @@ namespace CsvSampleConsoleApp
     {
         static async Task Main()
         {
-            // definitions
+            var bigFileRun = false;
+            if (bigFileRun)
+            {
+                // definitions
+                var csvBig = new TinyCsv<BigModel>(bigOptions =>
+                {
+                    // Options
+                    bigOptions.HasHeaderRecord = true;
+                    bigOptions.Delimiter = ",";
+                    bigOptions.RowsToSkip = 0;
+                    bigOptions.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
+                    bigOptions.TrimData = true;
+                    bigOptions.ValidateColumnCount = false;
+                    bigOptions.EnableHandlers = false;
+
+                    //Year,Age,Ethnic,Sex,Area,count
+                    //2018,000,1,1,01,795
+                    bigOptions.Columns.AddColumn(m => m.Year);
+                    bigOptions.Columns.AddColumn(m => m.Age);
+                    bigOptions.Columns.AddColumn(m => m.Ethnic);
+                    bigOptions.Columns.AddColumn(m => m.Sex);
+                    bigOptions.Columns.AddColumn(m => m.Area);
+                    bigOptions.Columns.AddColumn(m => m.count);
+
+                    // Event Handlers Read
+                    bigOptions.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
+                    bigOptions.Handlers.Read.RowReading += (s, e) => Console.WriteLine($"{e.Index}-{e.Row}");
+                    bigOptions.Handlers.Read.RowRead += (s, e) => Console.WriteLine($"{e.Index}-{e.Model}");
+
+                    // Event Handlers Write
+                    bigOptions.Handlers.Write.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
+                    bigOptions.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {e.Model}");
+                    bigOptions.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
+                });
+
+                int index = 0;
+                var now = DateTime.Now;
+                var tdt = now;
+                var pdt = now;
+                var temporary = csvBig.LoadFromFile("../../../../../../../../Data8277.csv");
+                foreach (var t in temporary)
+                {
+                    index++;
+                    if (index % 1000000 == 0)
+                    {
+                        Console.WriteLine($"-> {index} in {(DateTime.Now - pdt).TotalMilliseconds} ms");
+                        pdt = DateTime.Now;
+                    }
+                }
+                Console.WriteLine($"-> {(DateTime.Now - tdt).TotalSeconds}");
+
+                index = 0;
+                now = DateTime.Now;
+                tdt = now;
+                pdt = now;
+                await foreach (var r in csvBig.LoadFromFileAsync("../../../../../../../../Data8277.csv"))
+                {
+                    index++;
+                    if (index % 1000000 == 0)
+                    {
+                        Console.WriteLine($"-> {index} in {(DateTime.Now - pdt).TotalMilliseconds} ms");
+                        pdt = DateTime.Now;
+                    }
+                }
+                Console.WriteLine($"-> {(DateTime.Now - tdt).TotalSeconds}");
+            }
+
             var csv = new TinyCsv<Model>(options =>
-             {
-                 // Options
-                 options.HasHeaderRecord = true;
-                 options.Delimiter = ";";
-                 options.RowsToSkip = 0;
-                 options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
-                 options.TrimData = true;
-                 options.ValidateColumnCount = true;
-                 options.EnableHandlers = false;
+            {
+                // Options
+                options.HasHeaderRecord = true;
+                options.Delimiter = ";";
+                options.RowsToSkip = 0;
+                options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
+                options.TrimData = true;
+                options.ValidateColumnCount = false;
+                options.EnableHandlers = false;
 
-                 // Columns
-                 options.Columns.AddColumn(m => m.Id);
-                 options.Columns.AddColumn(m => m.Name);
-                 options.Columns.AddColumn(m => m.Price);
-                 options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
-                 options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
-                 options.Columns.AddColumn(m => m.WebSite);
-                 options.Columns.AddColumn(m => m.RowType);
+                // Columns
+                options.Columns.AddColumn(m => m.Id);
+                options.Columns.AddColumn(m => m.Name);
+                options.Columns.AddColumn(m => m.Price);
+                options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
+                options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
+                options.Columns.AddColumn(m => m.WebSite);
+                options.Columns.AddColumn(m => m.RowType);
 
-                 // Event Handlers Read
-                 options.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
-                 options.Handlers.Read.RowReading += (s, e) => Console.WriteLine($"{e.Index}-{e.Row}");
-                 options.Handlers.Read.RowRead += (s, e) => Console.WriteLine($"{e.Index}-{e.Model}");
+                // Event Handlers Read
+                options.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
+                options.Handlers.Read.RowReading += (s, e) => Console.WriteLine($"{e.Index}-{e.Row}");
+                options.Handlers.Read.RowRead += (s, e) => Console.WriteLine($"{e.Index}-{e.Model}");
 
-                 // Event Handlers Write
-                 options.Handlers.Write.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
-                 options.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {e.Model}");
-                 options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
-             });
+                // Event Handlers Write
+                options.Handlers.Write.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
+                options.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {e.Model}");
+                options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
+            });
 
             // read from file sync
             var syncModels = csv.LoadFromFile("file.csv");
