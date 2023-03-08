@@ -91,35 +91,35 @@ namespace CsvSampleConsoleApp
             if (bigFileRun)
             {
                 // definitions
-                var csvBig = new TinyCsv<BigModel>(options =>
+                var csvBig = new TinyCsv<BigModel>(bigOptions =>
                 {
                     // Options
-                    options.HasHeaderRecord = true;
-                    options.Delimiter = ",";
-                    options.RowsToSkip = 0;
-                    options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
-                    options.TrimData = true;
-                    options.ValidateColumnCount = false;
-                    options.EnableHandlers = false;
+                    bigOptions.HasHeaderRecord = true;
+                    bigOptions.Delimiter = ",";
+                    bigOptions.RowsToSkip = 0;
+                    bigOptions.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
+                    bigOptions.TrimData = true;
+                    bigOptions.ValidateColumnCount = false;
+                    bigOptions.EnableHandlers = false;
 
                     //Year,Age,Ethnic,Sex,Area,count
                     //2018,000,1,1,01,795
-                    options.Columns.AddColumn(m => m.Year);
-                    options.Columns.AddColumn(m => m.Age);
-                    options.Columns.AddColumn(m => m.Ethnic);
-                    options.Columns.AddColumn(m => m.Sex);
-                    options.Columns.AddColumn(m => m.Area);
-                    options.Columns.AddColumn(m => m.count);
+                    bigOptions.Columns.AddColumn(m => m.Year);
+                    bigOptions.Columns.AddColumn(m => m.Age);
+                    bigOptions.Columns.AddColumn(m => m.Ethnic);
+                    bigOptions.Columns.AddColumn(m => m.Sex);
+                    bigOptions.Columns.AddColumn(m => m.Area);
+                    bigOptions.Columns.AddColumn(m => m.count);
 
                     // Event Handlers Read
-                    options.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
-                    options.Handlers.Read.RowReading += (s, e) => Console.WriteLine($"{e.Index}-{e.Row}");
-                    options.Handlers.Read.RowRead += (s, e) => Console.WriteLine($"{e.Index}-{e.Model}");
+                    bigOptions.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
+                    bigOptions.Handlers.Read.RowReading += (s, e) => Console.WriteLine($"{e.Index}-{e.Row}");
+                    bigOptions.Handlers.Read.RowRead += (s, e) => Console.WriteLine($"{e.Index}-{e.Model}");
 
                     // Event Handlers Write
-                    options.Handlers.Write.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
-                    options.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {e.Model}");
-                    options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
+                    bigOptions.Handlers.Write.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
+                    bigOptions.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {e.Model}");
+                    bigOptions.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
                 });
 
                 int index = 0;
