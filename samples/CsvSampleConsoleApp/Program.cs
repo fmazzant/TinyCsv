@@ -130,7 +130,7 @@ namespace CsvSampleConsoleApp
                 foreach (var t in temporary)
                 {
                     index++;
-                    if (index % 5000000 == 0)
+                    if (index % 1000000 == 0)
                     {
                         Console.WriteLine($"-> {index} in {(DateTime.Now - pdt).TotalMilliseconds} ms");
                         pdt = DateTime.Now;
