@@ -59,7 +59,7 @@ namespace TinyCsv.AspNetCore
         {
             if (_tinyCsv.ContainsKey(serviceName))
             {
-                throw new ArgumentNullException($"TinyCsv with name {serviceName} already exists");
+                throw new ArgumentNullException($"TinyCsv with name {serviceName} is already exists");
             }
             _tinyCsv.TryAdd(serviceName, tinyCsv);
         }
