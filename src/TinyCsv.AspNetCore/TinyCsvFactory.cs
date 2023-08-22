@@ -31,7 +31,6 @@ namespace TinyCsv.AspNetCore
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Collections.Generic;
 
     /// <summary>
     /// TinyCsv Factory
