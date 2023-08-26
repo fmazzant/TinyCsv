@@ -91,23 +91,31 @@ namespace TinyCsv.Data
             var sb = new StringBuilder(string.Empty);
             bool inQuotes = false;
 
-            for (int i = 0; i < line.Length; i++)
-            {
-                var isLast = i == line.Length - 1;
-                var isBackslash = line[i] == '\\' && options.AllowBackSlashToEscapeQuote;
-                var isQuotes = line[i] == '\"' && options.AllowRowEnclosedInDoubleQuotesValues;
-                var isDelimiter = line[i] == options.Delimiter[0];
-                var isComment = line[0] == options.Comment;
+            var charArrayLenght = line.Length;
+            char[] charArray = line.ToCharArray();
 
-                if (isComment && !options.AllowComment)
+            var allowBackSlash = options.AllowBackSlashToEscapeQuote;
+            var allowRowEnclosed = options.AllowRowEnclosedInDoubleQuotesValues;
+            var delimiter = options.Delimiter[0];
+            var isComment = charArray[0] == options.Comment;
+
+            if (isComment && !options.AllowComment)
+            {
+                throw new NotAllowCommentException();
+            }
+
+            for (int i = 0; i < charArrayLenght; i++)
+            {
+                var isLast = i == charArrayLenght - 1;
+                var isBackslash = charArray[i] == '\\' && allowBackSlash;
+                var isQuotes = charArray[i] == '\"' && allowRowEnclosed;
+                var isDelimiter = charArray[i] == delimiter;
+
+                if (isQuotes)
                 {
-                    throw new NotAllowCommentException();
-                }
-                else if (isQuotes)
-                {
-                    if (!isLast && line[i + 1] == '\"')
+                    if (!isLast && charArray[i + 1] == '\"')
                     {
-                        sb.Append(line[i]);
+                        sb.Append(charArray[i]);
                     }
                     else
                     {
@@ -116,12 +124,12 @@ namespace TinyCsv.Data
                 }
                 else if (isBackslash)
                 {
-                    sb.Append(line[i + 1]);
+                    sb.Append(charArray[i + 1]);
                     i++;
                 }
                 else if (isDelimiter)
                 {
-                    if (i < line.Length - 1)
+                    if (i < charArrayLenght - 1)
                     {
                         if (!inQuotes)
                         {
@@ -130,7 +138,7 @@ namespace TinyCsv.Data
                         }
                         else
                         {
-                            sb.Append(line[i]);
+                            sb.Append(charArray[i]);
                         }
                     }
                     else
@@ -143,9 +151,10 @@ namespace TinyCsv.Data
                 }
                 else
                 {
-                    sb.Append(line[i]);
+                    sb.Append(charArray[i]);
                 }
             }
+
             result.Add(sb.ToString().TrimData(options));
 
             if (options.EndOfLineDelimiterChar)

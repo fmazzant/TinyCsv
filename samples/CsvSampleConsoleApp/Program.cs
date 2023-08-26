@@ -62,7 +62,7 @@ namespace CsvSampleConsoleApp
         public string Ethnic { get; set; }
         public string Sex { get; set; }
         public string Area { get; set; }
-        public string count { get; set; }
+        public string Count { get; set; }
 
     }
 
@@ -87,7 +87,7 @@ namespace CsvSampleConsoleApp
     {
         static async Task Main()
         {
-            var bigFileRun = false;
+            var bigFileRun = true;
             if (bigFileRun)
             {
                 // definitions
@@ -109,7 +109,7 @@ namespace CsvSampleConsoleApp
                     bigOptions.Columns.AddColumn(m => m.Ethnic);
                     bigOptions.Columns.AddColumn(m => m.Sex);
                     bigOptions.Columns.AddColumn(m => m.Area);
-                    bigOptions.Columns.AddColumn(m => m.count);
+                    bigOptions.Columns.AddColumn(m => m.Count);
 
                     // Event Handlers Read
                     bigOptions.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
