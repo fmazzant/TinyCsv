@@ -94,8 +94,9 @@ namespace TinyCsv
                     options.Handlers.Read.OnRowHeader(currentIndex, line);
                     continue;
                 }
+
                 options.Handlers.Read.OnRowReading(currentIndex, line);
-                var fields = dataReader.GetFieldsByLine(line);
+                var fields = dataReader.GetFieldsByLine(line, columnsCount);
 
                 if (validateColumnCount && columnsCount > fields.Length)
                 {
@@ -103,8 +104,8 @@ namespace TinyCsv
                 }
 
                 var model = fields.GetModelFromStringArray<T>(options);
-                options.Handlers.Read.OnRowRead(currentIndex, model, line);
                 yield return model;
+                options.Handlers.Read.OnRowRead(currentIndex, model, line);
             }
             options.Handlers.OnCompleted(index);
         }
