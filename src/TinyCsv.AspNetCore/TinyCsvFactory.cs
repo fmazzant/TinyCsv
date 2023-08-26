@@ -30,14 +30,14 @@
 namespace TinyCsv.AspNetCore
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections.Concurrent;
 
     /// <summary>
     /// TinyCsv Factory
     /// </summary>
     public sealed class TinyCsvFactory : ITinyCsvFactory
     {
-        private static readonly Dictionary<string, object> _tinyCsv = new Dictionary<string, object>();
+        private static readonly ConcurrentDictionary<string, object> _tinyCsv = new ConcurrentDictionary<string, object>();
 
         /// <summary>
         /// TinyCsv Factory
@@ -58,9 +58,9 @@ namespace TinyCsv.AspNetCore
         {
             if (_tinyCsv.ContainsKey(serviceName))
             {
-                throw new Exception($"TinyCsv with name {serviceName} already exists");
+                throw new ArgumentNullException($"TinyCsv with name {serviceName} is already exists");
             }
-            _tinyCsv.Add(serviceName, tinyCsv);
+            _tinyCsv.TryAdd(serviceName, tinyCsv);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace TinyCsv.AspNetCore
         {
             if (!_tinyCsv.ContainsKey(serviceName))
             {
-                throw new Exception($"TinyCsv with name {serviceName} does not exist");
+                throw new ArgumentNullException($"TinyCsv with name {serviceName} does not exist");
             }
             return (ITinyCsv<T>)_tinyCsv[serviceName];
         }

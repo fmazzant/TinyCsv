@@ -1,4 +1,4 @@
-name: Publish Extentions on NuGet
+name: Publish Extensions on NuGet
  
 on:
   push:
