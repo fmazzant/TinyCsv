@@ -114,32 +114,6 @@ namespace CsvSampleConsoleApp
     {
         static async Task Main()
         {
-            var aList = new List<A> {
-                new A{ A1Property="A1", B1Object=new B{ B1Property="B1" }  },
-                new A{ A1Property="A2", B1Object=new B{ B1Property="B2" }  },
-                new A{ A1Property="A3", B1Object=new B{ B1Property="B3" }  },
-                new A{ A1Property="A4", B1Object=new B{ B1Property="B4" }  },
-                new A{ A1Property="A5", B1Object=new B{ B1Property="B5" }  },
-            };
-            var csvAB = new TinyCsv<A>(options =>
-            {
-                // Options
-                options.HasHeaderRecord = true;
-                options.Delimiter = ";";
-                options.RowsToSkip = 0;
-                options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
-                options.TrimData = true;
-                options.ValidateColumnCount = false;
-                options.EnableHandlers = false;
-
-                // Columns
-                options.Columns.AddColumn(m => m.A1Property);
-                options.Columns.AddColumn(m => m.B1Object, converter: new BConverter());
-            });
-
-            csvAB.Save("C:\\Users\\fmazzant\\Desktop\\Prova.csv", aList);
-            var items = csvAB.LoadFromFile("C:\\Users\\fmazzant\\Desktop\\Prova2.csv").ToList();
-
             var bigFileRun = true;
             if (bigFileRun)
             {
