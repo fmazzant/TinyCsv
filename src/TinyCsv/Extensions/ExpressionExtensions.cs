@@ -31,7 +31,6 @@ namespace TinyCsv.Extensions
 {
     using System;
     using System.Linq.Expressions;
-    using System.Reflection;
 
     /// <summary>
     /// Expression extensions
@@ -46,22 +45,33 @@ namespace TinyCsv.Extensions
         /// <exception cref="ArgumentException"></exception>
         public static string GetPropertyName(this Expression expression)
         {
-            var memberExpression = expression.GetType().GetRuntimeProperty("Body").GetValue(expression) as MemberExpression;
+            if (expression is LambdaExpression lambdaExpression)
+            {
+                if (lambdaExpression.Body.NodeType == ExpressionType.MemberAccess)
+                {
+                    return GetPropertyName(lambdaExpression.Body);
+                }
+            }
 
-            if (expression.NodeType == ExpressionType.Convert)
+            if (expression is MemberExpression memberExpression)
             {
-                var body = (UnaryExpression)expression;
-                memberExpression = body.Operand as MemberExpression;
+                if (memberExpression.Expression.NodeType == ExpressionType.MemberAccess)
+                {
+                    throw new ArgumentException(string.Format("Cannot interpret member from {0}", expression));
+                }
+                return memberExpression.Member.Name;
             }
-            else if (expression.NodeType == ExpressionType.MemberAccess)
+
+            if (expression is UnaryExpression unaryExpression)
             {
-                memberExpression = expression as MemberExpression;
+                if (unaryExpression.NodeType != ExpressionType.Convert)
+                {
+                    throw new ArgumentException(string.Format("Cannot interpret member from {0}", expression));
+                }
+                return GetPropertyName(unaryExpression.Operand);
             }
-            if (memberExpression == null)
-            {
-                throw new ArgumentException("Not a member access", nameof(expression));
-            }
-            return memberExpression.Member.Name;
+
+            throw new ArgumentException(string.Format("Could not determine member from {0}", expression));
         }
     }
 }

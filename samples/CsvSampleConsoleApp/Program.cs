@@ -30,6 +30,7 @@
 namespace CsvSampleConsoleApp
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -83,10 +84,62 @@ namespace CsvSampleConsoleApp
         }
     }
 
+    public class A
+    {
+        public string A1Property { get; set; }
+
+        public B B1Object { get; set; }
+    }
+
+    public class BConverter : IValueConverter
+    {
+        public string Convert(object value, object parameter, IFormatProvider provider)
+        {
+            if (value is B b) return b.B1Property;
+            return string.Empty;
+        }
+        public object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        {
+            var b = new B() { B1Property = value };
+            return b;
+        }
+    }
+
+    public class B
+    {
+        public string B1Property { get; set; }
+    }
+
     internal static class Program
     {
         static async Task Main()
         {
+            var aList = new List<A> {
+                new A{ A1Property="A1", B1Object=new B{ B1Property="B1" }  },
+                new A{ A1Property="A2", B1Object=new B{ B1Property="B2" }  },
+                new A{ A1Property="A3", B1Object=new B{ B1Property="B3" }  },
+                new A{ A1Property="A4", B1Object=new B{ B1Property="B4" }  },
+                new A{ A1Property="A5", B1Object=new B{ B1Property="B5" }  },
+            };
+            var csvAB = new TinyCsv<A>(options =>
+            {
+                // Options
+                options.HasHeaderRecord = true;
+                options.Delimiter = ";";
+                options.RowsToSkip = 0;
+                options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
+                options.TrimData = true;
+                options.ValidateColumnCount = false;
+                options.EnableHandlers = false;
+
+                // Columns
+                options.Columns.AddColumn(m => m.A1Property);
+                options.Columns.AddColumn(m => m.B1Object, converter: new BConverter());
+            });
+
+            csvAB.Save("C:\\Users\\fmazzant\\Desktop\\Prova.csv", aList);
+            var items = csvAB.LoadFromFile("C:\\Users\\fmazzant\\Desktop\\Prova2.csv").ToList();
+
             var bigFileRun = true;
             if (bigFileRun)
             {
