@@ -47,8 +47,7 @@ namespace TinyCsv.Extensions
             foreach (var column in options.Columns)
             {
                 var value = values[column.ColumnIndex];
-                var columnExpression = column.ColumnExpression;
-                var propertyName = column.ColumnName ?? columnExpression?.GetPropertyName();
+                var propertyName = column.ColumnNameInternal;
                 var property = options.Properties[propertyName];
                 var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
                 property.SetValue(model, typedValue);
