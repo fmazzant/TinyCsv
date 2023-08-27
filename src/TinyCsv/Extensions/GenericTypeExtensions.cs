@@ -47,8 +47,12 @@ namespace TinyCsv.Extensions
             var values = options.Columns.Select(column =>
             {
                 var propertyName = column.ColumnNameInternal;
-                var property = options.Properties[propertyName];
-                var value = property.GetValue(model);
+                //var property = options.Properties[propertyName];
+                //var value = property.GetValue(model);
+
+                var property = options.FasterProperties[propertyName];
+                var value = property.Getter(model);
+
                 var stringValue = column.Converter.Convert(value, null, column.ColumnFormatProvider);
                 return stringValue?.EnclosedInQuotesIfNecessary(options);
             });

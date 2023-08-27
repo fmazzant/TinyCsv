@@ -1,4 +1,9 @@
-﻿/// <summary>
+﻿using System.Collections.Concurrent;
+using System;
+using System.Linq;
+using System.Reflection;
+using System.Collections.Generic;
+/// <summary>
 /// 
 /// The MIT License (MIT)
 /// 
@@ -28,6 +33,8 @@
 /// </summary>
 namespace TinyCsv.Extensions
 {
+    using LinqExpression = System.Linq.Expressions.Expression;
+
     /// <summary>
     /// String extensions
     /// </summary>
@@ -48,12 +55,88 @@ namespace TinyCsv.Extensions
             {
                 var value = values[column.ColumnIndex];
                 var propertyName = column.ColumnNameInternal;
-                var property = options.Properties[propertyName];
+
+                //var property = options.Properties[propertyName];
+                //var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
+                //property.SetValue(model, typedValue);
+
+                var property = options.FasterProperties[propertyName];
                 var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
-                property.SetValue(model, typedValue);
+                property.Setter(model, typedValue);
             }
 
             return model;
+        }
+
+
+
+        public class PropertyHelper<T>
+        {
+            public string Name { get; set; }
+            public Func<T, object> Getter { get; set; }
+            public Action<T, object> Setter { get; set; }
+
+            private static readonly ConcurrentDictionary<Type, PropertyHelper<T>[]> CacheExpressionTree = new ConcurrentDictionary<Type, PropertyHelper<T>[]>();
+            private static readonly ConcurrentDictionary<string, PropertyHelper<T>> CacheExpressionTreeDict = new ConcurrentDictionary<string, PropertyHelper<T>>();
+
+            private static PropertyHelper<T>[] GetPropertiesExpressionTree_(Type type)
+            {
+                return CacheExpressionTree.GetOrAdd(type, _ => type.GetProperties().Select(property =>
+                {
+                    Type eventLogCustomType = property.DeclaringType;
+                    Type propertyType = property.PropertyType;
+
+                    var instance = LinqExpression.Parameter(typeof(T));
+
+                    Func<T, object> getter = null;
+                    var getMethod = property.GetGetMethod();
+                    if (getMethod != null)
+                    {
+                        getter =
+                        LinqExpression.Lambda<Func<T, object>>(
+                          LinqExpression.Convert(
+                            LinqExpression.Call(
+                              LinqExpression.Convert(instance, eventLogCustomType),
+                              getMethod),
+                            typeof(object)),
+                          instance)
+                        .Compile();
+                    }
+
+                    Action<T, object> setter = null;
+                    var setMethod = property.GetSetMethod();
+                    if (setMethod != null)
+                    {
+                        var parameter = LinqExpression.Parameter(typeof(object));
+                        setter =
+                        LinqExpression.Lambda<Action<T, object>>(
+                          LinqExpression.Call(
+                            LinqExpression.Convert(instance, eventLogCustomType),
+                            setMethod,
+                            LinqExpression.Convert(parameter, propertyType)),
+                          instance, parameter)
+                        .Compile();
+                    }
+
+                    return new PropertyHelper<T>
+                    {
+                        Name = property.Name,
+                        Getter = getter,
+                        Setter = setter,
+                    };
+                }).ToArray());
+            }
+
+            public static ConcurrentDictionary<string, PropertyHelper<T>> GetPropertiesExpressionTree(Type type)
+            {
+                var cache = GetPropertiesExpressionTree_(type);
+                foreach (var p in cache)
+                {
+                    CacheExpressionTreeDict.GetOrAdd(p.Name, p);
+                }
+                return CacheExpressionTreeDict;
+            }
+
         }
     }
 }
