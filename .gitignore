@@ -52,3 +52,5 @@
 /Benchmark/BenchmarkConsoleApp/obj
 /Benchmark/BenchmarkConsoleApp/bin/Debug/net6.0
 /samples/CsvSampleConsoleApp/bin/Release/net7.0
+/samples/CsvSampleConsoleAttributeApp/bin/Release/net7.0
+/samples/CsvSampleMinimalWebApiApp/bin/Release/net7.0
