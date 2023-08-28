@@ -84,32 +84,6 @@ namespace CsvSampleConsoleApp
         }
     }
 
-    public class A
-    {
-        public string A1Property { get; set; }
-
-        public B B1Object { get; set; }
-    }
-
-    public class BConverter : IValueConverter
-    {
-        public string Convert(object value, object parameter, IFormatProvider provider)
-        {
-            if (value is B b) return b.B1Property;
-            return string.Empty;
-        }
-        public object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
-        {
-            var b = new B() { B1Property = value };
-            return b;
-        }
-    }
-
-    public class B
-    {
-        public string B1Property { get; set; }
-    }
-
     internal static class Program
     {
         static async Task Main()
