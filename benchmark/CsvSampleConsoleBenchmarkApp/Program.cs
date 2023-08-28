@@ -64,33 +64,33 @@ public class TinyCsvBenchmarkBase
     public class Model
     {
         public string? Id { get; set; }
-        public string Name { get; set; }
-        public string Price { get; set; }
-        public string CreatedOn { get; set; }
-        public string TextBase64 { get; set; }
-        public string WebSite { get; set; }
-        public string RowType { get; set; }
+        public string? Name { get; set; }
+        public string? Price { get; set; }
+        public string? CreatedOn { get; set; }
+        public string? TextBase64 { get; set; }
+        public string? WebSite { get; set; }
+        public string? RowType { get; set; }
     }
 
-    TinyCsv<Model> tinyCsv = new TinyCsv<Model>(options =>
-    {
-        // Options
-        options.HasHeaderRecord = true;
-        options.Delimiter = ";";
-        options.RowsToSkip = 0;
-        options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
-        options.TrimData = true;
-        options.ValidateColumnCount = false;
+    readonly TinyCsv<Model> tinyCsv = new TinyCsv<Model>(options =>
+     {
+         // Options
+         options.HasHeaderRecord = true;
+         options.Delimiter = ";";
+         options.RowsToSkip = 0;
+         options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
+         options.TrimData = true;
+         options.ValidateColumnCount = false;
 
-        // Columns
-        options.Columns.AddColumn(m => m.Id);
-        options.Columns.AddColumn(m => m.Name);
-        options.Columns.AddColumn(m => m.Price);
-        options.Columns.AddColumn(m => m.CreatedOn);
-        options.Columns.AddColumn(m => m.TextBase64);
-        options.Columns.AddColumn(m => m.WebSite);
-        options.Columns.AddColumn(m => m.RowType);
-    });
+         // Columns
+         options.Columns.AddColumn(m => m.Id);
+         options.Columns.AddColumn(m => m.Name);
+         options.Columns.AddColumn(m => m.Price);
+         options.Columns.AddColumn(m => m.CreatedOn);
+         options.Columns.AddColumn(m => m.TextBase64);
+         options.Columns.AddColumn(m => m.WebSite);
+         options.Columns.AddColumn(m => m.RowType);
+     });
 }
 
 [Config(typeof(Config))]
