@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>TinyCsvLibraryBenchmark-20230829-001759</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.13.7, Windows 10 (10.0.17763.4720/1809/October2018Update/Redstone5) (Hyper-V)
+Intel Xeon Platinum 8370C CPU 2.80GHz, 1 CPU, 4 logical and 4 physical cores
+.NET SDK 7.0.101
+  [Host]     : .NET 7.0.1 (7.0.122.56804), X64 RyuJIT AVX2
+  Job-YGPWRK : .NET 7.0.1 (7.0.122.56804), X64 RyuJIT AVX2
+  Job-AXRAKP : .NET 7.0.1 (7.0.122.56804), X64 RyuJIT AVX2
+  Job-SPTLKB : .NET 7.0.1 (7.0.122.56804), X64 RyuJIT AVX2
+  Job-HMRTYE : .NET 7.0.1 (7.0.122.56804), X64 RyuJIT AVX2
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>Method</th><th> Job</th><th>   NuGetReferences</th><th>N</th><th>  Mean</th><th>Error</th><th>StdDev</th>
+</tr>
+</thead><tbody><tr><td>LoadFromText</td><td>Job-YGPWRK</td><td>Mafe.TinyCsv 1.5.2</td><td>1000</td><td>8.516 ms</td><td>0.0349 ms</td><td>0.0326 ms</td>
+</tr><tr><td>SaveToText</td><td>Job-YGPWRK</td><td>Mafe.TinyCsv 1.5.2</td><td>1000</td><td>2.266 ms</td><td>0.0232 ms</td><td>0.0217 ms</td>
+</tr><tr><td>LoadFromText</td><td>Job-AXRAKP</td><td>Mafe.TinyCsv 1.6.1</td><td>1000</td><td>8.456 ms</td><td>0.0653 ms</td><td>0.0579 ms</td>
+</tr><tr><td>SaveToText</td><td>Job-AXRAKP</td><td>Mafe.TinyCsv 1.6.1</td><td>1000</td><td>2.287 ms</td><td>0.0221 ms</td><td>0.0207 ms</td>
+</tr><tr><td>LoadFromText</td><td>Job-SPTLKB</td><td>Mafe.TinyCsv 2.0.0</td><td>1000</td><td>2.493 ms</td><td>0.0074 ms</td><td>0.0069 ms</td>
+</tr><tr><td>SaveToText</td><td>Job-SPTLKB</td><td>Mafe.TinyCsv 2.0.0</td><td>1000</td><td>1.669 ms</td><td>0.0253 ms</td><td>0.0237 ms</td>
+</tr><tr><td>LoadFromText</td><td>Job-HMRTYE</td><td>Mafe.TinyCsv 2.1.0-beta1</td><td>1000</td><td>1.128 ms</td><td>0.0030 ms</td><td>0.0028 ms</td>
+</tr><tr><td>SaveToText</td><td>Job-HMRTYE</td><td>Mafe.TinyCsv 2.1.0-beta1</td><td>1000</td><td>1.559 ms</td><td>0.0209 ms</td><td>0.0195 ms</td>
+</tr><tr><td>LoadFromText</td><td>Job-YGPWRK</td><td>Mafe.TinyCsv 1.5.2</td><td>10000</td><td>86.102 ms</td><td>0.3674 ms</td><td>0.3437 ms</td>
+</tr><tr><td>SaveToText</td><td>Job-YGPWRK</td><td>Mafe.TinyCsv 1.5.2</td><td>10000</td><td>21.543 ms</td><td>0.1216 ms</td><td>0.1138 ms</td>
+</tr><tr><td>LoadFromText</td><td>Job-AXRAKP</td><td>Mafe.TinyCsv 1.6.1</td><td>10000</td><td>86.187 ms</td><td>0.4112 ms</td><td>0.3846 ms</td>
+</tr><tr><td>SaveToText</td><td>Job-AXRAKP</td><td>Mafe.TinyCsv 1.6.1</td><td>10000</td><td>22.129 ms</td><td>0.1033 ms</td><td>0.0966 ms</td>
+</tr><tr><td>LoadFromText</td><td>Job-SPTLKB</td><td>Mafe.TinyCsv 2.0.0</td><td>10000</td><td>25.256 ms</td><td>0.0753 ms</td><td>0.0704 ms</td>
+</tr><tr><td>SaveToText</td><td>Job-SPTLKB</td><td>Mafe.TinyCsv 2.0.0</td><td>10000</td><td>15.924 ms</td><td>0.1219 ms</td><td>0.1140 ms</td>
+</tr><tr><td>LoadFromText</td><td>Job-HMRTYE</td><td>Mafe.TinyCsv 2.1.0-beta1</td><td>10000</td><td>11.792 ms</td><td>0.1035 ms</td><td>0.0864 ms</td>
+</tr><tr><td>SaveToText</td><td>Job-HMRTYE</td><td>Mafe.TinyCsv 2.1.0-beta1</td><td>10000</td><td>15.176 ms</td><td>0.0624 ms</td><td>0.0583 ms</td>
+</tr><tr><td>LoadFromText</td><td>Job-YGPWRK</td><td>Mafe.TinyCsv 1.5.2</td><td>100000</td><td>858.665 ms</td><td>3.0873 ms</td><td>2.7368 ms</td>
+</tr><tr><td>SaveToText</td><td>Job-YGPWRK</td><td>Mafe.TinyCsv 1.5.2</td><td>100000</td><td>218.765 ms</td><td>0.3666 ms</td><td>0.3062 ms</td>
+</tr><tr><td>LoadFromText</td><td>Job-AXRAKP</td><td>Mafe.TinyCsv 1.6.1</td><td>100000</td><td>877.641 ms</td><td>3.2216 ms</td><td>2.8559 ms</td>
+</tr><tr><td>SaveToText</td><td>Job-AXRAKP</td><td>Mafe.TinyCsv 1.6.1</td><td>100000</td><td>211.176 ms</td><td>1.2563 ms</td><td>1.1751 ms</td>
+</tr><tr><td>LoadFromText</td><td>Job-SPTLKB</td><td>Mafe.TinyCsv 2.0.0</td><td>100000</td><td>251.932 ms</td><td>0.8135 ms</td><td>0.7610 ms</td>
+</tr><tr><td>SaveToText</td><td>Job-SPTLKB</td><td>Mafe.TinyCsv 2.0.0</td><td>100000</td><td>152.877 ms</td><td>0.7557 ms</td><td>0.6699 ms</td>
+</tr><tr><td>LoadFromText</td><td>Job-HMRTYE</td><td>Mafe.TinyCsv 2.1.0-beta1</td><td>100000</td><td>117.103 ms</td><td>1.0552 ms</td><td>0.9870 ms</td>
+</tr><tr><td>SaveToText</td><td>Job-HMRTYE</td><td>Mafe.TinyCsv 2.1.0-beta1</td><td>100000</td><td>142.248 ms</td><td>0.4423 ms</td><td>0.4138 ms</td>
+</tr><tr><td>LoadFromText</td><td>Job-YGPWRK</td><td>Mafe.TinyCsv 1.5.2</td><td>1000000</td><td>8,444.244 ms</td><td>52.6833 ms</td><td>43.9930 ms</td>
+</tr><tr><td>SaveToText</td><td>Job-YGPWRK</td><td>Mafe.TinyCsv 1.5.2</td><td>1000000</td><td>2,211.665 ms</td><td>7.8473 ms</td><td>7.3403 ms</td>
+</tr><tr><td>LoadFromText</td><td>Job-AXRAKP</td><td>Mafe.TinyCsv 1.6.1</td><td>1000000</td><td>8,750.543 ms</td><td>28.8640 ms</td><td>26.9994 ms</td>
+</tr><tr><td>SaveToText</td><td>Job-AXRAKP</td><td>Mafe.TinyCsv 1.6.1</td><td>1000000</td><td>2,149.077 ms</td><td>2.8854 ms</td><td>2.5578 ms</td>
+</tr><tr><td>LoadFromText</td><td>Job-SPTLKB</td><td>Mafe.TinyCsv 2.0.0</td><td>1000000</td><td>2,530.445 ms</td><td>8.0288 ms</td><td>7.5101 ms</td>
+</tr><tr><td>SaveToText</td><td>Job-SPTLKB</td><td>Mafe.TinyCsv 2.0.0</td><td>1000000</td><td>1,488.229 ms</td><td>2.9475 ms</td><td>2.6129 ms</td>
+</tr><tr><td>LoadFromText</td><td>Job-HMRTYE</td><td>Mafe.TinyCsv 2.1.0-beta1</td><td>1000000</td><td>1,157.258 ms</td><td>4.7153 ms</td><td>4.1800 ms</td>
+</tr><tr><td>SaveToText</td><td>Job-HMRTYE</td><td>Mafe.TinyCsv 2.1.0-beta1</td><td>1000000</td><td>1,418.138 ms</td><td>3.3791 ms</td><td>3.1608 ms</td>
+</tr></tbody></table>
+</body>
+</html>
