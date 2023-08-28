@@ -15,7 +15,7 @@ public class TinyCsvBenchmarkBase
     protected Model[]? modelArray;
     protected string? text = null;
 
-    [Params(1000)]//, 10000, 100000, 1000000)]
+    [Params(1000, 10000, 100000, 1000000)]
     public int N;
 
     [GlobalSetup]
