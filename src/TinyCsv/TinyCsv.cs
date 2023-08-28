@@ -141,7 +141,7 @@ namespace TinyCsv
                 }
 
                 options.Handlers.Read.OnRowReading(currentIndex, line);
-                var fields = dataReader.GetFieldsByLine(line);
+                var fields = dataReader.GetFieldsByLine(line, columnsCount);
 
                 if (validateColumnCount && columnsCount > fields.Length)
                 {

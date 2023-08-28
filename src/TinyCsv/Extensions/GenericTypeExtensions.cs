@@ -1,6 +1,4 @@
-﻿
-using System.Linq;
-/// <summary>
+﻿/// <summary>
 /// 
 /// The MIT License (MIT)
 /// 
@@ -30,6 +28,8 @@ using System.Linq;
 /// </summary>
 namespace TinyCsv.Extensions
 {
+    using System.Linq;
+
     /// <summary>
     /// Generic Type extensions
     /// </summary>
@@ -46,10 +46,9 @@ namespace TinyCsv.Extensions
         {
             var values = options.Columns.Select(column =>
             {
-                var columnExpression = column.ColumnExpression;
-                var propertyName = column.ColumnName ?? columnExpression?.GetPropertyName();
-                var property = options.Properties[propertyName];
-                var value = property.GetValue(model);
+                var propertyName = column.ColumnNameInternal;
+                var property = options.FasterProperties[propertyName];
+                var value = property.Getter(model);
                 var stringValue = column.Converter.Convert(value, null, column.ColumnFormatProvider);
                 return stringValue?.EnclosedInQuotesIfNecessary(options);
             });

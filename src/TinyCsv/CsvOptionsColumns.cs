@@ -90,6 +90,18 @@ namespace TinyCsv
         /// Add Column
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="columnName"></param>
+        /// <param name="expression"></param>
+        /// <param name="columnFormat"></param>
+        public void AddColumn<T>(string columnName, Expression<Func<M, T>> expression, string columnFormat = null)
+        {
+            this.AddColumn(Columns.Count, columnName, expression, columnFormat);
+        }
+
+        /// <summary>
+        /// Add Column
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="expression"></param>
         /// <param name="columnFormat"></param>
         public void AddColumn<T>(Expression<Func<M, T>> expression, string columnFormat = null)
@@ -150,6 +162,19 @@ namespace TinyCsv
         /// Add Column
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="columnName"></param>
+        /// <param name="expression"></param>
+        /// <param name=""></param>
+        /// <param name="converter"></param>
+        public void AddColumn<T>(string columnName, Expression<Func<M, T>> expression, IValueConverter converter)
+        {
+            this.AddColumn(Columns.Count, columnName, expression, null, null, converter);
+        }
+
+        /// <summary>
+        /// Add Column
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="columnIndex"></param>
         /// <param name="columnName"></param>
         /// <param name="expression"></param>
@@ -176,6 +201,7 @@ namespace TinyCsv
             {
                 ColumnIndex = index,
                 ColumnName = columnName,
+                ColumnNameInternal = expression?.GetPropertyName() ?? columnName,
                 ColumnType = type,
                 ColumnExpression = expression,
                 ColumnFormat = columnFormat,

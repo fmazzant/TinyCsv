@@ -30,6 +30,7 @@
 namespace CsvSampleConsoleApp
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -62,7 +63,7 @@ namespace CsvSampleConsoleApp
         public string Ethnic { get; set; }
         public string Sex { get; set; }
         public string Area { get; set; }
-        public string count { get; set; }
+        public string Count { get; set; }
 
     }
 
@@ -109,7 +110,7 @@ namespace CsvSampleConsoleApp
                     bigOptions.Columns.AddColumn(m => m.Ethnic);
                     bigOptions.Columns.AddColumn(m => m.Sex);
                     bigOptions.Columns.AddColumn(m => m.Area);
-                    bigOptions.Columns.AddColumn(m => m.count);
+                    bigOptions.Columns.AddColumn(m => m.Count);
 
                     // Event Handlers Read
                     bigOptions.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
@@ -132,7 +133,7 @@ namespace CsvSampleConsoleApp
                     index++;
                     if (index % 1000000 == 0)
                     {
-                        Console.WriteLine($"-> {index} in {(DateTime.Now - pdt).TotalMilliseconds} ms");
+                        Console.WriteLine($"-> {index} in {(DateTime.Now - pdt).TotalMilliseconds} ms --> {t.Year},{t.Age},{t.Ethnic},{t.Sex},{t.Area},");
                         pdt = DateTime.Now;
                     }
                 }

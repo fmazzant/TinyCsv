@@ -30,12 +30,13 @@
 namespace TinyCsv
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections.Concurrent;
     using System.Linq;
     using System.Reflection;
     using System.Text;
     using TinyCsv.Args;
     using TinyCsv.Attributes;
+    using TinyCsv.Helpers;
 
     /// <summary>
     ///  Csv Options abstract definition
@@ -219,7 +220,12 @@ namespace TinyCsv
         /// <summary>
         /// Object's properties
         /// </summary>
-        internal Dictionary<string, PropertyInfo> Properties { get; set; }
+        internal ConcurrentDictionary<string, PropertyInfo> Properties { get; set; }
+
+        /// <summary>
+        /// Object's faster properties
+        /// </summary>
+        internal ConcurrentDictionary<string, PropertyHelper<T>> FasterProperties { get; set; }
 
         /// <summary>
         /// Create a CsvOptions
@@ -249,11 +255,12 @@ namespace TinyCsv
         /// <param name="type"></param>
         private void SetOptionPropertiesFromType(Type type)
         {
-            Properties = new Dictionary<string, PropertyInfo>();
+            FasterProperties = PropertyHelper<T>.GetPropertiesExpressionTree(type);
+            Properties = new ConcurrentDictionary<string, PropertyInfo>();
             var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             foreach (var property in properties)
             {
-                Properties.Add(property.Name, property);
+                Properties.TryAdd(property.Name, property);
             }
         }
 

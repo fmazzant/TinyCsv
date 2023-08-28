@@ -50,6 +50,11 @@ namespace TinyCsv
         public string ColumnName { get; internal set; }
 
         /// <summary>
+        /// Column's name
+        /// </summary>
+        internal string ColumnNameInternal { get; set; }
+
+        /// <summary>
         /// Column's type
         /// </summary>
         public Type ColumnType { get; internal set; }

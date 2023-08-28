@@ -28,6 +28,7 @@
 /// </summary>
 namespace TinyCsv.Data
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading;
 
@@ -47,7 +48,16 @@ namespace TinyCsv.Data
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
+        [Obsolete("Use: string[] GetFieldsByLine(string line, int columnsCount)", true)]
         string[] GetFieldsByLine(string line);
+
+        /// <summary>
+        /// Get fields by line
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="columnCount"></param>
+        /// <returns></returns>
+        string[] GetFieldsByLine(string line, int columnsCount);
 
         /// <summary>
         /// Get lines field
