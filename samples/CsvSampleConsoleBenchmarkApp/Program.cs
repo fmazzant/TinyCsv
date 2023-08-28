@@ -4,7 +4,7 @@ using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 using TinyCsv;
 
-var summary = BenchmarkRunner.Run<SystemDataBenchmark>();
+var summary = BenchmarkRunner.Run<TinyCsvLibraryBenchmark>();
 
 public class TinyCsvBenchmarkBase
 {
@@ -15,7 +15,7 @@ public class TinyCsvBenchmarkBase
     protected string? text = null;
 
     [Params(1000, 10000, 100000, 1000000)]
-    private int N;
+    public int N;
 
     [GlobalSetup]
     public void Setup()
@@ -72,7 +72,7 @@ public class TinyCsvBenchmarkBase
 }
 
 [Config(typeof(Config))]
-public class SystemDataBenchmark : TinyCsvBenchmarkBase
+public class TinyCsvLibraryBenchmark : TinyCsvBenchmarkBase
 {
     private class Config : ManualConfig
     {
