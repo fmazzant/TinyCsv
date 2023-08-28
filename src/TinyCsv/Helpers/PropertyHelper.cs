@@ -35,6 +35,10 @@ namespace TinyCsv.Helpers
     using System.Linq;
     using LinqExpression = System.Linq.Expressions.Expression;
 
+    /// <summary>
+    /// Faster setter and getter on property
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class PropertyHelper<T>
     {
         public string Name { get; set; }
@@ -43,9 +47,14 @@ namespace TinyCsv.Helpers
 
         private static readonly ConcurrentDictionary<Type, PropertyHelper<T>[]> CacheExpressionTree = new ConcurrentDictionary<Type, PropertyHelper<T>[]>();
 
+        /// <summary>
+        /// Create a ConcurrentDictionary with type as key and list of properties.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         private static PropertyHelper<T>[] GetPropertiesExpressionTreeInternal(Type type)
         {
-            return CacheExpressionTree.GetOrAdd(type, _ => type.GetProperties().Select(property =>
+            return CacheExpressionTree.GetOrAdd(type, x => x.GetProperties().Select(property =>
             {
                 Type eventLogCustomType = property.DeclaringType;
                 Type propertyType = property.PropertyType;
@@ -91,6 +100,11 @@ namespace TinyCsv.Helpers
             }).ToArray());
         }
 
+        /// <summary>
+        /// Returns a ConcurrentDictionary with property name as key and property helper as value.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static ConcurrentDictionary<string, PropertyHelper<T>> GetPropertiesExpressionTree(Type type)
         {
             var CacheExpressionTreeDict = new ConcurrentDictionary<string, PropertyHelper<T>>();
@@ -101,6 +115,5 @@ namespace TinyCsv.Helpers
             }
             return CacheExpressionTreeDict;
         }
-
     }
 }

@@ -185,7 +185,7 @@ namespace CsvSampleConsoleApp
                     index++;
                     if (index % 1000000 == 0)
                     {
-                        Console.WriteLine($"-> {index} in {(DateTime.Now - pdt).TotalMilliseconds} ms ==> {t.Year},{t.Age},{t.Ethnic},{t.Sex},{t.Area},");
+                        Console.WriteLine($"-> {index} in {(DateTime.Now - pdt).TotalMilliseconds} ms --> {t.Year},{t.Age},{t.Ethnic},{t.Sex},{t.Area},");
                         pdt = DateTime.Now;
                     }
                 }
