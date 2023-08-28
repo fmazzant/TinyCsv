@@ -11,21 +11,37 @@ public class TinyCsvBenchmarkBase
     protected static Job BaseJob = Job.Default;
 
     protected string row = "1;Name 1;1.12;02/04/2022;aGVsbG8sIHdvcmxkIQ==;https://www.mywebsite.it;A;";
-    protected string[]? data;
+    protected string[]? stringArray;
+    protected Model[]? modelArray;
     protected string? text = null;
 
-    [Params(1000, 10000, 100000, 1000000)]
+    [Params(1000)]//, 10000, 100000, 1000000)]
     public int N;
 
     [GlobalSetup]
     public void Setup()
     {
-        this.data = new string[N];
+        this.stringArray = new string[N];
         for (int i = 0; i < N; i++)
         {
-            data[i] = row;
+            stringArray[i] = row;
         }
-        this.text = string.Join(Environment.NewLine, data);
+        this.text = string.Join(Environment.NewLine, stringArray);
+
+        this.modelArray = new Model[N];
+        for (int i = 0; i < N; i++)
+        {
+            modelArray[i] = new Model
+            {
+                Id = "1",
+                Name = "Name 1",
+                Price = "1.12",
+                CreatedOn = "02/04/2022",
+                TextBase64 = "aGVsbG8sIHdvcmxkIQ==",
+                WebSite = "https://www.mywebsite.it",
+                RowType = "A"
+            };
+        }
     }
 
     [Benchmark]
@@ -36,6 +52,13 @@ public class TinyCsvBenchmarkBase
         {
             ;
         }
+    }
+
+    [Benchmark]
+    public void SaveToText()
+    {
+        var memoryStream = new MemoryStream();
+        tinyCsv.Save(memoryStream, modelArray);
     }
 
     public class Model
@@ -68,7 +91,6 @@ public class TinyCsvBenchmarkBase
         options.Columns.AddColumn(m => m.WebSite);
         options.Columns.AddColumn(m => m.RowType);
     });
-
 }
 
 [Config(typeof(Config))]
