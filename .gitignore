@@ -54,3 +54,7 @@
 /samples/CsvSampleConsoleApp/bin/Release/net7.0
 /samples/CsvSampleConsoleAttributeApp/bin/Release/net7.0
 /samples/CsvSampleMinimalWebApiApp/bin/Release/net7.0
+/samples/CsvSampleConsoleBenchmarkApp/bin/Release/net7.0
+/samples/CsvSampleConsoleBenchmarkApp/obj
+/benchmark/CsvSampleConsoleBenchmarkApp/bin/Release/net7.0
+/benchmark/CsvSampleConsoleBenchmarkApp/obj

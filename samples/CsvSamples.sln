@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyCsv.AspNetCore", "..\sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvSampleConsoleAttributeApp", "CsvSampleConsoleAttributeApp\CsvSampleConsoleAttributeApp.csproj", "{055117EE-93D9-40C2-B9C0-A942701D3839}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvSampleConsoleBenchmarkApp", "..\benchmark\CsvSampleConsoleBenchmarkApp\CsvSampleConsoleBenchmarkApp.csproj", "{A85975AB-34E2-4275-AD3B-E6B5CDF4CBA2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{055117EE-93D9-40C2-B9C0-A942701D3839}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{055117EE-93D9-40C2-B9C0-A942701D3839}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{055117EE-93D9-40C2-B9C0-A942701D3839}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A85975AB-34E2-4275-AD3B-E6B5CDF4CBA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A85975AB-34E2-4275-AD3B-E6B5CDF4CBA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A85975AB-34E2-4275-AD3B-E6B5CDF4CBA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A85975AB-34E2-4275-AD3B-E6B5CDF4CBA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
