@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="BenchmarkDotNet.Artifacts\results\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.13.7" />
     <PackageReference Include="Mafe.TinyCsv" Version="1.5.2" />
   </ItemGroup>
