@@ -7,7 +7,6 @@ using TinyCsv;
 
 _ = BenchmarkRunner.Run<TinyCsvLibraryBenchmark>();
 
-
 namespace CsvSampleConsoleBenchmarkApp
 {
     public class TinyCsvBenchmarkBase
@@ -112,5 +111,4 @@ namespace CsvSampleConsoleBenchmarkApp
             tinyCsv.Save(memoryStream, modelArray);
         }
     }
-
 }
