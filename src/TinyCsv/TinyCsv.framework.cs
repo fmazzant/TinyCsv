@@ -1,4 +1,4 @@
-﻿#if NET452 || NET46 || NET47 || NET48 || NETSTANDARD2_0
+﻿#if NET452 || NET462 || NET472 || NET48 || NETSTANDARD2_0
 
 /// <summary>
 /// 
