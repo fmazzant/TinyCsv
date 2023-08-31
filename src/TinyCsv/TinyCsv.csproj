@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;net46;net47;net48;netstandard2.0;netstandard2.1;net6.0;net7.0;</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0;netstandard2.0;netstandard2.1;net452;net462;net472;net48</TargetFrameworks>
     <LangVersion>preview</LangVersion>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -16,7 +16,7 @@
     <AssemblyName>Mafe.$(MSBuildProjectName)</AssemblyName>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Product>TinyCsv</Product>
-    <Version>2.1.0-beta1</Version>
+    <Version>2.1.0-rc1</Version>
   </PropertyGroup>
 
   <ItemGroup>
