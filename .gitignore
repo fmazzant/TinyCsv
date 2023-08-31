@@ -58,3 +58,4 @@
 /samples/CsvSampleConsoleBenchmarkApp/obj
 /benchmark/CsvSampleConsoleBenchmarkApp/bin/Release/net7.0
 /benchmark/CsvSampleConsoleBenchmarkApp/obj
+/benchmark/CsvSampleConsoleBenchmarkApp/bin/Debug/net7.0
