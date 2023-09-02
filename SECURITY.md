@@ -12,6 +12,7 @@
 | 1.5.x   | :white_check_mark: |
 | 1.6.x   | :white_check_mark: |
 | 2.0.x   | :white_check_mark: |
+| 2.1.x   | :white_check_mark: |
 
 ## Reporting a Vulnerability
 
