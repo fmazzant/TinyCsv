@@ -213,6 +213,12 @@ and you can use it, like this
  var csv = new TinyCsv<AttributeModel>();
 ```
 
+
+## TinyCsv Performance
+
+![alt TinyCsv Performance](benchmark/images/performance.png)
+
+
 ## TinyCsv.AspNetCore Extensions
 
 Is available the Mafe.TinyCsv.Extensions library to use the TinyCsv in your project and it is downloadable in the NuGet package.
