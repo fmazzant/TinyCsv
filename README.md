@@ -213,8 +213,7 @@ and you can use it, like this
  var csv = new TinyCsv<AttributeModel>();
 ```
 
-
-## TinyCsv Performance
+## Performance
 
 ![alt TinyCsv Performance](benchmark/images/performance.png)
 
