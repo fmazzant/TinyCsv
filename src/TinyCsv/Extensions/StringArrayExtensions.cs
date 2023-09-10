@@ -1,4 +1,8 @@
-﻿/// <summary>
+﻿
+using System;
+using System.Diagnostics;
+using System.Linq;
+/// <summary>
 /// 
 /// The MIT License (MIT)
 /// 
@@ -45,8 +49,10 @@ namespace TinyCsv.Extensions
         {
             var model = new T();
 
-            foreach (var column in options.Columns)
+            var count = options.Columns.Count;
+            for (int i = 0; i < count; i++)
             {
+                var column = options.Columns.ElementAt(i);
                 var value = values[column.ColumnIndex];
                 var propertyName = column.ColumnNameInternal;
                 var property = options.FasterProperties[propertyName];
