@@ -1,8 +1,4 @@
-﻿
-using System;
-using System.Diagnostics;
-using System.Linq;
-/// <summary>
+﻿/// <summary>
 /// 
 /// The MIT License (MIT)
 /// 
@@ -33,6 +29,10 @@ using System.Linq;
 
 namespace TinyCsv.Extensions
 {
+    using System;
+    using System.Diagnostics;
+    using System.Linq;
+
     /// <summary>
     /// String extensions
     /// </summary>
@@ -59,6 +59,14 @@ namespace TinyCsv.Extensions
                 var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
                 property.Setter(model, typedValue);
             }
+            //foreach (var column in options.Columns)
+            //{
+            //    var value = values[column.ColumnIndex];
+            //    var propertyName = column.ColumnNameInternal;
+            //    var property = options.FasterProperties[propertyName];
+            //    var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
+            //    property.Setter(model, typedValue);
+            //}
 
             return model;
         }
