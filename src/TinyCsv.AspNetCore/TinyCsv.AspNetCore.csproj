@@ -14,7 +14,7 @@
     <AssemblyName>Mafe.$(MSBuildProjectName)</AssemblyName>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Product>TinyCsv.AspNetCore</Product>
-    <Version>2.1.0-rc1</Version>
+    <Version>2.2.0-rc1</Version>
   </PropertyGroup>
 
   <ItemGroup>
