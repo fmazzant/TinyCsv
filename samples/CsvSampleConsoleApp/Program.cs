@@ -55,6 +55,14 @@ namespace CsvSampleConsoleApp
             return $"Object -> {Id}, {Name}, {Price}, {CreatedOn}, {TextBase64}, {WebSite}, {RowType}";
         }
     }
+    public class ModelOnlyName
+    {
+        public string Name { get; set; }
+        public override string ToString()
+        {
+            return $"Object -> {Name}";
+        }
+    }
 
     public class BigModel
     {
@@ -155,6 +163,23 @@ namespace CsvSampleConsoleApp
                 Console.WriteLine($"-> {(DateTime.Now - tdt).TotalSeconds}");
             }
 
+            var csvOnlyName = new TinyCsv<ModelOnlyName>(options =>
+            {
+                // Options
+                options.HasHeaderRecord = true;
+                options.Delimiter = ";";
+                options.RowsToSkip = 0;
+                options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
+                options.TrimData = true;
+                options.ValidateColumnCount = false;
+
+                // Columns
+                options.Columns.AddColumn(1, m => m.Name);
+            });
+
+            var syncModelsOnlyName = csvOnlyName.LoadFromFile("file.csv");
+            var listOnlyName = syncModelsOnlyName.ToList();
+
             var csv = new TinyCsv<Model>(options =>
             {
                 // Options
@@ -175,7 +200,7 @@ namespace CsvSampleConsoleApp
                 options.Columns.AddColumn(m => m.WebSite);
                 options.Columns.AddColumn(m => m.RowType);
 
-                // Event Handlers Read
+                //Event Handlers Read
                 options.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
                 options.Handlers.Read.RowReading += (s, e) => Console.WriteLine($"{e.Index}-{e.Row}");
                 options.Handlers.Read.RowRead += (s, e) => Console.WriteLine($"{e.Index}-{e.Model}");

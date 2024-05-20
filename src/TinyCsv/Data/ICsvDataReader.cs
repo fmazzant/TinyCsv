@@ -57,7 +57,7 @@ namespace TinyCsv.Data
         /// <param name="line"></param>
         /// <param name="columnCount"></param>
         /// <returns></returns>
-        string[] GetFieldsByLine(string line, int columnsCount);
+        string[] GetFieldsByLine(string line, int columnsCount, int potenrialColumnsCount = 1024);
 
         /// <summary>
         /// Get lines field

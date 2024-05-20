@@ -96,9 +96,14 @@ namespace TinyCsv.Data
         /// <param name="line"></param>
         /// <param name="columnsCount"></param>
         /// <returns></returns>
-        public string[] GetFieldsByLine(string line, int columnsCount)
+        public string[] GetFieldsByLine(string line, int columnsCount, int potentialColumnCount = 1024)
         {
-            var result = new string[columnsCount];
+            if (columnsCount <= 0)
+            {
+                return new string[0];
+            }
+
+            var result = new string[potentialColumnCount];
             var sb = new StringBuilder(string.Empty);
             bool inQuotes = false;
 
@@ -145,7 +150,7 @@ namespace TinyCsv.Data
                     {
                         if (!inQuotes)
                         {
-                            result[columnIndex++] = sb.ToString()/*.TrimData(options)*/;
+                            result[columnIndex++] = sb.ToString().TrimData(options);
                             sb.Clear();
                         }
                         else
@@ -168,7 +173,7 @@ namespace TinyCsv.Data
             }
             if (columnIndex < columnsCount)
             {
-                result[columnIndex++] = sb.ToString()/*.TrimData(options)*/;
+                result[columnIndex++] = sb.ToString().TrimData(options);
             }
 
             if (options.EndOfLineDelimiterChar && columnIndex < columnsCount)
