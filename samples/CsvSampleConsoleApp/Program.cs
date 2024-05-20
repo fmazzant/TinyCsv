@@ -165,26 +165,6 @@ namespace CsvSampleConsoleApp
                 Console.WriteLine($"-> {(DateTime.Now - tdt).TotalSeconds}");
             }
 
-            var csvOnlyName = new TinyCsv<ModelOnlyName>(options =>
-            {
-                // Options
-                options.HasHeaderRecord = true;
-                options.Delimiter = ";";
-                options.RowsToSkip = 0;
-                options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
-                options.TrimData = true;
-                options.ValidateColumnCount = false;
-                options.EndOfLineDelimiterChar = true;
-
-                // Columns
-                options.Columns.AddColumn(1, m => m.Name);
-                options.Columns.AddColumn(2, m => m.Price);
-                options.Columns.AddColumn(0, m => m.Id);
-            });
-
-            var syncModelsOnlyName = csvOnlyName.LoadFromFile("file.csv");
-            var listOnlyName = syncModelsOnlyName.ToList();
-
             var csv = new TinyCsv<Model>(options =>
             {
                 // Options
