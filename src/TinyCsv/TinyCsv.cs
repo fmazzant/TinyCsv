@@ -124,7 +124,6 @@ namespace TinyCsv
             var dataReader = new TinyCsvDataReader<T>(options, streamReader);
             var hasHeaderRecord = options.HasHeaderRecord;
             var validateColumnCount = options.ValidateColumnCount;
-            var numberOfColumnOnCsv = options.NumberOfColumnOnCsv;
             var columnsCount = options.Columns.Count;
 
             options.Handlers.OnStart();
@@ -142,7 +141,7 @@ namespace TinyCsv
                 }
 
                 options.Handlers.Read.OnRowReading(currentIndex, line);
-                var fields = dataReader.GetFieldsByLine(line, columnsCount, numberOfColumnOnCsv);
+                var fields = dataReader.GetFieldsByLine(line, columnsCount);
 
                 if (validateColumnCount && columnsCount > fields.Length)
                 {

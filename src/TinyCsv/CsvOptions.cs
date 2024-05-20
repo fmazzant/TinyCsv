@@ -54,11 +54,6 @@ namespace TinyCsv
         string Delimiter { get; set; }
 
         /// <summary>
-        /// Represents a number of columns defined inside the csv file. The default value is 1024 (columns).
-        /// </summary>
-        int NumberOfColumnOnCsv { get; set; }
-
-        /// <summary>
         /// Respects new line (either \r\n or \n) characters inside field values enclosed in double quotes.
         /// </summary>
         bool AllowRowEnclosedInDoubleQuotesValues { get; set; }
@@ -133,11 +128,6 @@ namespace TinyCsv
         /// Delimiter
         /// </summary>
         public string Delimiter { get; set; } = ";";
-
-        /// <summary>
-        /// Represents a number of columns defined inside the csv file. The default value is 1024 (columns).
-        /// </summary>
-        public int NumberOfColumnOnCsv { get; set; } = 1024;
 
         /// <summary>
         /// Respects new line (either \r\n or \n) characters inside field values enclosed in double quotes.

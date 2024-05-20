@@ -96,14 +96,14 @@ namespace TinyCsv.Data
         /// <param name="line"></param>
         /// <param name="columnsCount"></param>
         /// <returns></returns>
-        public string[] GetFieldsByLine(string line, int columnsCount, int potentialColumnCount = 1024)
+        public string[] GetFieldsByLine(string line, int columnsCount)
         {
             if (columnsCount <= 0)
             {
                 return new string[0];
             }
 
-            var result = new string[potentialColumnCount];
+            var result = new string[columnsCount];
             var sb = new StringBuilder(string.Empty);
             bool inQuotes = false;
 
