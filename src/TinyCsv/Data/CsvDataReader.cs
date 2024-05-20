@@ -96,7 +96,7 @@ namespace TinyCsv.Data
         /// <param name="line"></param>
         /// <param name="columnsCount"></param>
         /// <returns></returns>
-        public string[] GetFieldsByLine(string line, int columnsCount)
+        string[] GetFieldsByLine_Legacy(string line, int columnsCount)
         {
             if (columnsCount <= 0)
             {
@@ -184,6 +184,95 @@ namespace TinyCsv.Data
             return result;
         }
 
+        /// <summary>
+        /// Get fields by line
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="columnsCount"></param>
+        /// <returns></returns>
+        public string[] GetFieldsByLine(string line, int columnsCount)
+        {
+            if (columnsCount <= 0)
+            {
+                return new string[0];
+            }
+
+            var result = new List<string>(columnsCount);
+            var sb = new StringBuilder(string.Empty);
+            bool inQuotes = false;
+
+            var charArrayLenght = line.Length;
+            char[] charArray = line.ToCharArray();
+
+            var allowBackSlash = options.AllowBackSlashToEscapeQuote;
+            var allowRowEnclosed = options.AllowRowEnclosedInDoubleQuotesValues;
+            var delimiter = options.Delimiter[0];
+            var isComment = charArray[0] == options.Comment;
+
+            if (isComment && !options.AllowComment)
+            {
+                throw new NotAllowCommentException();
+            }
+
+            for (int i = 0; i < charArrayLenght; i++)
+            {
+                var isLast = i == charArrayLenght - 1;
+                var isBackslash = charArray[i] == '\\' && allowBackSlash;
+                var isQuotes = charArray[i] == '\"' && allowRowEnclosed;
+                var isDelimiter = charArray[i] == delimiter;
+
+                if (isQuotes)
+                {
+                    if (!isLast && charArray[i + 1] == '\"')
+                    {
+                        sb.Append(charArray[i]);
+                    }
+                    else
+                    {
+                        inQuotes = !inQuotes;
+                    }
+                }
+                else if (isBackslash)
+                {
+                    sb.Append(charArray[i + 1]);
+                    i++;
+                }
+                else if (isDelimiter)
+                {
+                    if (i < charArrayLenght - 1)
+                    {
+                        if (!inQuotes)
+                        {
+                            result.Add(sb.ToString().TrimData(options));
+
+                            sb.Clear();
+                        }
+                        else
+                        {
+                            sb.Append(charArray[i]);
+                        }
+                    }
+                    else
+                    {
+                        if (!options.EndOfLineDelimiterChar)
+                        {
+                            throw new EndOfLineDelimiterCharException($"The delimiter {options.Delimiter} in the end of line is not valid!");
+                        }
+                    }
+                }
+                else
+                {
+                    sb.Append(charArray[i]);
+                }
+            }
+
+            if (options.EndOfLineDelimiterChar)
+            {
+                result.Add(sb.ToString().TrimData(options));
+            }
+
+            return result.ToArray();
+        }
 
         /// <summary>
         /// Get lines field

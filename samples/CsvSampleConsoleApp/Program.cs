@@ -57,10 +57,12 @@ namespace CsvSampleConsoleApp
     }
     public class ModelOnlyName
     {
+        public int? Id { get; set; }
         public string Name { get; set; }
+        public decimal Price { get; set; }
         public override string ToString()
         {
-            return $"Object -> {Name}";
+            return $"Object ->  {Id}, {Name}, {Price}";
         }
     }
 
@@ -172,9 +174,12 @@ namespace CsvSampleConsoleApp
                 options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
                 options.TrimData = true;
                 options.ValidateColumnCount = false;
+                options.EndOfLineDelimiterChar = true;
 
                 // Columns
                 options.Columns.AddColumn(1, m => m.Name);
+                options.Columns.AddColumn(2, m => m.Price);
+                options.Columns.AddColumn(0, m => m.Id);
             });
 
             var syncModelsOnlyName = csvOnlyName.LoadFromFile("file.csv");
