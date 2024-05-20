@@ -63,3 +63,7 @@
 /samples/CsvSampleConsoleApp/bin/Release/net8.0
 /samples/CsvSampleConsoleAttributeApp/bin/Release/net8.0
 /samples/CsvSampleMinimalWebApiApp/bin/Release/net8.0
+/samples/CsvSampleConsoleApp/bin/Debug/net8.0
+/samples/CsvSampleConsoleAttributeApp/bin/Debug/net8.0
+/samples/CsvSampleMinimalWebApiApp/bin/Debug/net8.0
+/benchmark/CsvSampleConsoleBenchmarkApp/bin/Debug/net8.0

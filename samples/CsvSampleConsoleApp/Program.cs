@@ -55,6 +55,16 @@ namespace CsvSampleConsoleApp
             return $"Object -> {Id}, {Name}, {Price}, {CreatedOn}, {TextBase64}, {WebSite}, {RowType}";
         }
     }
+    public class ModelOnlyName
+    {
+        public int? Id { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public override string ToString()
+        {
+            return $"Object ->  {Id}, {Name}, {Price}";
+        }
+    }
 
     public class BigModel
     {
@@ -175,7 +185,7 @@ namespace CsvSampleConsoleApp
                 options.Columns.AddColumn(m => m.WebSite);
                 options.Columns.AddColumn(m => m.RowType);
 
-                // Event Handlers Read
+                //Event Handlers Read
                 options.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
                 options.Handlers.Read.RowReading += (s, e) => Console.WriteLine($"{e.Index}-{e.Row}");
                 options.Handlers.Read.RowRead += (s, e) => Console.WriteLine($"{e.Index}-{e.Model}");
