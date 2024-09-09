@@ -47,11 +47,14 @@ namespace TinyCsv.Extensions
 
             foreach (var column in options.Columns)
             {
-                var value = values[column.ColumnIndex];
-                var propertyName = column.ColumnNameInternal;
-                var property = options.FasterProperties[propertyName];
-                var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
-                property.Setter(model, typedValue);
+                if (column.ColumnIndex < values.Length)
+                {
+                    var value = values[column.ColumnIndex];
+                    var propertyName = column.ColumnNameInternal;
+                    var property = options.FasterProperties[propertyName];
+                    var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
+                    property.Setter(model, typedValue);
+                }
             }
 
             return model;
