@@ -44,10 +44,39 @@ namespace TinyCsv.Attributes
         public Encoding TextEncoding { get; private set; }
 
         /// <summary>
-        /// Contructor
+        /// Contructor, UTF-8 encoding
         /// </summary>
-        /// <param name="hasHeaderRecord"></param>
-        public TextEncodingAttribute(Encoding encoding = null)
+        public TextEncodingAttribute()
+            : base()
+        {
+            TextEncoding = Encoding.UTF8;
+        }
+
+        /// <summary>
+        /// Contructor, usable as attribute: [TextEncoding("utf-16")]
+        /// </summary>
+        /// <param name="encodingName">the encoding name, i.e. "utf-8", "utf-16", "us-ascii", "iso-8859-1"</param>
+        public TextEncodingAttribute(string encodingName)
+            : base()
+        {
+            TextEncoding = string.IsNullOrEmpty(encodingName) ? Encoding.UTF8 : Encoding.GetEncoding(encodingName);
+        }
+
+        /// <summary>
+        /// Contructor, usable as attribute: [TextEncoding(1200)]
+        /// </summary>
+        /// <param name="codePage">the encoding code page</param>
+        public TextEncodingAttribute(int codePage)
+            : base()
+        {
+            TextEncoding = Encoding.GetEncoding(codePage);
+        }
+
+        /// <summary>
+        /// Contructor. Encoding is not a valid attribute parameter type: to use it as attribute use the name or the code page.
+        /// </summary>
+        /// <param name="encoding"></param>
+        public TextEncodingAttribute(Encoding encoding)
             : base()
         {
             TextEncoding = encoding ?? Encoding.UTF8;

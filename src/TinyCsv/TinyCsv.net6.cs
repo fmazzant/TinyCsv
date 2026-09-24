@@ -51,7 +51,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IAsyncEnumerable<T> LoadFromFileAsync(string path, CancellationToken cancellationToken = default)
         {
-            var streamReader = new StreamReader(path);
+            var streamReader = CreateReader(path);
             return DisposeAfterEnumerationAsync(streamReader, LoadFromStreamAsync(streamReader, cancellationToken));
         }
 
@@ -135,7 +135,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IAsyncEnumerable<T> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default)
         {
-            var streamReader = new StreamReader(stream);
+            var streamReader = CreateReader(stream);
             return LoadFromStreamAsync(streamReader, cancellationToken);
         }
 
@@ -148,8 +148,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IAsyncEnumerable<T> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default)
         {
-            var memoryStream = new TextMemoryStream(text, encoding ?? Options.TextEncoding);
-            return LoadFromStreamAsync(memoryStream, cancellationToken);
+            return LoadFromStreamAsync(CreateReader(text, encoding), cancellationToken);
         }
     }
 }

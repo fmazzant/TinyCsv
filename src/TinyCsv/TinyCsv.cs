@@ -97,7 +97,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<T> LoadFromFile(string path)
         {
-            var streamReader = new StreamReader(path);
+            var streamReader = CreateReader(path);
             return DisposeAfterEnumeration(streamReader, LoadFromStream(streamReader));
         }
 
@@ -118,6 +118,32 @@ namespace TinyCsv
                 }
             }
         }
+
+        /// <summary>
+        /// The encoding used to read. A byte order mark, if present, takes precedence.
+        /// </summary>
+        private Encoding ReaderEncoding => Options.TextEncoding ?? Encoding.UTF8;
+
+        /// <summary>
+        /// The encoding used to write. The default UTF-8 is written without the byte order mark, as StreamWriter does.
+        /// </summary>
+        private Encoding WriterEncoding => Options.TextEncoding == null || ReferenceEquals(Options.TextEncoding, Encoding.UTF8)
+            ? new UTF8Encoding(false)
+            : Options.TextEncoding;
+
+        private StreamReader CreateReader(string path) => new StreamReader(path, ReaderEncoding, true);
+
+        private StreamReader CreateReader(Stream stream) => new StreamReader(stream, ReaderEncoding, true);
+
+        private StreamReader CreateReader(string text, Encoding encoding)
+        {
+            var textEncoding = encoding ?? ReaderEncoding;
+            return new StreamReader(new TextMemoryStream(text, textEncoding), textEncoding, true);
+        }
+
+        private StreamWriter CreateWriter(string path) => new StreamWriter(path, false, WriterEncoding);
+
+        private StreamWriter CreateWriter(Stream stream) => new StreamWriter(stream, WriterEncoding);
 
         /// <summary>
         /// Reads a csv file and returns a list of objects.
@@ -180,7 +206,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<T> LoadFromStream(Stream stream)
         {
-            return LoadFromStream(new StreamReader(stream));
+            return LoadFromStream(CreateReader(stream));
         }
 
         /// <summary>
@@ -190,8 +216,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<T> LoadFromText(string text, Encoding encoding = null)
         {
-            var memoryStream = new TextMemoryStream(text, encoding ?? Options.TextEncoding);
-            return LoadFromStream(memoryStream);
+            return LoadFromStream(CreateReader(text, encoding));
         }
 
         /// <summary>
@@ -201,7 +226,7 @@ namespace TinyCsv
         /// <param name="models"></param>
         public void Save(string path, IEnumerable<T> models)
         {
-            using (var streamWriter = new StreamWriter(path))
+            using (var streamWriter = CreateWriter(path))
             {
                 Save(streamWriter, models);
             }
@@ -245,7 +270,7 @@ namespace TinyCsv
         /// <param name="models"></param>
         public void Save(Stream stream, IEnumerable<T> models)
         {
-            var streamWriter = new StreamWriter(stream);
+            var streamWriter = CreateWriter(stream);
             Save(streamWriter, models);
         }
 
@@ -256,7 +281,7 @@ namespace TinyCsv
         /// <param name="models"></param>
         public async Task SaveAsync(string path, IEnumerable<T> models, CancellationToken cancellationToken = default)
         {
-            using (var file = new StreamWriter(path))
+            using (var file = CreateWriter(path))
             {
                 await SaveAsync(file, models, cancellationToken).ConfigureAwait(false);
             }
@@ -304,7 +329,7 @@ namespace TinyCsv
         /// <param name="models"></param>
         public Task SaveAsync(Stream stream, IEnumerable<T> models, CancellationToken cancellationToken = default)
         {
-            var streamWriter = new StreamWriter(stream);
+            var streamWriter = CreateWriter(stream);
             return SaveAsync(streamWriter, models);
         }
 
@@ -400,7 +425,7 @@ namespace TinyCsv
         /// <exception cref="NotImplementedException"></exception>
         public IEnumerable<string> GetAllLinesFromFile(string path)
         {
-            var streamReader = new StreamReader(path);
+            var streamReader = CreateReader(path);
             return DisposeAfterEnumeration(streamReader, GetAllLinesFromStream(streamReader));
         }
 
@@ -423,7 +448,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<string> GetAllLinesFromStream(Stream stream)
         {
-            var streamReader = new StreamReader(stream);
+            var streamReader = CreateReader(stream);
             return GetAllLinesFromStream(streamReader);
         }
 
@@ -435,9 +460,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<string> GetAllLinesFromText(string text, Encoding encoding = null)
         {
-            var options = this.Options;
-            var memoryStream = new TextMemoryStream(text, encoding ?? options.TextEncoding);
-            return GetAllLinesFromStream(memoryStream);
+            return GetAllLinesFromStream(CreateReader(text, encoding));
         }
 
         /// <summary>
@@ -447,7 +470,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<string[]> GetAllLinesAndFieldsFromFile(string path)
         {
-            var streamReader = new StreamReader(path);
+            var streamReader = CreateReader(path);
             return DisposeAfterEnumeration(streamReader, GetAllLinesAndFieldsFromStream(streamReader));
         }
 
@@ -470,7 +493,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<string[]> GetAllLinesAndFieldsFromStream(Stream stream)
         {
-            var streamReader = new StreamReader(stream);
+            var streamReader = CreateReader(stream);
             return GetAllLinesAndFieldsFromStream(streamReader);
         }
 
@@ -482,9 +505,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<string[]> GetAlGetAllLinesAndFieldslLinesFromText(string text, Encoding encoding = null)
         {
-            var options = this.Options;
-            var memoryStream = new TextMemoryStream(text, encoding ?? options.TextEncoding);
-            return GetAllLinesAndFieldsFromStream(memoryStream);
+            return GetAllLinesAndFieldsFromStream(CreateReader(text, encoding));
         }
     }
 }

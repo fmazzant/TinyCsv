@@ -59,7 +59,7 @@ namespace TinyCsv.Tests
             AssertPeople(Csv().LoadFromStream(Stream(Text)).ToList());
         }
 
-        [Fact(Skip = KnownBug.TextEncoding)]
+        [Fact]
         public void LoadFromText_WithEncoding()
         {
             var csv = Tests.Csv.Person(o => o.HasHeaderRecord = true);
@@ -67,7 +67,7 @@ namespace TinyCsv.Tests
             AssertPeople(csv.LoadFromText(Text, Encoding.Unicode).ToList());
         }
 
-        [Fact(Skip = KnownBug.TextEncoding)]
+        [Fact]
         public void LoadFromText_UsesOptionsEncoding()
         {
             var csv = Tests.Csv.Person(o => o.TextEncoding = Encoding.Unicode);

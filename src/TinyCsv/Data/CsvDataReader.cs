@@ -308,7 +308,8 @@ namespace TinyCsv.Data
         }
 
         /// <summary>
-        /// Defines if the record is to skip
+        /// Defines if the record is to skip: the first RowsToSkip records, the comments
+        /// (when AllowComment, otherwise they are rejected by GetFieldsByLine) and the records selected by SkipRow
         /// </summary>
         /// <param name="record"></param>
         /// <param name="index">the record index, starting from 0</param>
@@ -316,6 +317,10 @@ namespace TinyCsv.Data
         private bool IsToSkip(string record, int index)
         {
             if (index < options.RowsToSkip)
+            {
+                return true;
+            }
+            if (options.AllowComment && record.Length > 0 && record[0] == options.Comment)
             {
                 return true;
             }

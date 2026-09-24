@@ -147,13 +147,13 @@ namespace TinyCsv.Tests
             Assert.Null(result);
         }
 
-        [Fact(Skip = KnownBug.NullableEnum)]
+        [Fact]
         public void EnumConverter_NullableType_EmptyValue_ReturnsNull()
         {
             Assert.Null(new EnumConverter().ConvertBack(string.Empty, typeof(Color?), null, Invariant));
         }
 
-        [Fact(Skip = KnownBug.NullableEnum)]
+        [Fact]
         public void EnumConverter_NullableType_ParsesValue()
         {
             var result = new EnumConverter().ConvertBack("Blue", typeof(Color?), null, Invariant);
@@ -161,7 +161,7 @@ namespace TinyCsv.Tests
             Assert.Equal(Color.Blue, result);
         }
 
-        [Fact(Skip = KnownBug.EnumUnknownValue)]
+        [Fact]
         public void EnumConverter_UnknownValue_ReturnsDefaultEnumValue()
         {
             var result = new EnumConverter().ConvertBack("Purple", typeof(Color), null, Invariant);

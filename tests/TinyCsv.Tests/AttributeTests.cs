@@ -28,6 +28,7 @@ namespace TinyCsv.Tests
     [NewLine("\n")]
     [RowsToSkip(2)]
     [SkipRow(typeof(HashSkipRow))]
+    [TextEncoding("utf-16")]
     [TrimData(true)]
     [ValidateColumnCount(true)]
     public class AllOptionsModel
@@ -105,7 +106,7 @@ namespace TinyCsv.Tests
             Assert.Equal(2u, options.RowsToSkip);
             Assert.True(options.SkipRow("SKIP me", 0));
             Assert.False(options.SkipRow("keep me", 0));
-            Assert.Equal(Encoding.UTF8, options.TextEncoding);
+            Assert.Equal(Encoding.Unicode, options.TextEncoding);
             Assert.True(options.TrimData);
             Assert.True(options.ValidateColumnCount);
         }
@@ -136,6 +137,9 @@ namespace TinyCsv.Tests
         {
             Assert.Equal(Encoding.ASCII, new TextEncodingAttribute(Encoding.ASCII).TextEncoding);
             Assert.Equal(Encoding.UTF8, new TextEncodingAttribute().TextEncoding);
+            Assert.Equal(Encoding.Unicode, new TextEncodingAttribute("utf-16").TextEncoding);
+            Assert.Equal(Encoding.UTF8, new TextEncodingAttribute(string.Empty).TextEncoding);
+            Assert.Equal(Encoding.Unicode, new TextEncodingAttribute(1200).TextEncoding);
             Assert.Equal(Environment.NewLine, new NewLineAttribute().NewLine);
             Assert.Equal(typeof(HashSkipRow), new SkipRowAttribute(typeof(HashSkipRow)).SkipRowType);
         }
@@ -185,7 +189,7 @@ namespace TinyCsv.Tests
             Assert.IsType<ItalianFormat>(columns[4].ColumnFormatProvider);
         }
 
-        [Fact(Skip = KnownBug.ColumnName)]
+        [Fact]
         public void ColumnAttribute_WithName_WritesHeaderAndReads()
         {
             var csv = new TinyCsv<NamedColumnModel>();

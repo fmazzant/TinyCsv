@@ -47,10 +47,8 @@ namespace TinyCsv.Extensions
         {
             if (expression is LambdaExpression lambdaExpression)
             {
-                if (lambdaExpression.Body.NodeType == ExpressionType.MemberAccess)
-                {
-                    return GetPropertyName(lambdaExpression.Body);
-                }
+                // m => m.Name or m => (object)m.Id
+                return GetPropertyName(lambdaExpression.Body);
             }
 
             if (expression is MemberExpression memberExpression)

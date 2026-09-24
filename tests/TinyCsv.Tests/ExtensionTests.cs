@@ -39,7 +39,7 @@ namespace TinyCsv.Tests
             Assert.Equal("Name", member.GetPropertyName());
         }
 
-        [Fact(Skip = KnownBug.BoxedExpression)]
+        [Fact]
         public void ExpressionExtensions_GetPropertyName_Boxed()
         {
             Expression<Func<Person, object>> boxed = m => m.Id;
@@ -180,8 +180,8 @@ namespace TinyCsv.Tests
         [Fact]
         public async System.Threading.Tasks.Task AsyncEnumerableExtensions_ToListAsync()
         {
-            // called explicitly: on .NET 10 System.Linq.AsyncEnumerable.ToListAsync makes the extension call ambiguous
-            var result = await AsyncEnumerableExtensions.ToListAsync(Csv.Person().LoadFromTextAsync("1;a;b\n2;c;d"));
+            // on .NET 10 it resolves to System.Linq.AsyncEnumerable.ToListAsync: the call must not be ambiguous
+            var result = await Csv.Person().LoadFromTextAsync("1;a;b\n2;c;d").ToListAsync();
 
             Assert.Equal(new[] { 1, 2 }, result.Select(x => x.Id));
         }

@@ -62,7 +62,7 @@ namespace TinyCsv
         /// <returns></returns>
         public async Task<IEnumerable<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default)
         {
-            using (var streamReader = new StreamReader(path))
+            using (var streamReader = CreateReader(path))
             {
                 return await LoadFromStreamAsync(streamReader, cancellationToken: cancellationToken).ConfigureAwait(false);
             }
@@ -134,7 +134,7 @@ namespace TinyCsv
         /// <returns></returns>
         public Task<IEnumerable<T>> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default)
         {
-            var streamReader = new StreamReader(stream);
+            var streamReader = CreateReader(stream);
             return LoadFromStreamAsync(streamReader, cancellationToken);
         }
 
@@ -146,8 +146,7 @@ namespace TinyCsv
         /// <returns></returns>
         public Task<IEnumerable<T>> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default)
         {
-            var memoryStream = new TextMemoryStream(text, encoding ?? Options.TextEncoding);
-            return LoadFromStreamAsync(memoryStream, cancellationToken);
+            return LoadFromStreamAsync(CreateReader(text, encoding), cancellationToken);
         }
     }
 }
