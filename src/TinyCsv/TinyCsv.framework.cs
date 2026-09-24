@@ -60,10 +60,12 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public Task<IEnumerable<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default)
         {
-            var streamReader = new StreamReader(path);
-            return LoadFromStreamAsync(streamReader, cancellationToken: cancellationToken);
+            using (var streamReader = new StreamReader(path))
+            {
+                return await LoadFromStreamAsync(streamReader, cancellationToken: cancellationToken).ConfigureAwait(false);
+            }
         }
 
         /// <summary>

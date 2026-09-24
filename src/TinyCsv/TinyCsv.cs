@@ -98,7 +98,25 @@ namespace TinyCsv
         public IEnumerable<T> LoadFromFile(string path)
         {
             var streamReader = new StreamReader(path);
-            return LoadFromStream(streamReader);
+            return DisposeAfterEnumeration(streamReader, LoadFromStream(streamReader));
+        }
+
+        /// <summary>
+        /// Enumerates the items and then disposes the owner (i.e. the reader of a file)
+        /// </summary>
+        /// <typeparam name="TItem"></typeparam>
+        /// <param name="owner"></param>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        private static IEnumerable<TItem> DisposeAfterEnumeration<TItem>(IDisposable owner, IEnumerable<TItem> items)
+        {
+            using (owner)
+            {
+                foreach (var item in items)
+                {
+                    yield return item;
+                }
+            }
         }
 
         /// <summary>
@@ -183,8 +201,10 @@ namespace TinyCsv
         /// <param name="models"></param>
         public void Save(string path, IEnumerable<T> models)
         {
-            var streamWriter = new StreamWriter(path);
-            Save(streamWriter, models);
+            using (var streamWriter = new StreamWriter(path))
+            {
+                Save(streamWriter, models);
+            }
         }
 
         /// <summary>
@@ -236,8 +256,10 @@ namespace TinyCsv
         /// <param name="models"></param>
         public async Task SaveAsync(string path, IEnumerable<T> models, CancellationToken cancellationToken = default)
         {
-            var file = new StreamWriter(path);
-            await SaveAsync(file, models, cancellationToken).ConfigureAwait(false);
+            using (var file = new StreamWriter(path))
+            {
+                await SaveAsync(file, models, cancellationToken).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -379,7 +401,7 @@ namespace TinyCsv
         public IEnumerable<string> GetAllLinesFromFile(string path)
         {
             var streamReader = new StreamReader(path);
-            return GetAllLinesFromStream(streamReader);
+            return DisposeAfterEnumeration(streamReader, GetAllLinesFromStream(streamReader));
         }
 
         /// <summary>
@@ -426,7 +448,7 @@ namespace TinyCsv
         public IEnumerable<string[]> GetAllLinesAndFieldsFromFile(string path)
         {
             var streamReader = new StreamReader(path);
-            return GetAllLinesAndFieldsFromStream(streamReader);
+            return DisposeAfterEnumeration(streamReader, GetAllLinesAndFieldsFromStream(streamReader));
         }
 
         /// <summary>

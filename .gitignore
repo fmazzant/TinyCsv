@@ -69,3 +69,5 @@
 /benchmark/CsvSampleConsoleBenchmarkApp/bin/Debug/net8.0
 /tests/TinyCsv.Tests/bin/Debug
 /tests/TinyCsv.Tests/obj
+/tests/TinyCsv.AspNetCore.Tests/bin/Debug
+/tests/TinyCsv.AspNetCore.Tests/obj

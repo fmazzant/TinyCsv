@@ -52,7 +52,25 @@ namespace TinyCsv
         public IAsyncEnumerable<T> LoadFromFileAsync(string path, CancellationToken cancellationToken = default)
         {
             var streamReader = new StreamReader(path);
-            return LoadFromStreamAsync(streamReader, cancellationToken);
+            return DisposeAfterEnumerationAsync(streamReader, LoadFromStreamAsync(streamReader, cancellationToken));
+        }
+
+        /// <summary>
+        /// Enumerates the items and then disposes the owner (i.e. the reader of a file)
+        /// </summary>
+        /// <typeparam name="TItem"></typeparam>
+        /// <param name="owner"></param>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        private static async IAsyncEnumerable<TItem> DisposeAfterEnumerationAsync<TItem>(IDisposable owner, IAsyncEnumerable<TItem> items)
+        {
+            using (owner)
+            {
+                await foreach (var item in items)
+                {
+                    yield return item;
+                }
+            }
         }
 
         /// <summary>
