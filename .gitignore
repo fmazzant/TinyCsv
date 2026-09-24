@@ -67,3 +67,5 @@
 /samples/CsvSampleConsoleAttributeApp/bin/Debug/net8.0
 /samples/CsvSampleMinimalWebApiApp/bin/Debug/net8.0
 /benchmark/CsvSampleConsoleBenchmarkApp/bin/Debug/net8.0
+/tests/TinyCsv.Tests/bin/Debug
+/tests/TinyCsv.Tests/obj
