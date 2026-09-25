@@ -1,0 +1,12 @@
+{
+  "threshold": 0,
+  "reporters": ["consoleFull"],
+  "ignore": [
+    "**/tests/**",
+    "**/bin/**",
+    "**/obj/**",
+    "**/node_modules/**",
+    "**/__snapshots__/**"
+  ],
+  "absolute": true
+}

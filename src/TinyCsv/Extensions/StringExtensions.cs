@@ -111,7 +111,9 @@ namespace TinyCsv.Extensions
         }
 
         /// <summary>
-        /// Enclosed in double quotes if the value contains the delimiter value
+        /// Enclosed in double quotes if the value contains the delimiter, a quote or a new line,
+        /// escaping the quotes (RFC 4180) so that the value can be read back as it is.
+        /// With AllowBackSlashToEscapeQuote, quotes and backslashes are escaped with a backslash.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
@@ -119,10 +121,27 @@ namespace TinyCsv.Extensions
         /// <returns></returns>
         public static string EnclosedInQuotesIfNecessary<T>(this string value, CsvOptions<T> options)
         {
-            var delimiterIsContined = value?.Contains(options.Delimiter) ?? false;
-            var specialCharIsContined = value?.Contains("\"") ?? false;
-            var encluseInQuotes = options.AllowRowEnclosedInDoubleQuotesValues && (delimiterIsContined || specialCharIsContined);
-            return encluseInQuotes ? $"\"{value}\"" : value;
+            if (string.IsNullOrEmpty(value))
+            {
+                return value;
+            }
+
+            var quote = options.DoubleQuotes.ToString();
+            var backslash = options.AllowBackSlashToEscapeQuote;
+            if (backslash && value.IndexOf('\\') >= 0)
+            {
+                value = value.Replace("\\", "\\\\");
+            }
+
+            var enclosed = options.AllowRowEnclosedInDoubleQuotesValues
+                && (value.Contains(options.Delimiter) || value.Contains(quote) || value.IndexOf('\r') >= 0 || value.IndexOf('\n') >= 0);
+            if (!enclosed)
+            {
+                return value;
+            }
+
+            value = value.Replace(quote, backslash ? "\\" + quote : quote + quote);
+            return quote + value + quote;
         }
 
         /// <summary>

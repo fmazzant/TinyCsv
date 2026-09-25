@@ -193,7 +193,9 @@ namespace TinyCsv
         /// <param name="expression"></param>
         /// <param name="columnFormat"></param>
         /// <param name="formatProvider"></param>
-        private void AddColumn(Type type, int columnIndex, string columnName, Expression expression, string columnFormat = null, IFormatProvider formatProvider = null, IValueConverter converter = null)
+        /// <param name="converter"></param>
+        /// <param name="propertyName">the model's property, when the column is not defined by an expression</param>
+        private void AddColumn(Type type, int columnIndex, string columnName, Expression expression, string columnFormat = null, IFormatProvider formatProvider = null, IValueConverter converter = null, string propertyName = null)
         {
             var index = columnIndex < 0 ? Columns.Count : columnIndex;
 
@@ -201,7 +203,7 @@ namespace TinyCsv
             {
                 ColumnIndex = index,
                 ColumnName = columnName,
-                ColumnNameInternal = expression?.GetPropertyName() ?? columnName,
+                ColumnNameInternal = propertyName ?? expression?.GetPropertyName() ?? columnName,
                 ColumnType = type,
                 ColumnExpression = expression,
                 ColumnFormat = columnFormat,
@@ -242,7 +244,7 @@ namespace TinyCsv
                     var formatProvider = column.ColumnFormatProvider;
                     var converter = column.Converter;
 
-                    AddColumn(propertyInfo.PropertyType, columnIndex, columnName, null, columnFormat, formatProvider, converter);
+                    AddColumn(propertyInfo.PropertyType, columnIndex, columnName, null, columnFormat, formatProvider, converter, propertyInfo.Name);
                 }
             }
         }

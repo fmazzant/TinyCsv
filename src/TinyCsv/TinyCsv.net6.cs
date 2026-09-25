@@ -51,8 +51,26 @@ namespace TinyCsv
         /// <returns></returns>
         public IAsyncEnumerable<T> LoadFromFileAsync(string path, CancellationToken cancellationToken = default)
         {
-            var streamReader = new StreamReader(path);
-            return LoadFromStreamAsync(streamReader, cancellationToken);
+            var streamReader = CreateReader(path);
+            return DisposeAfterEnumerationAsync(streamReader, LoadFromStreamAsync(streamReader, cancellationToken));
+        }
+
+        /// <summary>
+        /// Enumerates the items and then disposes the owner (i.e. the reader of a file)
+        /// </summary>
+        /// <typeparam name="TItem"></typeparam>
+        /// <param name="owner"></param>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        private static async IAsyncEnumerable<TItem> DisposeAfterEnumerationAsync<TItem>(IDisposable owner, IAsyncEnumerable<TItem> items)
+        {
+            using (owner)
+            {
+                await foreach (var item in items)
+                {
+                    yield return item;
+                }
+            }
         }
 
         /// <summary>
@@ -117,7 +135,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IAsyncEnumerable<T> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default)
         {
-            var streamReader = new StreamReader(stream);
+            var streamReader = CreateReader(stream);
             return LoadFromStreamAsync(streamReader, cancellationToken);
         }
 
@@ -130,8 +148,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IAsyncEnumerable<T> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default)
         {
-            var memoryStream = new TextMemoryStream(text, encoding ?? Options.TextEncoding);
-            return LoadFromStreamAsync(memoryStream, cancellationToken);
+            return LoadFromStreamAsync(CreateReader(text, encoding), cancellationToken);
         }
     }
 }

@@ -54,6 +54,61 @@ The options defines that the file has the header in first row and the delimier c
 RowsToSkip and SkipRow are used to skip the first rows of the file.
 TrimData is used to remove the white spaces from the data.
 
+The rows starting with the `Comment` char (`#` by default) are skipped when `AllowComment` is true (default),
+while `AllowComment = false` throws a `NotAllowCommentException`.
+The `TextEncoding` option (UTF-8 by default) is used to read and write files, streams and text; a byte order mark, if present, takes precedence while reading.
+
+## Quoted values and multi-line records
+
+TinyCsv follows [RFC 4180](https://www.rfc-editor.org/rfc/rfc4180):
+
+- a value is quoted (`"..."`) when it contains the delimiter, a quote or a new line;
+- a quote inside a quoted value is escaped by doubling it (`""`);
+- a quoted value can span multiple lines: the whole record is **one row**, for `RowsToSkip`, `SkipRow`, the events and `GetAllLines*`.
+
+```csv
+Id;Name;Note
+1;"Rossi; Mario";"He said ""hello"""
+2;Luigi;"first line
+second line"
+```
+
+The file above contains 2 rows. `Save` escapes the values in the same way, so a saved file is always read back as it is.
+
+## Breaking changes in 3.0
+
+TinyCsv 3.0 has a new reader, based on `Span<char>`, that reads a CSV record instead of a physical line.
+It is faster and allocates less memory, and it fixes the parsing of quoted values.
+Some behaviours changed, please check them when you upgrade from 2.x:
+
+| Area | 2.x | 3.0 |
+|---|---|---|
+| Quoted value on multiple lines | split in two broken rows | one row, the new lines are kept in the value |
+| Doubled quotes `""` in a quoted value | not always unescaped (`"";x` was read as `;x`) | unescaped to `"` |
+| Quote in the middle of an unquoted value (`5" pipe`) | removed | kept |
+| `"` and `'` at the start/end of a value | always removed | only the enclosing quotes of a quoted value are removed |
+| `TrimData` on a quoted value | trimmed inside the quotes | the spaces inside the quotes are kept |
+| Rows starting with `#` (the `Comment` char) with `AllowComment = true` | read as data | skipped. Change `Comment` if your data starts with `#` |
+| `EndOfLineDelimiterChar = false` | the last value of the row was lost | the last value is read, a trailing delimiter throws |
+| Empty last value (`1;Mario;` with 3 columns) | `null` | empty string |
+| Empty line without `SkipRow` | `IndexOutOfRangeException` | a model with default values |
+| `SkipRow` index with `RowsToSkip` | inconsistent (and different between sync and async) | the record index, starting from 0 |
+| `GetAllLinesAndFields*` | always empty arrays | the values of each row |
+| `Save`/`GetAllText` of values with quotes or new lines | not escaped, the file could not be read back | escaped as RFC 4180 (with `AllowBackSlashToEscapeQuote`, quotes and backslashes are escaped with `\`) |
+| `TextEncoding` | ignored while reading | used to read and write |
+| `[TextEncoding]` attribute | could not be used as attribute | `[TextEncoding("utf-16")]` or `[TextEncoding(1200)]` |
+| `DoubleQuotes` option | ignored | used as quote char |
+| `LoadFromFile`, `Save` and the other methods with a path | the file was not closed | the file is closed |
+| `[Column(name: "...")]` | `KeyNotFoundException` | the name is used for the header, the value is mapped to the property |
+| Nullable enum properties | `ArgumentException` | supported |
+| Unknown enum value | `null` | the default enum value |
+| `ToListAsync()` on .NET 10 | ambiguous with `System.Linq.AsyncEnumerable.ToListAsync` | TinyCsv's extension is not defined on .NET 10, the BCL one is used |
+
+Furthermore:
+
+- added the `net10.0` target;
+- `netstandard2.0` and `net462`-`net48` depend on `System.Memory`.
+
 ## Custom Value Converter
 
 It is possible to define a custom converter for a column, like this:
