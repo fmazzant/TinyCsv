@@ -47,12 +47,12 @@ namespace TinyCsv.Conversions
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
-            var enumList = Enum.GetNames(targetType).ToList();
-            if (enumList.Contains(value))
+            var enumType = Nullable.GetUnderlyingType(targetType) ?? targetType;
+            if (value != null && Enum.GetNames(enumType).Contains(value))
             {
-                return Enum.Parse(targetType, value);
+                return Enum.Parse(enumType, value);
             }
-            return targetType.IsNullable() ? null : default(Enum);
+            return targetType.IsNullable() ? null : Activator.CreateInstance(enumType);
         }
     }
 }
