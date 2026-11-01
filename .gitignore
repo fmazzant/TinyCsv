@@ -76,3 +76,4 @@
 /samples/CsvSampleConsoleApp/bin/Debug/net10.0
 /samples/CsvSampleConsoleAttributeApp/bin/Debug/net10.0
 /samples/CsvSampleMinimalWebApiApp/bin/Debug/net10.0
+/benchmark/CsvSampleConsoleBenchmarkApp/BenchmarkDotNet.Artifacts
