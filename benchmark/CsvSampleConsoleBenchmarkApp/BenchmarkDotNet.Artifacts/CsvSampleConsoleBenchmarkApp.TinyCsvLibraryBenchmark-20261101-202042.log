@@ -1,0 +1,2983 @@
+// Validating benchmarks:
+// ***** BenchmarkRunner: Start   *****
+// ***** Found 30 benchmark(s) in total *****
+// ***** Building 3 exe(s) in Parallel: Start   *****
+// ***** Done, took 00:00:45 (45.72 sec)   *****
+// ***** Failed to build in Parallel, switching to sequential build   *****
+// ***** Done, took 00:00:04 (4.06 sec)   *****
+// Found 30 benchmarks:
+//   TinyCsvLibraryBenchmark.LoadFromText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=100]
+//   TinyCsvLibraryBenchmark.SaveToText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=100]
+//   TinyCsvLibraryBenchmark.LoadFromText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=100]
+//   TinyCsvLibraryBenchmark.SaveToText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=100]
+//   TinyCsvLibraryBenchmark.LoadFromText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=100]
+//   TinyCsvLibraryBenchmark.SaveToText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=100]
+//   TinyCsvLibraryBenchmark.LoadFromText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=1000]
+//   TinyCsvLibraryBenchmark.SaveToText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=1000]
+//   TinyCsvLibraryBenchmark.LoadFromText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=1000]
+//   TinyCsvLibraryBenchmark.SaveToText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=1000]
+//   TinyCsvLibraryBenchmark.LoadFromText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=1000]
+//   TinyCsvLibraryBenchmark.SaveToText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=1000]
+//   TinyCsvLibraryBenchmark.LoadFromText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=10000]
+//   TinyCsvLibraryBenchmark.SaveToText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=10000]
+//   TinyCsvLibraryBenchmark.LoadFromText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=10000]
+//   TinyCsvLibraryBenchmark.SaveToText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=10000]
+//   TinyCsvLibraryBenchmark.LoadFromText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=10000]
+//   TinyCsvLibraryBenchmark.SaveToText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=10000]
+//   TinyCsvLibraryBenchmark.LoadFromText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=100000]
+//   TinyCsvLibraryBenchmark.SaveToText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=100000]
+//   TinyCsvLibraryBenchmark.LoadFromText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=100000]
+//   TinyCsvLibraryBenchmark.SaveToText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=100000]
+//   TinyCsvLibraryBenchmark.LoadFromText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=100000]
+//   TinyCsvLibraryBenchmark.SaveToText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=100000]
+//   TinyCsvLibraryBenchmark.LoadFromText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=1000000]
+//   TinyCsvLibraryBenchmark.SaveToText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=1000000]
+//   TinyCsvLibraryBenchmark.LoadFromText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=1000000]
+//   TinyCsvLibraryBenchmark.SaveToText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=1000000]
+//   TinyCsvLibraryBenchmark.LoadFromText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=1000000]
+//   TinyCsvLibraryBenchmark.SaveToText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=1000000]
+
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.LoadFromText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=100]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet d9cfed3a-4fcd-4703-b721-115d3843cd66.dll --anonymousPipes 1588 1364 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.LoadFromText(N: 100)" --job "NuGetReferences=Mafe.TinyCsv 2.1.0" --benchmarkId 0 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\d9cfed3a-4fcd-4703-b721-115d3843cd66\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-UZECIN(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 311900.00 ns, 311.9000 us/op
+WorkloadJitting  1: 1 op, 6932600.00 ns, 6.9326 ms/op
+
+OverheadJitting  2: 16 op, 320100.00 ns, 20.0063 us/op
+WorkloadJitting  2: 16 op, 8526300.00 ns, 532.8937 us/op
+
+WorkloadPilot    1: 16 op, 5617900.00 ns, 351.1187 us/op
+WorkloadPilot    2: 32 op, 13088000.00 ns, 409.0000 us/op
+WorkloadPilot    3: 64 op, 28046000.00 ns, 438.2188 us/op
+WorkloadPilot    4: 128 op, 48292400.00 ns, 377.2844 us/op
+WorkloadPilot    5: 256 op, 91179200.00 ns, 356.1687 us/op
+WorkloadPilot    6: 512 op, 246042000.00 ns, 480.5508 us/op
+WorkloadPilot    7: 1024 op, 146396100.00 ns, 142.9649 us/op
+WorkloadPilot    8: 2048 op, 199124800.00 ns, 97.2289 us/op
+WorkloadPilot    9: 4096 op, 526918600.00 ns, 128.6422 us/op
+
+OverheadWarmup   1: 4096 op, 12900.00 ns, 3.1494 ns/op
+OverheadWarmup   2: 4096 op, 12100.00 ns, 2.9541 ns/op
+OverheadWarmup   3: 4096 op, 11900.00 ns, 2.9053 ns/op
+OverheadWarmup   4: 4096 op, 12300.00 ns, 3.0029 ns/op
+OverheadWarmup   5: 4096 op, 13100.00 ns, 3.1982 ns/op
+OverheadWarmup   6: 4096 op, 11800.00 ns, 2.8809 ns/op
+OverheadWarmup   7: 4096 op, 12300.00 ns, 3.0029 ns/op
+OverheadWarmup   8: 4096 op, 12400.00 ns, 3.0273 ns/op
+OverheadWarmup   9: 4096 op, 12600.00 ns, 3.0762 ns/op
+OverheadWarmup  10: 4096 op, 13700.00 ns, 3.3447 ns/op
+
+OverheadActual   1: 4096 op, 12200.00 ns, 2.9785 ns/op
+OverheadActual   2: 4096 op, 12500.00 ns, 3.0518 ns/op
+OverheadActual   3: 4096 op, 12700.00 ns, 3.1006 ns/op
+OverheadActual   4: 4096 op, 12500.00 ns, 3.0518 ns/op
+OverheadActual   5: 4096 op, 12500.00 ns, 3.0518 ns/op
+OverheadActual   6: 4096 op, 12800.00 ns, 3.1250 ns/op
+OverheadActual   7: 4096 op, 12800.00 ns, 3.1250 ns/op
+OverheadActual   8: 4096 op, 11800.00 ns, 2.8809 ns/op
+OverheadActual   9: 4096 op, 12100.00 ns, 2.9541 ns/op
+OverheadActual  10: 4096 op, 12400.00 ns, 3.0273 ns/op
+OverheadActual  11: 4096 op, 12100.00 ns, 2.9541 ns/op
+OverheadActual  12: 4096 op, 12300.00 ns, 3.0029 ns/op
+OverheadActual  13: 4096 op, 12600.00 ns, 3.0762 ns/op
+OverheadActual  14: 4096 op, 12700.00 ns, 3.1006 ns/op
+OverheadActual  15: 4096 op, 12900.00 ns, 3.1494 ns/op
+
+WorkloadWarmup   1: 4096 op, 431791400.00 ns, 105.4178 us/op
+WorkloadWarmup   2: 4096 op, 503731500.00 ns, 122.9813 us/op
+WorkloadWarmup   3: 4096 op, 490904800.00 ns, 119.8498 us/op
+WorkloadWarmup   4: 4096 op, 487651500.00 ns, 119.0555 us/op
+WorkloadWarmup   5: 4096 op, 470596000.00 ns, 114.8916 us/op
+WorkloadWarmup   6: 4096 op, 473101500.00 ns, 115.5033 us/op
+WorkloadWarmup   7: 4096 op, 475197800.00 ns, 116.0151 us/op
+WorkloadWarmup   8: 4096 op, 479936000.00 ns, 117.1719 us/op
+WorkloadWarmup   9: 4096 op, 490452800.00 ns, 119.7395 us/op
+WorkloadWarmup  10: 4096 op, 478198900.00 ns, 116.7478 us/op
+
+// BeforeActualRun
+WorkloadActual   1: 4096 op, 326668100.00 ns, 79.7530 us/op
+WorkloadActual   2: 4096 op, 338332600.00 ns, 82.6007 us/op
+WorkloadActual   3: 4096 op, 362027300.00 ns, 88.3856 us/op
+WorkloadActual   4: 4096 op, 461748400.00 ns, 112.7315 us/op
+WorkloadActual   5: 4096 op, 344630100.00 ns, 84.1382 us/op
+WorkloadActual   6: 4096 op, 309762900.00 ns, 75.6257 us/op
+WorkloadActual   7: 4096 op, 316958100.00 ns, 77.3823 us/op
+WorkloadActual   8: 4096 op, 298502900.00 ns, 72.8767 us/op
+WorkloadActual   9: 4096 op, 317323400.00 ns, 77.4715 us/op
+WorkloadActual  10: 4096 op, 304871900.00 ns, 74.4316 us/op
+WorkloadActual  11: 4096 op, 333874600.00 ns, 81.5124 us/op
+WorkloadActual  12: 4096 op, 303818000.00 ns, 74.1743 us/op
+WorkloadActual  13: 4096 op, 313559300.00 ns, 76.5526 us/op
+WorkloadActual  14: 4096 op, 303843200.00 ns, 74.1805 us/op
+WorkloadActual  15: 4096 op, 320662100.00 ns, 78.2866 us/op
+WorkloadActual  16: 4096 op, 297989000.00 ns, 72.7512 us/op
+WorkloadActual  17: 4096 op, 323036100.00 ns, 78.8662 us/op
+WorkloadActual  18: 4096 op, 297193800.00 ns, 72.5571 us/op
+WorkloadActual  19: 4096 op, 317207800.00 ns, 77.4433 us/op
+WorkloadActual  20: 4096 op, 295940000.00 ns, 72.2510 us/op
+WorkloadActual  21: 4096 op, 444327800.00 ns, 108.4785 us/op
+WorkloadActual  22: 4096 op, 316546400.00 ns, 77.2818 us/op
+WorkloadActual  23: 4096 op, 296662500.00 ns, 72.4274 us/op
+WorkloadActual  24: 4096 op, 315161300.00 ns, 76.9437 us/op
+WorkloadActual  25: 4096 op, 301667700.00 ns, 73.6493 us/op
+WorkloadActual  26: 4096 op, 311986600.00 ns, 76.1686 us/op
+WorkloadActual  27: 4096 op, 301101200.00 ns, 73.5110 us/op
+WorkloadActual  28: 4096 op, 313724400.00 ns, 76.5929 us/op
+WorkloadActual  29: 4096 op, 298176300.00 ns, 72.7969 us/op
+WorkloadActual  30: 4096 op, 310804700.00 ns, 75.8801 us/op
+WorkloadActual  31: 4096 op, 295972200.00 ns, 72.2588 us/op
+WorkloadActual  32: 4096 op, 319375300.00 ns, 77.9725 us/op
+WorkloadActual  33: 4096 op, 296053600.00 ns, 72.2787 us/op
+WorkloadActual  34: 4096 op, 315530300.00 ns, 77.0338 us/op
+WorkloadActual  35: 4096 op, 298357100.00 ns, 72.8411 us/op
+WorkloadActual  36: 4096 op, 312431700.00 ns, 76.2773 us/op
+WorkloadActual  37: 4096 op, 314481100.00 ns, 76.7776 us/op
+WorkloadActual  38: 4096 op, 293618900.00 ns, 71.6843 us/op
+WorkloadActual  39: 4096 op, 316960500.00 ns, 77.3829 us/op
+WorkloadActual  40: 4096 op, 296460100.00 ns, 72.3780 us/op
+WorkloadActual  41: 4096 op, 313130800.00 ns, 76.4479 us/op
+WorkloadActual  42: 4096 op, 296366600.00 ns, 72.3551 us/op
+WorkloadActual  43: 4096 op, 316728700.00 ns, 77.3263 us/op
+WorkloadActual  44: 4096 op, 300482600.00 ns, 73.3600 us/op
+WorkloadActual  45: 4096 op, 312033900.00 ns, 76.1802 us/op
+WorkloadActual  46: 4096 op, 325118400.00 ns, 79.3746 us/op
+WorkloadActual  47: 4096 op, 313177100.00 ns, 76.4593 us/op
+WorkloadActual  48: 4096 op, 300376700.00 ns, 73.3342 us/op
+
+// AfterActualRun
+WorkloadResult   1: 4096 op, 326655600.00 ns, 79.7499 us/op
+WorkloadResult   2: 4096 op, 338320100.00 ns, 82.5977 us/op
+WorkloadResult   3: 4096 op, 309750400.00 ns, 75.6227 us/op
+WorkloadResult   4: 4096 op, 316945600.00 ns, 77.3793 us/op
+WorkloadResult   5: 4096 op, 298490400.00 ns, 72.8736 us/op
+WorkloadResult   6: 4096 op, 317310900.00 ns, 77.4685 us/op
+WorkloadResult   7: 4096 op, 304859400.00 ns, 74.4286 us/op
+WorkloadResult   8: 4096 op, 333862100.00 ns, 81.5093 us/op
+WorkloadResult   9: 4096 op, 303805500.00 ns, 74.1713 us/op
+WorkloadResult  10: 4096 op, 313546800.00 ns, 76.5495 us/op
+WorkloadResult  11: 4096 op, 303830700.00 ns, 74.1774 us/op
+WorkloadResult  12: 4096 op, 320649600.00 ns, 78.2836 us/op
+WorkloadResult  13: 4096 op, 297976500.00 ns, 72.7482 us/op
+WorkloadResult  14: 4096 op, 323023600.00 ns, 78.8632 us/op
+WorkloadResult  15: 4096 op, 297181300.00 ns, 72.5540 us/op
+WorkloadResult  16: 4096 op, 317195300.00 ns, 77.4403 us/op
+WorkloadResult  17: 4096 op, 295927500.00 ns, 72.2479 us/op
+WorkloadResult  18: 4096 op, 316533900.00 ns, 77.2788 us/op
+WorkloadResult  19: 4096 op, 296650000.00 ns, 72.4243 us/op
+WorkloadResult  20: 4096 op, 315148800.00 ns, 76.9406 us/op
+WorkloadResult  21: 4096 op, 301655200.00 ns, 73.6463 us/op
+WorkloadResult  22: 4096 op, 311974100.00 ns, 76.1656 us/op
+WorkloadResult  23: 4096 op, 301088700.00 ns, 73.5080 us/op
+WorkloadResult  24: 4096 op, 313711900.00 ns, 76.5898 us/op
+WorkloadResult  25: 4096 op, 298163800.00 ns, 72.7939 us/op
+WorkloadResult  26: 4096 op, 310792200.00 ns, 75.8770 us/op
+WorkloadResult  27: 4096 op, 295959700.00 ns, 72.2558 us/op
+WorkloadResult  28: 4096 op, 319362800.00 ns, 77.9694 us/op
+WorkloadResult  29: 4096 op, 296041100.00 ns, 72.2757 us/op
+WorkloadResult  30: 4096 op, 315517800.00 ns, 77.0307 us/op
+WorkloadResult  31: 4096 op, 298344600.00 ns, 72.8380 us/op
+WorkloadResult  32: 4096 op, 312419200.00 ns, 76.2742 us/op
+WorkloadResult  33: 4096 op, 314468600.00 ns, 76.7746 us/op
+WorkloadResult  34: 4096 op, 293606400.00 ns, 71.6813 us/op
+WorkloadResult  35: 4096 op, 316948000.00 ns, 77.3799 us/op
+WorkloadResult  36: 4096 op, 296447600.00 ns, 72.3749 us/op
+WorkloadResult  37: 4096 op, 313118300.00 ns, 76.4449 us/op
+WorkloadResult  38: 4096 op, 296354100.00 ns, 72.3521 us/op
+WorkloadResult  39: 4096 op, 316716200.00 ns, 77.3233 us/op
+WorkloadResult  40: 4096 op, 300470100.00 ns, 73.3570 us/op
+WorkloadResult  41: 4096 op, 312021400.00 ns, 76.1771 us/op
+WorkloadResult  42: 4096 op, 325105900.00 ns, 79.3716 us/op
+WorkloadResult  43: 4096 op, 313164600.00 ns, 76.4562 us/op
+WorkloadResult  44: 4096 op, 300364200.00 ns, 73.3311 us/op
+// GC:  19 0 0 500171152 4096
+// Threading:  0 0 4096
+
+// AfterAll
+// Benchmark Process 9844 has exited with code 0.
+
+Mean = 75.581 μs, StdErr = 0.406 μs (0.54%), N = 44, StdDev = 2.692 μs
+Min = 71.681 μs, Q1 = 72.865 μs, Median = 76.171 μs, Q3 = 77.337 μs, Max = 82.598 μs
+IQR = 4.473 μs, LowerFence = 66.156 μs, UpperFence = 84.046 μs
+ConfidenceInterval = [74.148 μs; 77.014 μs] (CI 99.9%), Margin = 1.433 μs (1.90% of Mean)
+Skewness = 0.43, Kurtosis = 2.5, MValue = 2
+
+// ** Remained 29 (96,7%) benchmark(s) to run. Estimated finish 2026-11-01 20:32 (0h 10m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.SaveToText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=100]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet d9cfed3a-4fcd-4703-b721-115d3843cd66.dll --anonymousPipes 1660 1168 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.SaveToText(N: 100)" --job "NuGetReferences=Mafe.TinyCsv 2.1.0" --benchmarkId 1 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\d9cfed3a-4fcd-4703-b721-115d3843cd66\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-NHIXMV(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 199400.00 ns, 199.4000 us/op
+WorkloadJitting  1: 1 op, 3737100.00 ns, 3.7371 ms/op
+
+OverheadJitting  2: 16 op, 190100.00 ns, 11.8812 us/op
+WorkloadJitting  2: 16 op, 3496400.00 ns, 218.5250 us/op
+
+WorkloadPilot    1: 16 op, 4308200.00 ns, 269.2625 us/op
+WorkloadPilot    2: 32 op, 5896600.00 ns, 184.2688 us/op
+WorkloadPilot    3: 64 op, 12450400.00 ns, 194.5375 us/op
+WorkloadPilot    4: 128 op, 40945900.00 ns, 319.8898 us/op
+WorkloadPilot    5: 256 op, 47598300.00 ns, 185.9309 us/op
+WorkloadPilot    6: 512 op, 129044500.00 ns, 252.0400 us/op
+WorkloadPilot    7: 1024 op, 259439700.00 ns, 253.3591 us/op
+WorkloadPilot    8: 2048 op, 285221500.00 ns, 139.2683 us/op
+WorkloadPilot    9: 4096 op, 413728500.00 ns, 101.0079 us/op
+WorkloadPilot   10: 8192 op, 818914600.00 ns, 99.9652 us/op
+
+OverheadWarmup   1: 8192 op, 25200.00 ns, 3.0762 ns/op
+OverheadWarmup   2: 8192 op, 25200.00 ns, 3.0762 ns/op
+OverheadWarmup   3: 8192 op, 25300.00 ns, 3.0884 ns/op
+OverheadWarmup   4: 8192 op, 24400.00 ns, 2.9785 ns/op
+OverheadWarmup   5: 8192 op, 25600.00 ns, 3.1250 ns/op
+
+OverheadActual   1: 8192 op, 25200.00 ns, 3.0762 ns/op
+OverheadActual   2: 8192 op, 25300.00 ns, 3.0884 ns/op
+OverheadActual   3: 8192 op, 25300.00 ns, 3.0884 ns/op
+OverheadActual   4: 8192 op, 25600.00 ns, 3.1250 ns/op
+OverheadActual   5: 8192 op, 24800.00 ns, 3.0273 ns/op
+OverheadActual   6: 8192 op, 24800.00 ns, 3.0273 ns/op
+OverheadActual   7: 8192 op, 24700.00 ns, 3.0151 ns/op
+OverheadActual   8: 8192 op, 23600.00 ns, 2.8809 ns/op
+OverheadActual   9: 8192 op, 31400.00 ns, 3.8330 ns/op
+OverheadActual  10: 8192 op, 25200.00 ns, 3.0762 ns/op
+OverheadActual  11: 8192 op, 24200.00 ns, 2.9541 ns/op
+OverheadActual  12: 8192 op, 25100.00 ns, 3.0640 ns/op
+OverheadActual  13: 8192 op, 24900.00 ns, 3.0396 ns/op
+OverheadActual  14: 8192 op, 24700.00 ns, 3.0151 ns/op
+OverheadActual  15: 8192 op, 24500.00 ns, 2.9907 ns/op
+
+WorkloadWarmup   1: 8192 op, 802181200.00 ns, 97.9225 us/op
+WorkloadWarmup   2: 8192 op, 821188300.00 ns, 100.2427 us/op
+WorkloadWarmup   3: 8192 op, 796929700.00 ns, 97.2815 us/op
+WorkloadWarmup   4: 8192 op, 800818500.00 ns, 97.7562 us/op
+WorkloadWarmup   5: 8192 op, 821189200.00 ns, 100.2428 us/op
+WorkloadWarmup   6: 8192 op, 793583100.00 ns, 96.8729 us/op
+
+// BeforeActualRun
+WorkloadActual   1: 8192 op, 814802800.00 ns, 99.4632 us/op
+WorkloadActual   2: 8192 op, 811027500.00 ns, 99.0024 us/op
+WorkloadActual   3: 8192 op, 800087000.00 ns, 97.6669 us/op
+WorkloadActual   4: 8192 op, 804927000.00 ns, 98.2577 us/op
+WorkloadActual   5: 8192 op, 799370900.00 ns, 97.5795 us/op
+WorkloadActual   6: 8192 op, 792077700.00 ns, 96.6892 us/op
+WorkloadActual   7: 8192 op, 812405000.00 ns, 99.1705 us/op
+WorkloadActual   8: 8192 op, 1121805300.00 ns, 136.9391 us/op
+WorkloadActual   9: 8192 op, 1368669500.00 ns, 167.0739 us/op
+WorkloadActual  10: 8192 op, 1071375400.00 ns, 130.7831 us/op
+WorkloadActual  11: 8192 op, 1178153300.00 ns, 143.8175 us/op
+WorkloadActual  12: 8192 op, 1314191300.00 ns, 160.4237 us/op
+WorkloadActual  13: 8192 op, 1228302400.00 ns, 149.9393 us/op
+WorkloadActual  14: 8192 op, 868069500.00 ns, 105.9655 us/op
+WorkloadActual  15: 8192 op, 815898000.00 ns, 99.5969 us/op
+WorkloadActual  16: 8192 op, 790497800.00 ns, 96.4963 us/op
+WorkloadActual  17: 8192 op, 784104500.00 ns, 95.7159 us/op
+WorkloadActual  18: 8192 op, 806969200.00 ns, 98.5070 us/op
+WorkloadActual  19: 8192 op, 785905000.00 ns, 95.9357 us/op
+WorkloadActual  20: 8192 op, 790568900.00 ns, 96.5050 us/op
+WorkloadActual  21: 8192 op, 878595800.00 ns, 107.2505 us/op
+WorkloadActual  22: 8192 op, 860282100.00 ns, 105.0149 us/op
+WorkloadActual  23: 8192 op, 876945400.00 ns, 107.0490 us/op
+WorkloadActual  24: 8192 op, 842988000.00 ns, 102.9038 us/op
+WorkloadActual  25: 8192 op, 850158000.00 ns, 103.7791 us/op
+WorkloadActual  26: 8192 op, 779718100.00 ns, 95.1804 us/op
+WorkloadActual  27: 8192 op, 775790000.00 ns, 94.7009 us/op
+WorkloadActual  28: 8192 op, 772979200.00 ns, 94.3578 us/op
+WorkloadActual  29: 8192 op, 787388200.00 ns, 96.1167 us/op
+WorkloadActual  30: 8192 op, 775030400.00 ns, 94.6082 us/op
+WorkloadActual  31: 8192 op, 770203300.00 ns, 94.0190 us/op
+WorkloadActual  32: 8192 op, 771652300.00 ns, 94.1958 us/op
+WorkloadActual  33: 8192 op, 779325600.00 ns, 95.1325 us/op
+WorkloadActual  34: 8192 op, 774297900.00 ns, 94.5188 us/op
+WorkloadActual  35: 8192 op, 827637100.00 ns, 101.0299 us/op
+WorkloadActual  36: 8192 op, 852664800.00 ns, 104.0851 us/op
+WorkloadActual  37: 8192 op, 913846000.00 ns, 111.5535 us/op
+WorkloadActual  38: 8192 op, 773607800.00 ns, 94.4345 us/op
+WorkloadActual  39: 8192 op, 771285200.00 ns, 94.1510 us/op
+WorkloadActual  40: 8192 op, 770454700.00 ns, 94.0496 us/op
+WorkloadActual  41: 8192 op, 773451000.00 ns, 94.4154 us/op
+WorkloadActual  42: 8192 op, 778273900.00 ns, 95.0041 us/op
+WorkloadActual  43: 8192 op, 818550100.00 ns, 99.9207 us/op
+WorkloadActual  44: 8192 op, 776606400.00 ns, 94.8006 us/op
+WorkloadActual  45: 8192 op, 782803000.00 ns, 95.5570 us/op
+WorkloadActual  46: 8192 op, 776262800.00 ns, 94.7586 us/op
+WorkloadActual  47: 8192 op, 775111400.00 ns, 94.6181 us/op
+WorkloadActual  48: 8192 op, 774629600.00 ns, 94.5593 us/op
+WorkloadActual  49: 8192 op, 781441600.00 ns, 95.3908 us/op
+WorkloadActual  50: 8192 op, 776121400.00 ns, 94.7414 us/op
+WorkloadActual  51: 8192 op, 788056500.00 ns, 96.1983 us/op
+WorkloadActual  52: 8192 op, 782460200.00 ns, 95.5152 us/op
+WorkloadActual  53: 8192 op, 782458300.00 ns, 95.5149 us/op
+WorkloadActual  54: 8192 op, 783614100.00 ns, 95.6560 us/op
+WorkloadActual  55: 8192 op, 785204900.00 ns, 95.8502 us/op
+WorkloadActual  56: 8192 op, 779381300.00 ns, 95.1393 us/op
+WorkloadActual  57: 8192 op, 783124500.00 ns, 95.5963 us/op
+
+// AfterActualRun
+WorkloadResult   1: 8192 op, 814777900.00 ns, 99.4602 us/op
+WorkloadResult   2: 8192 op, 811002600.00 ns, 98.9993 us/op
+WorkloadResult   3: 8192 op, 800062100.00 ns, 97.6638 us/op
+WorkloadResult   4: 8192 op, 804902100.00 ns, 98.2547 us/op
+WorkloadResult   5: 8192 op, 799346000.00 ns, 97.5764 us/op
+WorkloadResult   6: 8192 op, 792052800.00 ns, 96.6861 us/op
+WorkloadResult   7: 8192 op, 812380100.00 ns, 99.1675 us/op
+WorkloadResult   8: 8192 op, 868044600.00 ns, 105.9625 us/op
+WorkloadResult   9: 8192 op, 815873100.00 ns, 99.5939 us/op
+WorkloadResult  10: 8192 op, 790472900.00 ns, 96.4933 us/op
+WorkloadResult  11: 8192 op, 784079600.00 ns, 95.7128 us/op
+WorkloadResult  12: 8192 op, 806944300.00 ns, 98.5039 us/op
+WorkloadResult  13: 8192 op, 785880100.00 ns, 95.9326 us/op
+WorkloadResult  14: 8192 op, 790544000.00 ns, 96.5020 us/op
+WorkloadResult  15: 8192 op, 878570900.00 ns, 107.2474 us/op
+WorkloadResult  16: 8192 op, 860257200.00 ns, 105.0119 us/op
+WorkloadResult  17: 8192 op, 876920500.00 ns, 107.0460 us/op
+WorkloadResult  18: 8192 op, 842963100.00 ns, 102.9008 us/op
+WorkloadResult  19: 8192 op, 850133100.00 ns, 103.7760 us/op
+WorkloadResult  20: 8192 op, 779693200.00 ns, 95.1774 us/op
+WorkloadResult  21: 8192 op, 775765100.00 ns, 94.6979 us/op
+WorkloadResult  22: 8192 op, 772954300.00 ns, 94.3548 us/op
+WorkloadResult  23: 8192 op, 787363300.00 ns, 96.1137 us/op
+WorkloadResult  24: 8192 op, 775005500.00 ns, 94.6052 us/op
+WorkloadResult  25: 8192 op, 770178400.00 ns, 94.0159 us/op
+WorkloadResult  26: 8192 op, 771627400.00 ns, 94.1928 us/op
+WorkloadResult  27: 8192 op, 779300700.00 ns, 95.1295 us/op
+WorkloadResult  28: 8192 op, 774273000.00 ns, 94.5157 us/op
+WorkloadResult  29: 8192 op, 827612200.00 ns, 101.0269 us/op
+WorkloadResult  30: 8192 op, 852639900.00 ns, 104.0820 us/op
+WorkloadResult  31: 8192 op, 773582900.00 ns, 94.4315 us/op
+WorkloadResult  32: 8192 op, 771260300.00 ns, 94.1480 us/op
+WorkloadResult  33: 8192 op, 770429800.00 ns, 94.0466 us/op
+WorkloadResult  34: 8192 op, 773426100.00 ns, 94.4124 us/op
+WorkloadResult  35: 8192 op, 778249000.00 ns, 95.0011 us/op
+WorkloadResult  36: 8192 op, 818525200.00 ns, 99.9176 us/op
+WorkloadResult  37: 8192 op, 776581500.00 ns, 94.7975 us/op
+WorkloadResult  38: 8192 op, 782778100.00 ns, 95.5540 us/op
+WorkloadResult  39: 8192 op, 776237900.00 ns, 94.7556 us/op
+WorkloadResult  40: 8192 op, 775086500.00 ns, 94.6151 us/op
+WorkloadResult  41: 8192 op, 774604700.00 ns, 94.5562 us/op
+WorkloadResult  42: 8192 op, 781416700.00 ns, 95.3878 us/op
+WorkloadResult  43: 8192 op, 776096500.00 ns, 94.7383 us/op
+WorkloadResult  44: 8192 op, 788031600.00 ns, 96.1953 us/op
+WorkloadResult  45: 8192 op, 782435300.00 ns, 95.5121 us/op
+WorkloadResult  46: 8192 op, 782433400.00 ns, 95.5119 us/op
+WorkloadResult  47: 8192 op, 783589200.00 ns, 95.6530 us/op
+WorkloadResult  48: 8192 op, 785180000.00 ns, 95.8472 us/op
+WorkloadResult  49: 8192 op, 779356400.00 ns, 95.1363 us/op
+WorkloadResult  50: 8192 op, 783099600.00 ns, 95.5932 us/op
+// GC:  35 1 0 900596112 8192
+// Threading:  0 0 8192
+
+// AfterAll
+// Benchmark Process 152 has exited with code 0.
+
+Mean = 97.324 μs, StdErr = 0.518 μs (0.53%), N = 50, StdDev = 3.665 μs
+Min = 94.016 μs, Q1 = 94.743 μs, Median = 95.683 μs, Q3 = 98.875 μs, Max = 107.247 μs
+IQR = 4.133 μs, LowerFence = 88.543 μs, UpperFence = 105.075 μs
+ConfidenceInterval = [95.510 μs; 99.138 μs] (CI 99.9%), Margin = 1.814 μs (1.86% of Mean)
+Skewness = 1.38, Kurtosis = 3.77, MValue = 2.14
+
+// ** Remained 28 (93,3%) benchmark(s) to run. Estimated finish 2026-11-01 20:41 (0h 18m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.LoadFromText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=100]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet e109f795-63e0-4d5c-836d-5557c3e09837.dll --anonymousPipes 1996 1504 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.LoadFromText(N: 100)" --job "NuGetReferences=Mafe.TinyCsv 2.2.2" --benchmarkId 0 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\e109f795-63e0-4d5c-836d-5557c3e09837\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-RRKRWB(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 208500.00 ns, 208.5000 us/op
+WorkloadJitting  1: 1 op, 5018600.00 ns, 5.0186 ms/op
+
+OverheadJitting  2: 16 op, 250000.00 ns, 15.6250 us/op
+WorkloadJitting  2: 16 op, 6742500.00 ns, 421.4062 us/op
+
+WorkloadPilot    1: 16 op, 5934200.00 ns, 370.8875 us/op
+WorkloadPilot    2: 32 op, 10795600.00 ns, 337.3625 us/op
+WorkloadPilot    3: 64 op, 23399400.00 ns, 365.6156 us/op
+WorkloadPilot    4: 128 op, 44039100.00 ns, 344.0555 us/op
+WorkloadPilot    5: 256 op, 91201500.00 ns, 356.2559 us/op
+WorkloadPilot    6: 512 op, 214567400.00 ns, 419.0770 us/op
+WorkloadPilot    7: 1024 op, 123473600.00 ns, 120.5797 us/op
+WorkloadPilot    8: 2048 op, 231361500.00 ns, 112.9695 us/op
+WorkloadPilot    9: 4096 op, 472928200.00 ns, 115.4610 us/op
+WorkloadPilot   10: 8192 op, 909064900.00 ns, 110.9698 us/op
+
+OverheadWarmup   1: 8192 op, 25000.00 ns, 3.0518 ns/op
+OverheadWarmup   2: 8192 op, 24200.00 ns, 2.9541 ns/op
+OverheadWarmup   3: 8192 op, 24500.00 ns, 2.9907 ns/op
+OverheadWarmup   4: 8192 op, 24400.00 ns, 2.9785 ns/op
+OverheadWarmup   5: 8192 op, 24600.00 ns, 3.0029 ns/op
+OverheadWarmup   6: 8192 op, 24300.00 ns, 2.9663 ns/op
+
+OverheadActual   1: 8192 op, 23500.00 ns, 2.8687 ns/op
+OverheadActual   2: 8192 op, 24200.00 ns, 2.9541 ns/op
+OverheadActual   3: 8192 op, 25100.00 ns, 3.0640 ns/op
+OverheadActual   4: 8192 op, 24100.00 ns, 2.9419 ns/op
+OverheadActual   5: 8192 op, 23100.00 ns, 2.8198 ns/op
+OverheadActual   6: 8192 op, 25800.00 ns, 3.1494 ns/op
+OverheadActual   7: 8192 op, 24600.00 ns, 3.0029 ns/op
+OverheadActual   8: 8192 op, 24500.00 ns, 2.9907 ns/op
+OverheadActual   9: 8192 op, 25400.00 ns, 3.1006 ns/op
+OverheadActual  10: 8192 op, 25300.00 ns, 3.0884 ns/op
+OverheadActual  11: 8192 op, 26600.00 ns, 3.2471 ns/op
+OverheadActual  12: 8192 op, 25700.00 ns, 3.1372 ns/op
+OverheadActual  13: 8192 op, 25200.00 ns, 3.0762 ns/op
+OverheadActual  14: 8192 op, 26200.00 ns, 3.1982 ns/op
+OverheadActual  15: 8192 op, 24900.00 ns, 3.0396 ns/op
+
+WorkloadWarmup   1: 8192 op, 932472800.00 ns, 113.8272 us/op
+WorkloadWarmup   2: 8192 op, 912933700.00 ns, 111.4421 us/op
+WorkloadWarmup   3: 8192 op, 896541500.00 ns, 109.4411 us/op
+WorkloadWarmup   4: 8192 op, 886450200.00 ns, 108.2093 us/op
+WorkloadWarmup   5: 8192 op, 885235800.00 ns, 108.0610 us/op
+WorkloadWarmup   6: 8192 op, 894091500.00 ns, 109.1420 us/op
+WorkloadWarmup   7: 8192 op, 893611100.00 ns, 109.0834 us/op
+WorkloadWarmup   8: 8192 op, 908054500.00 ns, 110.8465 us/op
+WorkloadWarmup   9: 8192 op, 896819500.00 ns, 109.4750 us/op
+
+// BeforeActualRun
+WorkloadActual   1: 8192 op, 892468600.00 ns, 108.9439 us/op
+WorkloadActual   2: 8192 op, 890032500.00 ns, 108.6465 us/op
+WorkloadActual   3: 8192 op, 888729700.00 ns, 108.4875 us/op
+WorkloadActual   4: 8192 op, 887431500.00 ns, 108.3290 us/op
+WorkloadActual   5: 8192 op, 891996600.00 ns, 108.8863 us/op
+WorkloadActual   6: 8192 op, 888586700.00 ns, 108.4701 us/op
+WorkloadActual   7: 8192 op, 892577000.00 ns, 108.9572 us/op
+WorkloadActual   8: 8192 op, 892341300.00 ns, 108.9284 us/op
+WorkloadActual   9: 8192 op, 901387800.00 ns, 110.0327 us/op
+WorkloadActual  10: 8192 op, 889794200.00 ns, 108.6175 us/op
+WorkloadActual  11: 8192 op, 893612600.00 ns, 109.0836 us/op
+WorkloadActual  12: 8192 op, 896841000.00 ns, 109.4777 us/op
+WorkloadActual  13: 8192 op, 905666300.00 ns, 110.5550 us/op
+WorkloadActual  14: 8192 op, 892315600.00 ns, 108.9252 us/op
+WorkloadActual  15: 8192 op, 902483500.00 ns, 110.1664 us/op
+
+// AfterActualRun
+WorkloadResult   1: 8192 op, 892443500.00 ns, 108.9409 us/op
+WorkloadResult   2: 8192 op, 890007400.00 ns, 108.6435 us/op
+WorkloadResult   3: 8192 op, 888704600.00 ns, 108.4844 us/op
+WorkloadResult   4: 8192 op, 887406400.00 ns, 108.3260 us/op
+WorkloadResult   5: 8192 op, 891971500.00 ns, 108.8832 us/op
+WorkloadResult   6: 8192 op, 888561600.00 ns, 108.4670 us/op
+WorkloadResult   7: 8192 op, 892551900.00 ns, 108.9541 us/op
+WorkloadResult   8: 8192 op, 892316200.00 ns, 108.9253 us/op
+WorkloadResult   9: 8192 op, 901362700.00 ns, 110.0296 us/op
+WorkloadResult  10: 8192 op, 889769100.00 ns, 108.6144 us/op
+WorkloadResult  11: 8192 op, 893587500.00 ns, 109.0805 us/op
+WorkloadResult  12: 8192 op, 896815900.00 ns, 109.4746 us/op
+WorkloadResult  13: 8192 op, 892290500.00 ns, 108.9222 us/op
+WorkloadResult  14: 8192 op, 902458400.00 ns, 110.1634 us/op
+// GC:  65 3 0 1636172176 8192
+// Threading:  0 0 8192
+
+// AfterAll
+// Benchmark Process 4980 has exited with code 0.
+
+Mean = 108.994 μs, StdErr = 0.147 μs (0.14%), N = 14, StdDev = 0.552 μs
+Min = 108.326 μs, Q1 = 108.622 μs, Median = 108.924 μs, Q3 = 109.049 μs, Max = 110.163 μs
+IQR = 0.427 μs, LowerFence = 107.981 μs, UpperFence = 109.690 μs
+ConfidenceInterval = [108.371 μs; 109.616 μs] (CI 99.9%), Margin = 0.622 μs (0.57% of Mean)
+Skewness = 0.92, Kurtosis = 2.67, MValue = 2
+
+// ** Remained 27 (90,0%) benchmark(s) to run. Estimated finish 2026-11-01 20:38 (0h 15m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.SaveToText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=100]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet e109f795-63e0-4d5c-836d-5557c3e09837.dll --anonymousPipes 1948 1688 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.SaveToText(N: 100)" --job "NuGetReferences=Mafe.TinyCsv 2.2.2" --benchmarkId 1 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\e109f795-63e0-4d5c-836d-5557c3e09837\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-YMEXRY(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 245100.00 ns, 245.1000 us/op
+WorkloadJitting  1: 1 op, 3766800.00 ns, 3.7668 ms/op
+
+OverheadJitting  2: 16 op, 216900.00 ns, 13.5563 us/op
+WorkloadJitting  2: 16 op, 5996100.00 ns, 374.7563 us/op
+
+WorkloadPilot    1: 16 op, 3650700.00 ns, 228.1687 us/op
+WorkloadPilot    2: 32 op, 5926600.00 ns, 185.2063 us/op
+WorkloadPilot    3: 64 op, 12234200.00 ns, 191.1594 us/op
+WorkloadPilot    4: 128 op, 25121100.00 ns, 196.2586 us/op
+WorkloadPilot    5: 256 op, 47474800.00 ns, 185.4484 us/op
+WorkloadPilot    6: 512 op, 116123500.00 ns, 226.8037 us/op
+WorkloadPilot    7: 1024 op, 271175800.00 ns, 264.8201 us/op
+WorkloadPilot    8: 2048 op, 269397700.00 ns, 131.5418 us/op
+WorkloadPilot    9: 4096 op, 412946700.00 ns, 100.8171 us/op
+WorkloadPilot   10: 8192 op, 795652400.00 ns, 97.1255 us/op
+
+OverheadWarmup   1: 8192 op, 25900.00 ns, 3.1616 ns/op
+OverheadWarmup   2: 8192 op, 23800.00 ns, 2.9053 ns/op
+OverheadWarmup   3: 8192 op, 25000.00 ns, 3.0518 ns/op
+OverheadWarmup   4: 8192 op, 24400.00 ns, 2.9785 ns/op
+OverheadWarmup   5: 8192 op, 24600.00 ns, 3.0029 ns/op
+OverheadWarmup   6: 8192 op, 24600.00 ns, 3.0029 ns/op
+
+OverheadActual   1: 8192 op, 24300.00 ns, 2.9663 ns/op
+OverheadActual   2: 8192 op, 24800.00 ns, 3.0273 ns/op
+OverheadActual   3: 8192 op, 25600.00 ns, 3.1250 ns/op
+OverheadActual   4: 8192 op, 24500.00 ns, 2.9907 ns/op
+OverheadActual   5: 8192 op, 24600.00 ns, 3.0029 ns/op
+OverheadActual   6: 8192 op, 24500.00 ns, 2.9907 ns/op
+OverheadActual   7: 8192 op, 23800.00 ns, 2.9053 ns/op
+OverheadActual   8: 8192 op, 25000.00 ns, 3.0518 ns/op
+OverheadActual   9: 8192 op, 24900.00 ns, 3.0396 ns/op
+OverheadActual  10: 8192 op, 23700.00 ns, 2.8931 ns/op
+OverheadActual  11: 8192 op, 22900.00 ns, 2.7954 ns/op
+OverheadActual  12: 8192 op, 25000.00 ns, 3.0518 ns/op
+OverheadActual  13: 8192 op, 24900.00 ns, 3.0396 ns/op
+OverheadActual  14: 8192 op, 25000.00 ns, 3.0518 ns/op
+OverheadActual  15: 8192 op, 24600.00 ns, 3.0029 ns/op
+
+WorkloadWarmup   1: 8192 op, 783118000.00 ns, 95.5955 us/op
+WorkloadWarmup   2: 8192 op, 793538000.00 ns, 96.8674 us/op
+WorkloadWarmup   3: 8192 op, 777205500.00 ns, 94.8737 us/op
+WorkloadWarmup   4: 8192 op, 773858100.00 ns, 94.4651 us/op
+WorkloadWarmup   5: 8192 op, 770899600.00 ns, 94.1040 us/op
+WorkloadWarmup   6: 8192 op, 773600900.00 ns, 94.4337 us/op
+WorkloadWarmup   7: 8192 op, 772148900.00 ns, 94.2565 us/op
+
+// BeforeActualRun
+WorkloadActual   1: 8192 op, 782022400.00 ns, 95.4617 us/op
+WorkloadActual   2: 8192 op, 788699700.00 ns, 96.2768 us/op
+WorkloadActual   3: 8192 op, 770670200.00 ns, 94.0760 us/op
+WorkloadActual   4: 8192 op, 788200200.00 ns, 96.2158 us/op
+WorkloadActual   5: 8192 op, 771676400.00 ns, 94.1988 us/op
+WorkloadActual   6: 8192 op, 774148100.00 ns, 94.5005 us/op
+WorkloadActual   7: 8192 op, 768308700.00 ns, 93.7877 us/op
+WorkloadActual   8: 8192 op, 773091100.00 ns, 94.3715 us/op
+WorkloadActual   9: 8192 op, 776440100.00 ns, 94.7803 us/op
+WorkloadActual  10: 8192 op, 775188000.00 ns, 94.6274 us/op
+WorkloadActual  11: 8192 op, 776619900.00 ns, 94.8022 us/op
+WorkloadActual  12: 8192 op, 771994500.00 ns, 94.2376 us/op
+WorkloadActual  13: 8192 op, 780827500.00 ns, 95.3159 us/op
+WorkloadActual  14: 8192 op, 769757900.00 ns, 93.9646 us/op
+WorkloadActual  15: 8192 op, 778205200.00 ns, 94.9958 us/op
+
+// AfterActualRun
+WorkloadResult   1: 8192 op, 781997800.00 ns, 95.4587 us/op
+WorkloadResult   2: 8192 op, 788675100.00 ns, 96.2738 us/op
+WorkloadResult   3: 8192 op, 770645600.00 ns, 94.0729 us/op
+WorkloadResult   4: 8192 op, 788175600.00 ns, 96.2128 us/op
+WorkloadResult   5: 8192 op, 771651800.00 ns, 94.1958 us/op
+WorkloadResult   6: 8192 op, 774123500.00 ns, 94.4975 us/op
+WorkloadResult   7: 8192 op, 768284100.00 ns, 93.7847 us/op
+WorkloadResult   8: 8192 op, 773066500.00 ns, 94.3685 us/op
+WorkloadResult   9: 8192 op, 776415500.00 ns, 94.7773 us/op
+WorkloadResult  10: 8192 op, 775163400.00 ns, 94.6244 us/op
+WorkloadResult  11: 8192 op, 776595300.00 ns, 94.7992 us/op
+WorkloadResult  12: 8192 op, 771969900.00 ns, 94.2346 us/op
+WorkloadResult  13: 8192 op, 780802900.00 ns, 95.3129 us/op
+WorkloadResult  14: 8192 op, 769733300.00 ns, 93.9616 us/op
+WorkloadResult  15: 8192 op, 778180600.00 ns, 94.9927 us/op
+// GC:  35 1 0 900596112 8192
+// Threading:  0 0 8192
+
+// AfterAll
+// Benchmark Process 3720 has exited with code 0.
+
+Mean = 94.771 μs, StdErr = 0.197 μs (0.21%), N = 15, StdDev = 0.763 μs
+Min = 93.785 μs, Q1 = 94.215 μs, Median = 94.624 μs, Q3 = 95.153 μs, Max = 96.274 μs
+IQR = 0.938 μs, LowerFence = 92.809 μs, UpperFence = 96.559 μs
+ConfidenceInterval = [93.956 μs; 95.587 μs] (CI 99.9%), Margin = 0.815 μs (0.86% of Mean)
+Skewness = 0.69, Kurtosis = 2.28, MValue = 2
+
+// ** Remained 26 (86,7%) benchmark(s) to run. Estimated finish 2026-11-01 20:37 (0h 13m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// Build Error: Standard output: 
+  
+ Standard error: 
+ info : X.509 certificate chain validation will use the default trust store selected by .NET for code signing.
+info : X.509 certificate chain validation will use the default trust store selected by .NET for timestamping.
+info : Adding PackageReference for package 'Mafe.TinyCsv' into project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+info : Restoring packages for C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj...
+info :   CACHE https://api.nuget.org/v3-flatcontainer/mafe.tinycsv/index.json
+info :   CACHE https://nuget.devexpress.com/GGeuOtRw7l1YfmBaZFZCPDEdcjPXHXQ2y2dNhfL6o7hedMtLAT/api/FindPackagesById()?id='Mafe.TinyCsv'&semVerLevel=2.0.0
+info :   GET https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json
+info :   NotFound https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json 380ms
+error: NU1102: Unable to find package Mafe.TinyCsv with version (>= 3.0.0)
+error:   - Found 35 version(s) in nuget.org [ Nearest version: 3.0.0-rc1 ]
+error:   - Found 0 version(s) in Microsoft Visual Studio Offline Packages
+error:   - Found 0 version(s) in C:\Program Files\dotnet\library-packs
+error:   - Found 0 version(s) in DevExpress
+error:   - Found 0 version(s) in MAUI
+info :   CACHE https://api.nuget.org/v3/vulnerabilities/index.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/vulnerability.base.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/2026.11.01.11.41.44/vulnerability.update.json
+error: Package 'Mafe.TinyCsv' is incompatible with 'all' frameworks in project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+
+// BenchmarkDotNet has failed to build the auto-generated boilerplate code.
+// It can be found in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3
+// Please follow the troubleshooting guide: https://benchmarkdotnet.org/articles/guides/troubleshooting.html
+
+// ** Remained 25 (83,3%) benchmark(s) to run. Estimated finish 2026-11-01 20:33 (0h 10m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// Build Error: Standard output: 
+  
+ Standard error: 
+ info : X.509 certificate chain validation will use the default trust store selected by .NET for code signing.
+info : X.509 certificate chain validation will use the default trust store selected by .NET for timestamping.
+info : Adding PackageReference for package 'Mafe.TinyCsv' into project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+info : Restoring packages for C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj...
+info :   CACHE https://api.nuget.org/v3-flatcontainer/mafe.tinycsv/index.json
+info :   CACHE https://nuget.devexpress.com/GGeuOtRw7l1YfmBaZFZCPDEdcjPXHXQ2y2dNhfL6o7hedMtLAT/api/FindPackagesById()?id='Mafe.TinyCsv'&semVerLevel=2.0.0
+info :   GET https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json
+info :   NotFound https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json 380ms
+error: NU1102: Unable to find package Mafe.TinyCsv with version (>= 3.0.0)
+error:   - Found 35 version(s) in nuget.org [ Nearest version: 3.0.0-rc1 ]
+error:   - Found 0 version(s) in Microsoft Visual Studio Offline Packages
+error:   - Found 0 version(s) in C:\Program Files\dotnet\library-packs
+error:   - Found 0 version(s) in DevExpress
+error:   - Found 0 version(s) in MAUI
+info :   CACHE https://api.nuget.org/v3/vulnerabilities/index.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/vulnerability.base.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/2026.11.01.11.41.44/vulnerability.update.json
+error: Package 'Mafe.TinyCsv' is incompatible with 'all' frameworks in project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+
+// BenchmarkDotNet has failed to build the auto-generated boilerplate code.
+// It can be found in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3
+// Please follow the troubleshooting guide: https://benchmarkdotnet.org/articles/guides/troubleshooting.html
+
+// ** Remained 24 (80,0%) benchmark(s) to run. Estimated finish 2026-11-01 20:31 (0h 8m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.LoadFromText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=1000]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet d9cfed3a-4fcd-4703-b721-115d3843cd66.dll --anonymousPipes 1660 2108 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.LoadFromText(N: 1000)" --job "NuGetReferences=Mafe.TinyCsv 2.1.0" --benchmarkId 2 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\d9cfed3a-4fcd-4703-b721-115d3843cd66\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-BVIGBE(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 238100.00 ns, 238.1000 us/op
+WorkloadJitting  1: 1 op, 7534300.00 ns, 7.5343 ms/op
+
+OverheadJitting  2: 16 op, 204200.00 ns, 12.7625 us/op
+WorkloadJitting  2: 16 op, 47184100.00 ns, 2.9490 ms/op
+
+WorkloadPilot    1: 16 op, 42438800.00 ns, 2.6524 ms/op
+WorkloadPilot    2: 32 op, 81325400.00 ns, 2.5414 ms/op
+WorkloadPilot    3: 64 op, 179416000.00 ns, 2.8034 ms/op
+WorkloadPilot    4: 128 op, 235244200.00 ns, 1.8378 ms/op
+WorkloadPilot    5: 256 op, 199251100.00 ns, 778.3246 us/op
+WorkloadPilot    6: 512 op, 404320300.00 ns, 789.6881 us/op
+WorkloadPilot    7: 1024 op, 810660100.00 ns, 791.6603 us/op
+
+OverheadWarmup   1: 1024 op, 4300.00 ns, 4.1992 ns/op
+OverheadWarmup   2: 1024 op, 3800.00 ns, 3.7109 ns/op
+OverheadWarmup   3: 1024 op, 3600.00 ns, 3.5156 ns/op
+OverheadWarmup   4: 1024 op, 5000.00 ns, 4.8828 ns/op
+OverheadWarmup   5: 1024 op, 4000.00 ns, 3.9062 ns/op
+OverheadWarmup   6: 1024 op, 4000.00 ns, 3.9062 ns/op
+OverheadWarmup   7: 1024 op, 3700.00 ns, 3.6133 ns/op
+
+OverheadActual   1: 1024 op, 3700.00 ns, 3.6133 ns/op
+OverheadActual   2: 1024 op, 3700.00 ns, 3.6133 ns/op
+OverheadActual   3: 1024 op, 4000.00 ns, 3.9062 ns/op
+OverheadActual   4: 1024 op, 3500.00 ns, 3.4180 ns/op
+OverheadActual   5: 1024 op, 3700.00 ns, 3.6133 ns/op
+OverheadActual   6: 1024 op, 3700.00 ns, 3.6133 ns/op
+OverheadActual   7: 1024 op, 3700.00 ns, 3.6133 ns/op
+OverheadActual   8: 1024 op, 3600.00 ns, 3.5156 ns/op
+OverheadActual   9: 1024 op, 3700.00 ns, 3.6133 ns/op
+OverheadActual  10: 1024 op, 3700.00 ns, 3.6133 ns/op
+OverheadActual  11: 1024 op, 3600.00 ns, 3.5156 ns/op
+OverheadActual  12: 1024 op, 3700.00 ns, 3.6133 ns/op
+OverheadActual  13: 1024 op, 3800.00 ns, 3.7109 ns/op
+OverheadActual  14: 1024 op, 3700.00 ns, 3.6133 ns/op
+OverheadActual  15: 1024 op, 3700.00 ns, 3.6133 ns/op
+
+WorkloadWarmup   1: 1024 op, 804482900.00 ns, 785.6278 us/op
+WorkloadWarmup   2: 1024 op, 810675700.00 ns, 791.6755 us/op
+WorkloadWarmup   3: 1024 op, 804729000.00 ns, 785.8682 us/op
+WorkloadWarmup   4: 1024 op, 791012900.00 ns, 772.4735 us/op
+WorkloadWarmup   5: 1024 op, 794559200.00 ns, 775.9367 us/op
+WorkloadWarmup   6: 1024 op, 801602300.00 ns, 782.8147 us/op
+WorkloadWarmup   7: 1024 op, 777592800.00 ns, 759.3680 us/op
+
+// BeforeActualRun
+WorkloadActual   1: 1024 op, 759766500.00 ns, 741.9595 us/op
+WorkloadActual   2: 1024 op, 757666600.00 ns, 739.9088 us/op
+WorkloadActual   3: 1024 op, 764731300.00 ns, 746.8079 us/op
+WorkloadActual   4: 1024 op, 751092100.00 ns, 733.4884 us/op
+WorkloadActual   5: 1024 op, 753761300.00 ns, 736.0950 us/op
+WorkloadActual   6: 1024 op, 748825200.00 ns, 731.2746 us/op
+WorkloadActual   7: 1024 op, 749480400.00 ns, 731.9145 us/op
+WorkloadActual   8: 1024 op, 760182600.00 ns, 742.3658 us/op
+WorkloadActual   9: 1024 op, 758991200.00 ns, 741.2023 us/op
+WorkloadActual  10: 1024 op, 748770000.00 ns, 731.2207 us/op
+WorkloadActual  11: 1024 op, 749487700.00 ns, 731.9216 us/op
+WorkloadActual  12: 1024 op, 756412200.00 ns, 738.6838 us/op
+WorkloadActual  13: 1024 op, 770003000.00 ns, 751.9561 us/op
+WorkloadActual  14: 1024 op, 756641200.00 ns, 738.9074 us/op
+WorkloadActual  15: 1024 op, 759190800.00 ns, 741.3973 us/op
+
+// AfterActualRun
+WorkloadResult   1: 1024 op, 759762800.00 ns, 741.9559 us/op
+WorkloadResult   2: 1024 op, 757662900.00 ns, 739.9052 us/op
+WorkloadResult   3: 1024 op, 764727600.00 ns, 746.8043 us/op
+WorkloadResult   4: 1024 op, 751088400.00 ns, 733.4848 us/op
+WorkloadResult   5: 1024 op, 753757600.00 ns, 736.0914 us/op
+WorkloadResult   6: 1024 op, 748821500.00 ns, 731.2710 us/op
+WorkloadResult   7: 1024 op, 749476700.00 ns, 731.9108 us/op
+WorkloadResult   8: 1024 op, 760178900.00 ns, 742.3622 us/op
+WorkloadResult   9: 1024 op, 758987500.00 ns, 741.1987 us/op
+WorkloadResult  10: 1024 op, 748766300.00 ns, 731.2171 us/op
+WorkloadResult  11: 1024 op, 749484000.00 ns, 731.9180 us/op
+WorkloadResult  12: 1024 op, 756408500.00 ns, 738.6802 us/op
+WorkloadResult  13: 1024 op, 769999300.00 ns, 751.9524 us/op
+WorkloadResult  14: 1024 op, 756637500.00 ns, 738.9038 us/op
+WorkloadResult  15: 1024 op, 759187100.00 ns, 741.3937 us/op
+// GC:  48 11 0 1226350992 1024
+// Threading:  0 0 1024
+
+// AfterAll
+// Benchmark Process 5448 has exited with code 0.
+
+Mean = 738.603 μs, StdErr = 1.570 μs (0.21%), N = 15, StdDev = 6.080 μs
+Min = 731.217 μs, Q1 = 732.701 μs, Median = 738.904 μs, Q3 = 741.675 μs, Max = 751.952 μs
+IQR = 8.973 μs, LowerFence = 719.241 μs, UpperFence = 755.135 μs
+ConfidenceInterval = [732.104 μs; 745.103 μs] (CI 99.9%), Margin = 6.499 μs (0.88% of Mean)
+Skewness = 0.45, Kurtosis = 2.31, MValue = 2
+
+// ** Remained 23 (76,7%) benchmark(s) to run. Estimated finish 2026-11-01 20:31 (0h 7m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.SaveToText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=1000]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet d9cfed3a-4fcd-4703-b721-115d3843cd66.dll --anonymousPipes 1996 1120 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.SaveToText(N: 1000)" --job "NuGetReferences=Mafe.TinyCsv 2.1.0" --benchmarkId 3 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\d9cfed3a-4fcd-4703-b721-115d3843cd66\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-PEUAJY(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 253700.00 ns, 253.7000 us/op
+WorkloadJitting  1: 1 op, 5209900.00 ns, 5.2099 ms/op
+
+OverheadJitting  2: 16 op, 227600.00 ns, 14.2250 us/op
+WorkloadJitting  2: 16 op, 33501500.00 ns, 2.0938 ms/op
+
+WorkloadPilot    1: 16 op, 29446200.00 ns, 1.8404 ms/op
+WorkloadPilot    2: 32 op, 66455200.00 ns, 2.0767 ms/op
+WorkloadPilot    3: 64 op, 119948300.00 ns, 1.8742 ms/op
+WorkloadPilot    4: 128 op, 370787800.00 ns, 2.8968 ms/op
+WorkloadPilot    5: 256 op, 350792700.00 ns, 1.3703 ms/op
+WorkloadPilot    6: 512 op, 608459800.00 ns, 1.1884 ms/op
+
+OverheadWarmup   1: 512 op, 3100.00 ns, 6.0547 ns/op
+OverheadWarmup   2: 512 op, 2200.00 ns, 4.2969 ns/op
+OverheadWarmup   3: 512 op, 2300.00 ns, 4.4922 ns/op
+OverheadWarmup   4: 512 op, 2100.00 ns, 4.1016 ns/op
+OverheadWarmup   5: 512 op, 2100.00 ns, 4.1016 ns/op
+OverheadWarmup   6: 512 op, 2000.00 ns, 3.9062 ns/op
+
+OverheadActual   1: 512 op, 2600.00 ns, 5.0781 ns/op
+OverheadActual   2: 512 op, 3200.00 ns, 6.2500 ns/op
+OverheadActual   3: 512 op, 2600.00 ns, 5.0781 ns/op
+OverheadActual   4: 512 op, 2200.00 ns, 4.2969 ns/op
+OverheadActual   5: 512 op, 2100.00 ns, 4.1016 ns/op
+OverheadActual   6: 512 op, 2200.00 ns, 4.2969 ns/op
+OverheadActual   7: 512 op, 2300.00 ns, 4.4922 ns/op
+OverheadActual   8: 512 op, 2400.00 ns, 4.6875 ns/op
+OverheadActual   9: 512 op, 2100.00 ns, 4.1016 ns/op
+OverheadActual  10: 512 op, 2500.00 ns, 4.8828 ns/op
+OverheadActual  11: 512 op, 2200.00 ns, 4.2969 ns/op
+OverheadActual  12: 512 op, 2200.00 ns, 4.2969 ns/op
+OverheadActual  13: 512 op, 2500.00 ns, 4.8828 ns/op
+OverheadActual  14: 512 op, 2400.00 ns, 4.6875 ns/op
+OverheadActual  15: 512 op, 2500.00 ns, 4.8828 ns/op
+OverheadActual  16: 512 op, 2400.00 ns, 4.6875 ns/op
+OverheadActual  17: 512 op, 2600.00 ns, 5.0781 ns/op
+OverheadActual  18: 512 op, 2000.00 ns, 3.9062 ns/op
+OverheadActual  19: 512 op, 2600.00 ns, 5.0781 ns/op
+OverheadActual  20: 512 op, 2500.00 ns, 4.8828 ns/op
+
+WorkloadWarmup   1: 512 op, 598346600.00 ns, 1.1686 ms/op
+WorkloadWarmup   2: 512 op, 601319600.00 ns, 1.1745 ms/op
+WorkloadWarmup   3: 512 op, 566496800.00 ns, 1.1064 ms/op
+WorkloadWarmup   4: 512 op, 611315900.00 ns, 1.1940 ms/op
+WorkloadWarmup   5: 512 op, 567862200.00 ns, 1.1091 ms/op
+WorkloadWarmup   6: 512 op, 609144100.00 ns, 1.1897 ms/op
+
+// BeforeActualRun
+WorkloadActual   1: 512 op, 582633000.00 ns, 1.1380 ms/op
+WorkloadActual   2: 512 op, 612546700.00 ns, 1.1964 ms/op
+WorkloadActual   3: 512 op, 575442200.00 ns, 1.1239 ms/op
+WorkloadActual   4: 512 op, 599935700.00 ns, 1.1717 ms/op
+WorkloadActual   5: 512 op, 572120600.00 ns, 1.1174 ms/op
+WorkloadActual   6: 512 op, 594625800.00 ns, 1.1614 ms/op
+WorkloadActual   7: 512 op, 572139900.00 ns, 1.1175 ms/op
+WorkloadActual   8: 512 op, 596752400.00 ns, 1.1655 ms/op
+WorkloadActual   9: 512 op, 567888200.00 ns, 1.1092 ms/op
+WorkloadActual  10: 512 op, 577587400.00 ns, 1.1281 ms/op
+WorkloadActual  11: 512 op, 559915600.00 ns, 1.0936 ms/op
+WorkloadActual  12: 512 op, 579406400.00 ns, 1.1317 ms/op
+WorkloadActual  13: 512 op, 556582300.00 ns, 1.0871 ms/op
+WorkloadActual  14: 512 op, 573788900.00 ns, 1.1207 ms/op
+WorkloadActual  15: 512 op, 552696900.00 ns, 1.0795 ms/op
+WorkloadActual  16: 512 op, 574959100.00 ns, 1.1230 ms/op
+WorkloadActual  17: 512 op, 553403700.00 ns, 1.0809 ms/op
+WorkloadActual  18: 512 op, 575500200.00 ns, 1.1240 ms/op
+WorkloadActual  19: 512 op, 552515600.00 ns, 1.0791 ms/op
+WorkloadActual  20: 512 op, 574974800.00 ns, 1.1230 ms/op
+WorkloadActual  21: 512 op, 553686800.00 ns, 1.0814 ms/op
+WorkloadActual  22: 512 op, 552783200.00 ns, 1.0797 ms/op
+WorkloadActual  23: 512 op, 589517500.00 ns, 1.1514 ms/op
+WorkloadActual  24: 512 op, 574354700.00 ns, 1.1218 ms/op
+WorkloadActual  25: 512 op, 598271800.00 ns, 1.1685 ms/op
+WorkloadActual  26: 512 op, 544855500.00 ns, 1.0642 ms/op
+WorkloadActual  27: 512 op, 594795400.00 ns, 1.1617 ms/op
+WorkloadActual  28: 512 op, 560792800.00 ns, 1.0953 ms/op
+WorkloadActual  29: 512 op, 570712300.00 ns, 1.1147 ms/op
+WorkloadActual  30: 512 op, 596480300.00 ns, 1.1650 ms/op
+WorkloadActual  31: 512 op, 571242300.00 ns, 1.1157 ms/op
+
+// AfterActualRun
+WorkloadResult   1: 512 op, 582630600.00 ns, 1.1380 ms/op
+WorkloadResult   2: 512 op, 612544300.00 ns, 1.1964 ms/op
+WorkloadResult   3: 512 op, 575439800.00 ns, 1.1239 ms/op
+WorkloadResult   4: 512 op, 599933300.00 ns, 1.1717 ms/op
+WorkloadResult   5: 512 op, 572118200.00 ns, 1.1174 ms/op
+WorkloadResult   6: 512 op, 594623400.00 ns, 1.1614 ms/op
+WorkloadResult   7: 512 op, 572137500.00 ns, 1.1175 ms/op
+WorkloadResult   8: 512 op, 596750000.00 ns, 1.1655 ms/op
+WorkloadResult   9: 512 op, 567885800.00 ns, 1.1092 ms/op
+WorkloadResult  10: 512 op, 577585000.00 ns, 1.1281 ms/op
+WorkloadResult  11: 512 op, 559913200.00 ns, 1.0936 ms/op
+WorkloadResult  12: 512 op, 579404000.00 ns, 1.1316 ms/op
+WorkloadResult  13: 512 op, 556579900.00 ns, 1.0871 ms/op
+WorkloadResult  14: 512 op, 573786500.00 ns, 1.1207 ms/op
+WorkloadResult  15: 512 op, 552694500.00 ns, 1.0795 ms/op
+WorkloadResult  16: 512 op, 574956700.00 ns, 1.1230 ms/op
+WorkloadResult  17: 512 op, 553401300.00 ns, 1.0809 ms/op
+WorkloadResult  18: 512 op, 575497800.00 ns, 1.1240 ms/op
+WorkloadResult  19: 512 op, 552513200.00 ns, 1.0791 ms/op
+WorkloadResult  20: 512 op, 574972400.00 ns, 1.1230 ms/op
+WorkloadResult  21: 512 op, 553684400.00 ns, 1.0814 ms/op
+WorkloadResult  22: 512 op, 552780800.00 ns, 1.0796 ms/op
+WorkloadResult  23: 512 op, 589515100.00 ns, 1.1514 ms/op
+WorkloadResult  24: 512 op, 574352300.00 ns, 1.1218 ms/op
+WorkloadResult  25: 512 op, 598269400.00 ns, 1.1685 ms/op
+WorkloadResult  26: 512 op, 544853100.00 ns, 1.0642 ms/op
+WorkloadResult  27: 512 op, 594793000.00 ns, 1.1617 ms/op
+WorkloadResult  28: 512 op, 560790400.00 ns, 1.0953 ms/op
+WorkloadResult  29: 512 op, 570709900.00 ns, 1.1147 ms/op
+WorkloadResult  30: 512 op, 596477900.00 ns, 1.1650 ms/op
+WorkloadResult  31: 512 op, 571239900.00 ns, 1.1157 ms/op
+// GC:  21 21 21 591363360 512
+// Threading:  0 0 512
+
+// AfterAll
+// Benchmark Process 2572 has exited with code 0.
+
+Mean = 1.122 ms, StdErr = 0.006 ms (0.53%), N = 31, StdDev = 0.033 ms
+Min = 1.064 ms, Q1 = 1.094 ms, Median = 1.122 ms, Q3 = 1.145 ms, Max = 1.196 ms
+IQR = 0.050 ms, LowerFence = 1.019 ms, UpperFence = 1.220 ms
+ConfidenceInterval = [1.100 ms; 1.144 ms] (CI 99.9%), Margin = 0.022 ms (1.95% of Mean)
+Skewness = 0.24, Kurtosis = 2.15, MValue = 2
+
+// ** Remained 22 (73,3%) benchmark(s) to run. Estimated finish 2026-11-01 20:32 (0h 7m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.LoadFromText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=1000]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet e109f795-63e0-4d5c-836d-5557c3e09837.dll --anonymousPipes 1532 2180 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.LoadFromText(N: 1000)" --job "NuGetReferences=Mafe.TinyCsv 2.2.2" --benchmarkId 2 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\e109f795-63e0-4d5c-836d-5557c3e09837\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-JIQDQZ(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 210000.00 ns, 210.0000 us/op
+WorkloadJitting  1: 1 op, 8688800.00 ns, 8.6888 ms/op
+
+OverheadJitting  2: 16 op, 239400.00 ns, 14.9625 us/op
+WorkloadJitting  2: 16 op, 59066600.00 ns, 3.6917 ms/op
+
+WorkloadPilot    1: 16 op, 53086700.00 ns, 3.3179 ms/op
+WorkloadPilot    2: 32 op, 99791500.00 ns, 3.1185 ms/op
+WorkloadPilot    3: 64 op, 238375100.00 ns, 3.7246 ms/op
+WorkloadPilot    4: 128 op, 213543900.00 ns, 1.6683 ms/op
+WorkloadPilot    5: 256 op, 291842300.00 ns, 1.1400 ms/op
+WorkloadPilot    6: 512 op, 576269100.00 ns, 1.1255 ms/op
+
+OverheadWarmup   1: 512 op, 2500.00 ns, 4.8828 ns/op
+OverheadWarmup   2: 512 op, 2500.00 ns, 4.8828 ns/op
+OverheadWarmup   3: 512 op, 2400.00 ns, 4.6875 ns/op
+OverheadWarmup   4: 512 op, 2400.00 ns, 4.6875 ns/op
+OverheadWarmup   5: 512 op, 2500.00 ns, 4.8828 ns/op
+
+OverheadActual   1: 512 op, 2500.00 ns, 4.8828 ns/op
+OverheadActual   2: 512 op, 2500.00 ns, 4.8828 ns/op
+OverheadActual   3: 512 op, 3300.00 ns, 6.4453 ns/op
+OverheadActual   4: 512 op, 2200.00 ns, 4.2969 ns/op
+OverheadActual   5: 512 op, 2400.00 ns, 4.6875 ns/op
+OverheadActual   6: 512 op, 2300.00 ns, 4.4922 ns/op
+OverheadActual   7: 512 op, 2400.00 ns, 4.6875 ns/op
+OverheadActual   8: 512 op, 2200.00 ns, 4.2969 ns/op
+OverheadActual   9: 512 op, 2400.00 ns, 4.6875 ns/op
+OverheadActual  10: 512 op, 2200.00 ns, 4.2969 ns/op
+OverheadActual  11: 512 op, 2300.00 ns, 4.4922 ns/op
+OverheadActual  12: 512 op, 2300.00 ns, 4.4922 ns/op
+OverheadActual  13: 512 op, 2400.00 ns, 4.6875 ns/op
+OverheadActual  14: 512 op, 2300.00 ns, 4.4922 ns/op
+OverheadActual  15: 512 op, 2700.00 ns, 5.2734 ns/op
+OverheadActual  16: 512 op, 2400.00 ns, 4.6875 ns/op
+
+WorkloadWarmup   1: 512 op, 587858600.00 ns, 1.1482 ms/op
+WorkloadWarmup   2: 512 op, 587886200.00 ns, 1.1482 ms/op
+WorkloadWarmup   3: 512 op, 581157900.00 ns, 1.1351 ms/op
+WorkloadWarmup   4: 512 op, 578012000.00 ns, 1.1289 ms/op
+WorkloadWarmup   5: 512 op, 584576300.00 ns, 1.1418 ms/op
+WorkloadWarmup   6: 512 op, 578971400.00 ns, 1.1308 ms/op
+
+// BeforeActualRun
+WorkloadActual   1: 512 op, 593442900.00 ns, 1.1591 ms/op
+WorkloadActual   2: 512 op, 578866400.00 ns, 1.1306 ms/op
+WorkloadActual   3: 512 op, 586590600.00 ns, 1.1457 ms/op
+WorkloadActual   4: 512 op, 580804200.00 ns, 1.1344 ms/op
+WorkloadActual   5: 512 op, 579463700.00 ns, 1.1318 ms/op
+WorkloadActual   6: 512 op, 580353300.00 ns, 1.1335 ms/op
+WorkloadActual   7: 512 op, 579152800.00 ns, 1.1312 ms/op
+WorkloadActual   8: 512 op, 582451200.00 ns, 1.1376 ms/op
+WorkloadActual   9: 512 op, 574113200.00 ns, 1.1213 ms/op
+WorkloadActual  10: 512 op, 561965100.00 ns, 1.0976 ms/op
+WorkloadActual  11: 512 op, 556058500.00 ns, 1.0861 ms/op
+WorkloadActual  12: 512 op, 558940300.00 ns, 1.0917 ms/op
+WorkloadActual  13: 512 op, 557690000.00 ns, 1.0892 ms/op
+WorkloadActual  14: 512 op, 559598200.00 ns, 1.0930 ms/op
+WorkloadActual  15: 512 op, 557193000.00 ns, 1.0883 ms/op
+WorkloadActual  16: 512 op, 556562900.00 ns, 1.0870 ms/op
+WorkloadActual  17: 512 op, 558743800.00 ns, 1.0913 ms/op
+WorkloadActual  18: 512 op, 555657200.00 ns, 1.0853 ms/op
+WorkloadActual  19: 512 op, 548978900.00 ns, 1.0722 ms/op
+WorkloadActual  20: 512 op, 552412200.00 ns, 1.0789 ms/op
+WorkloadActual  21: 512 op, 554146500.00 ns, 1.0823 ms/op
+
+// AfterActualRun
+WorkloadResult   1: 512 op, 593440500.00 ns, 1.1591 ms/op
+WorkloadResult   2: 512 op, 578864000.00 ns, 1.1306 ms/op
+WorkloadResult   3: 512 op, 586588200.00 ns, 1.1457 ms/op
+WorkloadResult   4: 512 op, 580801800.00 ns, 1.1344 ms/op
+WorkloadResult   5: 512 op, 579461300.00 ns, 1.1318 ms/op
+WorkloadResult   6: 512 op, 580350900.00 ns, 1.1335 ms/op
+WorkloadResult   7: 512 op, 579150400.00 ns, 1.1312 ms/op
+WorkloadResult   8: 512 op, 582448800.00 ns, 1.1376 ms/op
+WorkloadResult   9: 512 op, 574110800.00 ns, 1.1213 ms/op
+WorkloadResult  10: 512 op, 561962700.00 ns, 1.0976 ms/op
+WorkloadResult  11: 512 op, 556056100.00 ns, 1.0860 ms/op
+WorkloadResult  12: 512 op, 558937900.00 ns, 1.0917 ms/op
+WorkloadResult  13: 512 op, 557687600.00 ns, 1.0892 ms/op
+WorkloadResult  14: 512 op, 559595800.00 ns, 1.0930 ms/op
+WorkloadResult  15: 512 op, 557190600.00 ns, 1.0883 ms/op
+WorkloadResult  16: 512 op, 556560500.00 ns, 1.0870 ms/op
+WorkloadResult  17: 512 op, 558741400.00 ns, 1.0913 ms/op
+WorkloadResult  18: 512 op, 555654800.00 ns, 1.0853 ms/op
+WorkloadResult  19: 512 op, 548976500.00 ns, 1.0722 ms/op
+WorkloadResult  20: 512 op, 552409800.00 ns, 1.0789 ms/op
+WorkloadResult  21: 512 op, 554144100.00 ns, 1.0823 ms/op
+// GC:  40 9 0 1014182288 512
+// Threading:  0 0 512
+
+// AfterAll
+// Benchmark Process 9272 has exited with code 0.
+
+Mean = 1.108 ms, StdErr = 0.006 ms (0.52%), N = 21, StdDev = 0.026 ms
+Min = 1.072 ms, Q1 = 1.087 ms, Median = 1.093 ms, Q3 = 1.132 ms, Max = 1.159 ms
+IQR = 0.045 ms, LowerFence = 1.020 ms, UpperFence = 1.199 ms
+ConfidenceInterval = [1.086 ms; 1.130 ms] (CI 99.9%), Margin = 0.022 ms (2.00% of Mean)
+Skewness = 0.37, Kurtosis = 1.52, MValue = 2
+
+// ** Remained 21 (70,0%) benchmark(s) to run. Estimated finish 2026-11-01 20:31 (0h 7m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.SaveToText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=1000]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet e109f795-63e0-4d5c-836d-5557c3e09837.dll --anonymousPipes 2152 2160 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.SaveToText(N: 1000)" --job "NuGetReferences=Mafe.TinyCsv 2.2.2" --benchmarkId 3 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\e109f795-63e0-4d5c-836d-5557c3e09837\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-IEMEVK(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 197700.00 ns, 197.7000 us/op
+WorkloadJitting  1: 1 op, 5202200.00 ns, 5.2022 ms/op
+
+OverheadJitting  2: 16 op, 212000.00 ns, 13.2500 us/op
+WorkloadJitting  2: 16 op, 33441700.00 ns, 2.0901 ms/op
+
+WorkloadPilot    1: 16 op, 29295500.00 ns, 1.8310 ms/op
+WorkloadPilot    2: 32 op, 68580500.00 ns, 2.1431 ms/op
+WorkloadPilot    3: 64 op, 118298600.00 ns, 1.8484 ms/op
+WorkloadPilot    4: 128 op, 367545800.00 ns, 2.8715 ms/op
+WorkloadPilot    5: 256 op, 350139700.00 ns, 1.3677 ms/op
+WorkloadPilot    6: 512 op, 639784800.00 ns, 1.2496 ms/op
+
+OverheadWarmup   1: 512 op, 3100.00 ns, 6.0547 ns/op
+OverheadWarmup   2: 512 op, 2800.00 ns, 5.4688 ns/op
+OverheadWarmup   3: 512 op, 2600.00 ns, 5.0781 ns/op
+OverheadWarmup   4: 512 op, 2400.00 ns, 4.6875 ns/op
+OverheadWarmup   5: 512 op, 2400.00 ns, 4.6875 ns/op
+OverheadWarmup   6: 512 op, 2500.00 ns, 4.8828 ns/op
+OverheadWarmup   7: 512 op, 2600.00 ns, 5.0781 ns/op
+OverheadWarmup   8: 512 op, 4300.00 ns, 8.3984 ns/op
+OverheadWarmup   9: 512 op, 2300.00 ns, 4.4922 ns/op
+OverheadWarmup  10: 512 op, 2700.00 ns, 5.2734 ns/op
+
+OverheadActual   1: 512 op, 2300.00 ns, 4.4922 ns/op
+OverheadActual   2: 512 op, 2300.00 ns, 4.4922 ns/op
+OverheadActual   3: 512 op, 2300.00 ns, 4.4922 ns/op
+OverheadActual   4: 512 op, 2200.00 ns, 4.2969 ns/op
+OverheadActual   5: 512 op, 2100.00 ns, 4.1016 ns/op
+OverheadActual   6: 512 op, 2100.00 ns, 4.1016 ns/op
+OverheadActual   7: 512 op, 2200.00 ns, 4.2969 ns/op
+OverheadActual   8: 512 op, 2100.00 ns, 4.1016 ns/op
+OverheadActual   9: 512 op, 2500.00 ns, 4.8828 ns/op
+OverheadActual  10: 512 op, 2100.00 ns, 4.1016 ns/op
+OverheadActual  11: 512 op, 2000.00 ns, 3.9062 ns/op
+OverheadActual  12: 512 op, 2200.00 ns, 4.2969 ns/op
+OverheadActual  13: 512 op, 2500.00 ns, 4.8828 ns/op
+OverheadActual  14: 512 op, 2200.00 ns, 4.2969 ns/op
+OverheadActual  15: 512 op, 2500.00 ns, 4.8828 ns/op
+OverheadActual  16: 512 op, 2400.00 ns, 4.6875 ns/op
+OverheadActual  17: 512 op, 2600.00 ns, 5.0781 ns/op
+OverheadActual  18: 512 op, 2200.00 ns, 4.2969 ns/op
+OverheadActual  19: 512 op, 2200.00 ns, 4.2969 ns/op
+OverheadActual  20: 512 op, 2500.00 ns, 4.8828 ns/op
+
+WorkloadWarmup   1: 512 op, 627602400.00 ns, 1.2258 ms/op
+WorkloadWarmup   2: 512 op, 618562800.00 ns, 1.2081 ms/op
+WorkloadWarmup   3: 512 op, 608343300.00 ns, 1.1882 ms/op
+WorkloadWarmup   4: 512 op, 614333300.00 ns, 1.1999 ms/op
+WorkloadWarmup   5: 512 op, 609575000.00 ns, 1.1906 ms/op
+WorkloadWarmup   6: 512 op, 604092800.00 ns, 1.1799 ms/op
+WorkloadWarmup   7: 512 op, 617342000.00 ns, 1.2057 ms/op
+WorkloadWarmup   8: 512 op, 606873700.00 ns, 1.1853 ms/op
+
+// BeforeActualRun
+WorkloadActual   1: 512 op, 611719200.00 ns, 1.1948 ms/op
+WorkloadActual   2: 512 op, 632238200.00 ns, 1.2348 ms/op
+WorkloadActual   3: 512 op, 611020700.00 ns, 1.1934 ms/op
+WorkloadActual   4: 512 op, 625319800.00 ns, 1.2213 ms/op
+WorkloadActual   5: 512 op, 604204700.00 ns, 1.1801 ms/op
+WorkloadActual   6: 512 op, 619484300.00 ns, 1.2099 ms/op
+WorkloadActual   7: 512 op, 595475800.00 ns, 1.1630 ms/op
+WorkloadActual   8: 512 op, 601325700.00 ns, 1.1745 ms/op
+WorkloadActual   9: 512 op, 589356900.00 ns, 1.1511 ms/op
+WorkloadActual  10: 512 op, 601223300.00 ns, 1.1743 ms/op
+WorkloadActual  11: 512 op, 589901700.00 ns, 1.1522 ms/op
+WorkloadActual  12: 512 op, 599487400.00 ns, 1.1709 ms/op
+WorkloadActual  13: 512 op, 585176700.00 ns, 1.1429 ms/op
+WorkloadActual  14: 512 op, 596249800.00 ns, 1.1646 ms/op
+WorkloadActual  15: 512 op, 612802700.00 ns, 1.1969 ms/op
+WorkloadActual  16: 512 op, 601767900.00 ns, 1.1753 ms/op
+WorkloadActual  17: 512 op, 612272700.00 ns, 1.1958 ms/op
+WorkloadActual  18: 512 op, 609151400.00 ns, 1.1897 ms/op
+
+// AfterActualRun
+WorkloadResult   1: 512 op, 611717000.00 ns, 1.1948 ms/op
+WorkloadResult   2: 512 op, 632236000.00 ns, 1.2348 ms/op
+WorkloadResult   3: 512 op, 611018500.00 ns, 1.1934 ms/op
+WorkloadResult   4: 512 op, 625317600.00 ns, 1.2213 ms/op
+WorkloadResult   5: 512 op, 604202500.00 ns, 1.1801 ms/op
+WorkloadResult   6: 512 op, 619482100.00 ns, 1.2099 ms/op
+WorkloadResult   7: 512 op, 595473600.00 ns, 1.1630 ms/op
+WorkloadResult   8: 512 op, 601323500.00 ns, 1.1745 ms/op
+WorkloadResult   9: 512 op, 589354700.00 ns, 1.1511 ms/op
+WorkloadResult  10: 512 op, 601221100.00 ns, 1.1743 ms/op
+WorkloadResult  11: 512 op, 589899500.00 ns, 1.1521 ms/op
+WorkloadResult  12: 512 op, 599485200.00 ns, 1.1709 ms/op
+WorkloadResult  13: 512 op, 585174500.00 ns, 1.1429 ms/op
+WorkloadResult  14: 512 op, 596247600.00 ns, 1.1645 ms/op
+WorkloadResult  15: 512 op, 612800500.00 ns, 1.1969 ms/op
+WorkloadResult  16: 512 op, 601765700.00 ns, 1.1753 ms/op
+WorkloadResult  17: 512 op, 612270500.00 ns, 1.1958 ms/op
+WorkloadResult  18: 512 op, 609149200.00 ns, 1.1897 ms/op
+// GC:  21 21 21 591363360 512
+// Threading:  0 0 512
+
+// AfterAll
+// Benchmark Process 6508 has exited with code 0.
+
+Mean = 1.183 ms, StdErr = 0.006 ms (0.49%), N = 18, StdDev = 0.025 ms
+Min = 1.143 ms, Q1 = 1.166 ms, Median = 1.178 ms, Q3 = 1.196 ms, Max = 1.235 ms
+IQR = 0.029 ms, LowerFence = 1.122 ms, UpperFence = 1.240 ms
+ConfidenceInterval = [1.160 ms; 1.205 ms] (CI 99.9%), Margin = 0.023 ms (1.94% of Mean)
+Skewness = 0.35, Kurtosis = 2.31, MValue = 2
+
+// ** Remained 20 (66,7%) benchmark(s) to run. Estimated finish 2026-11-01 20:31 (0h 6m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// Build Error: Standard output: 
+  
+ Standard error: 
+ info : X.509 certificate chain validation will use the default trust store selected by .NET for code signing.
+info : X.509 certificate chain validation will use the default trust store selected by .NET for timestamping.
+info : Adding PackageReference for package 'Mafe.TinyCsv' into project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+info : Restoring packages for C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj...
+info :   CACHE https://api.nuget.org/v3-flatcontainer/mafe.tinycsv/index.json
+info :   CACHE https://nuget.devexpress.com/GGeuOtRw7l1YfmBaZFZCPDEdcjPXHXQ2y2dNhfL6o7hedMtLAT/api/FindPackagesById()?id='Mafe.TinyCsv'&semVerLevel=2.0.0
+info :   GET https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json
+info :   NotFound https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json 380ms
+error: NU1102: Unable to find package Mafe.TinyCsv with version (>= 3.0.0)
+error:   - Found 35 version(s) in nuget.org [ Nearest version: 3.0.0-rc1 ]
+error:   - Found 0 version(s) in Microsoft Visual Studio Offline Packages
+error:   - Found 0 version(s) in C:\Program Files\dotnet\library-packs
+error:   - Found 0 version(s) in DevExpress
+error:   - Found 0 version(s) in MAUI
+info :   CACHE https://api.nuget.org/v3/vulnerabilities/index.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/vulnerability.base.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/2026.11.01.11.41.44/vulnerability.update.json
+error: Package 'Mafe.TinyCsv' is incompatible with 'all' frameworks in project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+
+// BenchmarkDotNet has failed to build the auto-generated boilerplate code.
+// It can be found in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3
+// Please follow the troubleshooting guide: https://benchmarkdotnet.org/articles/guides/troubleshooting.html
+
+// ** Remained 19 (63,3%) benchmark(s) to run. Estimated finish 2026-11-01 20:30 (0h 5m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// Build Error: Standard output: 
+  
+ Standard error: 
+ info : X.509 certificate chain validation will use the default trust store selected by .NET for code signing.
+info : X.509 certificate chain validation will use the default trust store selected by .NET for timestamping.
+info : Adding PackageReference for package 'Mafe.TinyCsv' into project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+info : Restoring packages for C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj...
+info :   CACHE https://api.nuget.org/v3-flatcontainer/mafe.tinycsv/index.json
+info :   CACHE https://nuget.devexpress.com/GGeuOtRw7l1YfmBaZFZCPDEdcjPXHXQ2y2dNhfL6o7hedMtLAT/api/FindPackagesById()?id='Mafe.TinyCsv'&semVerLevel=2.0.0
+info :   GET https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json
+info :   NotFound https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json 380ms
+error: NU1102: Unable to find package Mafe.TinyCsv with version (>= 3.0.0)
+error:   - Found 35 version(s) in nuget.org [ Nearest version: 3.0.0-rc1 ]
+error:   - Found 0 version(s) in Microsoft Visual Studio Offline Packages
+error:   - Found 0 version(s) in C:\Program Files\dotnet\library-packs
+error:   - Found 0 version(s) in DevExpress
+error:   - Found 0 version(s) in MAUI
+info :   CACHE https://api.nuget.org/v3/vulnerabilities/index.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/vulnerability.base.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/2026.11.01.11.41.44/vulnerability.update.json
+error: Package 'Mafe.TinyCsv' is incompatible with 'all' frameworks in project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+
+// BenchmarkDotNet has failed to build the auto-generated boilerplate code.
+// It can be found in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3
+// Please follow the troubleshooting guide: https://benchmarkdotnet.org/articles/guides/troubleshooting.html
+
+// ** Remained 18 (60,0%) benchmark(s) to run. Estimated finish 2026-11-01 20:30 (0h 5m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.LoadFromText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=10000]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet d9cfed3a-4fcd-4703-b721-115d3843cd66.dll --anonymousPipes 2052 1196 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.LoadFromText(N: 10000)" --job "NuGetReferences=Mafe.TinyCsv 2.1.0" --benchmarkId 4 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\d9cfed3a-4fcd-4703-b721-115d3843cd66\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-AZIRNP(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 206900.00 ns, 206.9000 us/op
+WorkloadJitting  1: 1 op, 34868000.00 ns, 34.8680 ms/op
+
+WorkloadPilot    1: 2 op, 55533600.00 ns, 27.7668 ms/op
+WorkloadPilot    2: 3 op, 76355200.00 ns, 25.4517 ms/op
+WorkloadPilot    3: 4 op, 104673900.00 ns, 26.1685 ms/op
+WorkloadPilot    4: 5 op, 155101700.00 ns, 31.0203 ms/op
+WorkloadPilot    5: 6 op, 115755200.00 ns, 19.2925 ms/op
+WorkloadPilot    6: 7 op, 67616200.00 ns, 9.6595 ms/op
+WorkloadPilot    7: 8 op, 66462300.00 ns, 8.3078 ms/op
+WorkloadPilot    8: 9 op, 78125400.00 ns, 8.6806 ms/op
+WorkloadPilot    9: 10 op, 85696500.00 ns, 8.5696 ms/op
+WorkloadPilot   10: 11 op, 93676200.00 ns, 8.5160 ms/op
+WorkloadPilot   11: 12 op, 105491100.00 ns, 8.7909 ms/op
+WorkloadPilot   12: 13 op, 112089000.00 ns, 8.6222 ms/op
+WorkloadPilot   13: 14 op, 118530500.00 ns, 8.4665 ms/op
+WorkloadPilot   14: 15 op, 128565800.00 ns, 8.5711 ms/op
+WorkloadPilot   15: 16 op, 138120700.00 ns, 8.6325 ms/op
+WorkloadPilot   16: 32 op, 276900700.00 ns, 8.6531 ms/op
+WorkloadPilot   17: 64 op, 555443000.00 ns, 8.6788 ms/op
+
+WorkloadWarmup   1: 64 op, 550764600.00 ns, 8.6057 ms/op
+WorkloadWarmup   2: 64 op, 557715900.00 ns, 8.7143 ms/op
+WorkloadWarmup   3: 64 op, 550953700.00 ns, 8.6087 ms/op
+WorkloadWarmup   4: 64 op, 558915600.00 ns, 8.7331 ms/op
+WorkloadWarmup   5: 64 op, 547015300.00 ns, 8.5471 ms/op
+WorkloadWarmup   6: 64 op, 556331300.00 ns, 8.6927 ms/op
+
+// BeforeActualRun
+WorkloadActual   1: 64 op, 550528700.00 ns, 8.6020 ms/op
+WorkloadActual   2: 64 op, 564694300.00 ns, 8.8233 ms/op
+WorkloadActual   3: 64 op, 550094800.00 ns, 8.5952 ms/op
+WorkloadActual   4: 64 op, 547672600.00 ns, 8.5574 ms/op
+WorkloadActual   5: 64 op, 557188300.00 ns, 8.7061 ms/op
+WorkloadActual   6: 64 op, 549847400.00 ns, 8.5914 ms/op
+WorkloadActual   7: 64 op, 554675000.00 ns, 8.6668 ms/op
+WorkloadActual   8: 64 op, 549767100.00 ns, 8.5901 ms/op
+WorkloadActual   9: 64 op, 558750500.00 ns, 8.7305 ms/op
+WorkloadActual  10: 64 op, 546053300.00 ns, 8.5321 ms/op
+WorkloadActual  11: 64 op, 554667400.00 ns, 8.6667 ms/op
+WorkloadActual  12: 64 op, 547891300.00 ns, 8.5608 ms/op
+WorkloadActual  13: 64 op, 554395500.00 ns, 8.6624 ms/op
+WorkloadActual  14: 64 op, 549629300.00 ns, 8.5880 ms/op
+WorkloadActual  15: 64 op, 555972100.00 ns, 8.6871 ms/op
+
+// AfterActualRun
+WorkloadResult   1: 64 op, 550528700.00 ns, 8.6020 ms/op
+WorkloadResult   2: 64 op, 550094800.00 ns, 8.5952 ms/op
+WorkloadResult   3: 64 op, 547672600.00 ns, 8.5574 ms/op
+WorkloadResult   4: 64 op, 557188300.00 ns, 8.7061 ms/op
+WorkloadResult   5: 64 op, 549847400.00 ns, 8.5914 ms/op
+WorkloadResult   6: 64 op, 554675000.00 ns, 8.6668 ms/op
+WorkloadResult   7: 64 op, 549767100.00 ns, 8.5901 ms/op
+WorkloadResult   8: 64 op, 558750500.00 ns, 8.7305 ms/op
+WorkloadResult   9: 64 op, 546053300.00 ns, 8.5321 ms/op
+WorkloadResult  10: 64 op, 554667400.00 ns, 8.6667 ms/op
+WorkloadResult  11: 64 op, 547891300.00 ns, 8.5608 ms/op
+WorkloadResult  12: 64 op, 554395500.00 ns, 8.6624 ms/op
+WorkloadResult  13: 64 op, 549629300.00 ns, 8.5880 ms/op
+WorkloadResult  14: 64 op, 555972100.00 ns, 8.6871 ms/op
+// GC:  31 12 12 764971344 64
+// Threading:  0 0 64
+
+// AfterAll
+// Benchmark Process 9708 has exited with code 0.
+
+Mean = 8.624 ms, StdErr = 0.016 ms (0.19%), N = 14, StdDev = 0.061 ms
+Min = 8.532 ms, Q1 = 8.588 ms, Median = 8.599 ms, Q3 = 8.667 ms, Max = 8.730 ms
+IQR = 0.078 ms, LowerFence = 8.471 ms, UpperFence = 8.784 ms
+ConfidenceInterval = [8.555 ms; 8.693 ms] (CI 99.9%), Margin = 0.069 ms (0.80% of Mean)
+Skewness = 0.23, Kurtosis = 1.57, MValue = 2
+
+// ** Remained 17 (56,7%) benchmark(s) to run. Estimated finish 2026-11-01 20:29 (0h 4m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.SaveToText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=10000]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet d9cfed3a-4fcd-4703-b721-115d3843cd66.dll --anonymousPipes 2060 2040 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.SaveToText(N: 10000)" --job "NuGetReferences=Mafe.TinyCsv 2.1.0" --benchmarkId 5 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\d9cfed3a-4fcd-4703-b721-115d3843cd66\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-AVWEWX(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 242200.00 ns, 242.2000 us/op
+WorkloadJitting  1: 1 op, 23973400.00 ns, 23.9734 ms/op
+
+OverheadJitting  2: 16 op, 242100.00 ns, 15.1312 us/op
+WorkloadJitting  2: 16 op, 442536100.00 ns, 27.6585 ms/op
+
+WorkloadPilot    1: 16 op, 291183700.00 ns, 18.1990 ms/op
+WorkloadPilot    2: 32 op, 383368500.00 ns, 11.9803 ms/op
+WorkloadPilot    3: 64 op, 721419900.00 ns, 11.2722 ms/op
+
+OverheadWarmup   1: 64 op, 2700.00 ns, 42.1875 ns/op
+OverheadWarmup   2: 64 op, 1500.00 ns, 23.4375 ns/op
+OverheadWarmup   3: 64 op, 1200.00 ns, 18.7500 ns/op
+OverheadWarmup   4: 64 op, 1000.00 ns, 15.6250 ns/op
+OverheadWarmup   5: 64 op, 1000.00 ns, 15.6250 ns/op
+OverheadWarmup   6: 64 op, 1000.00 ns, 15.6250 ns/op
+OverheadWarmup   7: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadWarmup   8: 64 op, 1100.00 ns, 17.1875 ns/op
+
+OverheadActual   1: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadActual   2: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadActual   3: 64 op, 1300.00 ns, 20.3125 ns/op
+OverheadActual   4: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadActual   5: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadActual   6: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadActual   7: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadActual   8: 64 op, 1000.00 ns, 15.6250 ns/op
+OverheadActual   9: 64 op, 1000.00 ns, 15.6250 ns/op
+OverheadActual  10: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadActual  11: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadActual  12: 64 op, 1200.00 ns, 18.7500 ns/op
+OverheadActual  13: 64 op, 1000.00 ns, 15.6250 ns/op
+OverheadActual  14: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadActual  15: 64 op, 1100.00 ns, 17.1875 ns/op
+
+WorkloadWarmup   1: 64 op, 782712500.00 ns, 12.2299 ms/op
+WorkloadWarmup   2: 64 op, 767576900.00 ns, 11.9934 ms/op
+WorkloadWarmup   3: 64 op, 812972900.00 ns, 12.7027 ms/op
+WorkloadWarmup   4: 64 op, 750975200.00 ns, 11.7340 ms/op
+WorkloadWarmup   5: 64 op, 772007400.00 ns, 12.0626 ms/op
+WorkloadWarmup   6: 64 op, 751516700.00 ns, 11.7424 ms/op
+
+// BeforeActualRun
+WorkloadActual   1: 64 op, 768654300.00 ns, 12.0102 ms/op
+WorkloadActual   2: 64 op, 737225500.00 ns, 11.5191 ms/op
+WorkloadActual   3: 64 op, 788671800.00 ns, 12.3230 ms/op
+WorkloadActual   4: 64 op, 740664200.00 ns, 11.5729 ms/op
+WorkloadActual   5: 64 op, 770198100.00 ns, 12.0343 ms/op
+WorkloadActual   6: 64 op, 729382600.00 ns, 11.3966 ms/op
+WorkloadActual   7: 64 op, 793987400.00 ns, 12.4061 ms/op
+WorkloadActual   8: 64 op, 736206000.00 ns, 11.5032 ms/op
+WorkloadActual   9: 64 op, 774960100.00 ns, 12.1088 ms/op
+WorkloadActual  10: 64 op, 725603700.00 ns, 11.3376 ms/op
+WorkloadActual  11: 64 op, 794039300.00 ns, 12.4069 ms/op
+WorkloadActual  12: 64 op, 741713700.00 ns, 11.5893 ms/op
+WorkloadActual  13: 64 op, 1030352200.00 ns, 16.0993 ms/op
+WorkloadActual  14: 64 op, 1213468700.00 ns, 18.9604 ms/op
+WorkloadActual  15: 64 op, 972547400.00 ns, 15.1961 ms/op
+WorkloadActual  16: 64 op, 739051300.00 ns, 11.5477 ms/op
+WorkloadActual  17: 64 op, 774690600.00 ns, 12.1045 ms/op
+WorkloadActual  18: 64 op, 758076100.00 ns, 11.8449 ms/op
+WorkloadActual  19: 64 op, 757335500.00 ns, 11.8334 ms/op
+WorkloadActual  20: 64 op, 766443900.00 ns, 11.9757 ms/op
+WorkloadActual  21: 64 op, 771666200.00 ns, 12.0573 ms/op
+WorkloadActual  22: 64 op, 760033900.00 ns, 11.8755 ms/op
+WorkloadActual  23: 64 op, 741261600.00 ns, 11.5822 ms/op
+WorkloadActual  24: 64 op, 754451200.00 ns, 11.7883 ms/op
+WorkloadActual  25: 64 op, 773613100.00 ns, 12.0877 ms/op
+WorkloadActual  26: 64 op, 752877000.00 ns, 11.7637 ms/op
+WorkloadActual  27: 64 op, 762515000.00 ns, 11.9143 ms/op
+
+// AfterActualRun
+WorkloadResult   1: 64 op, 768653200.00 ns, 12.0102 ms/op
+WorkloadResult   2: 64 op, 737224400.00 ns, 11.5191 ms/op
+WorkloadResult   3: 64 op, 788670700.00 ns, 12.3230 ms/op
+WorkloadResult   4: 64 op, 740663100.00 ns, 11.5729 ms/op
+WorkloadResult   5: 64 op, 770197000.00 ns, 12.0343 ms/op
+WorkloadResult   6: 64 op, 729381500.00 ns, 11.3966 ms/op
+WorkloadResult   7: 64 op, 793986300.00 ns, 12.4060 ms/op
+WorkloadResult   8: 64 op, 736204900.00 ns, 11.5032 ms/op
+WorkloadResult   9: 64 op, 774959000.00 ns, 12.1087 ms/op
+WorkloadResult  10: 64 op, 725602600.00 ns, 11.3375 ms/op
+WorkloadResult  11: 64 op, 794038200.00 ns, 12.4068 ms/op
+WorkloadResult  12: 64 op, 741712600.00 ns, 11.5893 ms/op
+WorkloadResult  13: 64 op, 739050200.00 ns, 11.5477 ms/op
+WorkloadResult  14: 64 op, 774689500.00 ns, 12.1045 ms/op
+WorkloadResult  15: 64 op, 758075000.00 ns, 11.8449 ms/op
+WorkloadResult  16: 64 op, 757334400.00 ns, 11.8333 ms/op
+WorkloadResult  17: 64 op, 766442800.00 ns, 11.9757 ms/op
+WorkloadResult  18: 64 op, 771665100.00 ns, 12.0573 ms/op
+WorkloadResult  19: 64 op, 760032800.00 ns, 11.8755 ms/op
+WorkloadResult  20: 64 op, 741260500.00 ns, 11.5822 ms/op
+WorkloadResult  21: 64 op, 754450100.00 ns, 11.7883 ms/op
+WorkloadResult  22: 64 op, 773612000.00 ns, 12.0877 ms/op
+WorkloadResult  23: 64 op, 752875900.00 ns, 11.7637 ms/op
+WorkloadResult  24: 64 op, 762513900.00 ns, 11.9143 ms/op
+// GC:  31 31 31 702863424 64
+// Threading:  0 0 64
+
+// AfterAll
+// Benchmark Process 3576 has exited with code 0.
+
+Mean = 11.858 ms, StdErr = 0.063 ms (0.53%), N = 24, StdDev = 0.307 ms
+Min = 11.338 ms, Q1 = 11.580 ms, Median = 11.860 ms, Q3 = 12.065 ms, Max = 12.407 ms
+IQR = 0.485 ms, LowerFence = 10.852 ms, UpperFence = 12.792 ms
+ConfidenceInterval = [11.621 ms; 12.094 ms] (CI 99.9%), Margin = 0.236 ms (1.99% of Mean)
+Skewness = 0.11, Kurtosis = 1.95, MValue = 2
+
+// ** Remained 16 (53,3%) benchmark(s) to run. Estimated finish 2026-11-01 20:30 (0h 4m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.LoadFromText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=10000]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet e109f795-63e0-4d5c-836d-5557c3e09837.dll --anonymousPipes 1836 2028 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.LoadFromText(N: 10000)" --job "NuGetReferences=Mafe.TinyCsv 2.2.2" --benchmarkId 4 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\e109f795-63e0-4d5c-836d-5557c3e09837\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-JFTNRB(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 206800.00 ns, 206.8000 us/op
+WorkloadJitting  1: 1 op, 43066700.00 ns, 43.0667 ms/op
+
+WorkloadPilot    1: 2 op, 66267600.00 ns, 33.1338 ms/op
+WorkloadPilot    2: 3 op, 93671500.00 ns, 31.2238 ms/op
+WorkloadPilot    3: 4 op, 137740600.00 ns, 34.4352 ms/op
+WorkloadPilot    4: 5 op, 193768000.00 ns, 38.7536 ms/op
+WorkloadPilot    5: 6 op, 71900300.00 ns, 11.9834 ms/op
+WorkloadPilot    6: 7 op, 87007100.00 ns, 12.4296 ms/op
+WorkloadPilot    7: 8 op, 95737200.00 ns, 11.9672 ms/op
+WorkloadPilot    8: 9 op, 105796000.00 ns, 11.7551 ms/op
+WorkloadPilot    9: 10 op, 122045200.00 ns, 12.2045 ms/op
+WorkloadPilot   10: 11 op, 132040700.00 ns, 12.0037 ms/op
+WorkloadPilot   11: 12 op, 146607700.00 ns, 12.2173 ms/op
+WorkloadPilot   12: 13 op, 153399900.00 ns, 11.8000 ms/op
+WorkloadPilot   13: 14 op, 167775300.00 ns, 11.9840 ms/op
+WorkloadPilot   14: 15 op, 178429600.00 ns, 11.8953 ms/op
+WorkloadPilot   15: 16 op, 191541700.00 ns, 11.9714 ms/op
+WorkloadPilot   16: 32 op, 425839600.00 ns, 13.3075 ms/op
+WorkloadPilot   17: 64 op, 782974700.00 ns, 12.2340 ms/op
+
+WorkloadWarmup   1: 64 op, 764235100.00 ns, 11.9412 ms/op
+WorkloadWarmup   2: 64 op, 766619200.00 ns, 11.9784 ms/op
+WorkloadWarmup   3: 64 op, 780086300.00 ns, 12.1888 ms/op
+WorkloadWarmup   4: 64 op, 771207800.00 ns, 12.0501 ms/op
+WorkloadWarmup   5: 64 op, 769152200.00 ns, 12.0180 ms/op
+WorkloadWarmup   6: 64 op, 774538800.00 ns, 12.1022 ms/op
+WorkloadWarmup   7: 64 op, 772358500.00 ns, 12.0681 ms/op
+
+// BeforeActualRun
+WorkloadActual   1: 64 op, 776379000.00 ns, 12.1309 ms/op
+WorkloadActual   2: 64 op, 769634600.00 ns, 12.0255 ms/op
+WorkloadActual   3: 64 op, 760526300.00 ns, 11.8832 ms/op
+WorkloadActual   4: 64 op, 759733400.00 ns, 11.8708 ms/op
+WorkloadActual   5: 64 op, 751937000.00 ns, 11.7490 ms/op
+WorkloadActual   6: 64 op, 779125500.00 ns, 12.1738 ms/op
+WorkloadActual   7: 64 op, 760454900.00 ns, 11.8821 ms/op
+WorkloadActual   8: 64 op, 786415500.00 ns, 12.2877 ms/op
+WorkloadActual   9: 64 op, 1123379300.00 ns, 17.5528 ms/op
+WorkloadActual  10: 64 op, 1091342100.00 ns, 17.0522 ms/op
+WorkloadActual  11: 64 op, 883224900.00 ns, 13.8004 ms/op
+WorkloadActual  12: 64 op, 832077700.00 ns, 13.0012 ms/op
+WorkloadActual  13: 64 op, 962916000.00 ns, 15.0456 ms/op
+WorkloadActual  14: 64 op, 890878100.00 ns, 13.9200 ms/op
+WorkloadActual  15: 64 op, 1054775900.00 ns, 16.4809 ms/op
+WorkloadActual  16: 64 op, 958705000.00 ns, 14.9798 ms/op
+WorkloadActual  17: 64 op, 1049705700.00 ns, 16.4017 ms/op
+WorkloadActual  18: 64 op, 1044059800.00 ns, 16.3134 ms/op
+WorkloadActual  19: 64 op, 1114475900.00 ns, 17.4137 ms/op
+WorkloadActual  20: 64 op, 974236500.00 ns, 15.2224 ms/op
+WorkloadActual  21: 64 op, 964891300.00 ns, 15.0764 ms/op
+WorkloadActual  22: 64 op, 1264105000.00 ns, 19.7516 ms/op
+WorkloadActual  23: 64 op, 1213545200.00 ns, 18.9616 ms/op
+WorkloadActual  24: 64 op, 1243603300.00 ns, 19.4313 ms/op
+WorkloadActual  25: 64 op, 1260846400.00 ns, 19.7007 ms/op
+WorkloadActual  26: 64 op, 1250438600.00 ns, 19.5381 ms/op
+WorkloadActual  27: 64 op, 1232310400.00 ns, 19.2549 ms/op
+WorkloadActual  28: 64 op, 1231745900.00 ns, 19.2460 ms/op
+WorkloadActual  29: 64 op, 1251181200.00 ns, 19.5497 ms/op
+WorkloadActual  30: 64 op, 1112003500.00 ns, 17.3751 ms/op
+WorkloadActual  31: 64 op, 1009413700.00 ns, 15.7721 ms/op
+WorkloadActual  32: 64 op, 1111239100.00 ns, 17.3631 ms/op
+WorkloadActual  33: 64 op, 815180100.00 ns, 12.7372 ms/op
+WorkloadActual  34: 64 op, 775220700.00 ns, 12.1128 ms/op
+WorkloadActual  35: 64 op, 771421400.00 ns, 12.0535 ms/op
+WorkloadActual  36: 64 op, 773988200.00 ns, 12.0936 ms/op
+WorkloadActual  37: 64 op, 761682800.00 ns, 11.9013 ms/op
+WorkloadActual  38: 64 op, 763926400.00 ns, 11.9363 ms/op
+WorkloadActual  39: 64 op, 757920200.00 ns, 11.8425 ms/op
+WorkloadActual  40: 64 op, 775272500.00 ns, 12.1136 ms/op
+WorkloadActual  41: 64 op, 765911900.00 ns, 11.9674 ms/op
+WorkloadActual  42: 64 op, 756661400.00 ns, 11.8228 ms/op
+WorkloadActual  43: 64 op, 761599400.00 ns, 11.9000 ms/op
+WorkloadActual  44: 64 op, 761438700.00 ns, 11.8975 ms/op
+WorkloadActual  45: 64 op, 769173800.00 ns, 12.0183 ms/op
+WorkloadActual  46: 64 op, 779128400.00 ns, 12.1739 ms/op
+WorkloadActual  47: 64 op, 773962400.00 ns, 12.0932 ms/op
+WorkloadActual  48: 64 op, 767586300.00 ns, 11.9935 ms/op
+WorkloadActual  49: 64 op, 770878300.00 ns, 12.0450 ms/op
+WorkloadActual  50: 64 op, 793616900.00 ns, 12.4003 ms/op
+WorkloadActual  51: 64 op, 772939900.00 ns, 12.0772 ms/op
+WorkloadActual  52: 64 op, 770325300.00 ns, 12.0363 ms/op
+WorkloadActual  53: 64 op, 770217900.00 ns, 12.0347 ms/op
+WorkloadActual  54: 64 op, 775876600.00 ns, 12.1231 ms/op
+WorkloadActual  55: 64 op, 760467700.00 ns, 11.8823 ms/op
+WorkloadActual  56: 64 op, 775844400.00 ns, 12.1226 ms/op
+WorkloadActual  57: 64 op, 765514300.00 ns, 11.9612 ms/op
+WorkloadActual  58: 64 op, 759851800.00 ns, 11.8727 ms/op
+WorkloadActual  59: 64 op, 758826800.00 ns, 11.8567 ms/op
+WorkloadActual  60: 64 op, 769495800.00 ns, 12.0234 ms/op
+WorkloadActual  61: 64 op, 770298800.00 ns, 12.0359 ms/op
+WorkloadActual  62: 64 op, 762417800.00 ns, 11.9128 ms/op
+WorkloadActual  63: 64 op, 769994000.00 ns, 12.0312 ms/op
+WorkloadActual  64: 64 op, 765682900.00 ns, 11.9638 ms/op
+WorkloadActual  65: 64 op, 766033200.00 ns, 11.9693 ms/op
+WorkloadActual  66: 64 op, 759765600.00 ns, 11.8713 ms/op
+WorkloadActual  67: 64 op, 774777400.00 ns, 12.1059 ms/op
+WorkloadActual  68: 64 op, 770653400.00 ns, 12.0415 ms/op
+WorkloadActual  69: 64 op, 763529500.00 ns, 11.9301 ms/op
+WorkloadActual  70: 64 op, 986431900.00 ns, 15.4130 ms/op
+WorkloadActual  71: 64 op, 1198314600.00 ns, 18.7237 ms/op
+WorkloadActual  72: 64 op, 1177887100.00 ns, 18.4045 ms/op
+WorkloadActual  73: 64 op, 1155120000.00 ns, 18.0487 ms/op
+WorkloadActual  74: 64 op, 1105145900.00 ns, 17.2679 ms/op
+WorkloadActual  75: 64 op, 1097601800.00 ns, 17.1500 ms/op
+WorkloadActual  76: 64 op, 1106387500.00 ns, 17.2873 ms/op
+WorkloadActual  77: 64 op, 1125983700.00 ns, 17.5935 ms/op
+WorkloadActual  78: 64 op, 1293733800.00 ns, 20.2146 ms/op
+WorkloadActual  79: 64 op, 1130240900.00 ns, 17.6600 ms/op
+WorkloadActual  80: 64 op, 1118240900.00 ns, 17.4725 ms/op
+WorkloadActual  81: 64 op, 1092434400.00 ns, 17.0693 ms/op
+WorkloadActual  82: 64 op, 1116311900.00 ns, 17.4424 ms/op
+WorkloadActual  83: 64 op, 1115535800.00 ns, 17.4302 ms/op
+WorkloadActual  84: 64 op, 1144170500.00 ns, 17.8777 ms/op
+WorkloadActual  85: 64 op, 1132582100.00 ns, 17.6966 ms/op
+WorkloadActual  86: 64 op, 1001539700.00 ns, 15.6491 ms/op
+WorkloadActual  87: 64 op, 789402900.00 ns, 12.3344 ms/op
+WorkloadActual  88: 64 op, 761594000.00 ns, 11.8999 ms/op
+WorkloadActual  89: 64 op, 769632500.00 ns, 12.0255 ms/op
+WorkloadActual  90: 64 op, 768041600.00 ns, 12.0007 ms/op
+WorkloadActual  91: 64 op, 773531200.00 ns, 12.0864 ms/op
+WorkloadActual  92: 64 op, 761351600.00 ns, 11.8961 ms/op
+WorkloadActual  93: 64 op, 769948700.00 ns, 12.0304 ms/op
+WorkloadActual  94: 64 op, 766488300.00 ns, 11.9764 ms/op
+WorkloadActual  95: 64 op, 759268000.00 ns, 11.8636 ms/op
+WorkloadActual  96: 64 op, 777063800.00 ns, 12.1416 ms/op
+WorkloadActual  97: 64 op, 767610900.00 ns, 11.9939 ms/op
+WorkloadActual  98: 64 op, 763820900.00 ns, 11.9347 ms/op
+WorkloadActual  99: 64 op, 756452000.00 ns, 11.8196 ms/op
+WorkloadActual  100: 64 op, 760442800.00 ns, 11.8819 ms/op
+
+// AfterActualRun
+WorkloadResult   1: 64 op, 776379000.00 ns, 12.1309 ms/op
+WorkloadResult   2: 64 op, 769634600.00 ns, 12.0255 ms/op
+WorkloadResult   3: 64 op, 760526300.00 ns, 11.8832 ms/op
+WorkloadResult   4: 64 op, 759733400.00 ns, 11.8708 ms/op
+WorkloadResult   5: 64 op, 751937000.00 ns, 11.7490 ms/op
+WorkloadResult   6: 64 op, 779125500.00 ns, 12.1738 ms/op
+WorkloadResult   7: 64 op, 760454900.00 ns, 11.8821 ms/op
+WorkloadResult   8: 64 op, 786415500.00 ns, 12.2877 ms/op
+WorkloadResult   9: 64 op, 1123379300.00 ns, 17.5528 ms/op
+WorkloadResult  10: 64 op, 1091342100.00 ns, 17.0522 ms/op
+WorkloadResult  11: 64 op, 883224900.00 ns, 13.8004 ms/op
+WorkloadResult  12: 64 op, 832077700.00 ns, 13.0012 ms/op
+WorkloadResult  13: 64 op, 962916000.00 ns, 15.0456 ms/op
+WorkloadResult  14: 64 op, 890878100.00 ns, 13.9200 ms/op
+WorkloadResult  15: 64 op, 1054775900.00 ns, 16.4809 ms/op
+WorkloadResult  16: 64 op, 958705000.00 ns, 14.9798 ms/op
+WorkloadResult  17: 64 op, 1049705700.00 ns, 16.4017 ms/op
+WorkloadResult  18: 64 op, 1044059800.00 ns, 16.3134 ms/op
+WorkloadResult  19: 64 op, 1114475900.00 ns, 17.4137 ms/op
+WorkloadResult  20: 64 op, 974236500.00 ns, 15.2224 ms/op
+WorkloadResult  21: 64 op, 964891300.00 ns, 15.0764 ms/op
+WorkloadResult  22: 64 op, 1264105000.00 ns, 19.7516 ms/op
+WorkloadResult  23: 64 op, 1213545200.00 ns, 18.9616 ms/op
+WorkloadResult  24: 64 op, 1243603300.00 ns, 19.4313 ms/op
+WorkloadResult  25: 64 op, 1260846400.00 ns, 19.7007 ms/op
+WorkloadResult  26: 64 op, 1250438600.00 ns, 19.5381 ms/op
+WorkloadResult  27: 64 op, 1232310400.00 ns, 19.2549 ms/op
+WorkloadResult  28: 64 op, 1231745900.00 ns, 19.2460 ms/op
+WorkloadResult  29: 64 op, 1251181200.00 ns, 19.5497 ms/op
+WorkloadResult  30: 64 op, 1112003500.00 ns, 17.3751 ms/op
+WorkloadResult  31: 64 op, 1009413700.00 ns, 15.7721 ms/op
+WorkloadResult  32: 64 op, 1111239100.00 ns, 17.3631 ms/op
+WorkloadResult  33: 64 op, 815180100.00 ns, 12.7372 ms/op
+WorkloadResult  34: 64 op, 775220700.00 ns, 12.1128 ms/op
+WorkloadResult  35: 64 op, 771421400.00 ns, 12.0535 ms/op
+WorkloadResult  36: 64 op, 773988200.00 ns, 12.0936 ms/op
+WorkloadResult  37: 64 op, 761682800.00 ns, 11.9013 ms/op
+WorkloadResult  38: 64 op, 763926400.00 ns, 11.9363 ms/op
+WorkloadResult  39: 64 op, 757920200.00 ns, 11.8425 ms/op
+WorkloadResult  40: 64 op, 775272500.00 ns, 12.1136 ms/op
+WorkloadResult  41: 64 op, 765911900.00 ns, 11.9674 ms/op
+WorkloadResult  42: 64 op, 756661400.00 ns, 11.8228 ms/op
+WorkloadResult  43: 64 op, 761599400.00 ns, 11.9000 ms/op
+WorkloadResult  44: 64 op, 761438700.00 ns, 11.8975 ms/op
+WorkloadResult  45: 64 op, 769173800.00 ns, 12.0183 ms/op
+WorkloadResult  46: 64 op, 779128400.00 ns, 12.1739 ms/op
+WorkloadResult  47: 64 op, 773962400.00 ns, 12.0932 ms/op
+WorkloadResult  48: 64 op, 767586300.00 ns, 11.9935 ms/op
+WorkloadResult  49: 64 op, 770878300.00 ns, 12.0450 ms/op
+WorkloadResult  50: 64 op, 793616900.00 ns, 12.4003 ms/op
+WorkloadResult  51: 64 op, 772939900.00 ns, 12.0772 ms/op
+WorkloadResult  52: 64 op, 770325300.00 ns, 12.0363 ms/op
+WorkloadResult  53: 64 op, 770217900.00 ns, 12.0347 ms/op
+WorkloadResult  54: 64 op, 775876600.00 ns, 12.1231 ms/op
+WorkloadResult  55: 64 op, 760467700.00 ns, 11.8823 ms/op
+WorkloadResult  56: 64 op, 775844400.00 ns, 12.1226 ms/op
+WorkloadResult  57: 64 op, 765514300.00 ns, 11.9612 ms/op
+WorkloadResult  58: 64 op, 759851800.00 ns, 11.8727 ms/op
+WorkloadResult  59: 64 op, 758826800.00 ns, 11.8567 ms/op
+WorkloadResult  60: 64 op, 769495800.00 ns, 12.0234 ms/op
+WorkloadResult  61: 64 op, 770298800.00 ns, 12.0359 ms/op
+WorkloadResult  62: 64 op, 762417800.00 ns, 11.9128 ms/op
+WorkloadResult  63: 64 op, 769994000.00 ns, 12.0312 ms/op
+WorkloadResult  64: 64 op, 765682900.00 ns, 11.9638 ms/op
+WorkloadResult  65: 64 op, 766033200.00 ns, 11.9693 ms/op
+WorkloadResult  66: 64 op, 759765600.00 ns, 11.8713 ms/op
+WorkloadResult  67: 64 op, 774777400.00 ns, 12.1059 ms/op
+WorkloadResult  68: 64 op, 770653400.00 ns, 12.0415 ms/op
+WorkloadResult  69: 64 op, 763529500.00 ns, 11.9301 ms/op
+WorkloadResult  70: 64 op, 986431900.00 ns, 15.4130 ms/op
+WorkloadResult  71: 64 op, 1198314600.00 ns, 18.7237 ms/op
+WorkloadResult  72: 64 op, 1177887100.00 ns, 18.4045 ms/op
+WorkloadResult  73: 64 op, 1155120000.00 ns, 18.0487 ms/op
+WorkloadResult  74: 64 op, 1105145900.00 ns, 17.2679 ms/op
+WorkloadResult  75: 64 op, 1097601800.00 ns, 17.1500 ms/op
+WorkloadResult  76: 64 op, 1106387500.00 ns, 17.2873 ms/op
+WorkloadResult  77: 64 op, 1125983700.00 ns, 17.5935 ms/op
+WorkloadResult  78: 64 op, 1293733800.00 ns, 20.2146 ms/op
+WorkloadResult  79: 64 op, 1130240900.00 ns, 17.6600 ms/op
+WorkloadResult  80: 64 op, 1118240900.00 ns, 17.4725 ms/op
+WorkloadResult  81: 64 op, 1092434400.00 ns, 17.0693 ms/op
+WorkloadResult  82: 64 op, 1116311900.00 ns, 17.4424 ms/op
+WorkloadResult  83: 64 op, 1115535800.00 ns, 17.4302 ms/op
+WorkloadResult  84: 64 op, 1144170500.00 ns, 17.8777 ms/op
+WorkloadResult  85: 64 op, 1132582100.00 ns, 17.6966 ms/op
+WorkloadResult  86: 64 op, 1001539700.00 ns, 15.6491 ms/op
+WorkloadResult  87: 64 op, 789402900.00 ns, 12.3344 ms/op
+WorkloadResult  88: 64 op, 761594000.00 ns, 11.8999 ms/op
+WorkloadResult  89: 64 op, 769632500.00 ns, 12.0255 ms/op
+WorkloadResult  90: 64 op, 768041600.00 ns, 12.0007 ms/op
+WorkloadResult  91: 64 op, 773531200.00 ns, 12.0864 ms/op
+WorkloadResult  92: 64 op, 761351600.00 ns, 11.8961 ms/op
+WorkloadResult  93: 64 op, 769948700.00 ns, 12.0304 ms/op
+WorkloadResult  94: 64 op, 766488300.00 ns, 11.9764 ms/op
+WorkloadResult  95: 64 op, 759268000.00 ns, 11.8636 ms/op
+WorkloadResult  96: 64 op, 777063800.00 ns, 12.1416 ms/op
+WorkloadResult  97: 64 op, 767610900.00 ns, 11.9939 ms/op
+WorkloadResult  98: 64 op, 763820900.00 ns, 11.9347 ms/op
+WorkloadResult  99: 64 op, 756452000.00 ns, 11.8196 ms/op
+WorkloadResult  100: 64 op, 760442800.00 ns, 11.8819 ms/op
+// GC:  50 12 12 1266681168 64
+// Threading:  0 0 64
+
+// AfterAll
+// Benchmark Process 9760 has exited with code 0.
+
+Mean = 14.154 ms, StdErr = 0.281 ms (1.99%), N = 100, StdDev = 2.813 ms
+Min = 11.749 ms, Q1 = 11.969 ms, Median = 12.123 ms, Q3 = 17.179 ms, Max = 20.215 ms
+IQR = 5.211 ms, LowerFence = 4.153 ms, UpperFence = 24.996 ms
+ConfidenceInterval = [13.200 ms; 15.109 ms] (CI 99.9%), Margin = 0.954 ms (6.74% of Mean)
+Skewness = 0.74, Kurtosis = 1.89, MValue = 2.58
+
+// ** Remained 15 (50,0%) benchmark(s) to run. Estimated finish 2026-11-01 20:33 (0h 5m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.SaveToText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=10000]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet e109f795-63e0-4d5c-836d-5557c3e09837.dll --anonymousPipes 2152 1964 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.SaveToText(N: 10000)" --job "NuGetReferences=Mafe.TinyCsv 2.2.2" --benchmarkId 5 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\e109f795-63e0-4d5c-836d-5557c3e09837\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-BDJLZS(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 198700.00 ns, 198.7000 us/op
+WorkloadJitting  1: 1 op, 23712900.00 ns, 23.7129 ms/op
+
+OverheadJitting  2: 16 op, 232000.00 ns, 14.5000 us/op
+WorkloadJitting  2: 16 op, 432217800.00 ns, 27.0136 ms/op
+
+WorkloadPilot    1: 16 op, 294000400.00 ns, 18.3750 ms/op
+WorkloadPilot    2: 32 op, 375149400.00 ns, 11.7234 ms/op
+WorkloadPilot    3: 64 op, 711070400.00 ns, 11.1105 ms/op
+
+OverheadWarmup   1: 64 op, 1800.00 ns, 28.1250 ns/op
+OverheadWarmup   2: 64 op, 1600.00 ns, 25.0000 ns/op
+OverheadWarmup   3: 64 op, 1500.00 ns, 23.4375 ns/op
+OverheadWarmup   4: 64 op, 1200.00 ns, 18.7500 ns/op
+OverheadWarmup   5: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadWarmup   6: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadWarmup   7: 64 op, 1000.00 ns, 15.6250 ns/op
+OverheadWarmup   8: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadWarmup   9: 64 op, 1100.00 ns, 17.1875 ns/op
+
+OverheadActual   1: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadActual   2: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadActual   3: 64 op, 1200.00 ns, 18.7500 ns/op
+OverheadActual   4: 64 op, 1300.00 ns, 20.3125 ns/op
+OverheadActual   5: 64 op, 1200.00 ns, 18.7500 ns/op
+OverheadActual   6: 64 op, 1200.00 ns, 18.7500 ns/op
+OverheadActual   7: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadActual   8: 64 op, 1000.00 ns, 15.6250 ns/op
+OverheadActual   9: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadActual  10: 64 op, 1000.00 ns, 15.6250 ns/op
+OverheadActual  11: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadActual  12: 64 op, 1200.00 ns, 18.7500 ns/op
+OverheadActual  13: 64 op, 1200.00 ns, 18.7500 ns/op
+OverheadActual  14: 64 op, 1000.00 ns, 15.6250 ns/op
+OverheadActual  15: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadActual  16: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadActual  17: 64 op, 1100.00 ns, 17.1875 ns/op
+OverheadActual  18: 64 op, 1200.00 ns, 18.7500 ns/op
+OverheadActual  19: 64 op, 1000.00 ns, 15.6250 ns/op
+OverheadActual  20: 64 op, 1100.00 ns, 17.1875 ns/op
+
+WorkloadWarmup   1: 64 op, 726861100.00 ns, 11.3572 ms/op
+WorkloadWarmup   2: 64 op, 782728100.00 ns, 12.2301 ms/op
+WorkloadWarmup   3: 64 op, 736172500.00 ns, 11.5027 ms/op
+WorkloadWarmup   4: 64 op, 784118500.00 ns, 12.2519 ms/op
+WorkloadWarmup   5: 64 op, 710455200.00 ns, 11.1009 ms/op
+WorkloadWarmup   6: 64 op, 768526600.00 ns, 12.0082 ms/op
+
+// BeforeActualRun
+WorkloadActual   1: 64 op, 736341400.00 ns, 11.5053 ms/op
+WorkloadActual   2: 64 op, 750335900.00 ns, 11.7240 ms/op
+WorkloadActual   3: 64 op, 708919200.00 ns, 11.0769 ms/op
+WorkloadActual   4: 64 op, 727106400.00 ns, 11.3610 ms/op
+WorkloadActual   5: 64 op, 734708600.00 ns, 11.4798 ms/op
+WorkloadActual   6: 64 op, 757447100.00 ns, 11.8351 ms/op
+WorkloadActual   7: 64 op, 768437500.00 ns, 12.0068 ms/op
+WorkloadActual   8: 64 op, 777675000.00 ns, 12.1512 ms/op
+WorkloadActual   9: 64 op, 796608000.00 ns, 12.4470 ms/op
+WorkloadActual  10: 64 op, 756551300.00 ns, 11.8211 ms/op
+WorkloadActual  11: 64 op, 718635700.00 ns, 11.2287 ms/op
+WorkloadActual  12: 64 op, 730708300.00 ns, 11.4173 ms/op
+WorkloadActual  13: 64 op, 741032100.00 ns, 11.5786 ms/op
+WorkloadActual  14: 64 op, 754937500.00 ns, 11.7959 ms/op
+WorkloadActual  15: 64 op, 719652200.00 ns, 11.2446 ms/op
+WorkloadActual  16: 64 op, 732323200.00 ns, 11.4426 ms/op
+WorkloadActual  17: 64 op, 741848100.00 ns, 11.5914 ms/op
+WorkloadActual  18: 64 op, 759815600.00 ns, 11.8721 ms/op
+WorkloadActual  19: 64 op, 716124700.00 ns, 11.1894 ms/op
+WorkloadActual  20: 64 op, 734139900.00 ns, 11.4709 ms/op
+WorkloadActual  21: 64 op, 750449300.00 ns, 11.7258 ms/op
+WorkloadActual  22: 64 op, 738692400.00 ns, 11.5421 ms/op
+WorkloadActual  23: 64 op, 747534100.00 ns, 11.6802 ms/op
+
+// AfterActualRun
+WorkloadResult   1: 64 op, 736340300.00 ns, 11.5053 ms/op
+WorkloadResult   2: 64 op, 750334800.00 ns, 11.7240 ms/op
+WorkloadResult   3: 64 op, 708918100.00 ns, 11.0768 ms/op
+WorkloadResult   4: 64 op, 727105300.00 ns, 11.3610 ms/op
+WorkloadResult   5: 64 op, 734707500.00 ns, 11.4798 ms/op
+WorkloadResult   6: 64 op, 757446000.00 ns, 11.8351 ms/op
+WorkloadResult   7: 64 op, 768436400.00 ns, 12.0068 ms/op
+WorkloadResult   8: 64 op, 777673900.00 ns, 12.1512 ms/op
+WorkloadResult   9: 64 op, 756550200.00 ns, 11.8211 ms/op
+WorkloadResult  10: 64 op, 718634600.00 ns, 11.2287 ms/op
+WorkloadResult  11: 64 op, 730707200.00 ns, 11.4173 ms/op
+WorkloadResult  12: 64 op, 741031000.00 ns, 11.5786 ms/op
+WorkloadResult  13: 64 op, 754936400.00 ns, 11.7959 ms/op
+WorkloadResult  14: 64 op, 719651100.00 ns, 11.2445 ms/op
+WorkloadResult  15: 64 op, 732322100.00 ns, 11.4425 ms/op
+WorkloadResult  16: 64 op, 741847000.00 ns, 11.5914 ms/op
+WorkloadResult  17: 64 op, 759814500.00 ns, 11.8721 ms/op
+WorkloadResult  18: 64 op, 716123600.00 ns, 11.1894 ms/op
+WorkloadResult  19: 64 op, 734138800.00 ns, 11.4709 ms/op
+WorkloadResult  20: 64 op, 750448200.00 ns, 11.7258 ms/op
+WorkloadResult  21: 64 op, 738691300.00 ns, 11.5421 ms/op
+WorkloadResult  22: 64 op, 747533000.00 ns, 11.6802 ms/op
+// GC:  31 31 31 702863424 64
+// Threading:  0 0 64
+
+// AfterAll
+// Benchmark Process 8452 has exited with code 0.
+
+Mean = 11.579 ms, StdErr = 0.058 ms (0.50%), N = 22, StdDev = 0.274 ms
+Min = 11.077 ms, Q1 = 11.424 ms, Median = 11.560 ms, Q3 = 11.778 ms, Max = 12.151 ms
+IQR = 0.355 ms, LowerFence = 10.891 ms, UpperFence = 12.310 ms
+ConfidenceInterval = [11.356 ms; 11.802 ms] (CI 99.9%), Margin = 0.223 ms (1.93% of Mean)
+Skewness = 0.12, Kurtosis = 2.22, MValue = 2
+
+// ** Remained 14 (46,7%) benchmark(s) to run. Estimated finish 2026-11-01 20:33 (0h 5m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// Build Error: Standard output: 
+  
+ Standard error: 
+ info : X.509 certificate chain validation will use the default trust store selected by .NET for code signing.
+info : X.509 certificate chain validation will use the default trust store selected by .NET for timestamping.
+info : Adding PackageReference for package 'Mafe.TinyCsv' into project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+info : Restoring packages for C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj...
+info :   CACHE https://api.nuget.org/v3-flatcontainer/mafe.tinycsv/index.json
+info :   CACHE https://nuget.devexpress.com/GGeuOtRw7l1YfmBaZFZCPDEdcjPXHXQ2y2dNhfL6o7hedMtLAT/api/FindPackagesById()?id='Mafe.TinyCsv'&semVerLevel=2.0.0
+info :   GET https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json
+info :   NotFound https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json 380ms
+error: NU1102: Unable to find package Mafe.TinyCsv with version (>= 3.0.0)
+error:   - Found 35 version(s) in nuget.org [ Nearest version: 3.0.0-rc1 ]
+error:   - Found 0 version(s) in Microsoft Visual Studio Offline Packages
+error:   - Found 0 version(s) in C:\Program Files\dotnet\library-packs
+error:   - Found 0 version(s) in DevExpress
+error:   - Found 0 version(s) in MAUI
+info :   CACHE https://api.nuget.org/v3/vulnerabilities/index.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/vulnerability.base.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/2026.11.01.11.41.44/vulnerability.update.json
+error: Package 'Mafe.TinyCsv' is incompatible with 'all' frameworks in project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+
+// BenchmarkDotNet has failed to build the auto-generated boilerplate code.
+// It can be found in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3
+// Please follow the troubleshooting guide: https://benchmarkdotnet.org/articles/guides/troubleshooting.html
+
+// ** Remained 13 (43,3%) benchmark(s) to run. Estimated finish 2026-11-01 20:32 (0h 4m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// Build Error: Standard output: 
+  
+ Standard error: 
+ info : X.509 certificate chain validation will use the default trust store selected by .NET for code signing.
+info : X.509 certificate chain validation will use the default trust store selected by .NET for timestamping.
+info : Adding PackageReference for package 'Mafe.TinyCsv' into project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+info : Restoring packages for C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj...
+info :   CACHE https://api.nuget.org/v3-flatcontainer/mafe.tinycsv/index.json
+info :   CACHE https://nuget.devexpress.com/GGeuOtRw7l1YfmBaZFZCPDEdcjPXHXQ2y2dNhfL6o7hedMtLAT/api/FindPackagesById()?id='Mafe.TinyCsv'&semVerLevel=2.0.0
+info :   GET https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json
+info :   NotFound https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json 380ms
+error: NU1102: Unable to find package Mafe.TinyCsv with version (>= 3.0.0)
+error:   - Found 35 version(s) in nuget.org [ Nearest version: 3.0.0-rc1 ]
+error:   - Found 0 version(s) in Microsoft Visual Studio Offline Packages
+error:   - Found 0 version(s) in C:\Program Files\dotnet\library-packs
+error:   - Found 0 version(s) in DevExpress
+error:   - Found 0 version(s) in MAUI
+info :   CACHE https://api.nuget.org/v3/vulnerabilities/index.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/vulnerability.base.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/2026.11.01.11.41.44/vulnerability.update.json
+error: Package 'Mafe.TinyCsv' is incompatible with 'all' frameworks in project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+
+// BenchmarkDotNet has failed to build the auto-generated boilerplate code.
+// It can be found in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3
+// Please follow the troubleshooting guide: https://benchmarkdotnet.org/articles/guides/troubleshooting.html
+
+// ** Remained 12 (40,0%) benchmark(s) to run. Estimated finish 2026-11-01 20:31 (0h 4m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.LoadFromText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=100000]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet d9cfed3a-4fcd-4703-b721-115d3843cd66.dll --anonymousPipes 1508 2148 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.LoadFromText(N: 100000)" --job "NuGetReferences=Mafe.TinyCsv 2.1.0" --benchmarkId 6 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\d9cfed3a-4fcd-4703-b721-115d3843cd66\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-GWFHYK(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 213900.00 ns, 213.9000 us/op
+WorkloadJitting  1: 1 op, 317054000.00 ns, 317.0540 ms/op
+
+WorkloadPilot    1: 2 op, 293213100.00 ns, 146.6065 ms/op
+WorkloadPilot    2: 3 op, 255273900.00 ns, 85.0913 ms/op
+WorkloadPilot    3: 4 op, 315894800.00 ns, 78.9737 ms/op
+WorkloadPilot    4: 5 op, 388446200.00 ns, 77.6892 ms/op
+WorkloadPilot    5: 6 op, 476474400.00 ns, 79.4124 ms/op
+WorkloadPilot    6: 7 op, 549728500.00 ns, 78.5326 ms/op
+
+WorkloadWarmup   1: 7 op, 548395300.00 ns, 78.3422 ms/op
+WorkloadWarmup   2: 7 op, 545523000.00 ns, 77.9319 ms/op
+WorkloadWarmup   3: 7 op, 547607500.00 ns, 78.2296 ms/op
+WorkloadWarmup   4: 7 op, 551425100.00 ns, 78.7750 ms/op
+WorkloadWarmup   5: 7 op, 540500300.00 ns, 77.2143 ms/op
+WorkloadWarmup   6: 7 op, 546718400.00 ns, 78.1026 ms/op
+WorkloadWarmup   7: 7 op, 543054700.00 ns, 77.5792 ms/op
+
+// BeforeActualRun
+WorkloadActual   1: 7 op, 568373500.00 ns, 81.1962 ms/op
+WorkloadActual   2: 7 op, 545250000.00 ns, 77.8929 ms/op
+WorkloadActual   3: 7 op, 543055500.00 ns, 77.5794 ms/op
+WorkloadActual   4: 7 op, 557150000.00 ns, 79.5929 ms/op
+WorkloadActual   5: 7 op, 563318900.00 ns, 80.4741 ms/op
+WorkloadActual   6: 7 op, 542470300.00 ns, 77.4958 ms/op
+WorkloadActual   7: 7 op, 538207700.00 ns, 76.8868 ms/op
+WorkloadActual   8: 7 op, 544605300.00 ns, 77.8008 ms/op
+WorkloadActual   9: 7 op, 540243800.00 ns, 77.1777 ms/op
+WorkloadActual  10: 7 op, 550958100.00 ns, 78.7083 ms/op
+WorkloadActual  11: 7 op, 539700500.00 ns, 77.1001 ms/op
+WorkloadActual  12: 7 op, 543344800.00 ns, 77.6207 ms/op
+WorkloadActual  13: 7 op, 554443000.00 ns, 79.2061 ms/op
+WorkloadActual  14: 7 op, 541639900.00 ns, 77.3771 ms/op
+WorkloadActual  15: 7 op, 548995700.00 ns, 78.4280 ms/op
+
+// AfterActualRun
+WorkloadResult   1: 7 op, 568373500.00 ns, 81.1962 ms/op
+WorkloadResult   2: 7 op, 545250000.00 ns, 77.8929 ms/op
+WorkloadResult   3: 7 op, 543055500.00 ns, 77.5794 ms/op
+WorkloadResult   4: 7 op, 557150000.00 ns, 79.5929 ms/op
+WorkloadResult   5: 7 op, 563318900.00 ns, 80.4741 ms/op
+WorkloadResult   6: 7 op, 542470300.00 ns, 77.4958 ms/op
+WorkloadResult   7: 7 op, 538207700.00 ns, 76.8868 ms/op
+WorkloadResult   8: 7 op, 544605300.00 ns, 77.8008 ms/op
+WorkloadResult   9: 7 op, 540243800.00 ns, 77.1777 ms/op
+WorkloadResult  10: 7 op, 550958100.00 ns, 78.7083 ms/op
+WorkloadResult  11: 7 op, 539700500.00 ns, 77.1001 ms/op
+WorkloadResult  12: 7 op, 543344800.00 ns, 77.6207 ms/op
+WorkloadResult  13: 7 op, 554443000.00 ns, 79.2061 ms/op
+WorkloadResult  14: 7 op, 541639900.00 ns, 77.3771 ms/op
+WorkloadResult  15: 7 op, 548995700.00 ns, 78.4280 ms/op
+// GC:  31 0 0 836518656 7
+// Threading:  0 0 7
+
+// AfterAll
+// Benchmark Process 5004 has exited with code 0.
+
+Mean = 78.302 ms, StdErr = 0.334 ms (0.43%), N = 15, StdDev = 1.292 ms
+Min = 76.887 ms, Q1 = 77.436 ms, Median = 77.801 ms, Q3 = 78.957 ms, Max = 81.196 ms
+IQR = 1.521 ms, LowerFence = 75.155 ms, UpperFence = 81.238 ms
+ConfidenceInterval = [76.921 ms; 79.684 ms] (CI 99.9%), Margin = 1.382 ms (1.76% of Mean)
+Skewness = 0.9, Kurtosis = 2.52, MValue = 2
+
+// ** Remained 11 (36,7%) benchmark(s) to run. Estimated finish 2026-11-01 20:31 (0h 3m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.SaveToText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=100000]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet d9cfed3a-4fcd-4703-b721-115d3843cd66.dll --anonymousPipes 2148 1188 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.SaveToText(N: 100000)" --job "NuGetReferences=Mafe.TinyCsv 2.1.0" --benchmarkId 7 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\d9cfed3a-4fcd-4703-b721-115d3843cd66\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-AQZRJX(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 279800.00 ns, 279.8000 us/op
+WorkloadJitting  1: 1 op, 230106500.00 ns, 230.1065 ms/op
+
+WorkloadPilot    1: 2 op, 512480600.00 ns, 256.2403 ms/op
+
+WorkloadWarmup   1: 2 op, 193057900.00 ns, 96.5289 ms/op
+WorkloadWarmup   2: 2 op, 186067700.00 ns, 93.0339 ms/op
+WorkloadWarmup   3: 2 op, 186564100.00 ns, 93.2820 ms/op
+WorkloadWarmup   4: 2 op, 186593600.00 ns, 93.2968 ms/op
+WorkloadWarmup   5: 2 op, 186904600.00 ns, 93.4523 ms/op
+WorkloadWarmup   6: 2 op, 188450300.00 ns, 94.2251 ms/op
+WorkloadWarmup   7: 2 op, 185766800.00 ns, 92.8834 ms/op
+WorkloadWarmup   8: 2 op, 185231000.00 ns, 92.6155 ms/op
+WorkloadWarmup   9: 2 op, 186666000.00 ns, 93.3330 ms/op
+WorkloadWarmup  10: 2 op, 185994800.00 ns, 92.9974 ms/op
+
+// BeforeActualRun
+WorkloadActual   1: 2 op, 189951800.00 ns, 94.9759 ms/op
+WorkloadActual   2: 2 op, 187216500.00 ns, 93.6082 ms/op
+WorkloadActual   3: 2 op, 188306900.00 ns, 94.1535 ms/op
+WorkloadActual   4: 2 op, 186973000.00 ns, 93.4865 ms/op
+WorkloadActual   5: 2 op, 186686800.00 ns, 93.3434 ms/op
+WorkloadActual   6: 2 op, 188885800.00 ns, 94.4429 ms/op
+WorkloadActual   7: 2 op, 186166300.00 ns, 93.0832 ms/op
+WorkloadActual   8: 2 op, 187420100.00 ns, 93.7100 ms/op
+WorkloadActual   9: 2 op, 201377100.00 ns, 100.6886 ms/op
+WorkloadActual  10: 2 op, 195232500.00 ns, 97.6162 ms/op
+WorkloadActual  11: 2 op, 188265000.00 ns, 94.1325 ms/op
+WorkloadActual  12: 2 op, 186916400.00 ns, 93.4582 ms/op
+WorkloadActual  13: 2 op, 184605000.00 ns, 92.3025 ms/op
+WorkloadActual  14: 2 op, 186456300.00 ns, 93.2281 ms/op
+WorkloadActual  15: 2 op, 186288000.00 ns, 93.1440 ms/op
+
+// AfterActualRun
+WorkloadResult   1: 2 op, 189951800.00 ns, 94.9759 ms/op
+WorkloadResult   2: 2 op, 187216500.00 ns, 93.6082 ms/op
+WorkloadResult   3: 2 op, 188306900.00 ns, 94.1535 ms/op
+WorkloadResult   4: 2 op, 186973000.00 ns, 93.4865 ms/op
+WorkloadResult   5: 2 op, 186686800.00 ns, 93.3434 ms/op
+WorkloadResult   6: 2 op, 188885800.00 ns, 94.4429 ms/op
+WorkloadResult   7: 2 op, 186166300.00 ns, 93.0832 ms/op
+WorkloadResult   8: 2 op, 187420100.00 ns, 93.7100 ms/op
+WorkloadResult   9: 2 op, 188265000.00 ns, 94.1325 ms/op
+WorkloadResult  10: 2 op, 186916400.00 ns, 93.4582 ms/op
+WorkloadResult  11: 2 op, 184605000.00 ns, 92.3025 ms/op
+WorkloadResult  12: 2 op, 186456300.00 ns, 93.2281 ms/op
+WorkloadResult  13: 2 op, 186288000.00 ns, 93.1440 ms/op
+// GC:  7 0 0 211164816 2
+// Threading:  0 0 2
+
+// AfterAll
+// Benchmark Process 2744 has exited with code 0.
+
+Mean = 93.621 ms, StdErr = 0.189 ms (0.20%), N = 13, StdDev = 0.683 ms
+Min = 92.302 ms, Q1 = 93.228 ms, Median = 93.487 ms, Q3 = 94.132 ms, Max = 94.976 ms
+IQR = 0.904 ms, LowerFence = 91.872 ms, UpperFence = 95.489 ms
+ConfidenceInterval = [92.803 ms; 94.438 ms] (CI 99.9%), Margin = 0.818 ms (0.87% of Mean)
+Skewness = 0.17, Kurtosis = 2.53, MValue = 2
+
+// ** Remained 10 (33,3%) benchmark(s) to run. Estimated finish 2026-11-01 20:31 (0h 3m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.LoadFromText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=100000]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet e109f795-63e0-4d5c-836d-5557c3e09837.dll --anonymousPipes 1964 2064 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.LoadFromText(N: 100000)" --job "NuGetReferences=Mafe.TinyCsv 2.2.2" --benchmarkId 6 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\e109f795-63e0-4d5c-836d-5557c3e09837\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-GJAXZN(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 216300.00 ns, 216.3000 us/op
+WorkloadJitting  1: 1 op, 402898700.00 ns, 402.8987 ms/op
+
+OverheadJitting  2: 1 op, 1800.00 ns, 1.8000 us/op
+WorkloadJitting  2: 1 op, 244681100.00 ns, 244.6811 ms/op
+
+WorkloadPilot    1: 2 op, 223890100.00 ns, 111.9450 ms/op
+WorkloadPilot    2: 3 op, 337917100.00 ns, 112.6390 ms/op
+WorkloadPilot    3: 4 op, 447861200.00 ns, 111.9653 ms/op
+WorkloadPilot    4: 5 op, 558840500.00 ns, 111.7681 ms/op
+
+WorkloadWarmup   1: 5 op, 555568900.00 ns, 111.1138 ms/op
+WorkloadWarmup   2: 5 op, 552626200.00 ns, 110.5252 ms/op
+WorkloadWarmup   3: 5 op, 566504500.00 ns, 113.3009 ms/op
+WorkloadWarmup   4: 5 op, 555164600.00 ns, 111.0329 ms/op
+WorkloadWarmup   5: 5 op, 554683300.00 ns, 110.9367 ms/op
+WorkloadWarmup   6: 5 op, 556642300.00 ns, 111.3285 ms/op
+WorkloadWarmup   7: 5 op, 559309300.00 ns, 111.8619 ms/op
+WorkloadWarmup   8: 5 op, 556380900.00 ns, 111.2762 ms/op
+
+// BeforeActualRun
+WorkloadActual   1: 5 op, 560212400.00 ns, 112.0425 ms/op
+WorkloadActual   2: 5 op, 558354500.00 ns, 111.6709 ms/op
+WorkloadActual   3: 5 op, 560718400.00 ns, 112.1437 ms/op
+WorkloadActual   4: 5 op, 556262800.00 ns, 111.2526 ms/op
+WorkloadActual   5: 5 op, 558333000.00 ns, 111.6666 ms/op
+WorkloadActual   6: 5 op, 560641200.00 ns, 112.1282 ms/op
+WorkloadActual   7: 5 op, 564735100.00 ns, 112.9470 ms/op
+WorkloadActual   8: 5 op, 554829700.00 ns, 110.9659 ms/op
+WorkloadActual   9: 5 op, 559736300.00 ns, 111.9473 ms/op
+WorkloadActual  10: 5 op, 561883500.00 ns, 112.3767 ms/op
+WorkloadActual  11: 5 op, 557514700.00 ns, 111.5029 ms/op
+WorkloadActual  12: 5 op, 557705800.00 ns, 111.5412 ms/op
+WorkloadActual  13: 5 op, 557099900.00 ns, 111.4200 ms/op
+WorkloadActual  14: 5 op, 555044000.00 ns, 111.0088 ms/op
+WorkloadActual  15: 5 op, 555428200.00 ns, 111.0856 ms/op
+
+// AfterActualRun
+WorkloadResult   1: 5 op, 560212400.00 ns, 112.0425 ms/op
+WorkloadResult   2: 5 op, 558354500.00 ns, 111.6709 ms/op
+WorkloadResult   3: 5 op, 560718400.00 ns, 112.1437 ms/op
+WorkloadResult   4: 5 op, 556262800.00 ns, 111.2526 ms/op
+WorkloadResult   5: 5 op, 558333000.00 ns, 111.6666 ms/op
+WorkloadResult   6: 5 op, 560641200.00 ns, 112.1282 ms/op
+WorkloadResult   7: 5 op, 564735100.00 ns, 112.9470 ms/op
+WorkloadResult   8: 5 op, 554829700.00 ns, 110.9659 ms/op
+WorkloadResult   9: 5 op, 559736300.00 ns, 111.9473 ms/op
+WorkloadResult  10: 5 op, 561883500.00 ns, 112.3767 ms/op
+WorkloadResult  11: 5 op, 557514700.00 ns, 111.5029 ms/op
+WorkloadResult  12: 5 op, 557705800.00 ns, 111.5412 ms/op
+WorkloadResult  13: 5 op, 557099900.00 ns, 111.4200 ms/op
+WorkloadResult  14: 5 op, 555044000.00 ns, 111.0088 ms/op
+WorkloadResult  15: 5 op, 555428200.00 ns, 111.0856 ms/op
+// GC:  37 0 0 989509520 5
+// Threading:  0 0 5
+
+// AfterAll
+// Benchmark Process 9608 has exited with code 0.
+
+Mean = 111.713 ms, StdErr = 0.143 ms (0.13%), N = 15, StdDev = 0.555 ms
+Min = 110.966 ms, Q1 = 111.336 ms, Median = 111.667 ms, Q3 = 112.085 ms, Max = 112.947 ms
+IQR = 0.749 ms, LowerFence = 110.213 ms, UpperFence = 113.209 ms
+ConfidenceInterval = [111.120 ms; 112.306 ms] (CI 99.9%), Margin = 0.593 ms (0.53% of Mean)
+Skewness = 0.48, Kurtosis = 2.36, MValue = 2
+
+// ** Remained 9 (30,0%) benchmark(s) to run. Estimated finish 2026-11-01 20:31 (0h 2m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.SaveToText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=100000]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet e109f795-63e0-4d5c-836d-5557c3e09837.dll --anonymousPipes 1508 2124 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.SaveToText(N: 100000)" --job "NuGetReferences=Mafe.TinyCsv 2.2.2" --benchmarkId 7 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\e109f795-63e0-4d5c-836d-5557c3e09837\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-JEEAYG(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 256200.00 ns, 256.2000 us/op
+WorkloadJitting  1: 1 op, 223162000.00 ns, 223.1620 ms/op
+
+WorkloadPilot    1: 2 op, 520988700.00 ns, 260.4943 ms/op
+
+WorkloadWarmup   1: 2 op, 186665000.00 ns, 93.3325 ms/op
+WorkloadWarmup   2: 2 op, 186172500.00 ns, 93.0863 ms/op
+WorkloadWarmup   3: 2 op, 184093700.00 ns, 92.0469 ms/op
+WorkloadWarmup   4: 2 op, 184545000.00 ns, 92.2725 ms/op
+WorkloadWarmup   5: 2 op, 184804300.00 ns, 92.4022 ms/op
+WorkloadWarmup   6: 2 op, 183975900.00 ns, 91.9879 ms/op
+WorkloadWarmup   7: 2 op, 185004000.00 ns, 92.5020 ms/op
+WorkloadWarmup   8: 2 op, 184795200.00 ns, 92.3976 ms/op
+
+// BeforeActualRun
+WorkloadActual   1: 2 op, 185609400.00 ns, 92.8047 ms/op
+WorkloadActual   2: 2 op, 185095100.00 ns, 92.5476 ms/op
+WorkloadActual   3: 2 op, 186171900.00 ns, 93.0859 ms/op
+WorkloadActual   4: 2 op, 186333100.00 ns, 93.1666 ms/op
+WorkloadActual   5: 2 op, 183056000.00 ns, 91.5280 ms/op
+WorkloadActual   6: 2 op, 184069400.00 ns, 92.0347 ms/op
+WorkloadActual   7: 2 op, 186940500.00 ns, 93.4702 ms/op
+WorkloadActual   8: 2 op, 183797200.00 ns, 91.8986 ms/op
+WorkloadActual   9: 2 op, 184587200.00 ns, 92.2936 ms/op
+WorkloadActual  10: 2 op, 184130200.00 ns, 92.0651 ms/op
+WorkloadActual  11: 2 op, 183192300.00 ns, 91.5961 ms/op
+WorkloadActual  12: 2 op, 184644700.00 ns, 92.3224 ms/op
+WorkloadActual  13: 2 op, 183512800.00 ns, 91.7564 ms/op
+WorkloadActual  14: 2 op, 184724400.00 ns, 92.3622 ms/op
+WorkloadActual  15: 2 op, 185790700.00 ns, 92.8953 ms/op
+
+// AfterActualRun
+WorkloadResult   1: 2 op, 185609400.00 ns, 92.8047 ms/op
+WorkloadResult   2: 2 op, 185095100.00 ns, 92.5476 ms/op
+WorkloadResult   3: 2 op, 186171900.00 ns, 93.0859 ms/op
+WorkloadResult   4: 2 op, 186333100.00 ns, 93.1666 ms/op
+WorkloadResult   5: 2 op, 183056000.00 ns, 91.5280 ms/op
+WorkloadResult   6: 2 op, 184069400.00 ns, 92.0347 ms/op
+WorkloadResult   7: 2 op, 186940500.00 ns, 93.4702 ms/op
+WorkloadResult   8: 2 op, 183797200.00 ns, 91.8986 ms/op
+WorkloadResult   9: 2 op, 184587200.00 ns, 92.2936 ms/op
+WorkloadResult  10: 2 op, 184130200.00 ns, 92.0651 ms/op
+WorkloadResult  11: 2 op, 183192300.00 ns, 91.5961 ms/op
+WorkloadResult  12: 2 op, 184644700.00 ns, 92.3224 ms/op
+WorkloadResult  13: 2 op, 183512800.00 ns, 91.7564 ms/op
+WorkloadResult  14: 2 op, 184724400.00 ns, 92.3622 ms/op
+WorkloadResult  15: 2 op, 185790700.00 ns, 92.8953 ms/op
+// GC:  7 0 0 211164816 2
+// Threading:  0 0 2
+
+// AfterAll
+// Benchmark Process 8240 has exited with code 0.
+
+Mean = 92.388 ms, StdErr = 0.154 ms (0.17%), N = 15, StdDev = 0.596 ms
+Min = 91.528 ms, Q1 = 91.967 ms, Median = 92.322 ms, Q3 = 92.850 ms, Max = 93.470 ms
+IQR = 0.883 ms, LowerFence = 90.642 ms, UpperFence = 94.175 ms
+ConfidenceInterval = [91.752 ms; 93.025 ms] (CI 99.9%), Margin = 0.637 ms (0.69% of Mean)
+Skewness = 0.22, Kurtosis = 1.72, MValue = 2
+
+// ** Remained 8 (26,7%) benchmark(s) to run. Estimated finish 2026-11-01 20:31 (0h 2m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// Build Error: Standard output: 
+  
+ Standard error: 
+ info : X.509 certificate chain validation will use the default trust store selected by .NET for code signing.
+info : X.509 certificate chain validation will use the default trust store selected by .NET for timestamping.
+info : Adding PackageReference for package 'Mafe.TinyCsv' into project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+info : Restoring packages for C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj...
+info :   CACHE https://api.nuget.org/v3-flatcontainer/mafe.tinycsv/index.json
+info :   CACHE https://nuget.devexpress.com/GGeuOtRw7l1YfmBaZFZCPDEdcjPXHXQ2y2dNhfL6o7hedMtLAT/api/FindPackagesById()?id='Mafe.TinyCsv'&semVerLevel=2.0.0
+info :   GET https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json
+info :   NotFound https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json 380ms
+error: NU1102: Unable to find package Mafe.TinyCsv with version (>= 3.0.0)
+error:   - Found 35 version(s) in nuget.org [ Nearest version: 3.0.0-rc1 ]
+error:   - Found 0 version(s) in Microsoft Visual Studio Offline Packages
+error:   - Found 0 version(s) in C:\Program Files\dotnet\library-packs
+error:   - Found 0 version(s) in DevExpress
+error:   - Found 0 version(s) in MAUI
+info :   CACHE https://api.nuget.org/v3/vulnerabilities/index.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/vulnerability.base.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/2026.11.01.11.41.44/vulnerability.update.json
+error: Package 'Mafe.TinyCsv' is incompatible with 'all' frameworks in project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+
+// BenchmarkDotNet has failed to build the auto-generated boilerplate code.
+// It can be found in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3
+// Please follow the troubleshooting guide: https://benchmarkdotnet.org/articles/guides/troubleshooting.html
+
+// ** Remained 7 (23,3%) benchmark(s) to run. Estimated finish 2026-11-01 20:30 (0h 2m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// Build Error: Standard output: 
+  
+ Standard error: 
+ info : X.509 certificate chain validation will use the default trust store selected by .NET for code signing.
+info : X.509 certificate chain validation will use the default trust store selected by .NET for timestamping.
+info : Adding PackageReference for package 'Mafe.TinyCsv' into project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+info : Restoring packages for C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj...
+info :   CACHE https://api.nuget.org/v3-flatcontainer/mafe.tinycsv/index.json
+info :   CACHE https://nuget.devexpress.com/GGeuOtRw7l1YfmBaZFZCPDEdcjPXHXQ2y2dNhfL6o7hedMtLAT/api/FindPackagesById()?id='Mafe.TinyCsv'&semVerLevel=2.0.0
+info :   GET https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json
+info :   NotFound https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json 380ms
+error: NU1102: Unable to find package Mafe.TinyCsv with version (>= 3.0.0)
+error:   - Found 35 version(s) in nuget.org [ Nearest version: 3.0.0-rc1 ]
+error:   - Found 0 version(s) in Microsoft Visual Studio Offline Packages
+error:   - Found 0 version(s) in C:\Program Files\dotnet\library-packs
+error:   - Found 0 version(s) in DevExpress
+error:   - Found 0 version(s) in MAUI
+info :   CACHE https://api.nuget.org/v3/vulnerabilities/index.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/vulnerability.base.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/2026.11.01.11.41.44/vulnerability.update.json
+error: Package 'Mafe.TinyCsv' is incompatible with 'all' frameworks in project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+
+// BenchmarkDotNet has failed to build the auto-generated boilerplate code.
+// It can be found in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3
+// Please follow the troubleshooting guide: https://benchmarkdotnet.org/articles/guides/troubleshooting.html
+
+// ** Remained 6 (20,0%) benchmark(s) to run. Estimated finish 2026-11-01 20:30 (0h 1m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.LoadFromText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=1000000]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet d9cfed3a-4fcd-4703-b721-115d3843cd66.dll --anonymousPipes 2028 1584 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.LoadFromText(N: 1000000)" --job "NuGetReferences=Mafe.TinyCsv 2.1.0" --benchmarkId 8 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\d9cfed3a-4fcd-4703-b721-115d3843cd66\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-BWKQRE(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 219200.00 ns, 219.2000 us/op
+WorkloadJitting  1: 1 op, 1130135400.00 ns, 1.1301 s/op
+
+OverheadJitting  2: 1 op, 2500.00 ns, 2.5000 us/op
+WorkloadJitting  2: 1 op, 775776100.00 ns, 775.7761 ms/op
+
+WorkloadWarmup   1: 1 op, 784425600.00 ns, 784.4256 ms/op
+WorkloadWarmup   2: 1 op, 773718100.00 ns, 773.7181 ms/op
+WorkloadWarmup   3: 1 op, 781478000.00 ns, 781.4780 ms/op
+WorkloadWarmup   4: 1 op, 783810500.00 ns, 783.8105 ms/op
+WorkloadWarmup   5: 1 op, 768529400.00 ns, 768.5294 ms/op
+WorkloadWarmup   6: 1 op, 774827600.00 ns, 774.8276 ms/op
+WorkloadWarmup   7: 1 op, 765460600.00 ns, 765.4606 ms/op
+
+// BeforeActualRun
+WorkloadActual   1: 1 op, 769233300.00 ns, 769.2333 ms/op
+WorkloadActual   2: 1 op, 772122300.00 ns, 772.1223 ms/op
+WorkloadActual   3: 1 op, 769586400.00 ns, 769.5864 ms/op
+WorkloadActual   4: 1 op, 776762900.00 ns, 776.7629 ms/op
+WorkloadActual   5: 1 op, 764990000.00 ns, 764.9900 ms/op
+WorkloadActual   6: 1 op, 762079200.00 ns, 762.0792 ms/op
+WorkloadActual   7: 1 op, 771405800.00 ns, 771.4058 ms/op
+WorkloadActual   8: 1 op, 768244900.00 ns, 768.2449 ms/op
+WorkloadActual   9: 1 op, 766755100.00 ns, 766.7551 ms/op
+WorkloadActual  10: 1 op, 765832700.00 ns, 765.8327 ms/op
+WorkloadActual  11: 1 op, 769169500.00 ns, 769.1695 ms/op
+WorkloadActual  12: 1 op, 765876800.00 ns, 765.8768 ms/op
+WorkloadActual  13: 1 op, 766120900.00 ns, 766.1209 ms/op
+WorkloadActual  14: 1 op, 766426500.00 ns, 766.4265 ms/op
+WorkloadActual  15: 1 op, 769069100.00 ns, 769.0691 ms/op
+
+// AfterActualRun
+WorkloadResult   1: 1 op, 769233300.00 ns, 769.2333 ms/op
+WorkloadResult   2: 1 op, 772122300.00 ns, 772.1223 ms/op
+WorkloadResult   3: 1 op, 769586400.00 ns, 769.5864 ms/op
+WorkloadResult   4: 1 op, 764990000.00 ns, 764.9900 ms/op
+WorkloadResult   5: 1 op, 762079200.00 ns, 762.0792 ms/op
+WorkloadResult   6: 1 op, 771405800.00 ns, 771.4058 ms/op
+WorkloadResult   7: 1 op, 768244900.00 ns, 768.2449 ms/op
+WorkloadResult   8: 1 op, 766755100.00 ns, 766.7551 ms/op
+WorkloadResult   9: 1 op, 765832700.00 ns, 765.8327 ms/op
+WorkloadResult  10: 1 op, 769169500.00 ns, 769.1695 ms/op
+WorkloadResult  11: 1 op, 765876800.00 ns, 765.8768 ms/op
+WorkloadResult  12: 1 op, 766120900.00 ns, 766.1209 ms/op
+WorkloadResult  13: 1 op, 766426500.00 ns, 766.4265 ms/op
+WorkloadResult  14: 1 op, 769069100.00 ns, 769.0691 ms/op
+// GC:  44 0 0 1195002672 1
+// Threading:  0 0 1
+
+// AfterAll
+// Benchmark Process 3576 has exited with code 0.
+
+Mean = 767.637 ms, StdErr = 0.720 ms (0.09%), N = 14, StdDev = 2.692 ms
+Min = 762.079 ms, Q1 = 765.938 ms, Median = 767.500 ms, Q3 = 769.217 ms, Max = 772.122 ms
+IQR = 3.280 ms, LowerFence = 761.019 ms, UpperFence = 774.137 ms
+ConfidenceInterval = [764.600 ms; 770.674 ms] (CI 99.9%), Margin = 3.037 ms (0.40% of Mean)
+Skewness = -0.17, Kurtosis = 2.27, MValue = 2
+
+// ** Remained 5 (16,7%) benchmark(s) to run. Estimated finish 2026-11-01 20:30 (0h 1m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.SaveToText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=1000000]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet d9cfed3a-4fcd-4703-b721-115d3843cd66.dll --anonymousPipes 1828 2068 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.SaveToText(N: 1000000)" --job "NuGetReferences=Mafe.TinyCsv 2.1.0" --benchmarkId 9 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\d9cfed3a-4fcd-4703-b721-115d3843cd66\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-WYHNMZ(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 228200.00 ns, 228.2000 us/op
+WorkloadJitting  1: 1 op, 1366132000.00 ns, 1.3661 s/op
+
+OverheadJitting  2: 1 op, 2800.00 ns, 2.8000 us/op
+WorkloadJitting  2: 1 op, 968816300.00 ns, 968.8163 ms/op
+
+WorkloadWarmup   1: 1 op, 999731200.00 ns, 999.7312 ms/op
+WorkloadWarmup   2: 1 op, 980225700.00 ns, 980.2257 ms/op
+WorkloadWarmup   3: 1 op, 984660800.00 ns, 984.6608 ms/op
+WorkloadWarmup   4: 1 op, 977363400.00 ns, 977.3634 ms/op
+WorkloadWarmup   5: 1 op, 986393400.00 ns, 986.3934 ms/op
+WorkloadWarmup   6: 1 op, 988119500.00 ns, 988.1195 ms/op
+WorkloadWarmup   7: 1 op, 980358400.00 ns, 980.3584 ms/op
+
+// BeforeActualRun
+WorkloadActual   1: 1 op, 989322300.00 ns, 989.3223 ms/op
+WorkloadActual   2: 1 op, 981491000.00 ns, 981.4910 ms/op
+WorkloadActual   3: 1 op, 976979200.00 ns, 976.9792 ms/op
+WorkloadActual   4: 1 op, 988304900.00 ns, 988.3049 ms/op
+WorkloadActual   5: 1 op, 992169000.00 ns, 992.1690 ms/op
+WorkloadActual   6: 1 op, 977774100.00 ns, 977.7741 ms/op
+WorkloadActual   7: 1 op, 981212500.00 ns, 981.2125 ms/op
+WorkloadActual   8: 1 op, 979159000.00 ns, 979.1590 ms/op
+WorkloadActual   9: 1 op, 982343400.00 ns, 982.3434 ms/op
+WorkloadActual  10: 1 op, 979996700.00 ns, 979.9967 ms/op
+WorkloadActual  11: 1 op, 983401200.00 ns, 983.4012 ms/op
+WorkloadActual  12: 1 op, 976257700.00 ns, 976.2577 ms/op
+WorkloadActual  13: 1 op, 984926300.00 ns, 984.9263 ms/op
+WorkloadActual  14: 1 op, 977300900.00 ns, 977.3009 ms/op
+WorkloadActual  15: 1 op, 981032600.00 ns, 981.0326 ms/op
+
+// AfterActualRun
+WorkloadResult   1: 1 op, 989322300.00 ns, 989.3223 ms/op
+WorkloadResult   2: 1 op, 981491000.00 ns, 981.4910 ms/op
+WorkloadResult   3: 1 op, 976979200.00 ns, 976.9792 ms/op
+WorkloadResult   4: 1 op, 988304900.00 ns, 988.3049 ms/op
+WorkloadResult   5: 1 op, 992169000.00 ns, 992.1690 ms/op
+WorkloadResult   6: 1 op, 977774100.00 ns, 977.7741 ms/op
+WorkloadResult   7: 1 op, 981212500.00 ns, 981.2125 ms/op
+WorkloadResult   8: 1 op, 979159000.00 ns, 979.1590 ms/op
+WorkloadResult   9: 1 op, 982343400.00 ns, 982.3434 ms/op
+WorkloadResult  10: 1 op, 979996700.00 ns, 979.9967 ms/op
+WorkloadResult  11: 1 op, 983401200.00 ns, 983.4012 ms/op
+WorkloadResult  12: 1 op, 976257700.00 ns, 976.2577 ms/op
+WorkloadResult  13: 1 op, 984926300.00 ns, 984.9263 ms/op
+WorkloadResult  14: 1 op, 977300900.00 ns, 977.3009 ms/op
+WorkloadResult  15: 1 op, 981032600.00 ns, 981.0326 ms/op
+// GC:  35 0 0 1156440656 1
+// Threading:  0 0 1
+
+// AfterAll
+// Benchmark Process 3632 has exited with code 0.
+
+Mean = 982.111 ms, StdErr = 1.233 ms (0.13%), N = 15, StdDev = 4.775 ms
+Min = 976.258 ms, Q1 = 978.467 ms, Median = 981.212 ms, Q3 = 984.164 ms, Max = 992.169 ms
+IQR = 5.697 ms, LowerFence = 969.921 ms, UpperFence = 992.710 ms
+ConfidenceInterval = [977.006 ms; 987.217 ms] (CI 99.9%), Margin = 5.105 ms (0.52% of Mean)
+Skewness = 0.67, Kurtosis = 2.22, MValue = 2
+
+// ** Remained 4 (13,3%) benchmark(s) to run. Estimated finish 2026-11-01 20:30 (0h 1m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.LoadFromText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=1000000]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet e109f795-63e0-4d5c-836d-5557c3e09837.dll --anonymousPipes 2120 2060 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.LoadFromText(N: 1000000)" --job "NuGetReferences=Mafe.TinyCsv 2.2.2" --benchmarkId 8 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\e109f795-63e0-4d5c-836d-5557c3e09837\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-BTHMQM(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 264600.00 ns, 264.6000 us/op
+WorkloadJitting  1: 1 op, 1404686700.00 ns, 1.4047 s/op
+
+OverheadJitting  2: 1 op, 2200.00 ns, 2.2000 us/op
+WorkloadJitting  2: 1 op, 1095449600.00 ns, 1.0954 s/op
+
+WorkloadWarmup   1: 1 op, 1095245300.00 ns, 1.0952 s/op
+WorkloadWarmup   2: 1 op, 1089868300.00 ns, 1.0899 s/op
+WorkloadWarmup   3: 1 op, 1087565200.00 ns, 1.0876 s/op
+WorkloadWarmup   4: 1 op, 1087621000.00 ns, 1.0876 s/op
+WorkloadWarmup   5: 1 op, 1094902600.00 ns, 1.0949 s/op
+WorkloadWarmup   6: 1 op, 1097021800.00 ns, 1.0970 s/op
+WorkloadWarmup   7: 1 op, 1103176400.00 ns, 1.1032 s/op
+WorkloadWarmup   8: 1 op, 1105306000.00 ns, 1.1053 s/op
+WorkloadWarmup   9: 1 op, 1093439500.00 ns, 1.0934 s/op
+WorkloadWarmup  10: 1 op, 1139257200.00 ns, 1.1393 s/op
+WorkloadWarmup  11: 1 op, 1087622200.00 ns, 1.0876 s/op
+
+// BeforeActualRun
+WorkloadActual   1: 1 op, 1106552600.00 ns, 1.1066 s/op
+WorkloadActual   2: 1 op, 1092145100.00 ns, 1.0921 s/op
+WorkloadActual   3: 1 op, 1098345200.00 ns, 1.0983 s/op
+WorkloadActual   4: 1 op, 1095068200.00 ns, 1.0951 s/op
+WorkloadActual   5: 1 op, 1094829500.00 ns, 1.0948 s/op
+WorkloadActual   6: 1 op, 1107163100.00 ns, 1.1072 s/op
+WorkloadActual   7: 1 op, 1101735000.00 ns, 1.1017 s/op
+WorkloadActual   8: 1 op, 1090724000.00 ns, 1.0907 s/op
+WorkloadActual   9: 1 op, 1089825800.00 ns, 1.0898 s/op
+WorkloadActual  10: 1 op, 1090225800.00 ns, 1.0902 s/op
+WorkloadActual  11: 1 op, 1116197800.00 ns, 1.1162 s/op
+WorkloadActual  12: 1 op, 1092334000.00 ns, 1.0923 s/op
+WorkloadActual  13: 1 op, 1097069000.00 ns, 1.0971 s/op
+WorkloadActual  14: 1 op, 1094586500.00 ns, 1.0946 s/op
+WorkloadActual  15: 1 op, 1112844000.00 ns, 1.1128 s/op
+
+// AfterActualRun
+WorkloadResult   1: 1 op, 1106552600.00 ns, 1.1066 s/op
+WorkloadResult   2: 1 op, 1092145100.00 ns, 1.0921 s/op
+WorkloadResult   3: 1 op, 1098345200.00 ns, 1.0983 s/op
+WorkloadResult   4: 1 op, 1095068200.00 ns, 1.0951 s/op
+WorkloadResult   5: 1 op, 1094829500.00 ns, 1.0948 s/op
+WorkloadResult   6: 1 op, 1107163100.00 ns, 1.1072 s/op
+WorkloadResult   7: 1 op, 1101735000.00 ns, 1.1017 s/op
+WorkloadResult   8: 1 op, 1090724000.00 ns, 1.0907 s/op
+WorkloadResult   9: 1 op, 1089825800.00 ns, 1.0898 s/op
+WorkloadResult  10: 1 op, 1090225800.00 ns, 1.0902 s/op
+WorkloadResult  11: 1 op, 1116197800.00 ns, 1.1162 s/op
+WorkloadResult  12: 1 op, 1092334000.00 ns, 1.0923 s/op
+WorkloadResult  13: 1 op, 1097069000.00 ns, 1.0971 s/op
+WorkloadResult  14: 1 op, 1094586500.00 ns, 1.0946 s/op
+WorkloadResult  15: 1 op, 1112844000.00 ns, 1.1128 s/op
+// GC:  75 0 0 1979002224 1
+// Threading:  0 0 1
+
+// AfterAll
+// Benchmark Process 4424 has exited with code 0.
+
+Mean = 1.099 s, StdErr = 0.002 s (0.20%), N = 15, StdDev = 0.008 s
+Min = 1.090 s, Q1 = 1.092 s, Median = 1.095 s, Q3 = 1.104 s, Max = 1.116 s
+IQR = 0.012 s, LowerFence = 1.074 s, UpperFence = 1.122 s
+ConfidenceInterval = [1.090 s; 1.108 s] (CI 99.9%), Margin = 0.009 s (0.82% of Mean)
+Skewness = 0.77, Kurtosis = 2.17, MValue = 2
+
+// ** Remained 3 (10,0%) benchmark(s) to run. Estimated finish 2026-11-01 20:30 (0h 0m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// **************************
+// Benchmark: TinyCsvLibraryBenchmark.SaveToText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=1000000]
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet e109f795-63e0-4d5c-836d-5557c3e09837.dll --anonymousPipes 2148 2072 --benchmarkName "CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark.SaveToText(N: 1000000)" --job "NuGetReferences=Mafe.TinyCsv 2.2.2" --benchmarkId 9 in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\e109f795-63e0-4d5c-836d-5557c3e09837\bin\Release\net8.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.12
+// Runtime=.NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Non-concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: Job-IVOSAO(NuGetReferences=Empty)
+
+OverheadJitting  1: 1 op, 271300.00 ns, 271.3000 us/op
+WorkloadJitting  1: 1 op, 1340150600.00 ns, 1.3402 s/op
+
+OverheadJitting  2: 1 op, 2300.00 ns, 2.3000 us/op
+WorkloadJitting  2: 1 op, 965466100.00 ns, 965.4661 ms/op
+
+WorkloadWarmup   1: 1 op, 981157900.00 ns, 981.1579 ms/op
+WorkloadWarmup   2: 1 op, 973845200.00 ns, 973.8452 ms/op
+WorkloadWarmup   3: 1 op, 969758800.00 ns, 969.7588 ms/op
+WorkloadWarmup   4: 1 op, 971053300.00 ns, 971.0533 ms/op
+WorkloadWarmup   5: 1 op, 970828400.00 ns, 970.8284 ms/op
+WorkloadWarmup   6: 1 op, 968723700.00 ns, 968.7237 ms/op
+WorkloadWarmup   7: 1 op, 969576800.00 ns, 969.5768 ms/op
+WorkloadWarmup   8: 1 op, 971923800.00 ns, 971.9238 ms/op
+WorkloadWarmup   9: 1 op, 983266100.00 ns, 983.2661 ms/op
+WorkloadWarmup  10: 1 op, 980809900.00 ns, 980.8099 ms/op
+
+// BeforeActualRun
+WorkloadActual   1: 1 op, 977823300.00 ns, 977.8233 ms/op
+WorkloadActual   2: 1 op, 973172700.00 ns, 973.1727 ms/op
+WorkloadActual   3: 1 op, 980513900.00 ns, 980.5139 ms/op
+WorkloadActual   4: 1 op, 974020100.00 ns, 974.0201 ms/op
+WorkloadActual   5: 1 op, 970703600.00 ns, 970.7036 ms/op
+WorkloadActual   6: 1 op, 991215200.00 ns, 991.2152 ms/op
+WorkloadActual   7: 1 op, 971433100.00 ns, 971.4331 ms/op
+WorkloadActual   8: 1 op, 973115200.00 ns, 973.1152 ms/op
+WorkloadActual   9: 1 op, 968945800.00 ns, 968.9458 ms/op
+WorkloadActual  10: 1 op, 978124400.00 ns, 978.1244 ms/op
+WorkloadActual  11: 1 op, 978133800.00 ns, 978.1338 ms/op
+WorkloadActual  12: 1 op, 977361400.00 ns, 977.3614 ms/op
+WorkloadActual  13: 1 op, 985359000.00 ns, 985.3590 ms/op
+WorkloadActual  14: 1 op, 986587900.00 ns, 986.5879 ms/op
+WorkloadActual  15: 1 op, 974853600.00 ns, 974.8536 ms/op
+
+// AfterActualRun
+WorkloadResult   1: 1 op, 977823300.00 ns, 977.8233 ms/op
+WorkloadResult   2: 1 op, 973172700.00 ns, 973.1727 ms/op
+WorkloadResult   3: 1 op, 980513900.00 ns, 980.5139 ms/op
+WorkloadResult   4: 1 op, 974020100.00 ns, 974.0201 ms/op
+WorkloadResult   5: 1 op, 970703600.00 ns, 970.7036 ms/op
+WorkloadResult   6: 1 op, 971433100.00 ns, 971.4331 ms/op
+WorkloadResult   7: 1 op, 973115200.00 ns, 973.1152 ms/op
+WorkloadResult   8: 1 op, 968945800.00 ns, 968.9458 ms/op
+WorkloadResult   9: 1 op, 978124400.00 ns, 978.1244 ms/op
+WorkloadResult  10: 1 op, 978133800.00 ns, 978.1338 ms/op
+WorkloadResult  11: 1 op, 977361400.00 ns, 977.3614 ms/op
+WorkloadResult  12: 1 op, 985359000.00 ns, 985.3590 ms/op
+WorkloadResult  13: 1 op, 986587900.00 ns, 986.5879 ms/op
+WorkloadResult  14: 1 op, 974853600.00 ns, 974.8536 ms/op
+// GC:  35 0 0 1156440608 1
+// Threading:  0 0 1
+
+// AfterAll
+// Benchmark Process 6028 has exited with code 0.
+
+Mean = 976.439 ms, StdErr = 1.390 ms (0.14%), N = 14, StdDev = 5.202 ms
+Min = 968.946 ms, Q1 = 973.130 ms, Median = 976.107 ms, Q3 = 978.131 ms, Max = 986.588 ms
+IQR = 5.002 ms, LowerFence = 965.627 ms, UpperFence = 985.634 ms
+ConfidenceInterval = [970.571 ms; 982.308 ms] (CI 99.9%), Margin = 5.869 ms (0.60% of Mean)
+Skewness = 0.51, Kurtosis = 2.18, MValue = 2
+
+// ** Remained 2 (6,7%) benchmark(s) to run. Estimated finish 2026-11-01 20:31 (0h 0m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// Build Error: Standard output: 
+  
+ Standard error: 
+ info : X.509 certificate chain validation will use the default trust store selected by .NET for code signing.
+info : X.509 certificate chain validation will use the default trust store selected by .NET for timestamping.
+info : Adding PackageReference for package 'Mafe.TinyCsv' into project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+info : Restoring packages for C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj...
+info :   CACHE https://api.nuget.org/v3-flatcontainer/mafe.tinycsv/index.json
+info :   CACHE https://nuget.devexpress.com/GGeuOtRw7l1YfmBaZFZCPDEdcjPXHXQ2y2dNhfL6o7hedMtLAT/api/FindPackagesById()?id='Mafe.TinyCsv'&semVerLevel=2.0.0
+info :   GET https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json
+info :   NotFound https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json 380ms
+error: NU1102: Unable to find package Mafe.TinyCsv with version (>= 3.0.0)
+error:   - Found 35 version(s) in nuget.org [ Nearest version: 3.0.0-rc1 ]
+error:   - Found 0 version(s) in Microsoft Visual Studio Offline Packages
+error:   - Found 0 version(s) in C:\Program Files\dotnet\library-packs
+error:   - Found 0 version(s) in DevExpress
+error:   - Found 0 version(s) in MAUI
+info :   CACHE https://api.nuget.org/v3/vulnerabilities/index.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/vulnerability.base.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/2026.11.01.11.41.44/vulnerability.update.json
+error: Package 'Mafe.TinyCsv' is incompatible with 'all' frameworks in project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+
+// BenchmarkDotNet has failed to build the auto-generated boilerplate code.
+// It can be found in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3
+// Please follow the troubleshooting guide: https://benchmarkdotnet.org/articles/guides/troubleshooting.html
+
+// ** Remained 1 (3,3%) benchmark(s) to run. Estimated finish 2026-11-01 20:30 (0h 0m from now) **
+Setup power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// Build Error: Standard output: 
+  
+ Standard error: 
+ info : X.509 certificate chain validation will use the default trust store selected by .NET for code signing.
+info : X.509 certificate chain validation will use the default trust store selected by .NET for timestamping.
+info : Adding PackageReference for package 'Mafe.TinyCsv' into project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+info : Restoring packages for C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj...
+info :   CACHE https://api.nuget.org/v3-flatcontainer/mafe.tinycsv/index.json
+info :   CACHE https://nuget.devexpress.com/GGeuOtRw7l1YfmBaZFZCPDEdcjPXHXQ2y2dNhfL6o7hedMtLAT/api/FindPackagesById()?id='Mafe.TinyCsv'&semVerLevel=2.0.0
+info :   GET https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json
+info :   NotFound https://pkgs.dev.azure.com/xamarin/6fd3d886-57a5-4e31-8db7-52a1b47c07a8/_packaging/8f9f48d6-711f-427c-87a5-04781ea189b3/nuget/v3/flat2/mafe.tinycsv/index.json 380ms
+error: NU1102: Unable to find package Mafe.TinyCsv with version (>= 3.0.0)
+error:   - Found 35 version(s) in nuget.org [ Nearest version: 3.0.0-rc1 ]
+error:   - Found 0 version(s) in Microsoft Visual Studio Offline Packages
+error:   - Found 0 version(s) in C:\Program Files\dotnet\library-packs
+error:   - Found 0 version(s) in DevExpress
+error:   - Found 0 version(s) in MAUI
+info :   CACHE https://api.nuget.org/v3/vulnerabilities/index.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/vulnerability.base.json
+info :   CACHE https://api.nuget.org/v3-vulnerabilities/2026.10.28.05.41.06/2026.11.01.11.41.44/vulnerability.update.json
+error: Package 'Mafe.TinyCsv' is incompatible with 'all' frameworks in project 'C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3\BenchmarkDotNet.Autogenerated.csproj'.
+
+// BenchmarkDotNet has failed to build the auto-generated boilerplate code.
+// It can be found in C:\Users\fmazzant\Desktop\WORKAREA\github\TinyCsv\benchmark\CsvSampleConsoleBenchmarkApp\bin\Release\net8.0\ba107c57-703b-4be0-810d-935a91a691b3
+// Please follow the troubleshooting guide: https://benchmarkdotnet.org/articles/guides/troubleshooting.html
+
+// ** Remained 0 (0,0%) benchmark(s) to run. Estimated finish 2026-11-01 20:30 (0h 0m from now) **
+Successfully reverted power plan (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c FriendlyName: High performance)
+// ***** BenchmarkRunner: Finish  *****
+
+// * Export *
+  BenchmarkDotNet.Artifacts\results\CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark-report.csv
+  BenchmarkDotNet.Artifacts\results\CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark-report-github.md
+  BenchmarkDotNet.Artifacts\results\CsvSampleConsoleBenchmarkApp.TinyCsvLibraryBenchmark-report.html
+
+// * Detailed results *
+TinyCsvLibraryBenchmark.LoadFromText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=100]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 75.581 μs, StdErr = 0.406 μs (0.54%), N = 44, StdDev = 2.692 μs
+Min = 71.681 μs, Q1 = 72.865 μs, Median = 76.171 μs, Q3 = 77.337 μs, Max = 82.598 μs
+IQR = 4.473 μs, LowerFence = 66.156 μs, UpperFence = 84.046 μs
+ConfidenceInterval = [74.148 μs; 77.014 μs] (CI 99.9%), Margin = 1.433 μs (1.90% of Mean)
+Skewness = 0.43, Kurtosis = 2.5, MValue = 2
+-------------------- Histogram --------------------
+[70.681 μs ; 72.212 μs) | @
+[72.212 μs ; 74.213 μs) | @@@@@@@@@@@@@@@@@
+[74.213 μs ; 77.546 μs) | @@@@@@@@@@@@@@@@@@@
+[77.546 μs ; 79.860 μs) | @@@@@
+[79.860 μs ; 83.054 μs) | @@
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.SaveToText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=100]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 97.324 μs, StdErr = 0.518 μs (0.53%), N = 50, StdDev = 3.665 μs
+Min = 94.016 μs, Q1 = 94.743 μs, Median = 95.683 μs, Q3 = 98.875 μs, Max = 107.247 μs
+IQR = 4.133 μs, LowerFence = 88.543 μs, UpperFence = 105.075 μs
+ConfidenceInterval = [95.510 μs; 99.138 μs] (CI 99.9%), Margin = 1.814 μs (1.86% of Mean)
+Skewness = 1.38, Kurtosis = 3.77, MValue = 2.14
+-------------------- Histogram --------------------
+[ 93.953 μs ;  96.565 μs) | @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+[ 96.565 μs ; 100.053 μs) | @@@@@@@@@@
+[100.053 μs ; 102.651 μs) | @
+[102.651 μs ; 105.262 μs) | @@@@
+[105.262 μs ; 107.911 μs) | @@@
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.LoadFromText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=100]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 108.994 μs, StdErr = 0.147 μs (0.14%), N = 14, StdDev = 0.552 μs
+Min = 108.326 μs, Q1 = 108.622 μs, Median = 108.924 μs, Q3 = 109.049 μs, Max = 110.163 μs
+IQR = 0.427 μs, LowerFence = 107.981 μs, UpperFence = 109.690 μs
+ConfidenceInterval = [108.371 μs; 109.616 μs] (CI 99.9%), Margin = 0.622 μs (0.57% of Mean)
+Skewness = 0.92, Kurtosis = 2.67, MValue = 2
+-------------------- Histogram --------------------
+[108.026 μs ; 110.464 μs) | @@@@@@@@@@@@@@
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.SaveToText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=100]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 94.771 μs, StdErr = 0.197 μs (0.21%), N = 15, StdDev = 0.763 μs
+Min = 93.785 μs, Q1 = 94.215 μs, Median = 94.624 μs, Q3 = 95.153 μs, Max = 96.274 μs
+IQR = 0.938 μs, LowerFence = 92.809 μs, UpperFence = 96.559 μs
+ConfidenceInterval = [93.956 μs; 95.587 μs] (CI 99.9%), Margin = 0.815 μs (0.86% of Mean)
+Skewness = 0.69, Kurtosis = 2.28, MValue = 2
+-------------------- Histogram --------------------
+[93.492 μs ; 96.680 μs) | @@@@@@@@@@@@@@@
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.LoadFromText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=100]
+Runtime = ; GC = 
+There are not any results runs
+
+TinyCsvLibraryBenchmark.SaveToText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=100]
+Runtime = ; GC = 
+There are not any results runs
+
+TinyCsvLibraryBenchmark.LoadFromText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=1000]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 738.603 μs, StdErr = 1.570 μs (0.21%), N = 15, StdDev = 6.080 μs
+Min = 731.217 μs, Q1 = 732.701 μs, Median = 738.904 μs, Q3 = 741.675 μs, Max = 751.952 μs
+IQR = 8.973 μs, LowerFence = 719.241 μs, UpperFence = 755.135 μs
+ConfidenceInterval = [732.104 μs; 745.103 μs] (CI 99.9%), Margin = 6.499 μs (0.88% of Mean)
+Skewness = 0.45, Kurtosis = 2.31, MValue = 2
+-------------------- Histogram --------------------
+[727.982 μs ; 755.188 μs) | @@@@@@@@@@@@@@@
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.SaveToText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=1000]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 1.122 ms, StdErr = 0.006 ms (0.53%), N = 31, StdDev = 0.033 ms
+Min = 1.064 ms, Q1 = 1.094 ms, Median = 1.122 ms, Q3 = 1.145 ms, Max = 1.196 ms
+IQR = 0.050 ms, LowerFence = 1.019 ms, UpperFence = 1.220 ms
+ConfidenceInterval = [1.100 ms; 1.144 ms] (CI 99.9%), Margin = 0.022 ms (1.95% of Mean)
+Skewness = 0.24, Kurtosis = 2.15, MValue = 2
+-------------------- Histogram --------------------
+[1.050 ms ; 1.073 ms) | @
+[1.073 ms ; 1.106 ms) | @@@@@@@@
+[1.106 ms ; 1.134 ms) | @@@@@@@@@@@@@
+[1.134 ms ; 1.176 ms) | @@@@@@@@
+[1.176 ms ; 1.210 ms) | @
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.LoadFromText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=1000]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 1.108 ms, StdErr = 0.006 ms (0.52%), N = 21, StdDev = 0.026 ms
+Min = 1.072 ms, Q1 = 1.087 ms, Median = 1.093 ms, Q3 = 1.132 ms, Max = 1.159 ms
+IQR = 0.045 ms, LowerFence = 1.020 ms, UpperFence = 1.199 ms
+ConfidenceInterval = [1.086 ms; 1.130 ms] (CI 99.9%), Margin = 0.022 ms (2.00% of Mean)
+Skewness = 0.37, Kurtosis = 1.52, MValue = 2
+-------------------- Histogram --------------------
+[1.060 ms ; 1.101 ms) | @@@@@@@@@@@@
+[1.101 ms ; 1.146 ms) | @@@@@@@@
+[1.146 ms ; 1.172 ms) | @
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.SaveToText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=1000]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 1.183 ms, StdErr = 0.006 ms (0.49%), N = 18, StdDev = 0.025 ms
+Min = 1.143 ms, Q1 = 1.166 ms, Median = 1.178 ms, Q3 = 1.196 ms, Max = 1.235 ms
+IQR = 0.029 ms, LowerFence = 1.122 ms, UpperFence = 1.240 ms
+ConfidenceInterval = [1.160 ms; 1.205 ms] (CI 99.9%), Margin = 0.023 ms (1.94% of Mean)
+Skewness = 0.35, Kurtosis = 2.31, MValue = 2
+-------------------- Histogram --------------------
+[1.131 ms ; 1.173 ms) | @@@@@@
+[1.173 ms ; 1.198 ms) | @@@@@@@@@
+[1.198 ms ; 1.247 ms) | @@@
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.LoadFromText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=1000]
+Runtime = ; GC = 
+There are not any results runs
+
+TinyCsvLibraryBenchmark.SaveToText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=1000]
+Runtime = ; GC = 
+There are not any results runs
+
+TinyCsvLibraryBenchmark.LoadFromText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=10000]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 8.624 ms, StdErr = 0.016 ms (0.19%), N = 14, StdDev = 0.061 ms
+Min = 8.532 ms, Q1 = 8.588 ms, Median = 8.599 ms, Q3 = 8.667 ms, Max = 8.730 ms
+IQR = 0.078 ms, LowerFence = 8.471 ms, UpperFence = 8.784 ms
+ConfidenceInterval = [8.555 ms; 8.693 ms] (CI 99.9%), Margin = 0.069 ms (0.80% of Mean)
+Skewness = 0.23, Kurtosis = 1.57, MValue = 2
+-------------------- Histogram --------------------
+[8.499 ms ; 8.764 ms) | @@@@@@@@@@@@@@
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.SaveToText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=10000]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 11.858 ms, StdErr = 0.063 ms (0.53%), N = 24, StdDev = 0.307 ms
+Min = 11.338 ms, Q1 = 11.580 ms, Median = 11.860 ms, Q3 = 12.065 ms, Max = 12.407 ms
+IQR = 0.485 ms, LowerFence = 10.852 ms, UpperFence = 12.792 ms
+ConfidenceInterval = [11.621 ms; 12.094 ms] (CI 99.9%), Margin = 0.236 ms (1.99% of Mean)
+Skewness = 0.11, Kurtosis = 1.95, MValue = 2
+-------------------- Histogram --------------------
+[11.324 ms ; 11.831 ms) | @@@@@@@@@@
+[11.831 ms ; 12.225 ms) | @@@@@@@@@@@
+[12.225 ms ; 12.547 ms) | @@@
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.LoadFromText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=10000]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 14.154 ms, StdErr = 0.281 ms (1.99%), N = 100, StdDev = 2.813 ms
+Min = 11.749 ms, Q1 = 11.969 ms, Median = 12.123 ms, Q3 = 17.179 ms, Max = 20.215 ms
+IQR = 5.211 ms, LowerFence = 4.153 ms, UpperFence = 24.996 ms
+ConfidenceInterval = [13.200 ms; 15.109 ms] (CI 99.9%), Margin = 0.954 ms (6.74% of Mean)
+Skewness = 0.74, Kurtosis = 1.89, MValue = 2.58
+-------------------- Histogram --------------------
+[11.580 ms ; 13.171 ms) | @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+[13.171 ms ; 14.580 ms) | @@
+[14.580 ms ; 16.300 ms) | @@@@@@@
+[16.300 ms ; 17.891 ms) | @@@@@@@@@@@@@@@@@@@
+[17.891 ms ; 19.874 ms) | @@@@@@@@@@@
+[19.874 ms ; 21.010 ms) | @
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.SaveToText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=10000]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 11.579 ms, StdErr = 0.058 ms (0.50%), N = 22, StdDev = 0.274 ms
+Min = 11.077 ms, Q1 = 11.424 ms, Median = 11.560 ms, Q3 = 11.778 ms, Max = 12.151 ms
+IQR = 0.355 ms, LowerFence = 10.891 ms, UpperFence = 12.310 ms
+ConfidenceInterval = [11.356 ms; 11.802 ms] (CI 99.9%), Margin = 0.223 ms (1.93% of Mean)
+Skewness = 0.12, Kurtosis = 2.22, MValue = 2
+-------------------- Histogram --------------------
+[11.032 ms ; 11.348 ms) | @@@@
+[11.348 ms ; 11.605 ms) | @@@@@@@@@
+[11.605 ms ; 11.905 ms) | @@@@@@@
+[11.905 ms ; 12.207 ms) | @@
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.LoadFromText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=10000]
+Runtime = ; GC = 
+There are not any results runs
+
+TinyCsvLibraryBenchmark.SaveToText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=10000]
+Runtime = ; GC = 
+There are not any results runs
+
+TinyCsvLibraryBenchmark.LoadFromText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=100000]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 78.302 ms, StdErr = 0.334 ms (0.43%), N = 15, StdDev = 1.292 ms
+Min = 76.887 ms, Q1 = 77.436 ms, Median = 77.801 ms, Q3 = 78.957 ms, Max = 81.196 ms
+IQR = 1.521 ms, LowerFence = 75.155 ms, UpperFence = 81.238 ms
+ConfidenceInterval = [76.921 ms; 79.684 ms] (CI 99.9%), Margin = 1.382 ms (1.76% of Mean)
+Skewness = 0.9, Kurtosis = 2.52, MValue = 2
+-------------------- Histogram --------------------
+[76.616 ms ; 79.801 ms) | @@@@@@@@@@@@@
+[79.801 ms ; 81.644 ms) | @@
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.SaveToText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=100000]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 93.621 ms, StdErr = 0.189 ms (0.20%), N = 13, StdDev = 0.683 ms
+Min = 92.302 ms, Q1 = 93.228 ms, Median = 93.487 ms, Q3 = 94.132 ms, Max = 94.976 ms
+IQR = 0.904 ms, LowerFence = 91.872 ms, UpperFence = 95.489 ms
+ConfidenceInterval = [92.803 ms; 94.438 ms] (CI 99.9%), Margin = 0.818 ms (0.87% of Mean)
+Skewness = 0.17, Kurtosis = 2.53, MValue = 2
+-------------------- Histogram --------------------
+[91.921 ms ; 95.357 ms) | @@@@@@@@@@@@@
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.LoadFromText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=100000]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 111.713 ms, StdErr = 0.143 ms (0.13%), N = 15, StdDev = 0.555 ms
+Min = 110.966 ms, Q1 = 111.336 ms, Median = 111.667 ms, Q3 = 112.085 ms, Max = 112.947 ms
+IQR = 0.749 ms, LowerFence = 110.213 ms, UpperFence = 113.209 ms
+ConfidenceInterval = [111.120 ms; 112.306 ms] (CI 99.9%), Margin = 0.593 ms (0.53% of Mean)
+Skewness = 0.48, Kurtosis = 2.36, MValue = 2
+-------------------- Histogram --------------------
+[110.671 ms ; 113.242 ms) | @@@@@@@@@@@@@@@
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.SaveToText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=100000]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 92.388 ms, StdErr = 0.154 ms (0.17%), N = 15, StdDev = 0.596 ms
+Min = 91.528 ms, Q1 = 91.967 ms, Median = 92.322 ms, Q3 = 92.850 ms, Max = 93.470 ms
+IQR = 0.883 ms, LowerFence = 90.642 ms, UpperFence = 94.175 ms
+ConfidenceInterval = [91.752 ms; 93.025 ms] (CI 99.9%), Margin = 0.637 ms (0.69% of Mean)
+Skewness = 0.22, Kurtosis = 1.72, MValue = 2
+-------------------- Histogram --------------------
+[91.211 ms ; 93.787 ms) | @@@@@@@@@@@@@@@
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.LoadFromText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=100000]
+Runtime = ; GC = 
+There are not any results runs
+
+TinyCsvLibraryBenchmark.SaveToText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=100000]
+Runtime = ; GC = 
+There are not any results runs
+
+TinyCsvLibraryBenchmark.LoadFromText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=1000000]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 767.637 ms, StdErr = 0.720 ms (0.09%), N = 14, StdDev = 2.692 ms
+Min = 762.079 ms, Q1 = 765.938 ms, Median = 767.500 ms, Q3 = 769.217 ms, Max = 772.122 ms
+IQR = 3.280 ms, LowerFence = 761.019 ms, UpperFence = 774.137 ms
+ConfidenceInterval = [764.600 ms; 770.674 ms] (CI 99.9%), Margin = 3.037 ms (0.40% of Mean)
+Skewness = -0.17, Kurtosis = 2.27, MValue = 2
+-------------------- Histogram --------------------
+[760.613 ms ; 773.588 ms) | @@@@@@@@@@@@@@
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.SaveToText: Job-ODQZRP(NuGetReferences=Mafe.TinyCsv 2.1.0) [N=1000000]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 982.111 ms, StdErr = 1.233 ms (0.13%), N = 15, StdDev = 4.775 ms
+Min = 976.258 ms, Q1 = 978.467 ms, Median = 981.212 ms, Q3 = 984.164 ms, Max = 992.169 ms
+IQR = 5.697 ms, LowerFence = 969.921 ms, UpperFence = 992.710 ms
+ConfidenceInterval = [977.006 ms; 987.217 ms] (CI 99.9%), Margin = 5.105 ms (0.52% of Mean)
+Skewness = 0.67, Kurtosis = 2.22, MValue = 2
+-------------------- Histogram --------------------
+[973.716 ms ; 994.710 ms) | @@@@@@@@@@@@@@@
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.LoadFromText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=1000000]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 1.099 s, StdErr = 0.002 s (0.20%), N = 15, StdDev = 0.008 s
+Min = 1.090 s, Q1 = 1.092 s, Median = 1.095 s, Q3 = 1.104 s, Max = 1.116 s
+IQR = 0.012 s, LowerFence = 1.074 s, UpperFence = 1.122 s
+ConfidenceInterval = [1.090 s; 1.108 s] (CI 99.9%), Margin = 0.009 s (0.82% of Mean)
+Skewness = 0.77, Kurtosis = 2.17, MValue = 2
+-------------------- Histogram --------------------
+[1.085 s ; 1.121 s) | @@@@@@@@@@@@@@@
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.SaveToText: Job-QKSKYQ(NuGetReferences=Mafe.TinyCsv 2.2.2) [N=1000000]
+Runtime = .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Non-concurrent Workstation
+Mean = 976.439 ms, StdErr = 1.390 ms (0.14%), N = 14, StdDev = 5.202 ms
+Min = 968.946 ms, Q1 = 973.130 ms, Median = 976.107 ms, Q3 = 978.131 ms, Max = 986.588 ms
+IQR = 5.002 ms, LowerFence = 965.627 ms, UpperFence = 985.634 ms
+ConfidenceInterval = [970.571 ms; 982.308 ms] (CI 99.9%), Margin = 5.869 ms (0.60% of Mean)
+Skewness = 0.51, Kurtosis = 2.18, MValue = 2
+-------------------- Histogram --------------------
+[966.113 ms ; 989.421 ms) | @@@@@@@@@@@@@@
+---------------------------------------------------
+
+TinyCsvLibraryBenchmark.LoadFromText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=1000000]
+Runtime = ; GC = 
+There are not any results runs
+
+TinyCsvLibraryBenchmark.SaveToText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=1000000]
+Runtime = ; GC = 
+There are not any results runs
+
+// * Summary *
+
+BenchmarkDotNet v0.13.12, Windows 10 (10.0.17763.9376/1809/October2018Update/Redstone5) (Hyper-V)
+Intel Xeon Platinum 8370C CPU 2.80GHz, 1 CPU, 2 logical cores and 1 physical core
+.NET SDK 10.0.302
+  [Host]     : .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+  Job-ODQZRP : .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+  Job-QKSKYQ : .NET 8.0.29 (8.0.2926.32403), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+
+
+| Method       | Job        | NuGetReferences    | N       | Mean            | Error        | StdDev       | Median          | Gen0       | Gen1     | Gen2     | Allocated     |
+|------------- |----------- |------------------- |-------- |----------------:|-------------:|-------------:|----------------:|-----------:|---------:|---------:|--------------:|
+| LoadFromText | Job-ODQZRP | Mafe.TinyCsv 2.1.0 | 100     |        75.58 μs |     1.433 μs |     2.692 μs |        76.17 μs |     4.6387 |        - |        - |     119.25 KB |
+| SaveToText   | Job-ODQZRP | Mafe.TinyCsv 2.1.0 | 100     |        97.32 μs |     1.814 μs |     3.665 μs |        95.68 μs |     4.2725 |   0.1221 |        - |     107.36 KB |
+| LoadFromText | Job-QKSKYQ | Mafe.TinyCsv 2.2.2 | 100     |       108.99 μs |     0.622 μs |     0.552 μs |       108.92 μs |     7.9346 |   0.3662 |        - |     195.05 KB |
+| SaveToText   | Job-QKSKYQ | Mafe.TinyCsv 2.2.2 | 100     |        94.77 μs |     0.815 μs |     0.763 μs |        94.62 μs |     4.2725 |   0.1221 |        - |     107.36 KB |
+| LoadFromText | Job-KFCHAP | Mafe.TinyCsv 3.0.0 | 100     |              NA |           NA |           NA |              NA |         NA |       NA |       NA |            NA |
+| SaveToText   | Job-KFCHAP | Mafe.TinyCsv 3.0.0 | 100     |              NA |           NA |           NA |              NA |         NA |       NA |       NA |            NA |
+| LoadFromText | Job-ODQZRP | Mafe.TinyCsv 2.1.0 | 1000    |       738.60 μs |     6.499 μs |     6.080 μs |       738.90 μs |    46.8750 |  10.7422 |        - |    1169.54 KB |
+| SaveToText   | Job-ODQZRP | Mafe.TinyCsv 2.1.0 | 1000    |     1,122.28 μs |    21.869 μs |    33.397 μs |     1,121.78 μs |    41.0156 |  41.0156 |  41.0156 |    1127.94 KB |
+| LoadFromText | Job-QKSKYQ | Mafe.TinyCsv 2.2.2 | 1000    |     1,107.99 μs |    22.132 μs |    26.347 μs |     1,092.96 μs |    78.1250 |  17.5781 |        - |     1934.4 KB |
+| SaveToText   | Job-QKSKYQ | Mafe.TinyCsv 2.2.2 | 1000    |     1,182.52 μs |    22.899 μs |    24.502 μs |     1,177.70 μs |    41.0156 |  41.0156 |  41.0156 |    1127.94 KB |
+| LoadFromText | Job-KFCHAP | Mafe.TinyCsv 3.0.0 | 1000    |              NA |           NA |           NA |              NA |         NA |       NA |       NA |            NA |
+| SaveToText   | Job-KFCHAP | Mafe.TinyCsv 3.0.0 | 1000    |              NA |           NA |           NA |              NA |         NA |       NA |       NA |            NA |
+| LoadFromText | Job-ODQZRP | Mafe.TinyCsv 2.1.0 | 10000   |     8,624.03 μs |    69.174 μs |    61.321 μs |     8,598.62 μs |   484.3750 | 187.5000 | 187.5000 |   11672.54 KB |
+| SaveToText   | Job-ODQZRP | Mafe.TinyCsv 2.1.0 | 10000   |    11,857.61 μs |   236.248 μs |   307.189 μs |    11,860.22 μs |   484.3750 | 484.3750 | 484.3750 |   10724.84 KB |
+| LoadFromText | Job-QKSKYQ | Mafe.TinyCsv 2.2.2 | 10000   |    14,154.48 μs |   954.070 μs | 2,813.097 μs |    12,122.82 μs |   781.2500 | 187.5000 | 187.5000 |   19328.02 KB |
+| SaveToText   | Job-QKSKYQ | Mafe.TinyCsv 2.2.2 | 10000   |    11,579.11 μs |   223.323 μs |   274.261 μs |    11,560.33 μs |   484.3750 | 484.3750 | 484.3750 |   10724.84 KB |
+| LoadFromText | Job-KFCHAP | Mafe.TinyCsv 3.0.0 | 10000   |              NA |           NA |           NA |              NA |         NA |       NA |       NA |            NA |
+| SaveToText   | Job-KFCHAP | Mafe.TinyCsv 3.0.0 | 10000   |              NA |           NA |           NA |              NA |         NA |       NA |       NA |            NA |
+| LoadFromText | Job-ODQZRP | Mafe.TinyCsv 2.1.0 | 100000  |    78,302.45 μs | 1,381.568 μs | 1,292.320 μs |    77,800.76 μs |  4428.5714 |        - |        - |  116701.82 KB |
+| SaveToText   | Job-ODQZRP | Mafe.TinyCsv 2.1.0 | 100000  |    93,620.69 μs |   817.764 μs |   682.870 μs |    93,486.50 μs |  3500.0000 |        - |        - |  103107.82 KB |
+| LoadFromText | Job-QKSKYQ | Mafe.TinyCsv 2.2.2 | 100000  |   111,713.33 μs |   593.006 μs |   554.699 μs |   111,666.60 μs |  7400.0000 |        - |        - |  193263.58 KB |
+| SaveToText   | Job-QKSKYQ | Mafe.TinyCsv 2.2.2 | 100000  |    92,388.50 μs |   636.906 μs |   595.763 μs |    92,322.35 μs |  3500.0000 |        - |        - |  103107.82 KB |
+| LoadFromText | Job-KFCHAP | Mafe.TinyCsv 3.0.0 | 100000  |              NA |           NA |           NA |              NA |         NA |       NA |       NA |            NA |
+| SaveToText   | Job-KFCHAP | Mafe.TinyCsv 3.0.0 | 100000  |              NA |           NA |           NA |              NA |         NA |       NA |       NA |            NA |
+| LoadFromText | Job-ODQZRP | Mafe.TinyCsv 2.1.0 | 1000000 |   767,636.61 μs | 3,037.089 μs | 2,692.301 μs |   767,500.00 μs | 44000.0000 |        - |        - |  1166994.8 KB |
+| SaveToText   | Job-ODQZRP | Mafe.TinyCsv 2.1.0 | 1000000 |   982,111.39 μs | 5,105.147 μs | 4,775.358 μs |   981,212.50 μs | 35000.0000 |        - |        - | 1129336.58 KB |
+| LoadFromText | Job-QKSKYQ | Mafe.TinyCsv 2.2.2 | 1000000 | 1,098,643.04 μs | 9,009.090 μs | 8,427.108 μs | 1,095,068.20 μs | 75000.0000 |        - |        - | 1932619.36 KB |
+| SaveToText   | Job-QKSKYQ | Mafe.TinyCsv 2.2.2 | 1000000 |   976,439.13 μs | 5,868.558 μs | 5,202.324 μs |   976,107.50 μs | 35000.0000 |        - |        - | 1129336.53 KB |
+| LoadFromText | Job-KFCHAP | Mafe.TinyCsv 3.0.0 | 1000000 |              NA |           NA |           NA |              NA |         NA |       NA |       NA |            NA |
+| SaveToText   | Job-KFCHAP | Mafe.TinyCsv 3.0.0 | 1000000 |              NA |           NA |           NA |              NA |         NA |       NA |       NA |            NA |
+
+Benchmarks with issues:
+  TinyCsvLibraryBenchmark.LoadFromText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=100]
+  TinyCsvLibraryBenchmark.SaveToText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=100]
+  TinyCsvLibraryBenchmark.LoadFromText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=1000]
+  TinyCsvLibraryBenchmark.SaveToText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=1000]
+  TinyCsvLibraryBenchmark.LoadFromText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=10000]
+  TinyCsvLibraryBenchmark.SaveToText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=10000]
+  TinyCsvLibraryBenchmark.LoadFromText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=100000]
+  TinyCsvLibraryBenchmark.SaveToText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=100000]
+  TinyCsvLibraryBenchmark.LoadFromText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=1000000]
+  TinyCsvLibraryBenchmark.SaveToText: Job-KFCHAP(NuGetReferences=Mafe.TinyCsv 3.0.0) [N=1000000]
+
+// * Warnings *
+Environment
+  Summary -> Benchmark was executed on the virtual machine with Hyper-V hypervisor. Virtualization can affect the measurement result.
+
+// * Hints *
+Outliers
+  TinyCsvLibraryBenchmark.LoadFromText: NuGetReferences=Mafe.TinyCsv 2.1.0 -> 4 outliers were removed (84.14 μs..112.73 μs)
+  TinyCsvLibraryBenchmark.SaveToText: NuGetReferences=Mafe.TinyCsv 2.1.0   -> 7 outliers were removed (111.55 μs..167.07 μs)
+  TinyCsvLibraryBenchmark.LoadFromText: NuGetReferences=Mafe.TinyCsv 2.2.2 -> 1 outlier  was  removed (110.55 μs)
+  TinyCsvLibraryBenchmark.LoadFromText: NuGetReferences=Mafe.TinyCsv 2.1.0 -> 1 outlier  was  removed (8.82 ms)
+  TinyCsvLibraryBenchmark.SaveToText: NuGetReferences=Mafe.TinyCsv 2.1.0   -> 3 outliers were removed (15.20 ms..18.96 ms)
+  TinyCsvLibraryBenchmark.SaveToText: NuGetReferences=Mafe.TinyCsv 2.2.2   -> 1 outlier  was  removed (12.45 ms)
+  TinyCsvLibraryBenchmark.SaveToText: NuGetReferences=Mafe.TinyCsv 2.1.0   -> 2 outliers were removed (97.62 ms, 100.69 ms)
+  TinyCsvLibraryBenchmark.LoadFromText: NuGetReferences=Mafe.TinyCsv 2.1.0 -> 1 outlier  was  removed (776.76 ms)
+  TinyCsvLibraryBenchmark.SaveToText: NuGetReferences=Mafe.TinyCsv 2.2.2   -> 1 outlier  was  removed (991.22 ms)
+
+// * Legends *
+  N         : Value of the 'N' parameter
+  Mean      : Arithmetic mean of all measurements
+  Error     : Half of 99.9% confidence interval
+  StdDev    : Standard deviation of all measurements
+  Median    : Value separating the higher half of all measurements (50th percentile)
+  Gen0      : GC Generation 0 collects per 1000 operations
+  Gen1      : GC Generation 1 collects per 1000 operations
+  Gen2      : GC Generation 2 collects per 1000 operations
+  Allocated : Allocated memory per single operation (managed only, inclusive, 1KB = 1024B)
+  1 μs      : 1 Microsecond (0.000001 sec)
+
+// * Diagnostic Output - MemoryDiagnoser *
+
+
+// ***** BenchmarkRunner: End *****
+Run time: 00:09:00 (540.66 sec), executed benchmarks: 20
+
+Global total time: 00:09:51 (591.04 sec), executed benchmarks: 20
+// * Artifacts cleanup *
+Artifacts cleanup is finished
