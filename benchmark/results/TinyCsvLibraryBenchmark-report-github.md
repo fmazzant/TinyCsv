@@ -1,4 +1,6 @@
-```
+# TinyCsv benchmark report
+
+```text
 
 BenchmarkDotNet v0.13.12, Windows 10 (10.0.17763.9376/1809/October2018Update/Redstone5) (Hyper-V)
 Intel Xeon Platinum 8370C CPU 2.80GHz, 1 CPU, 2 logical cores and 1 physical core
