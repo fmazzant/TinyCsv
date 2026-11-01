@@ -71,3 +71,9 @@
 /tests/TinyCsv.Tests/obj
 /tests/TinyCsv.AspNetCore.Tests/bin/Debug
 /tests/TinyCsv.AspNetCore.Tests/obj
+/benchmark/CsvSampleConsoleBenchmarkApp/bin/Debug/net10.0
+/benchmark/CsvSampleConsoleBenchmarkApp/bin/Release/net10.0
+/samples/CsvSampleConsoleApp/bin/Debug/net10.0
+/samples/CsvSampleConsoleAttributeApp/bin/Debug/net10.0
+/samples/CsvSampleMinimalWebApiApp/bin/Debug/net10.0
+/benchmark/CsvSampleConsoleBenchmarkApp/BenchmarkDotNet.Artifacts

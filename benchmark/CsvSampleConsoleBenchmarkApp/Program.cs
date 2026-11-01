@@ -5,8 +5,14 @@ using BenchmarkDotNet.Running;
 using CsvSampleConsoleBenchmarkApp;
 using TinyCsv;
 
-_ = BenchmarkRunner.Run<TinyCsvLibraryBenchmark>();
-
+try
+{
+    _ = BenchmarkRunner.Run<TinyCsvLibraryBenchmark>();
+}
+catch (Exception exc)
+{
+    Console.WriteLine(exc.ToString());
+}
 namespace CsvSampleConsoleBenchmarkApp
 {
     public class TinyCsvBenchmarkBase
@@ -81,16 +87,19 @@ namespace CsvSampleConsoleBenchmarkApp
     }
 
     [Config(typeof(Config))]
+    [MemoryDiagnoser]
     public class TinyCsvLibraryBenchmark : TinyCsvBenchmarkBase
     {
         private class Config : ManualConfig
         {
             public Config()
             {
-                AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "1.5.2"));
-                AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "1.6.1"));
-                AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "2.0.0"));
+                //AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "1.5.2"));
+                //AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "1.6.1"));
+                //AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "2.0.0"));
                 AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "2.1.0"));
+                AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "2.2.2"));
+                AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "3.0.0"));
             }
         }
 
