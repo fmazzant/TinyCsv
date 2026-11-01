@@ -27,7 +27,8 @@ dotnet run -c Release
 ```
 
 The run takes about 15 minutes with 3 versions.
-The results are written to `BenchmarkDotNet.Artifacts/results` (markdown, csv and html).
+The results are written to `BenchmarkDotNet.Artifacts/results` (markdown, csv and html), which is ignored by git.
+To publish new results, copy the `*-report-github.md` file to [results](results/TinyCsvLibraryBenchmark-report-github.md).
 
 To compare other versions, change the jobs in `TinyCsvLibraryBenchmark.Config`:
 
