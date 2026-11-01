@@ -27,8 +27,8 @@ dotnet run -c Release
 ```
 
 The run takes about 15 minutes with 3 versions.
-The results are written to `BenchmarkDotNet.Artifacts/results` (markdown, csv and html), which is ignored by git.
-To publish new results, copy the `*-report-github.md` file to [results](results/TinyCsvLibraryBenchmark-report-github.md).
+The results are written to `BenchmarkDotNet.Artifacts/results` (Markdown, CSV and HTML), which is ignored by Git.
+To publish new results, copy the `*-report-github.md` file to [results](results/TinyCsvLibraryBenchmark-report-github.md), then add a `#` heading on the first line and the `text` language to the first code block, as required by the linter.
 
 To compare other versions, change the jobs in `TinyCsvLibraryBenchmark.Config`:
 
@@ -42,7 +42,7 @@ Each version must be published on NuGet: a job with a version that is not publis
 
 ## Results
 
-The results of 2.1.0, 2.2.2 and 3.0.0 are in the [Performance](../README.md#performance) section of the main README.
+The results of 2.1.0, 2.2.2 and 3.0.0 are in the [Performance](../README.md#performance) section of the main page.
 The 2.2.2 `LoadFromText` result with 10,000 rows is noisy (the median is 11.84 ms).
 
 The full report is in [results](results/TinyCsvLibraryBenchmark-report-github.md).
