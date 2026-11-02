@@ -16,7 +16,7 @@
     <AssemblyName>Mafe.$(MSBuildProjectName)</AssemblyName>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Product>TinyCsv</Product>
-    <Version>3.3.0-rc1</Version>
+    <Version>3.3.0</Version>
   </PropertyGroup>
 
   <!-- Span support where it is not built-in (net452 uses the internal polyfill in Compat) -->
