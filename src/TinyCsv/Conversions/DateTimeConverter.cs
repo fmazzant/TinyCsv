@@ -38,6 +38,8 @@ namespace TinyCsv.Conversions
     /// </summary>
     public sealed class DateTimeConverter : ParsableValueConverter<DateTime>, IValueConverter
     {
+        private DateTimeFormatParser.Cache parserCache;
+
         /// <summary>
         /// Parses a value that is not empty
         /// </summary>
@@ -45,11 +47,27 @@ namespace TinyCsv.Conversions
         /// <param name="provider">the format provider</param>
         /// <param name="result"></param>
         /// <returns></returns>
+#if NETSTANDARD2_1 || NETCOREAPP
         protected override bool TryParse(string value, IFormatProvider provider, out DateTime result)
         {
-            return GetColumnFormat(provider) is string format
-                ? DateTime.TryParseExact(value, format, provider, DateTimeStyles.None, out result)
-                : DateTime.TryParse(value, provider, DateTimeStyles.None, out result);
+            return TryParseValue(value.AsSpan(), provider, out result);
+        }
+
+        /// <summary>
+        /// Parses a value that is not empty, without creating a string
+        /// </summary>
+        internal override bool TryParseValue(ReadOnlySpan<char> value, IFormatProvider provider, out DateTime result)
+#else
+        protected override bool TryParse(string value, IFormatProvider provider, out DateTime result)
+#endif
+        {
+            if (GetColumnFormat(provider) is string format)
+            {
+                // the fast parser returns true only when the result is the same of DateTime.TryParseExact
+                return DateTimeFormatParser.Get(ref parserCache, format, provider)?.TryParse(value, out result) == true
+                    || DateTime.TryParseExact(value, format, provider, DateTimeStyles.None, out result);
+            }
+            return DateTime.TryParse(value, provider, DateTimeStyles.None, out result);
         }
     }
 }

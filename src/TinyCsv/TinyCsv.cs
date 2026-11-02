@@ -148,9 +148,20 @@ namespace TinyCsv
 
         private StreamReader CreateReader(Stream stream) => new StreamReader(stream, ReaderEncoding, true);
 
-        private StreamReader CreateReader(string text, Encoding encoding)
+        /// <summary>
+        /// The reader of a text. With UTF-8 the text is read as it is, because encoding and decoding it
+        /// returns the same text, apart from a leading byte order mark that is removed.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        private TextReader CreateReader(string text, Encoding encoding)
         {
             var textEncoding = encoding ?? ReaderEncoding;
+            if (textEncoding is UTF8Encoding && text != null)
+            {
+                return new StringReader(text.Length > 0 && text[0] == '﻿' ? text.Substring(1) : text);
+            }
             return new StreamReader(new TextMemoryStream(text, textEncoding), textEncoding, true);
         }
 
@@ -176,13 +187,23 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<T> LoadFromStream(StreamReader streamReader)
         {
-            var reader = new CsvModelReader<T>(Options, streamReader);
-            foreach (var line in reader.DataReader.ReadLines())
+            return LoadFromReader(streamReader);
+        }
+
+        /// <summary>
+        /// Reads the models from a reader
+        /// </summary>
+        /// <param name="textReader"></param>
+        /// <returns></returns>
+        private IEnumerable<T> LoadFromReader(TextReader textReader)
+        {
+            var reader = new CsvModelReader<T>(Options, textReader);
+            while (reader.Read())
             {
-                if (reader.TryReadModel(line, out var model))
+                if (reader.TryReadModel(out var model))
                 {
                     yield return model;
-                    reader.OnModelRead(model, line);
+                    reader.OnModelRead(model);
                 }
             }
             reader.OnCompleted();
@@ -205,7 +226,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<T> LoadFromText(string text, Encoding encoding = null)
         {
-            return LoadFromStream(CreateReader(text, encoding));
+            return LoadFromReader(CreateReader(text, encoding));
         }
 
         /// <summary>
@@ -240,12 +261,24 @@ namespace TinyCsv
                 writer.WriteLine(headers);
                 index++;
             }
+            var builder = new CsvLineBuilder<T>(options);
+            var handlers = options.Handlers.Write;
             foreach (var model in models)
             {
-                options.Handlers.Write.OnRowWriting(index, model);
-                var line = model.GetLineFromGenericType(options);
-                writer.WriteLine(line);
-                options.Handlers.Write.OnRowWritten(index, model, line);
+                handlers.OnRowWriting(index, model);
+                builder.Build(model);
+                if (handlers.Enabled)
+                {
+                    var line = builder.ToString();
+                    writer.WriteLine(line);
+                    handlers.OnRowWritten(index, model, line);
+                }
+                else
+                {
+                    // the line is written from the buffer, without creating the string
+                    builder.WriteTo(streamWriter);
+                    streamWriter.WriteLine();
+                }
                 index++;
             }
             options.Handlers.OnCompleted(index);
@@ -298,13 +331,25 @@ namespace TinyCsv
                 index++;
             }
 
+            var builder = new CsvLineBuilder<T>(options);
+            var handlers = options.Handlers.Write;
             foreach (var model in models)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                options.Handlers.Write.OnRowWriting(index, model);
-                var line = model.GetLineFromGenericType(options);
-                await writer.WriteLineAsync(line).ConfigureAwait(false);
-                options.Handlers.Write.OnRowWritten(index, model, line);
+                handlers.OnRowWriting(index, model);
+                builder.Build(model);
+                if (handlers.Enabled)
+                {
+                    var line = builder.ToString();
+                    await writer.WriteLineAsync(line).ConfigureAwait(false);
+                    handlers.OnRowWritten(index, model, line);
+                }
+                else
+                {
+                    // the line is written from the buffer, without creating the string
+                    await builder.WriteToAsync(streamWriter).ConfigureAwait(false);
+                    await streamWriter.WriteLineAsync().ConfigureAwait(false);
+                }
                 index++;
             }
             options.Handlers.OnCompleted(index);
@@ -353,9 +398,11 @@ namespace TinyCsv
                 index++;
             }
 
+            var builder = new CsvLineBuilder<T>(Options);
             foreach (var model in models)
             {
-                lines[index] = model.GetLineFromGenericType(Options);
+                builder.Build(model);
+                lines[index] = builder.ToString();
                 index++;
             }
 
@@ -396,10 +443,12 @@ namespace TinyCsv
                 index++;
             }
 
+            var builder = new CsvLineBuilder<T>(Options);
             foreach (var model in models)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                lines[index] = model.GetLineFromGenericType(Options);
+                builder.Build(model);
+                lines[index] = builder.ToString();
                 index++;
             }
 
@@ -425,8 +474,12 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<string> GetAllLinesFromStream(StreamReader streamReader)
         {
-            var options = this.Options;
-            var dataReader = new TinyCsvDataReader<T>(options, streamReader);
+            return GetAllLinesFromReader(streamReader);
+        }
+
+        private IEnumerable<string> GetAllLinesFromReader(TextReader textReader)
+        {
+            var dataReader = new TinyCsvDataReader<T>(Options, textReader);
             return dataReader.ReadLines();
         }
 
@@ -449,7 +502,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<string> GetAllLinesFromText(string text, Encoding encoding = null)
         {
-            return GetAllLinesFromStream(CreateReader(text, encoding));
+            return GetAllLinesFromReader(CreateReader(text, encoding));
         }
 
         /// <summary>
@@ -470,8 +523,12 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<string[]> GetAllLinesAndFieldsFromStream(StreamReader streamReader)
         {
-            var options = this.Options;
-            var dataReader = new TinyCsvDataReader<T>(options, streamReader);
+            return GetAllLinesAndFieldsFromReader(streamReader);
+        }
+
+        private IEnumerable<string[]> GetAllLinesAndFieldsFromReader(TextReader textReader)
+        {
+            var dataReader = new TinyCsvDataReader<T>(Options, textReader);
             return dataReader.ReadLinesAndFields();
         }
 
@@ -494,7 +551,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<string[]> GetAllLinesAndFieldsFromText(string text, Encoding encoding = null)
         {
-            return GetAllLinesAndFieldsFromStream(CreateReader(text, encoding));
+            return GetAllLinesAndFieldsFromReader(CreateReader(text, encoding));
         }
 
         /// <summary>

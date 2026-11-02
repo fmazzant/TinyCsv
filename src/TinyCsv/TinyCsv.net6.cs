@@ -87,16 +87,27 @@ namespace TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public async IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
         {
-            var reader = new CsvModelReader<T>(Options, streamReader);
-            await foreach (var line in reader.DataReader.ReadLinesAsync(cancellationToken))
+            return LoadFromReaderAsync(streamReader, cancellationToken);
+        }
+
+        /// <summary>
+        /// Reads the models from a reader asynchronously.
+        /// </summary>
+        /// <param name="textReader"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        private async IAsyncEnumerable<T> LoadFromReaderAsync(TextReader textReader, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            var reader = new CsvModelReader<T>(Options, textReader);
+            while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                if (reader.TryReadModel(line, out var model))
+                if (reader.TryReadModel(out var model))
                 {
                     yield return model;
-                    reader.OnModelRead(model, line);
+                    reader.OnModelRead(model);
                 }
             }
             reader.OnCompleted();
@@ -122,7 +133,7 @@ namespace TinyCsv
         /// <returns></returns>
         public IAsyncEnumerable<T> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default)
         {
-            return LoadFromStreamAsync(CreateReader(text, encoding), cancellationToken);
+            return LoadFromReaderAsync(CreateReader(text, encoding), cancellationToken);
         }
     }
 }

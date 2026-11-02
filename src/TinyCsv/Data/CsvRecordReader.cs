@@ -54,6 +54,7 @@ namespace TinyCsv.Data
         private readonly char[] delimiter;
         private readonly char[] stops;
         private readonly char[] quotedStops;
+        private readonly bool backwardFieldStart;
 
         private char[] buffer = new char[InitialBufferSize];
         private int length;
@@ -64,6 +65,17 @@ namespace TinyCsv.Data
         private bool endOfStream;
 
         public CsvRecordReader(TextReader reader, ICsvOptions options)
+            : this(reader, options, true)
+        {
+        }
+
+        /// <summary>
+        /// Create a CsvRecordReader
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="options"></param>
+        /// <param name="allowBackwardFieldStart">false to always find the start of the fields scanning the delimiters (used by the tests)</param>
+        internal CsvRecordReader(TextReader reader, ICsvOptions options, bool allowBackwardFieldStart)
         {
             this.reader = reader;
             quoting = options.AllowRowEnclosedInDoubleQuotesValues;
@@ -72,12 +84,21 @@ namespace TinyCsv.Data
             quote = options.DoubleQuotes;
             delimiter = options.Delimiter.ToCharArray();
 
+            // with a single char delimiter (and without backslash escapes) the start of a field is found
+            // looking back from a quote (see IsFieldStartBackward), so the scan does not stop at each delimiter
+            backwardFieldStart = allowBackwardFieldStart && quoting && !backslash && delimiter.Length == 1
+                && delimiter[0] != quote && delimiter[0] != '\r' && delimiter[0] != '\n'
+                && delimiter[0] != ' ' && delimiter[0] != '\t';
+
             var stopChars = new List<char> { '\r', '\n' };
             var quotedStopChars = new List<char> { quote };
             if (quoting)
             {
                 // the delimiter is needed only to know where a field starts, that is where a quote opens a quoted field
-                stopChars.Add(delimiter[0]);
+                if (!backwardFieldStart)
+                {
+                    stopChars.Add(delimiter[0]);
+                }
                 stopChars.Add(quote);
             }
             if (backslash)
@@ -95,11 +116,55 @@ namespace TinyCsv.Data
         /// <returns></returns>
         public string ReadRecord()
         {
+            return Read() ? CurrentToString() : null;
+        }
+
+        /// <summary>
+        /// Read the next record, without the trailing new line. Returns null at the end of the stream.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<string> ReadRecordAsync(CancellationToken cancellationToken = default)
+        {
+            return await ReadAsync(cancellationToken).ConfigureAwait(false) ? CurrentToString() : null;
+        }
+
+        /// <summary>
+        /// The buffer of the current record (see Read): it is valid until the next read
+        /// </summary>
+        public char[] Buffer => buffer;
+
+        /// <summary>
+        /// The start of the current record in the Buffer
+        /// </summary>
+        public int CurrentStart { get; private set; }
+
+        /// <summary>
+        /// The length of the current record, without the trailing new line
+        /// </summary>
+        public int CurrentLength { get; private set; }
+
+        /// <summary>
+        /// The current record, as a string
+        /// </summary>
+        /// <returns></returns>
+        public string CurrentToString()
+        {
+            return new string(buffer, CurrentStart, CurrentLength);
+        }
+
+        /// <summary>
+        /// Read the next record without creating a string: the record is in Buffer, from CurrentStart for CurrentLength chars,
+        /// until the next read. Returns false at the end of the stream.
+        /// </summary>
+        /// <returns></returns>
+        public bool Read()
+        {
             while (true)
             {
-                if (TryReadRecord(out var record))
+                if (TryReadRecord())
                 {
-                    return record;
+                    return true;
                 }
                 if (endOfStream)
                 {
@@ -111,18 +176,18 @@ namespace TinyCsv.Data
         }
 
         /// <summary>
-        /// Read the next record, without the trailing new line. Returns null at the end of the stream.
+        /// Read the next record without creating a string (see Read). Returns false at the end of the stream.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<string> ReadRecordAsync(CancellationToken cancellationToken = default)
+        public async Task<bool> ReadAsync(CancellationToken cancellationToken = default)
         {
             while (true)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                if (TryReadRecord(out var record))
+                if (TryReadRecord())
                 {
-                    return record;
+                    return true;
                 }
                 if (endOfStream)
                 {
@@ -137,11 +202,9 @@ namespace TinyCsv.Data
         /// Scan the buffered chars looking for the end of the current record.
         /// Returns false when more data is needed.
         /// </summary>
-        /// <param name="record"></param>
         /// <returns></returns>
-        private bool TryReadRecord(out string record)
+        private bool TryReadRecord()
         {
-            record = null;
             var i = scanPosition;
             while (i < length)
             {
@@ -178,7 +241,7 @@ namespace TinyCsv.Data
                 if (quoting && c == quote)
                 {
                     // a quote opens a quoted field only at the start of the field, elsewhere it is a literal char
-                    inQuotes = IsFieldStart(i);
+                    inQuotes = backwardFieldStart ? IsFieldStartBackward(i) : IsFieldStart(i);
                     i++;
                     continue;
                 }
@@ -197,7 +260,8 @@ namespace TinyCsv.Data
                             break;
                         }
                     }
-                    record = new string(buffer, recordStart, end - recordStart);
+                    CurrentStart = recordStart;
+                    CurrentLength = end - recordStart;
                     recordStart = fieldStart = scanPosition = i + 1;
                     return true;
                 }
@@ -241,19 +305,41 @@ namespace TinyCsv.Data
         }
 
         /// <summary>
-        /// Returns the last record, not terminated by a new line
+        /// As IsFieldStart, looking back from the position: only (trimmable) spaces are between
+        /// the start of the record or the previous delimiter and the position.
+        /// The previous delimiter is not inside a quoted field, because a quoted field is closed by a quote
+        /// that would be between the delimiter and the position.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        private bool IsFieldStartBackward(int position)
+        {
+            var k = position - 1;
+            if (trimData)
+            {
+                while (k >= recordStart && (buffer[k] == ' ' || buffer[k] == '\t'))
+                {
+                    k--;
+                }
+            }
+            return k < recordStart || buffer[k] == delimiter[0];
+        }
+
+        /// <summary>
+        /// Reads the last record, not terminated by a new line. Returns false when there is not.
         /// </summary>
         /// <returns></returns>
-        private string ReadLastRecord()
+        private bool ReadLastRecord()
         {
             if (recordStart >= length)
             {
-                return null;
+                return false;
             }
-            var record = new string(buffer, recordStart, length - recordStart);
+            CurrentStart = recordStart;
+            CurrentLength = length - recordStart;
             recordStart = fieldStart = scanPosition = length;
             inQuotes = false;
-            return record;
+            return true;
         }
 
         /// <summary>
