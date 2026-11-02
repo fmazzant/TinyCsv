@@ -5,12 +5,12 @@ TinyCsv is a .NET library to read and write CSV data in an easy way.
 
 To use it in your project, add the Mafe.TinyCsv NuGet package to your project.
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/3.0.1)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/3.1.0)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv?style=flat-square)
 
 It is available an AspNetCore extension:
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.3.1)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.3.2)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.AspNetCore?style=flat-square)
 
 Define the model that you want to use, like this:
@@ -180,6 +180,47 @@ var models = await csv.LoadFromFileAsync("file.csv").ToListAsync();
 
 The load method returns a collection of Model type items and takes as argument the file's path.
 
+### Map the columns by header
+
+By default the columns are read by position: the first column of the file is the first column defined in the options, and so on.
+With `MapColumnsByHeader`, the columns are read by the names in the header record:
+
+```c#
+var csv = new TinyCsv<Model>(options =>
+{
+    options.HasHeaderRecord = true;
+    options.MapColumnsByHeader = true;
+
+    options.Columns.AddColumn(m => m.Id);
+    options.Columns.AddColumn("Product name", m => m.Name);
+    options.Columns.AddColumn(m => m.Price);
+});
+```
+
+- the order of the columns in the file does not matter;
+- the columns of the file that are not defined in the options are ignored;
+- the names are compared ignoring the case and the spaces around them. Use `HeaderNameComparer` to change it, e.g. `StringComparer.Ordinal`;
+- a column that is not in the header throws a `MissingColumnException`, with the names in `MissingColumns`;
+- it requires `HasHeaderRecord = true`, otherwise an `InvalidOperationException` is thrown.
+
+With attributes, use `[MapColumnsByHeader]` on the model, the column name is the `name` of `[Column]` or the property name.
+
+### Automatic columns
+
+When no column is defined, the columns are the public properties of the model that have a getter and a setter,
+in the order of declaration, and the column name is the property name:
+
+```c#
+var csv = new TinyCsv<Model>(options =>
+{
+    options.HasHeaderRecord = true;
+    options.MapColumnsByHeader = true;
+});
+```
+
+The properties whose type has no value converter (i.e. classes and collections) are ignored.
+To use a format, a custom converter or a different name, define the columns.
+
 ## Write
 
 To write a csv file is only necessary invoke the Save method, like this:
@@ -326,7 +367,7 @@ The full report is in [benchmark/results](benchmark/results/TinyCsvLibraryBenchm
 
 Is available the Mafe.TinyCsv.Extensions library to use the TinyCsv in your project and it is downloadable in the NuGet package.
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.3.1)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.3.2)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.AspNetCore?style=flat-square)
 
 It's possible to use the extensions methods in your project, like this:

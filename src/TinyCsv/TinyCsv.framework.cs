@@ -38,8 +38,6 @@ namespace TinyCsv
     using System.Threading;
     using System.Threading.Tasks;
     using TinyCsv.Data;
-    using TinyCsv.Exceptions;
-    using TinyCsv.Extensions;
     using TinyCsv.Streams;
 
     public sealed partial class TinyCsv<T>
@@ -88,41 +86,13 @@ namespace TinyCsv
         /// <returns></returns>
         public async Task<IEnumerable<T>> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var models = new List<T>();
-            var index = 0;
-            var options = this.Options;
-            var dataReader = new TinyCsvDataReader<T>(options, streamReader);
-            var hasHeaderRecord = options.HasHeaderRecord;
-            var validateColumnCount = options.ValidateColumnCount;
-            var columnsCount = options.Columns.Count;
-
-            options.Handlers.OnStart();
-            foreach (var line in dataReader.ReadLines())
+            foreach (var model in LoadFromStream(streamReader))
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var currentIndex = index;
-                index++;
-
-                if (currentIndex == 0 && hasHeaderRecord)
-                {
-                    options.Handlers.Read.OnRowReading(currentIndex, line);
-                    options.Handlers.Read.OnRowHeader(currentIndex, line);
-                    continue;
-                }
-
-                options.Handlers.Read.OnRowReading(currentIndex, line);
-                var fields = dataReader.GetFieldsByLine(line, columnsCount);
-
-                if (validateColumnCount && columnsCount > fields.Length)
-                {
-                    throw new InvalidColumnCountException($"Invalid column count at {index} line.");
-                }
-
-                var model = fields.GetModelFromStringArray<T>(options);
                 models.Add(model);
-                options.Handlers.Read.OnRowRead(currentIndex, model, line);
             }
-            Options.Handlers.OnCompleted(index);
             return await Task.FromResult(models);
         }
 
@@ -151,3 +121,4 @@ namespace TinyCsv
     }
 }
 #endif
+
