@@ -292,9 +292,7 @@ namespace TinyCsv.Tests
             var result = csv.LoadFromText(string.Join(Environment.NewLine, lines)).Single();
 
             Assert.Equal("Id;Name;Price;CreatedOn;Day", lines[0]);
-            // CreatedOn is not compared: without a format, DateTimeConverter writes with the invariant culture
-            // and reads with the current culture, so the date is read back as it is only on en-US machines.
-            Assert.Equal((1, "Mario", (decimal?)null, DayOfWeek.Friday), (result.Id, result.Name, result.Price, result.Day));
+            Assert.Equal((1, "Mario", (decimal?)null, model.CreatedOn, DayOfWeek.Friday), (result.Id, result.Name, result.Price, result.CreatedOn, result.Day));
         }
 
         [Fact]
