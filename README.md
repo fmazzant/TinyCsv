@@ -5,12 +5,12 @@ TinyCsv is a .NET library to read and write CSV data in an easy way.
 
 To use it in your project, add the Mafe.TinyCsv NuGet package to your project.
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/3.1.0)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/3.2.0)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv?style=flat-square)
 
 It is available an AspNetCore extension:
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.3.2)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.3.3)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.AspNetCore?style=flat-square)
 
 Define the model that you want to use, like this:
@@ -150,6 +150,17 @@ The `Culture` option fixes how the values are read, please check them when you u
 
 To read the values with the culture of the machine, as in 3.0, set `options.Culture = CultureInfo.CurrentCulture`.
 
+### Changes in 3.2
+
+3.2 adds the `ValidateValues` and `BadDataFound` options (see [Bad data](#bad-data)). Furthermore:
+
+| Area | 3.1 | 3.2 |
+|---|---|---|
+| Exception thrown by a converter while reading (i.e. a custom converter, or an invalid base64 value) | the exception of the converter, without the position | an `InvalidColumnValueException` with the row, the column and the value; the exception of the converter is the `InnerException` |
+| Exceptions thrown while reading | without the position | they derive from `CsvException`, with `RowIndex`, `Row`, `ColumnName` and `Value`, and the message ends with the position, i.e. `(row 2, column Id)` |
+| Message of `InvalidColumnCountException` | `Invalid column count 2 at 3 line, required 3 columns` | `Invalid column count 2, required 3 columns. (row 2)` |
+| Built-in converters of numbers, dates, `bool`, `char` and `Guid` | derive from `DefaultValueConverter` | derive from `ParsableValueConverter<T>`, that derives from `DefaultValueConverter` |
+
 ## Custom Value Converter
 
 It is possible to define a custom converter for a column, like this:
@@ -249,6 +260,44 @@ var csv = new TinyCsv<Model>(options =>
 
 The properties whose type has no value converter (i.e. classes and collections) are ignored.
 To use a format, a custom converter or a different name, define the columns.
+
+### Bad data
+
+By default, a value that cannot be converted to the type of its column (i.e. `abc` for an `int`) is read as the default value.
+With `ValidateValues`, it is bad data and an `InvalidColumnValueException` is thrown.
+An empty value is always valid: it is `null` for a nullable type, otherwise the default value.
+
+Every exception thrown while reading a row derives from `CsvException`, and it says where the error is:
+
+| Property | Description |
+|---|---|
+| `RowIndex` | the index of the row, starting from 0, the same index of the read events (the header is the row 0) |
+| `Row` | the row, as it is in the file |
+| `ColumnName` | the column, when the error is about a value |
+| `Value` | the value, as it is in the file, when the error is about a value |
+
+With `BadDataFound`, the rows with bad data are skipped and the read goes on:
+
+```c#
+var errors = new List<CsvException>();
+var csv = new TinyCsv<Model>(options =>
+{
+    options.HasHeaderRecord = true;
+    options.ValidateValues = true;
+    options.BadDataFound = error => errors.Add(error);
+});
+
+var models = csv.LoadFromFile("file.csv").ToList();
+foreach (var error in errors)
+{
+    Console.WriteLine(error.Message); // i.e. The value 'abc' is not a valid Int32. (row 2, column Id)
+}
+```
+
+The bad data are the values that cannot be converted, the rows with a wrong column count (`ValidateColumnCount`),
+the comments when `AllowComment` is false and the exceptions of the custom converters.
+A column that is not in the header (`MapColumnsByHeader`) is not bad data of a row, so it is always thrown.
+With attributes, use `[ValidateValues]` on the model.
 
 ## Write
 
@@ -396,7 +445,7 @@ The full report is in [benchmark/results](benchmark/results/TinyCsvLibraryBenchm
 
 Is available the Mafe.TinyCsv.Extensions library to use the TinyCsv in your project and it is downloadable in the NuGet package.
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.3.2)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.3.3)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.AspNetCore?style=flat-square)
 
 It's possible to use the extensions methods in your project, like this:

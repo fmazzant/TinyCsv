@@ -36,7 +36,7 @@ namespace TinyCsv.Exceptions
     /// Defines Missing Column Exception: a column is not in the header record
     /// </summary>
     [Serializable]
-    public class MissingColumnException : Exception
+    public class MissingColumnException : CsvException
     {
         /// <summary>
         /// The names of the columns that are not in the header record

@@ -36,7 +36,7 @@ namespace TinyCsv.Conversions
     /// <summary>
     /// Provides a unified way of converting SByte of values to string
     /// </summary>
-    public sealed class SByteConverter : DefaultValueConverter, IValueConverter
+    public sealed class SByteConverter : ParsableValueConverter<sbyte>, IValueConverter
     {
         /// <summary>
         /// Converts a value to string.
@@ -54,19 +54,15 @@ namespace TinyCsv.Conversions
         }
 
         /// <summary>
-        /// Converts a string to target type value.
+        /// Parses a value that is not empty
         /// </summary>
-        /// <param name="value">The value that is produced by the binding target.</param>
-        /// <param name="targetType">The type to convert to.</param>
-        /// <param name="parameter">The converter parameter to use.</param>
-        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        /// <param name="value">the value, not empty</param>
+        /// <param name="provider">the format provider</param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        protected override bool TryParse(string value, IFormatProvider provider, out sbyte result)
         {
-            if (sbyte.TryParse(value, NumberStyles.Integer, provider, out var byteValue))
-            {
-                return byteValue;
-            }
-            return targetType.IsNullable() ? null : default(sbyte);
+            return sbyte.TryParse(value, NumberStyles.Integer, provider, out result);
         }
     }
 }

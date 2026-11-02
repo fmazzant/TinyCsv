@@ -37,22 +37,18 @@ namespace TinyCsv.Conversions
     /// <summary>
     /// Provides a unified way of converting BigInteger of values to string
     /// </summary>
-    public sealed class BigIntegerConverter : DefaultValueConverter, IValueConverter
+    public sealed class BigIntegerConverter : ParsableValueConverter<BigInteger>, IValueConverter
     {
         /// <summary>
-        /// Converts a string to target type value.
+        /// Parses a value that is not empty
         /// </summary>
-        /// <param name="value">The value that is produced by the binding target.</param>
-        /// <param name="targetType">The type to convert to.</param>
-        /// <param name="parameter">The converter parameter to use.</param>
-        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        /// <param name="value">the value, not empty</param>
+        /// <param name="provider">the format provider</param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        protected override bool TryParse(string value, IFormatProvider provider, out BigInteger result)
         {
-            if (BigInteger.TryParse(value, NumberStyles.Any, provider, out var result))
-            {
-                return result;
-            }
-            return targetType.IsNullable() ? null : default(BigInteger);
+            return BigInteger.TryParse(value, NumberStyles.Any, provider, out result);
         }
     }
 }

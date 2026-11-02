@@ -36,20 +36,20 @@ namespace TinyCsv.Conversions
     /// <summary>
     /// Provides a unified way of converting TimeSpan of value to string
     /// </summary>
-    public sealed class TimeSpanConverter : DefaultValueConverter, IValueConverter
+    public sealed class TimeSpanConverter : ParsableValueConverter<TimeSpan>, IValueConverter
     {
         /// <summary>
-        /// Converts a string to target type value.
+        /// Parses a value that is not empty
         /// </summary>
-        /// <param name="value">The value that is produced by the binding target.</param>
-        /// <param name="targetType">The type to convert to.</param>
-        /// <param name="parameter">The converter parameter to use.</param>
-        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        /// <param name="value">the value, not empty</param>
+        /// <param name="provider">the format provider</param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        protected override bool TryParse(string value, IFormatProvider provider, out TimeSpan result)
         {
-            return FormattedValueParser.ConvertBack<TimeSpan>(value, targetType, provider,
-                (string v, string format, IFormatProvider p, out TimeSpan r) => TimeSpan.TryParseExact(v, format, p, TimeSpanStyles.None, out r),
-                (string v, IFormatProvider p, out TimeSpan r) => TimeSpan.TryParse(v, p, out r));
+            return GetColumnFormat(provider) is string format
+                ? TimeSpan.TryParseExact(value, format, provider, TimeSpanStyles.None, out result)
+                : TimeSpan.TryParse(value, provider, out result);
         }
     }
 }
