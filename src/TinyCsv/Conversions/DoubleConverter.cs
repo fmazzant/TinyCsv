@@ -48,5 +48,15 @@ namespace TinyCsv.Conversions
         {
             return double.TryParse(value, NumberStyles.Any, provider, out result);
         }
+
+#if NETSTANDARD2_1 || NETCOREAPP
+        /// <summary>
+        /// Parses a value that is not empty, without creating a string
+        /// </summary>
+        internal override bool TryParseValue(ReadOnlySpan<char> value, IFormatProvider provider, out double result)
+        {
+            return double.TryParse(value, NumberStyles.Any, provider, out result);
+        }
+#endif
     }
 }

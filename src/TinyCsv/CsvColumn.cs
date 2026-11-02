@@ -75,6 +75,11 @@ namespace TinyCsv
         public IValueConverter Converter { get; internal set; }
 
         /// <summary>
+        /// The accessor of the column (see Data.CsvColumnAccessor), created the first time the column is read or written
+        /// </summary>
+        internal object Accessor { get; set; }
+
+        /// <summary>
         /// Value format provider
         /// </summary>
         private IFormatProvider _FormatProvider = null;

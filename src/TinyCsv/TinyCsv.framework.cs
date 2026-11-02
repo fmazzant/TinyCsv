@@ -84,11 +84,22 @@ namespace TinyCsv
         /// <param name="streamReader"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<T>> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
+        public Task<IEnumerable<T>> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
+        {
+            return LoadFromReaderAsync(streamReader, cancellationToken);
+        }
+
+        /// <summary>
+        /// Reads the models from a reader asynchronously.
+        /// </summary>
+        /// <param name="textReader"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        private async Task<IEnumerable<T>> LoadFromReaderAsync(TextReader textReader, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var models = new List<T>();
-            foreach (var model in LoadFromStream(streamReader))
+            foreach (var model in LoadFromReader(textReader))
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 models.Add(model);
@@ -116,7 +127,7 @@ namespace TinyCsv
         /// <returns></returns>
         public Task<IEnumerable<T>> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default)
         {
-            return LoadFromStreamAsync(CreateReader(text, encoding), cancellationToken);
+            return LoadFromReaderAsync(CreateReader(text, encoding), cancellationToken);
         }
     }
 }

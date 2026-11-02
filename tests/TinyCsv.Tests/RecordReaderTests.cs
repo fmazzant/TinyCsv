@@ -69,6 +69,40 @@ namespace TinyCsv.Tests
 
         public static IEnumerable<object[]> ChunkSizes => new[] { 1, 2, 3, 7, 4096 }.Select(x => new object[] { x });
 
+        private static List<string> ReadAll(string text, int chunkSize, CsvOptions<Person> options, bool allowBackwardFieldStart)
+        {
+            var reader = new CsvRecordReader(new ChunkedReader(text, chunkSize), options, allowBackwardFieldStart);
+            var records = new List<string>();
+            string record;
+            while ((record = reader.ReadRecord()) != null)
+            {
+                records.Add(record);
+            }
+            return records;
+        }
+
+        /// <summary>
+        /// Looking back for the start of a field (single char delimiter) splits the records as scanning the delimiters
+        /// </summary>
+        [Theory]
+        [InlineData(false, 1)]
+        [InlineData(false, 4096)]
+        [InlineData(true, 1)]
+        [InlineData(true, 3)]
+        [InlineData(true, 4096)]
+        public void Records_BackwardFieldStart_IsTheSameOfTheDelimitersScan(bool trimData, int chunkSize)
+        {
+            var chars = new[] { 'a', ';', '"', ' ', '\t', '\n', '\r' };
+            var random = new Random(42);
+            var options = Options(o => o.TrimData = trimData);
+            for (int n = 0; n < 5000; n++)
+            {
+                var text = new string(Enumerable.Range(0, random.Next(1, 40)).Select(_ => chars[random.Next(chars.Length)]).ToArray());
+
+                Assert.Equal(ReadAll(text, chunkSize, options, false), ReadAll(text, chunkSize, options, true));
+            }
+        }
+
         [Theory]
         [MemberData(nameof(ChunkSizes))]
         public void Records_AllLineEndings(int chunkSize)

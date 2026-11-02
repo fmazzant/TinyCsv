@@ -176,7 +176,12 @@ namespace TinyCsv
         /// <summary>
         /// Allows skipt row by condition
         /// </summary>
-        public Func<string, int, bool> SkipRow { get; set; } = (row, index) => false;
+        public Func<string, int, bool> SkipRow { get; set; } = NotSkipRow;
+
+        /// <summary>
+        /// The default SkipRow, that does not skip any row: the readers do not create the string of the record to call it
+        /// </summary>
+        internal static readonly Func<string, int, bool> NotSkipRow = (row, index) => false;
 
         /// <summary>
         /// Can be used to trim each cell

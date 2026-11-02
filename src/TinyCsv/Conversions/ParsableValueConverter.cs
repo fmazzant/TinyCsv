@@ -86,6 +86,31 @@ namespace TinyCsv.Conversions
         protected abstract bool TryParse(string value, IFormatProvider provider, out TValue result);
 
         /// <summary>
+        /// Parses a value that is not empty, without boxing the result (see CsvColumnAccessor)
+        /// </summary>
+        /// <param name="value">the value, not empty</param>
+        /// <param name="provider">the format provider</param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        internal bool TryParseValue(string value, IFormatProvider provider, out TValue result)
+        {
+            return TryParse(value, provider, out result);
+        }
+
+        /// <summary>
+        /// Parses a value that is not empty, without boxing the result (see CsvColumnAccessor).
+        /// The built-in converters parse the span, the others parse it as a string.
+        /// </summary>
+        /// <param name="value">the value, not empty</param>
+        /// <param name="provider">the format provider</param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        internal virtual bool TryParseValue(ReadOnlySpan<char> value, IFormatProvider provider, out TValue result)
+        {
+            return TryParse(value.ToString(), provider, out result);
+        }
+
+        /// <summary>
         /// Returns the format of the column, if any
         /// </summary>
         /// <param name="provider"></param>
