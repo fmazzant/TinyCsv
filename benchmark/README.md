@@ -106,9 +106,9 @@ To publish new results, copy the `*-report-github.md` file to [results](results/
 To compare other versions, change the jobs in `TinyCsvLibraryBenchmark.Config`:
 
 ```c#
-AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "2.1.0"));
 AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "2.2.2"));
-AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "3.1.0"));
+AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "3.2.0"));
+AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "3.3.0-rc1"));
 ```
 
 Each version must be published on NuGet: a job with a version that is not published fails to build and its results are `NA`.
