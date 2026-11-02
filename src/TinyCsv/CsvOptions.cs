@@ -219,6 +219,19 @@ namespace TinyCsv
         public CultureInfo Culture { get; set; } = CultureInfo.InvariantCulture;
 
         /// <summary>
+        /// A value that is not empty and that cannot be converted to the type of its column (i.e. "abc" for an int)
+        /// is bad data, an InvalidColumnValueException. When false (default), it is converted to the default value.
+        /// </summary>
+        public bool ValidateValues { get; set; } = false;
+
+        /// <summary>
+        /// Called for each row with bad data (a value that cannot be converted, a wrong column count, ...):
+        /// the row is skipped and the read goes on. The exception has the row, the column and the value of the error.
+        /// When null (default), the exception is thrown.
+        /// </summary>
+        public Action<CsvException> BadDataFound { get; set; }
+
+        /// <summary>
         /// Enable handlers if necessary
         /// </summary>
         public bool EnableHandlers { get; set; } = false;
@@ -359,6 +372,10 @@ namespace TinyCsv
                 if (attribute is CultureAttribute culture)
                 {
                     this.Culture = culture.Culture;
+                }
+                if (attribute is ValidateValuesAttribute validateValues)
+                {
+                    this.ValidateValues = validateValues.ValidateValues;
                 }
             }
         }

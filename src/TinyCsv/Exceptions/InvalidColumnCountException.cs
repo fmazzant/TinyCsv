@@ -36,7 +36,7 @@ namespace TinyCsv.Exceptions
     /// Defines Invalid Column Count Exception
     /// </summary>
     [Serializable]
-    public class InvalidColumnCountException : Exception
+    public class InvalidColumnCountException : CsvException
     {
         /// <summary>
         /// Create a new instance of InvalidColumnCountException

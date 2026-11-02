@@ -36,7 +36,7 @@ namespace TinyCsv.Exceptions
     /// Defines not allow comment exception
     /// </summary>
     [Serializable]
-    public class NotAllowCommentException : Exception
+    public class NotAllowCommentException : CsvException
     {
         /// <summary>
         /// Create a new instance of NotAllowCommentException

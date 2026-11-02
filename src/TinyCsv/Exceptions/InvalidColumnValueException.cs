@@ -36,7 +36,7 @@ namespace TinyCsv.Exceptions
     /// Defines Invalid Column Value Exception
     /// </summary>
     [Serializable]
-    public class InvalidColumnValueException : Exception
+    public class InvalidColumnValueException : CsvException
     {
         /// <summary>
         /// Create a new instance of InvalidColumnValueException
@@ -64,6 +64,20 @@ namespace TinyCsv.Exceptions
         public InvalidColumnValueException(string message, Exception innerException)
             : base(message, innerException)
         {
+        }
+
+        /// <summary>
+        /// Create a new instance of InvalidColumnValueException for a value of a column
+        /// </summary>
+        /// <param name="columnName">the name of the column</param>
+        /// <param name="value">the value, as it is in the csv</param>
+        /// <param name="message"></param>
+        /// <param name="innerException">the exception of the converter, if any</param>
+        public InvalidColumnValueException(string columnName, string value, string message, Exception innerException = null)
+            : base(message, innerException)
+        {
+            ColumnName = columnName;
+            Value = value;
         }
 
         /// <summary>
