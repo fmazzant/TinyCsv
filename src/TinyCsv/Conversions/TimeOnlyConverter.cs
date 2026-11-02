@@ -46,12 +46,25 @@ namespace TinyCsv.Conversions
         /// <param name="provider">the format provider</param>
         /// <param name="result"></param>
         /// <returns></returns>
+#if NETSTANDARD2_1 || NETCOREAPP
         protected override bool TryParse(string value, IFormatProvider provider, out TimeOnly result)
+        {
+            return TryParseValue(value.AsSpan(), provider, out result);
+        }
+
+        /// <summary>
+        /// Parses a value that is not empty, without creating a string
+        /// </summary>
+        internal override bool TryParseValue(ReadOnlySpan<char> value, IFormatProvider provider, out TimeOnly result)
+#else
+        protected override bool TryParse(string value, IFormatProvider provider, out TimeOnly result)
+#endif
         {
             return GetColumnFormat(provider) is string format
                 ? TimeOnly.TryParseExact(value, format, provider, DateTimeStyles.None, out result)
                 : TimeOnly.TryParse(value, provider, DateTimeStyles.None, out result);
         }
+
     }
 
 }
