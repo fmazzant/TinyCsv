@@ -251,10 +251,7 @@ namespace TinyCsv.Data
             }
             if (validateValues && !isEmpty)
             {
-                var column = binding.Column;
-                var text = value.ToString();
-                throw new InvalidColumnValueException(column.ColumnName, text,
-                    $"The value '{text}' is not a valid {column.ColumnType.Name}.");
+                throw binding.Column.NotValidValueException(value.ToString());
             }
             setter(model, default);
         }
@@ -311,26 +308,7 @@ namespace TinyCsv.Data
 
         public override void SetValue(T model, CsvField value, CsvColumnBinding<T> binding, bool validateValues)
         {
-            Property.Setter(model, ConvertBack(value.ToString(), binding, validateValues));
-        }
-
-        /// <summary>
-        /// Converts the value of the column. With ValidateValues, a value that is not valid for the type of the column
-        /// throws an InvalidColumnValueException, otherwise it is converted to the default value.
-        /// </summary>
-        private static object ConvertBack(string value, CsvColumnBinding<T> binding, bool validateValues)
-        {
-            var column = binding.Column;
-            if (validateValues && column.Converter is DefaultValueConverter converter)
-            {
-                if (!converter.TryConvertBack(value, column.ColumnType, null, binding.Provider, out var result))
-                {
-                    throw new InvalidColumnValueException(column.ColumnName, value,
-                        $"The value '{value}' is not a valid {column.ColumnType.Name}.");
-                }
-                return result;
-            }
-            return column.Converter.ConvertBack(value, column.ColumnType, null, binding.Provider);
+            Property.Setter(model, binding.Column.ConvertBack(value.ToString(), binding.Provider, validateValues));
         }
 
         public override void AppendValue(T model, CsvLineBuilder<T> line, CsvColumnBinding<T> binding)
