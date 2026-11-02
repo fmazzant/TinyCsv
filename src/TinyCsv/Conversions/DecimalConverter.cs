@@ -39,6 +39,19 @@ namespace TinyCsv.Conversions
     public sealed class DecimalConverter : ParsableValueConverter<decimal>, IValueConverter
     {
         /// <summary>
+        /// True when NumberStyles.Any reads a number without the currency symbol as NumberStyles.Number does:
+        /// with NumberStyles.Any the currency separators are matched before the number separators.
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <returns></returns>
+        private static bool CanParseAsNumber(IFormatProvider provider)
+        {
+            var info = NumberFormatInfo.GetInstance(provider);
+            return info.CurrencyDecimalSeparator == info.NumberDecimalSeparator
+                && info.CurrencyGroupSeparator == info.NumberGroupSeparator;
+        }
+
+        /// <summary>
         /// Parses a value that is not empty
         /// </summary>
         /// <param name="value">the value, not empty</param>
@@ -47,7 +60,23 @@ namespace TinyCsv.Conversions
         /// <returns></returns>
         protected override bool TryParse(string value, IFormatProvider provider, out decimal result)
         {
-            return decimal.TryParse(value, NumberStyles.Any, provider, out result);
+            // NumberStyles.Number is faster, and a value that it parses is the same with NumberStyles.Any
+            // when the currency separators are the number separators (see CanParseAsNumber)
+            return (CanParseAsNumber(provider) && decimal.TryParse(value, NumberStyles.Number, provider, out result))
+                || decimal.TryParse(value, NumberStyles.Any, provider, out result);
         }
+
+#if NETSTANDARD2_1 || NETCOREAPP
+        /// <summary>
+        /// Parses a value that is not empty, without creating a string
+        /// </summary>
+        internal override bool TryParseValue(ReadOnlySpan<char> value, IFormatProvider provider, out decimal result)
+        {
+            // NumberStyles.Number is faster, and a value that it parses is the same with NumberStyles.Any
+            // when the currency separators are the number separators (see CanParseAsNumber)
+            return (CanParseAsNumber(provider) && decimal.TryParse(value, NumberStyles.Number, provider, out result))
+                || decimal.TryParse(value, NumberStyles.Any, provider, out result);
+        }
+#endif
     }
 }

@@ -51,5 +51,17 @@ namespace TinyCsv.Conversions
                 ? TimeSpan.TryParseExact(value, format, provider, TimeSpanStyles.None, out result)
                 : TimeSpan.TryParse(value, provider, out result);
         }
+
+#if NETSTANDARD2_1 || NETCOREAPP
+        /// <summary>
+        /// Parses a value that is not empty, without creating a string
+        /// </summary>
+        internal override bool TryParseValue(ReadOnlySpan<char> value, IFormatProvider provider, out TimeSpan result)
+        {
+            return GetColumnFormat(provider) is string format
+                ? TimeSpan.TryParseExact(value, format, provider, TimeSpanStyles.None, out result)
+                : TimeSpan.TryParse(value, provider, out result);
+        }
+#endif
     }
 }

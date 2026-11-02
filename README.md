@@ -52,6 +52,7 @@ var csv = new TinyCsv<Model>(options =>
 
 The options defines that the file has the header in first row and the delimier char is ";", furthermore there are defined some columns.
 RowsToSkip and SkipRow are used to skip the first rows of the file.
+When `SkipRow` is not set and the handlers are not enabled, the records are read without creating a string for each record, so the read is faster and allocates less memory.
 TrimData is used to remove the white spaces from the data.
 
 The rows starting with the `Comment` char (`#` by default) are skipped when `AllowComment` is true (default),
@@ -401,10 +402,28 @@ and you can use it, like this
 
 ## Performance
 
-The [benchmark](benchmark/README.md) compares the last versions of TinyCsv with [BenchmarkDotNet](https://benchmarkdotnet.org/), reading and writing `N` rows of 7 columns.
+### Compared with other libraries
+
+The [competitive benchmark](benchmark/README.md#competitive-benchmark) reads and writes 100,000 rows of 8 typed columns
+(`int`, `string`, `decimal`, `DateTime`, `bool`, with some quoted values) with TinyCsv, [CsvHelper](https://joshclose.github.io/CsvHelper/),
+[Sylvan.Data.Csv](https://github.com/MarkPflug/Sylvan) and [Sep](https://github.com/nietras/Sep).
+
+| Library | Read | Write |
+|---|---:|---:|
+| **TinyCsv** | **54.6 ms / 23.7 MB** | **35.6 ms / 2.2 MB** |
+| CsvHelper | 112.1 ms / 53.2 MB | 80.3 ms / 25.2 MB |
+| Sylvan | 28.4 ms / 23.8 MB | 39.3 ms / 0.05 MB |
+| Sep | 52.9 ms / 23.7 MB | 45.1 ms / 0.02 MB |
+
+TinyCsv and CsvHelper map the columns to the properties, while Sylvan and Sep are used with a hand written mapping.
+Environment: BenchmarkDotNet 0.14.0, .NET 8.0.29, Windows Server 2019 (Hyper-V), Intel Xeon Platinum 8370C 2.80GHz.
+
+### Compared with the previous versions
+
+The [versions benchmark](benchmark/README.md#versions-benchmark) compares the last versions of TinyCsv with [BenchmarkDotNet](https://benchmarkdotnet.org/), reading and writing `N` rows of 7 columns.
 Each cell is the mean time and the allocated memory.
 
-### LoadFromText
+#### LoadFromText
 
 | N | 2.1.0 | 2.2.2 | 3.0 |
 |---:|---:|---:|---:|
@@ -416,7 +435,7 @@ Each cell is the mean time and the allocated memory.
 
 With 1,000,000 rows, 3.0 reads **38% faster** than 2.2.2 and allocates **57% less memory**.
 
-### SaveToText
+#### SaveToText
 
 | N | 2.1.0 | 2.2.2 | 3.0 |
 |---:|---:|---:|---:|

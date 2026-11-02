@@ -45,13 +45,14 @@ namespace TinyCsv.Data
         private static readonly string[] EmptyFields = new string[0];
 
         private readonly ICsvOptions options;
-        private readonly StreamReader reader;
+        private readonly TextReader reader;
         private readonly bool quoting;
         private readonly bool backslash;
         private readonly bool trimData;
         private readonly char quote;
         private readonly char[] delimiter;
         private readonly StringBuilder builder = new StringBuilder();
+        private CsvField[] fieldsBuffer;
 
         /// <summary>
         /// Create a TinyCsvDataReader instance
@@ -59,6 +60,16 @@ namespace TinyCsv.Data
         /// <param name="options"></param>
         /// <param name="reader"></param>
         public TinyCsvDataReader(ICsvOptions options, StreamReader reader)
+            : this(options, (TextReader)reader)
+        {
+        }
+
+        /// <summary>
+        /// Create a TinyCsvDataReader instance
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="reader">i.e. a StreamReader or a StringReader</param>
+        internal TinyCsvDataReader(ICsvOptions options, TextReader reader)
         {
             this.options = options;
             this.reader = reader;
@@ -107,22 +118,71 @@ namespace TinyCsv.Data
         /// <returns></returns>
         public string[] GetFieldsByLine(string line, int columnsCount)
         {
-            if (string.IsNullOrEmpty(line))
+            var count = ReadFields(line, columnsCount, ref fieldsBuffer);
+            if (count == 0)
             {
                 return EmptyFields;
             }
+            var result = new string[count];
+            for (int i = 0; i < count; i++)
+            {
+                result[i] = fieldsBuffer[i].ToString();
+            }
+            return result;
+        }
 
-            if (line[0] == options.Comment && !options.AllowComment)
+        /// <summary>
+        /// Reads the fields of the line in a buffer, that is reused for all the lines
+        /// </summary>
+        /// <param name="line">the record, it may contain new lines inside quoted fields</param>
+        /// <param name="columnsCount">the expected number of columns, used as initial capacity</param>
+        /// <param name="fields">the buffer of the fields: it grows when it is too small</param>
+        /// <returns>the number of fields</returns>
+        internal int ReadFields(string line, int columnsCount, ref CsvField[] fields)
+        {
+            if (string.IsNullOrEmpty(line))
+            {
+                return 0;
+            }
+            return ReadFields(line.AsSpan(), new RecordSource(line, null, 0), columnsCount, ref fields);
+        }
+
+        /// <summary>
+        /// Reads the fields of the record that is in a buffer (see CsvRecordReader.Read).
+        /// The fields refer to the buffer, so they are valid until the next record is read.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="start">the start of the record in the buffer</param>
+        /// <param name="length">the length of the record</param>
+        /// <param name="columnsCount">the expected number of columns, used as initial capacity</param>
+        /// <param name="fields">the buffer of the fields: it grows when it is too small</param>
+        /// <returns>the number of fields</returns>
+        internal int ReadFields(char[] buffer, int start, int length, int columnsCount, ref CsvField[] fields)
+        {
+            if (length == 0)
+            {
+                return 0;
+            }
+            return ReadFields(new ReadOnlySpan<char>(buffer, start, length), new RecordSource(null, buffer, start), columnsCount, ref fields);
+        }
+
+        private int ReadFields(ReadOnlySpan<char> span, RecordSource source, int columnsCount, ref CsvField[] fields)
+        {
+            if (span[0] == options.Comment && !options.AllowComment)
             {
                 throw new NotAllowCommentException();
             }
 
-            var span = line.AsSpan();
-            var result = new List<string>(columnsCount > 0 ? columnsCount : 8);
+            if (fields == null)
+            {
+                fields = new CsvField[columnsCount > 0 ? columnsCount : 8];
+            }
+
+            var count = 0;
             var position = 0;
             while (true)
             {
-                result.Add(ReadField(span, ref position, out var hasDelimiter));
+                Add(ref fields, ref count, ReadField(source, span, ref position, out var hasDelimiter));
                 if (!hasDelimiter)
                 {
                     break;
@@ -130,9 +190,9 @@ namespace TinyCsv.Data
                 if (position == span.Length)
                 {
                     // "a;b;" with 3 columns: the last field is empty, it is not an end of line delimiter
-                    if (result.Count < columnsCount)
+                    if (count < columnsCount)
                     {
-                        result.Add(string.Empty);
+                        Add(ref fields, ref count, CsvField.Empty);
                         break;
                     }
                     if (!options.EndOfLineDelimiterChar)
@@ -143,14 +203,23 @@ namespace TinyCsv.Data
                 }
             }
 
-            return result.ToArray();
+            return count;
+        }
+
+        private static void Add(ref CsvField[] fields, ref int count, CsvField field)
+        {
+            if (count == fields.Length)
+            {
+                Array.Resize(ref fields, Math.Max(8, fields.Length * 2));
+            }
+            fields[count++] = field;
         }
 
         /// <summary>
         /// Read the field starting at position. On return position is after the delimiter, if any.
         /// Simple fields are sliced from the line, the others are unescaped by ReadEscapedField.
         /// </summary>
-        private string ReadField(ReadOnlySpan<char> line, ref int position, out bool hasDelimiter)
+        private CsvField ReadField(RecordSource source, ReadOnlySpan<char> line, ref int position, out bool hasDelimiter)
         {
             var start = trimData ? SkipSpaces(line, position) : position;
 
@@ -173,29 +242,60 @@ namespace TinyCsv.Data
                     {
                         hasDelimiter = false;
                         position = after;
-                        return content.Slice(0, close).ToString();
+                        return source.Slice(start + 1, close);
                     }
                     if (IsDelimiterAt(line, after))
                     {
                         hasDelimiter = true;
                         position = after + delimiter.Length;
-                        return content.Slice(0, close).ToString();
+                        return source.Slice(start + 1, close);
                     }
                 }
-                return ReadEscapedField(line, ref position, out hasDelimiter);
+                return new CsvField(ReadEscapedField(line, ref position, out hasDelimiter));
             }
 
             // fast path: unquoted value
             var rest = line.Slice(position);
-            var end = rest.IndexOf(new ReadOnlySpan<char>(delimiter));
+            var end = delimiter.Length == 1 ? rest.IndexOf(delimiter[0]) : rest.IndexOf(new ReadOnlySpan<char>(delimiter));
             var value = end >= 0 ? rest.Slice(0, end) : rest;
             if (backslash && value.IndexOf('\\') >= 0)
             {
-                return ReadEscapedField(line, ref position, out hasDelimiter);
+                return new CsvField(ReadEscapedField(line, ref position, out hasDelimiter));
             }
             hasDelimiter = end >= 0;
+            var valueStart = position;
+            var valueLength = value.Length;
             position += value.Length + (hasDelimiter ? delimiter.Length : 0);
-            return (trimData ? TrimSpaces(value) : value).ToString();
+            if (trimData)
+            {
+                TrimSpaces(line, ref valueStart, ref valueLength);
+            }
+            return source.Slice(valueStart, valueLength);
+        }
+
+        /// <summary>
+        /// The record of the fields: a string, or a slice of the buffer of the reader
+        /// </summary>
+        private readonly struct RecordSource
+        {
+            private readonly string text;
+            private readonly char[] chars;
+            private readonly int offset;
+
+            public RecordSource(string text, char[] chars, int offset)
+            {
+                this.text = text;
+                this.chars = chars;
+                this.offset = offset;
+            }
+
+            /// <summary>
+            /// The field at the position of the record
+            /// </summary>
+            public CsvField Slice(int start, int length)
+            {
+                return chars != null ? new CsvField(chars, offset + start, length) : new CsvField(text, start, length);
+            }
         }
 
         /// <summary>
@@ -292,19 +392,21 @@ namespace TinyCsv.Data
             return position;
         }
 
-        private static ReadOnlySpan<char> TrimSpaces(ReadOnlySpan<char> value)
+        /// <summary>
+        /// Removes the spaces at the start and at the end of the value, that is line[start..start+length]
+        /// </summary>
+        private static void TrimSpaces(ReadOnlySpan<char> line, ref int start, ref int length)
         {
-            var start = 0;
-            var end = value.Length;
-            while (start < end && IsSpace(value[start]))
+            var end = start + length;
+            while (start < end && IsSpace(line[start]))
             {
                 start++;
             }
-            while (end > start && IsSpace(value[end - 1]))
+            while (end > start && IsSpace(line[end - 1]))
             {
                 end--;
             }
-            return value.Slice(start, end - start);
+            length = end - start;
         }
 
         /// <summary>
