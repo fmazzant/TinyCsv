@@ -32,6 +32,7 @@ namespace TinyCsv
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Reflection;
     using System.Text;
@@ -211,6 +212,13 @@ namespace TinyCsv
         public StringComparer HeaderNameComparer { get; set; } = StringComparer.OrdinalIgnoreCase;
 
         /// <summary>
+        /// The culture used to read and write the values: numbers, dates and the columns with a format.
+        /// The default is the invariant culture, so the files do not depend on the culture of the machine.
+        /// A column with a ColumnFormatProvider uses its provider.
+        /// </summary>
+        public CultureInfo Culture { get; set; } = CultureInfo.InvariantCulture;
+
+        /// <summary>
         /// Enable handlers if necessary
         /// </summary>
         public bool EnableHandlers { get; set; } = false;
@@ -347,6 +355,10 @@ namespace TinyCsv
                 if (attribute is MapColumnsByHeaderAttribute mapColumnsByHeader)
                 {
                     this.MapColumnsByHeader = mapColumnsByHeader.MapColumnsByHeader;
+                }
+                if (attribute is CultureAttribute culture)
+                {
+                    this.Culture = culture.Culture;
                 }
             }
         }

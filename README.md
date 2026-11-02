@@ -58,6 +58,22 @@ The rows starting with the `Comment` char (`#` by default) are skipped when `All
 while `AllowComment = false` throws a `NotAllowCommentException`.
 The `TextEncoding` option (UTF-8 by default) is used to read and write files, streams and text; a byte order mark, if present, takes precedence while reading.
 
+## Culture
+
+The `Culture` option is used to read and write numbers, dates and the columns with a format.
+The default is `CultureInfo.InvariantCulture`, so a file is written and read in the same way on every machine:
+
+```c#
+var csv = new TinyCsv<Model>(options =>
+{
+    options.Culture = new CultureInfo("it-IT"); // 1234,5 and 02/11/2026
+    // ...
+});
+```
+
+With attributes, use `[Culture("it-IT")]` on the model.
+A column with its own format provider (`AddColumn(..., IFormatProvider)` or `[Column(formatProvider: ...)]`) uses that provider.
+
 ## Quoted values and multi-line records
 
 TinyCsv follows [RFC 4180](https://www.rfc-editor.org/rfc/rfc4180):
@@ -120,6 +136,19 @@ The old names still work, but they are obsolete (warning `CS0618`) and they will
 | `Handlers.Write.RowWrittin` (`RowWrittinEventArgs<T>`) | `Handlers.Write.RowWritten` (`RowWrittenEventArgs<T>`) |
 
 3.0.1 replaces 3.0.0, which has been unlisted from NuGet.
+
+### Changes in 3.1
+
+3.1 adds `MapColumnsByHeader`, the automatic columns and the `Culture` option.
+The `Culture` option fixes how the values are read, please check them when you upgrade:
+
+| Area | 3.0 | 3.1 |
+|---|---|---|
+| Dates and times without a format (`DateTime`, `DateTimeOffset`, `DateOnly`, `TimeOnly`, `TimeSpan`) | written with the invariant culture, read with the culture of the machine: on a non US machine a saved file was not read back as it is (`11/02/2026` was read as 11 February) | written and read with `Culture` |
+| Columns with a format (i.e. `"dd MMMM yyyy"`, `"N2"`) | written and read with the culture of the machine | written and read with `Culture` |
+| `byte` and `sbyte` | written and read with the culture of the machine | written and read with `Culture` |
+
+To read the values with the culture of the machine, as in 3.0, set `options.Culture = CultureInfo.CurrentCulture`.
 
 ## Custom Value Converter
 
