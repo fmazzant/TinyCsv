@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>Mafe.$(MSBuildProjectName)</AssemblyName>
+    <RootNamespace>TinyCsv.Analyzers</RootNamespace>
+    <IsRoslynComponent>true</IsRoslynComponent>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <IsPackable>false</IsPackable>
+    <!-- packed in the analyzers folder of Mafe.TinyCsv, see TinyCsv.csproj -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 4.0 is the Roslyn of Visual Studio 2022 17.0 and the .NET 6 SDK: the oldest compiler that loads the analyzer -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="TinyCsv.Analyzers.Tests" />
+  </ItemGroup>
+
+</Project>

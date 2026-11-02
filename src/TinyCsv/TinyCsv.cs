@@ -389,6 +389,8 @@ namespace TinyCsv
         {
             var index = 0;
 
+            // enumerated once: a lazy sequence (i.e. LoadFromText) cannot be enumerated twice
+            models = models as ICollection<T> ?? models.ToList();
             var count = models.Count() + (Options.HasHeaderRecord ? 1 : 0);
             var lines = new string[count];
 
@@ -433,6 +435,8 @@ namespace TinyCsv
         {
             var index = 0;
 
+            // enumerated once: a lazy sequence (i.e. LoadFromText) cannot be enumerated twice
+            models = models as ICollection<T> ?? models.ToList();
             var count = models.Count() + (Options.HasHeaderRecord ? 1 : 0);
             var lines = new string[count];
 
