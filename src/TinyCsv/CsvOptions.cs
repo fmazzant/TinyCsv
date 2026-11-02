@@ -31,11 +31,14 @@ namespace TinyCsv
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Reflection;
     using System.Text;
     using TinyCsv.Args;
     using TinyCsv.Attributes;
+    using TinyCsv.Exceptions;
     using TinyCsv.Helpers;
 
     /// <summary>
@@ -196,6 +199,26 @@ namespace TinyCsv
         public bool EndOfLineDelimiterChar { get; set; } = true;
 
         /// <summary>
+        /// Maps the columns to the fields by the names in the header record instead of by position,
+        /// so the order of the columns in the file does not matter and the columns that are not mapped are ignored.
+        /// It requires HasHeaderRecord, and a column that is not in the header throws a MissingColumnException.
+        /// </summary>
+        public bool MapColumnsByHeader { get; set; } = false;
+
+        /// <summary>
+        /// Compares the names in the header record with the column names when MapColumnsByHeader is true.
+        /// The default ignores the case.
+        /// </summary>
+        public StringComparer HeaderNameComparer { get; set; } = StringComparer.OrdinalIgnoreCase;
+
+        /// <summary>
+        /// The culture used to read and write the values: numbers, dates and the columns with a format.
+        /// The default is the invariant culture, so the files do not depend on the culture of the machine.
+        /// A column with a ColumnFormatProvider uses its provider.
+        /// </summary>
+        public CultureInfo Culture { get; set; } = CultureInfo.InvariantCulture;
+
+        /// <summary>
         /// Enable handlers if necessary
         /// </summary>
         public bool EnableHandlers { get; set; } = false;
@@ -329,6 +352,14 @@ namespace TinyCsv
                 {
                     this.ValidateColumnCount = validateColumnCount.ValidateColumnCount;
                 }
+                if (attribute is MapColumnsByHeaderAttribute mapColumnsByHeader)
+                {
+                    this.MapColumnsByHeader = mapColumnsByHeader.MapColumnsByHeader;
+                }
+                if (attribute is CultureAttribute culture)
+                {
+                    this.Culture = culture.Culture;
+                }
             }
         }
 
@@ -340,6 +371,61 @@ namespace TinyCsv
         {
             var headers = string.Join(this.Delimiter, this.Columns.Select(x => $"{x.ColumnName}"));
             return headers;
+        }
+
+        /// <summary>
+        /// Throws if MapColumnsByHeader is used without the header record
+        /// </summary>
+        /// <exception cref="InvalidOperationException"></exception>
+        internal void ThrowsIfMapColumnsByHeaderWithoutHeader()
+        {
+            if (MapColumnsByHeader && !HasHeaderRecord)
+            {
+                throw new InvalidOperationException($"{nameof(MapColumnsByHeader)} requires {nameof(HasHeaderRecord)}.");
+            }
+        }
+
+        /// <summary>
+        /// Returns, for each column in the order of Columns, the index of its field in the record,
+        /// looking for the column name in the header record.
+        /// </summary>
+        /// <param name="headerFields">the fields of the header record</param>
+        /// <returns></returns>
+        /// <exception cref="MissingColumnException">a column is not in the header</exception>
+        internal int[] GetFieldIndexesByHeader(string[] headerFields)
+        {
+            var comparer = HeaderNameComparer ?? StringComparer.OrdinalIgnoreCase;
+            var indexByName = new Dictionary<string, int>(comparer);
+            for (int i = 0; i < headerFields.Length; i++)
+            {
+                var name = headerFields[i]?.Trim() ?? string.Empty;
+                if (!indexByName.ContainsKey(name))
+                {
+                    indexByName.Add(name, i);
+                }
+            }
+
+            var fieldIndexes = new int[Columns.Count];
+            var missing = new List<string>();
+            var columnIndex = 0;
+            foreach (var column in Columns)
+            {
+                if (indexByName.TryGetValue(column.ColumnName ?? string.Empty, out var fieldIndex))
+                {
+                    fieldIndexes[columnIndex] = fieldIndex;
+                }
+                else
+                {
+                    missing.Add(column.ColumnName);
+                }
+                columnIndex++;
+            }
+
+            if (missing.Count > 0)
+            {
+                throw new MissingColumnException(missing.ToArray());
+            }
+            return fieldIndexes;
         }
 
         /// <summary>
@@ -570,7 +656,15 @@ namespace TinyCsv
             /// <summary>
             /// Occors when row is written
             /// </summary>
+            public EventHandler<RowWrittenEventArgs<T>> RowWritten { get; set; }
+
+            /// <summary>
+            /// Occors when row is written
+            /// </summary>
+#pragma warning disable CS0618 // RowWrittinEventArgs<T> is obsolete
+            [Obsolete("Use RowWritten instead. RowWrittin will be removed in 4.0.")]
             public EventHandler<RowWrittinEventArgs<T>> RowWrittin { get; set; }
+#pragma warning restore CS0618
 
             /// <summary>
             /// Handlers is enabled
@@ -636,29 +730,30 @@ namespace TinyCsv
             }
 
             /// <summary>
-            /// Reise row is writtin event
-            /// </summary>
-            /// <param name="e"></param>
-            internal void OnRowWrittin(RowWrittinEventArgs<T> e)
-            {
-                if (!Enabled) return;
-                RowWrittin?.Invoke(this, e);
-            }
-
-            /// <summary>
-            /// Reise row is writtin event
+            /// Reise row is written event
             /// </summary>
             /// <param name="index"></param>
+            /// <param name="model"></param>
             /// <param name="row"></param>
-            internal void OnRowWrittin(int index, T model, string row)
+            internal void OnRowWritten(int index, T model, string row)
             {
                 if (!Enabled) return;
-                OnRowWrittin(new RowWrittinEventArgs<T>
-                {
-                    Index = index,
-                    Model = model,
-                    Row = row
-                });
+#pragma warning disable CS0618 // RowWrittin is kept until 4.0
+                var rowWrittin = RowWrittin;
+                if (RowWritten == null && rowWrittin == null) return;
+
+                // RowWrittinEventArgs<T> derives from RowWrittenEventArgs<T>, so the same
+                // instance is passed to the handlers of both RowWritten and RowWrittin.
+                RowWrittenEventArgs<T> e = rowWrittin != null
+                    ? new RowWrittinEventArgs<T>()
+                    : new RowWrittenEventArgs<T>();
+                e.Index = index;
+                e.Model = model;
+                e.Row = row;
+
+                RowWritten?.Invoke(this, e);
+                rowWrittin?.Invoke(this, (RowWrittinEventArgs<T>)e);
+#pragma warning restore CS0618
             }
         }
     }

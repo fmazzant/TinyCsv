@@ -37,7 +37,6 @@ namespace TinyCsv
     using System.Threading;
     using System.Threading.Tasks;
     using TinyCsv.Data;
-    using TinyCsv.Exceptions;
     using TinyCsv.Extensions;
     using TinyCsv.Streams;
 
@@ -60,6 +59,7 @@ namespace TinyCsv
         {
             Options = new CsvOptions<T>();
             options(Options);
+            AddColumnsFromPropertiesIfEmpty();
         }
 
         /// <summary>
@@ -69,6 +69,7 @@ namespace TinyCsv
         public TinyCsv(CsvOptions<T> options)
         {
             Options = options;
+            AddColumnsFromPropertiesIfEmpty();
         }
 
         /// <summary>
@@ -77,6 +78,18 @@ namespace TinyCsv
         public TinyCsv()
         {
             Options = new CsvOptions<T>(typeof(T));
+            AddColumnsFromPropertiesIfEmpty();
+        }
+
+        /// <summary>
+        /// When no column is defined, the columns are the public properties of T (see CsvOptionsColumns.AddColumnsFromProperties)
+        /// </summary>
+        private void AddColumnsFromPropertiesIfEmpty()
+        {
+            if (Options.Columns.Count == 0)
+            {
+                Options.Columns.AddColumnsFromProperties(typeof(T));
+            }
         }
 
         /// <summary>
@@ -163,40 +176,16 @@ namespace TinyCsv
         /// <returns></returns>
         public IEnumerable<T> LoadFromStream(StreamReader streamReader)
         {
-            var index = 0;
-            var options = this.Options;
-            var dataReader = new TinyCsvDataReader<T>(options, streamReader);
-            var hasHeaderRecord = options.HasHeaderRecord;
-            var validateColumnCount = options.ValidateColumnCount;
-            var columnsCount = options.Columns.Count;
-
-            options.Handlers.OnStart();
-            var lines = dataReader.ReadLines();
-            foreach (var line in lines)
+            var reader = new CsvModelReader<T>(Options, streamReader);
+            foreach (var line in reader.DataReader.ReadLines())
             {
-                var currentIndex = index;
-                index++;
-
-                if (currentIndex == 0 && hasHeaderRecord)
+                if (reader.TryReadModel(line, out var model))
                 {
-                    options.Handlers.Read.OnRowReading(currentIndex, line);
-                    options.Handlers.Read.OnRowHeader(currentIndex, line);
-                    continue;
+                    yield return model;
+                    reader.OnModelRead(model, line);
                 }
-
-                options.Handlers.Read.OnRowReading(currentIndex, line);
-                var fields = dataReader.GetFieldsByLine(line, columnsCount);
-
-                if (validateColumnCount && columnsCount > fields.Length)
-                {
-                    throw new InvalidColumnCountException($"Invalid column count {fields.Length} at {index} line, required {columnsCount} columns");
-                }
-
-                var model = fields.GetModelFromStringArray<T>(options);
-                yield return model;
-                options.Handlers.Read.OnRowRead(currentIndex, model, line);
             }
-            options.Handlers.OnCompleted(index);
+            reader.OnCompleted();
         }
 
         /// <summary>
@@ -256,7 +245,7 @@ namespace TinyCsv
                 options.Handlers.Write.OnRowWriting(index, model);
                 var line = model.GetLineFromGenericType(options);
                 writer.WriteLine(line);
-                options.Handlers.Write.OnRowWrittin(index, model, line);
+                options.Handlers.Write.OnRowWritten(index, model, line);
                 index++;
             }
             options.Handlers.OnCompleted(index);
@@ -315,7 +304,7 @@ namespace TinyCsv
                 options.Handlers.Write.OnRowWriting(index, model);
                 var line = model.GetLineFromGenericType(options);
                 await writer.WriteLineAsync(line).ConfigureAwait(false);
-                options.Handlers.Write.OnRowWrittin(index, model, line);
+                options.Handlers.Write.OnRowWritten(index, model, line);
                 index++;
             }
             options.Handlers.OnCompleted(index);
@@ -503,9 +492,21 @@ namespace TinyCsv
         /// <param name="text"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public IEnumerable<string[]> GetAlGetAllLinesAndFieldslLinesFromText(string text, Encoding encoding = null)
+        public IEnumerable<string[]> GetAllLinesAndFieldsFromText(string text, Encoding encoding = null)
         {
             return GetAllLinesAndFieldsFromStream(CreateReader(text, encoding));
+        }
+
+        /// <summary>
+        /// Get all lines and fields
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        [Obsolete("Use GetAllLinesAndFieldsFromText instead. GetAlGetAllLinesAndFieldslLinesFromText will be removed in 4.0.")]
+        public IEnumerable<string[]> GetAlGetAllLinesAndFieldslLinesFromText(string text, Encoding encoding = null)
+        {
+            return GetAllLinesAndFieldsFromText(text, encoding);
         }
     }
 }

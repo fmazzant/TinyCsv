@@ -49,7 +49,7 @@ namespace TinyCsv.Extensions
                 var propertyName = column.ColumnNameInternal;
                 var property = options.FasterProperties[propertyName];
                 var value = property.Getter(model);
-                var stringValue = column.Converter.Convert(value, null, column.ColumnFormatProvider);
+                var stringValue = column.Converter.Convert(value, null, column.GetFormatProvider(options.Culture));
                 return stringValue?.EnclosedInQuotesIfNecessary(options);
             });
             return values.ToArray();

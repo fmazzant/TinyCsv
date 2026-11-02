@@ -47,21 +47,9 @@ namespace TinyCsv.Conversions
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
-            if (!string.IsNullOrWhiteSpace(value))
-            {
-                if (provider is CsvColumn.DefaultFormatProvider defaultFormatProvider)
-                {
-                    if (DateTimeOffset.TryParseExact(value, defaultFormatProvider.CustomFormat, provider, DateTimeStyles.None, out var dateTimeOffset))
-                    {
-                        return dateTimeOffset;
-                    }
-                }
-                else if (DateTimeOffset.TryParse(value, out var dateTimeOffset))
-                {
-                    return dateTimeOffset;
-                }
-            }
-            return targetType.IsNullable() ? null : default(DateTimeOffset);
+            return FormattedValueParser.ConvertBack<DateTimeOffset>(value, targetType, provider,
+                (string v, string format, IFormatProvider p, out DateTimeOffset r) => DateTimeOffset.TryParseExact(v, format, p, DateTimeStyles.None, out r),
+                (string v, IFormatProvider p, out DateTimeOffset r) => DateTimeOffset.TryParse(v, p, DateTimeStyles.None, out r));
         }
     }
 }

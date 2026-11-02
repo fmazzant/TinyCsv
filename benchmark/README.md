@@ -35,14 +35,14 @@ To compare other versions, change the jobs in `TinyCsvLibraryBenchmark.Config`:
 ```c#
 AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "2.1.0"));
 AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "2.2.2"));
-AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "3.0.0"));
+AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "3.1.0"));
 ```
 
 Each version must be published on NuGet: a job with a version that is not published fails to build and its results are `NA`.
 
 ## Results
 
-The results of 2.1.0, 2.2.2 and 3.0.0 are in the [Performance](../README.md#performance) section of the main page.
+The results of 2.1.0, 2.2.2 and 3.0 are in the [Performance](../README.md#performance) section of the main page.
 The 2.2.2 `LoadFromText` result with 10,000 rows is noisy (the median is 11.84 ms).
 
 The full report is in [results](results/TinyCsvLibraryBenchmark-report-github.md).

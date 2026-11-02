@@ -38,8 +38,6 @@ namespace TinyCsv
     using System.Text;
     using System.Threading;
     using TinyCsv.Data;
-    using TinyCsv.Exceptions;
-    using TinyCsv.Extensions;
     using TinyCsv.Streams;
 
     public sealed partial class TinyCsv<T>
@@ -91,41 +89,17 @@ namespace TinyCsv
         /// <returns></returns>
         public async IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            var index = 0;
-            var options = this.Options;
-            var dataReader = new TinyCsvDataReader<T>(options, streamReader);
-            var hasHeaderRecord = options.HasHeaderRecord;
-            var validateColumnCount = options.ValidateColumnCount;
-            var columnsCount = options.Columns.Count;
-
-            options.Handlers.OnStart();
-            await foreach (var line in dataReader.ReadLinesAsync(cancellationToken))
+            var reader = new CsvModelReader<T>(Options, streamReader);
+            await foreach (var line in reader.DataReader.ReadLinesAsync(cancellationToken))
             {
                 cancellationToken.ThrowIfCancellationRequested();
-
-                var currentIndex = index;
-                index++;
-
-                if (currentIndex == 0 && hasHeaderRecord)
+                if (reader.TryReadModel(line, out var model))
                 {
-                    options.Handlers.Read.OnRowReading(currentIndex, line);
-                    options.Handlers.Read.OnRowHeader(currentIndex, line);
-                    continue;
+                    yield return model;
+                    reader.OnModelRead(model, line);
                 }
-
-                options.Handlers.Read.OnRowReading(currentIndex, line);
-                var fields = dataReader.GetFieldsByLine(line, columnsCount);
-
-                if (validateColumnCount && columnsCount > fields.Length)
-                {
-                    throw new InvalidColumnCountException($"Invalid column count at {index} line.");
-                }
-
-                var model = fields.GetModelFromStringArray<T>(options);
-                yield return model;
-                options.Handlers.Read.OnRowRead(currentIndex, model, line);
             }
-            options.Handlers.OnCompleted(index);
+            reader.OnCompleted();
         }
 
         /// <summary>

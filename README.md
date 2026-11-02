@@ -5,12 +5,12 @@ TinyCsv is a .NET library to read and write CSV data in an easy way.
 
 To use it in your project, add the Mafe.TinyCsv NuGet package to your project.
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/3.0.0)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/3.1.0)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv?style=flat-square)
 
 It is available an AspNetCore extension:
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.3.0)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.3.2)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.AspNetCore?style=flat-square)
 
 Define the model that you want to use, like this:
@@ -57,6 +57,22 @@ TrimData is used to remove the white spaces from the data.
 The rows starting with the `Comment` char (`#` by default) are skipped when `AllowComment` is true (default),
 while `AllowComment = false` throws a `NotAllowCommentException`.
 The `TextEncoding` option (UTF-8 by default) is used to read and write files, streams and text; a byte order mark, if present, takes precedence while reading.
+
+## Culture
+
+The `Culture` option is used to read and write numbers, dates and the columns with a format.
+The default is `CultureInfo.InvariantCulture`, so a file is written and read in the same way on every machine:
+
+```c#
+var csv = new TinyCsv<Model>(options =>
+{
+    options.Culture = new CultureInfo("it-IT"); // 1234,5 and 02/11/2026
+    // ...
+});
+```
+
+With attributes, use `[Culture("it-IT")]` on the model.
+A column with its own format provider (`AddColumn(..., IFormatProvider)` or `[Column(formatProvider: ...)]`) uses that provider.
 
 ## Quoted values and multi-line records
 
@@ -108,6 +124,31 @@ Furthermore:
 
 - added the `net10.0` target;
 - `netstandard2.0` and `net462`-`net48` depend on `System.Memory`.
+
+### Renamed in 3.1.0
+
+Two names with a typo have a new name.
+The old names still work, but they are obsolete (warning `CS0618`) and they will be removed in 4.0:
+
+| Obsolete | New |
+|---|---|
+| `GetAlGetAllLinesAndFieldslLinesFromText` | `GetAllLinesAndFieldsFromText` |
+| `Handlers.Write.RowWrittin` (`RowWrittinEventArgs<T>`) | `Handlers.Write.RowWritten` (`RowWrittenEventArgs<T>`) |
+
+3.1.0 replaces 3.0.0, which has been unlisted from NuGet.
+
+### Changes in 3.1
+
+3.1 adds `MapColumnsByHeader`, the automatic columns and the `Culture` option.
+The `Culture` option fixes how the values are read, please check them when you upgrade:
+
+| Area | 3.0 | 3.1 |
+|---|---|---|
+| Dates and times without a format (`DateTime`, `DateTimeOffset`, `DateOnly`, `TimeOnly`, `TimeSpan`) | written with the invariant culture, read with the culture of the machine: on a non US machine a saved file was not read back as it is (`11/02/2026` was read as 11 February) | written and read with `Culture` |
+| Columns with a format (i.e. `"dd MMMM yyyy"`, `"N2"`) | written and read with the culture of the machine | written and read with `Culture` |
+| `byte` and `sbyte` | written and read with the culture of the machine | written and read with `Culture` |
+
+To read the values with the culture of the machine, as in 3.0, set `options.Culture = CultureInfo.CurrentCulture`.
 
 ## Custom Value Converter
 
@@ -168,6 +209,47 @@ var models = await csv.LoadFromFileAsync("file.csv").ToListAsync();
 
 The load method returns a collection of Model type items and takes as argument the file's path.
 
+### Map the columns by header
+
+By default the columns are read by position: the first column of the file is the first column defined in the options, and so on.
+With `MapColumnsByHeader`, the columns are read by the names in the header record:
+
+```c#
+var csv = new TinyCsv<Model>(options =>
+{
+    options.HasHeaderRecord = true;
+    options.MapColumnsByHeader = true;
+
+    options.Columns.AddColumn(m => m.Id);
+    options.Columns.AddColumn("Product name", m => m.Name);
+    options.Columns.AddColumn(m => m.Price);
+});
+```
+
+- the order of the columns in the file does not matter;
+- the columns of the file that are not defined in the options are ignored;
+- the names are compared ignoring the case and the spaces around them. Use `HeaderNameComparer` to change it, e.g. `StringComparer.Ordinal`;
+- a column that is not in the header throws a `MissingColumnException`, with the names in `MissingColumns`;
+- it requires `HasHeaderRecord = true`, otherwise an `InvalidOperationException` is thrown.
+
+With attributes, use `[MapColumnsByHeader]` on the model, the column name is the `name` of `[Column]` or the property name.
+
+### Automatic columns
+
+When no column is defined, the columns are the public properties of the model that have a getter and a setter,
+in the order of declaration, and the column name is the property name:
+
+```c#
+var csv = new TinyCsv<Model>(options =>
+{
+    options.HasHeaderRecord = true;
+    options.MapColumnsByHeader = true;
+});
+```
+
+The properties whose type has no value converter (i.e. classes and collections) are ignored.
+To use a format, a custom converter or a different name, define the columns.
+
 ## Write
 
 To write a csv file is only necessary invoke the Save method, like this:
@@ -200,7 +282,7 @@ and the write handlers are:
 ```c#
 options.Handlers.Write.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
 options.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {e.Model}");
-options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
+options.Handlers.Write.RowWritten += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
 ```
 
 The handlers are enabled if the option "EnableHandlers" is set true value, like this:
@@ -275,7 +357,7 @@ Each cell is the mean time and the allocated memory.
 
 ### LoadFromText
 
-| N | 2.1.0 | 2.2.2 | 3.0.0 |
+| N | 2.1.0 | 2.2.2 | 3.0 |
 |---:|---:|---:|---:|
 | 100 | 0.072 ms / 119 KB | 0.106 ms / 195 KB | **0.065 ms / 94 KB** |
 | 1,000 | 0.727 ms / 1.14 MB | 1.067 ms / 1.89 MB | **0.647 ms / 0.82 MB** |
@@ -283,11 +365,11 @@ Each cell is the mean time and the allocated memory.
 | 100,000 | 74.4 ms / 114.0 MB | 110.6 ms / 188.7 MB | **71.5 ms / 81.2 MB** |
 | 1,000,000 | 772 ms / 1,140 MB | 1,099 ms / 1,887 MB | **679 ms / 812 MB** |
 
-With 1,000,000 rows, 3.0.0 reads **38% faster** than 2.2.2 and allocates **57% less memory**.
+With 1,000,000 rows, 3.0 reads **38% faster** than 2.2.2 and allocates **57% less memory**.
 
 ### SaveToText
 
-| N | 2.1.0 | 2.2.2 | 3.0.0 |
+| N | 2.1.0 | 2.2.2 | 3.0 |
 |---:|---:|---:|---:|
 | 100 | 0.092 ms / 107 KB | 0.093 ms / 107 KB | 0.100 ms / 124 KB |
 | 1,000 | 1.117 ms / 1.10 MB | 1.120 ms / 1.10 MB | 1.105 ms / 1.26 MB |
@@ -295,11 +377,11 @@ With 1,000,000 rows, 3.0.0 reads **38% faster** than 2.2.2 and allocates **57% l
 | 100,000 | 94.4 ms / 100.7 MB | 95.8 ms / 100.7 MB | 104.4 ms / 116.7 MB |
 | 1,000,000 | 988 ms / 1,103 MB | 983 ms / 1,103 MB | 1,107 ms / 1,263 MB |
 
-In 3.0.0, `Save` escapes the values as RFC 4180, so the saved file is always read back as it is.
+In 3.0, `Save` escapes the values as RFC 4180, so the saved file is always read back as it is.
 The write is about 12% slower and allocates about 15% more memory than 2.2.2.
 
 Environment: BenchmarkDotNet 0.13.12, .NET 8.0.29, Windows Server 2019 (Hyper-V), Intel Xeon Platinum 8370C 2.80GHz.
-The 3.0.0 column was measured with the 3.0.0-rc1 package, which has the same code as 3.0.0.
+The 3.0 column was measured with the 3.0.0-rc1 package. The results of 3.1.0 will be added after its release.
 The full report is in [benchmark/results](benchmark/results/TinyCsvLibraryBenchmark-report-github.md).
 
 <details>
@@ -314,7 +396,7 @@ The full report is in [benchmark/results](benchmark/results/TinyCsvLibraryBenchm
 
 Is available the Mafe.TinyCsv.Extensions library to use the TinyCsv in your project and it is downloadable in the NuGet package.
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.3.0)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.3.2)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.AspNetCore?style=flat-square)
 
 It's possible to use the extensions methods in your project, like this:

@@ -107,6 +107,39 @@ namespace TinyCsv
         }
 
         /// <summary>
+        /// The format provider of the last culture, see GetFormatProvider
+        /// </summary>
+        private DefaultFormatProvider _CultureFormatProvider = null;
+
+        /// <summary>
+        /// Returns the format provider used to read and write the values of the column:
+        /// the ColumnFormatProvider when it is set, otherwise the culture with the ColumnFormat, if any.
+        /// </summary>
+        /// <param name="culture">the culture of the options (see CsvOptions.Culture)</param>
+        /// <returns></returns>
+        internal IFormatProvider GetFormatProvider(CultureInfo culture)
+        {
+            if (_FormatProvider != null)
+            {
+                return _FormatProvider;
+            }
+
+            culture = culture ?? CultureInfo.InvariantCulture;
+            if (string.IsNullOrEmpty(ColumnFormat))
+            {
+                return culture;
+            }
+
+            var formatProvider = _CultureFormatProvider;
+            if (formatProvider == null || !ReferenceEquals(formatProvider.Culture, culture) || formatProvider.CustomFormat != ColumnFormat)
+            {
+                formatProvider = new DefaultFormatProvider(ColumnFormat, culture);
+                _CultureFormatProvider = formatProvider;
+            }
+            return formatProvider;
+        }
+
+        /// <summary>
         /// Default Format Provider definition
         /// </summary>
         internal sealed class DefaultFormatProvider : IFormatProvider, ICustomFormatter
@@ -117,22 +150,38 @@ namespace TinyCsv
             public string CustomFormat { get; set; }
 
             /// <summary>
+            /// The culture used to format and parse the values (see CsvOptions.Culture)
+            /// </summary>
+            public CultureInfo Culture { get; }
+
+            /// <summary>
             /// Create Default Format Provider
             /// </summary>
             /// <param name="customFormat"></param>
             public DefaultFormatProvider(string customFormat)
+                : this(customFormat, CultureInfo.InvariantCulture)
             {
-                CustomFormat = customFormat;
             }
 
             /// <summary>
-            /// Get format
+            /// Create Default Format Provider
+            /// </summary>
+            /// <param name="customFormat"></param>
+            /// <param name="culture"></param>
+            public DefaultFormatProvider(string customFormat, CultureInfo culture)
+            {
+                CustomFormat = customFormat;
+                Culture = culture ?? CultureInfo.InvariantCulture;
+            }
+
+            /// <summary>
+            /// Get format: the custom formatter, or the number and date formats of the culture
             /// </summary>
             /// <param name="formatType"></param>
             /// <returns></returns>
             public object GetFormat(Type formatType)
             {
-                return this;
+                return formatType == typeof(ICustomFormatter) ? this : Culture.GetFormat(formatType);
             }
 
             /// <summary>
@@ -144,7 +193,9 @@ namespace TinyCsv
             /// <returns></returns>
             public string Format(string format, object arg, IFormatProvider formatProvider)
             {
-                return ((IFormattable)arg).ToString(CustomFormat, formatProvider);
+                return arg is IFormattable formattable
+                    ? formattable.ToString(CustomFormat, Culture)
+                    : arg?.ToString();
             }
         }
     }

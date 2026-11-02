@@ -34,21 +34,8 @@ namespace TinyCsv.Args
     /// <summary>
     /// Defines Row Writtin Event Args
     /// </summary>
-    public class RowWrittinEventArgs<T> : EventArgs
+    [Obsolete("Use RowWrittenEventArgs<T> instead. RowWrittinEventArgs<T> will be removed in 4.0.")]
+    public class RowWrittinEventArgs<T> : RowWrittenEventArgs<T>
     {
-        /// <summary>
-        /// Row index
-        /// </summary>
-        public int Index { get; internal set; }
-
-        /// <summary>
-        /// Model
-        /// </summary>
-        public T Model { get; internal set; }
-
-        /// <summary>
-        /// Row
-        /// </summary>
-        public string Row { get; internal set; }
     }
 }
