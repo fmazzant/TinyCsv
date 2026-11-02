@@ -228,6 +228,35 @@ namespace TinyCsv
         }
 
         /// <summary>
+        /// Adds a column for each public property of the type that can be read and written
+        /// and whose type has a value converter, in the order of declaration.
+        /// The column name is the property name. Properties of other types (i.e. classes and collections) are ignored.
+        /// </summary>
+        /// <param name="type"></param>
+        internal void AddColumnsFromProperties(Type type)
+        {
+            var names = new HashSet<string>();
+            foreach (var property in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+            {
+                if (property.GetIndexParameters().Length > 0
+                    || property.GetGetMethod() == null
+                    || property.GetSetMethod() == null
+                    || !names.Add(property.Name))
+                {
+                    continue;
+                }
+
+                var converter = ValueConverterFactory.CreateValueConverterByType(property.PropertyType);
+                if (converter.GetType() == typeof(DefaultValueConverter))
+                {
+                    continue;
+                }
+
+                AddColumn(property.PropertyType, Columns.Count, property.Name, null, converter: converter, propertyName: property.Name);
+            }
+        }
+
+        /// <summary>
         /// Add Column From Property
         /// </summary>
         /// <param name="propertyInfo"></param>

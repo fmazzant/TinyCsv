@@ -48,21 +48,9 @@ namespace TinyCsv.Conversions
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
-            if (!string.IsNullOrWhiteSpace(value))
-            {
-                if (provider is CsvColumn.DefaultFormatProvider defaultFormatProvider)
-                {
-                    if (TimeOnly.TryParseExact(value, defaultFormatProvider.CustomFormat, provider, DateTimeStyles.None, out var timeOnly))
-                    {
-                        return timeOnly;
-                    }
-                }
-                else if (TimeOnly.TryParse(value, out var timeOnly))
-                {
-                    return timeOnly;
-                }
-            }
-            return targetType.IsNullable() ? null : default(TimeOnly);
+            return FormattedValueParser.ConvertBack<TimeOnly>(value, targetType, provider,
+                (string v, string format, IFormatProvider p, out TimeOnly r) => TimeOnly.TryParseExact(v, format, p, DateTimeStyles.None, out r),
+                (string v, IFormatProvider p, out TimeOnly r) => TimeOnly.TryParse(v, p, DateTimeStyles.None, out r));
         }
     }
 

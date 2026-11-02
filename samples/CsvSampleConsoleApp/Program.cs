@@ -130,7 +130,7 @@ namespace CsvSampleConsoleApp
                     // Event Handlers Write
                     bigOptions.Handlers.Write.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
                     bigOptions.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {e.Model}");
-                    bigOptions.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
+                    bigOptions.Handlers.Write.RowWritten += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
                 });
 
                 int index = 0;
@@ -193,7 +193,7 @@ namespace CsvSampleConsoleApp
                 // Event Handlers Write
                 options.Handlers.Write.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
                 options.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {e.Model}");
-                options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
+                options.Handlers.Write.RowWritten += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
             });
 
             // read from file sync
