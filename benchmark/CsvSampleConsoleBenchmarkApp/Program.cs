@@ -100,7 +100,7 @@ namespace CsvSampleConsoleBenchmarkApp
                 //AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "2.1.0"));
                 AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "2.2.2"));
                 AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "3.2.0"));
-                AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "3.3.0-rc1"));
+                AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "3.3.0"));
             }
         }
 

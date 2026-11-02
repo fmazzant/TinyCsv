@@ -5,12 +5,12 @@ TinyCsv is a .NET library to read and write CSV data in an easy way.
 
 To use it in your project, add the Mafe.TinyCsv NuGet package to your project.
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/3.2.0)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/3.3.0)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv?style=flat-square)
 
 It is available an AspNetCore extension:
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.3.3)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.4.0)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.AspNetCore?style=flat-square)
 
 Define the model that you want to use, like this:
@@ -449,7 +449,7 @@ In 3.0, `Save` escapes the values as RFC 4180, so the saved file is always read 
 The write is about 12% slower and allocates about 15% more memory than 2.2.2.
 
 Environment: BenchmarkDotNet 0.13.12, .NET 8.0.29, Windows Server 2019 (Hyper-V), Intel Xeon Platinum 8370C 2.80GHz.
-The 3.0 column was measured with the 3.0.0-rc1 package. The results of 3.1.0 will be added after its release.
+The 3.0 column was measured with the 3.0.0-rc1 package. The results of 3.3.0 will be added after its release.
 The full report is in [benchmark/results](benchmark/results/TinyCsvLibraryBenchmark-report-github.md).
 
 <details>
@@ -464,8 +464,11 @@ The full report is in [benchmark/results](benchmark/results/TinyCsvLibraryBenchm
 
 Is available the Mafe.TinyCsv.Extensions library to use the TinyCsv in your project and it is downloadable in the NuGet package.
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.3.3)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.4.0)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.AspNetCore?style=flat-square)
+
+Since 2.4.0 the package depends only on `Microsoft.Extensions.DependencyInjection`: the previous versions referenced the ASP.NET Core 2.2 packages,
+that are out of support and include `Microsoft.AspNetCore.Server.Kestrel.Core` 2.2.0, with a critical vulnerability ([GHSA-5rrx-jjjq-q2r5](https://github.com/advisories/GHSA-5rrx-jjjq-q2r5)).
 
 It's possible to use the extensions methods in your project, like this:
 
