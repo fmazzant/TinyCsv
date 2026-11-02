@@ -125,7 +125,7 @@ Furthermore:
 - added the `net10.0` target;
 - `netstandard2.0` and `net462`-`net48` depend on `System.Memory`.
 
-### Renamed in 3.0.1
+### Renamed in 3.1.0
 
 Two names with a typo have a new name.
 The old names still work, but they are obsolete (warning `CS0618`) and they will be removed in 4.0:
@@ -135,7 +135,7 @@ The old names still work, but they are obsolete (warning `CS0618`) and they will
 | `GetAlGetAllLinesAndFieldslLinesFromText` | `GetAllLinesAndFieldsFromText` |
 | `Handlers.Write.RowWrittin` (`RowWrittinEventArgs<T>`) | `Handlers.Write.RowWritten` (`RowWrittenEventArgs<T>`) |
 
-3.0.1 replaces 3.0.0, which has been unlisted from NuGet.
+3.1.0 replaces 3.0.0, which has been unlisted from NuGet.
 
 ### Changes in 3.1
 
@@ -357,7 +357,7 @@ Each cell is the mean time and the allocated memory.
 
 ### LoadFromText
 
-| N | 2.1.0 | 2.2.2 | 3.0.1 |
+| N | 2.1.0 | 2.2.2 | 3.0 |
 |---:|---:|---:|---:|
 | 100 | 0.072 ms / 119 KB | 0.106 ms / 195 KB | **0.065 ms / 94 KB** |
 | 1,000 | 0.727 ms / 1.14 MB | 1.067 ms / 1.89 MB | **0.647 ms / 0.82 MB** |
@@ -365,11 +365,11 @@ Each cell is the mean time and the allocated memory.
 | 100,000 | 74.4 ms / 114.0 MB | 110.6 ms / 188.7 MB | **71.5 ms / 81.2 MB** |
 | 1,000,000 | 772 ms / 1,140 MB | 1,099 ms / 1,887 MB | **679 ms / 812 MB** |
 
-With 1,000,000 rows, 3.0.1 reads **38% faster** than 2.2.2 and allocates **57% less memory**.
+With 1,000,000 rows, 3.0 reads **38% faster** than 2.2.2 and allocates **57% less memory**.
 
 ### SaveToText
 
-| N | 2.1.0 | 2.2.2 | 3.0.1 |
+| N | 2.1.0 | 2.2.2 | 3.0 |
 |---:|---:|---:|---:|
 | 100 | 0.092 ms / 107 KB | 0.093 ms / 107 KB | 0.100 ms / 124 KB |
 | 1,000 | 1.117 ms / 1.10 MB | 1.120 ms / 1.10 MB | 1.105 ms / 1.26 MB |
@@ -381,7 +381,7 @@ In 3.0, `Save` escapes the values as RFC 4180, so the saved file is always read 
 The write is about 12% slower and allocates about 15% more memory than 2.2.2.
 
 Environment: BenchmarkDotNet 0.13.12, .NET 8.0.29, Windows Server 2019 (Hyper-V), Intel Xeon Platinum 8370C 2.80GHz.
-The 3.0.1 column was measured with the 3.0.0-rc1 package, which has the same reader and writer as 3.0.1.
+The 3.0 column was measured with the 3.0.0-rc1 package. The results of 3.1.0 will be added after its release.
 The full report is in [benchmark/results](benchmark/results/TinyCsvLibraryBenchmark-report-github.md).
 
 <details>
