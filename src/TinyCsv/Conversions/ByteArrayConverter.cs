@@ -67,5 +67,28 @@ namespace TinyCsv.Conversions
             }
             return targetType.IsNullable() ? null : default(byte[]);
         }
+
+        /// <summary>
+        /// Converts a base64 string to a byte array, returning false when the value is not a valid base64 string.
+        /// </summary>
+        /// <param name="value">The value that is produced by the binding target.</param>
+        /// <param name="targetType">The type to convert to.</param>
+        /// <param name="parameter">The converter parameter to use.</param>
+        /// <param name="provider">The format provider.</param>
+        /// <param name="result">The converted value, or null when the value is not valid.</param>
+        /// <returns>false when the value is not empty and it is not a valid base64 string</returns>
+        public override bool TryConvertBack(string value, Type targetType, object parameter, IFormatProvider provider, out object result)
+        {
+            try
+            {
+                result = ConvertBack(value, targetType, parameter, provider);
+                return true;
+            }
+            catch (FormatException)
+            {
+                result = null;
+                return false;
+            }
+        }
     }
 }

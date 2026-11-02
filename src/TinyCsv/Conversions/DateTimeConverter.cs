@@ -36,20 +36,20 @@ namespace TinyCsv.Conversions
     /// <summary>
     /// Provides a unified way of converting DateTime of values to string
     /// </summary>
-    public sealed class DateTimeConverter : DefaultValueConverter, IValueConverter
+    public sealed class DateTimeConverter : ParsableValueConverter<DateTime>, IValueConverter
     {
         /// <summary>
-        /// Converts a string to target type value.
+        /// Parses a value that is not empty
         /// </summary>
-        /// <param name="value">The value that is produced by the binding target.</param>
-        /// <param name="targetType">The type to convert to.</param>
-        /// <param name="parameter">The converter parameter to use.</param>
-        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        /// <param name="value">the value, not empty</param>
+        /// <param name="provider">the format provider</param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        protected override bool TryParse(string value, IFormatProvider provider, out DateTime result)
         {
-            return FormattedValueParser.ConvertBack<DateTime>(value, targetType, provider,
-                (string v, string format, IFormatProvider p, out DateTime r) => DateTime.TryParseExact(v, format, p, DateTimeStyles.None, out r),
-                (string v, IFormatProvider p, out DateTime r) => DateTime.TryParse(v, p, DateTimeStyles.None, out r));
+            return GetColumnFormat(provider) is string format
+                ? DateTime.TryParseExact(value, format, provider, DateTimeStyles.None, out result)
+                : DateTime.TryParse(value, provider, DateTimeStyles.None, out result);
         }
     }
 }
