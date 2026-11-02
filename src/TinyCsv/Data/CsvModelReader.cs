@@ -68,12 +68,14 @@ namespace TinyCsv.Data
         }
 
         /// <summary>
-        /// Reads a record: the header record returns false, the other records return true and the model.
+        /// Reads a record: the other records return true and the model, while the header record
+        /// and the records with bad data passed to BadDataFound return false.
         /// After the model is used, call OnModelRead.
         /// </summary>
         /// <param name="line">the record</param>
         /// <param name="model">the model, when the method returns true</param>
         /// <returns></returns>
+        /// <exception cref="CsvException">bad data, when BadDataFound is null</exception>
         public bool TryReadModel(string line, out T model)
         {
             var index = this.index++;
@@ -91,14 +93,30 @@ namespace TinyCsv.Data
                 return false;
             }
 
-            var fields = dataReader.GetFieldsByLine(line, columnsCount);
-            if (options.ValidateColumnCount && columnsCount > fields.Length)
+            try
             {
-                throw new InvalidColumnCountException($"Invalid column count {fields.Length} at {index + 1} line, required {columnsCount} columns");
-            }
+                var fields = dataReader.GetFieldsByLine(line, columnsCount);
+                if (options.ValidateColumnCount && columnsCount > fields.Length)
+                {
+                    throw new InvalidColumnCountException($"Invalid column count {fields.Length}, required {columnsCount} columns.");
+                }
 
-            model = fields.GetModelFromStringArray(options, fieldIndexes);
-            return true;
+                model = fields.GetModelFromStringArray(options, fieldIndexes);
+                return true;
+            }
+            catch (CsvException exception)
+            {
+                exception.SetRow(index, line);
+                var badDataFound = options.BadDataFound;
+                if (badDataFound == null)
+                {
+                    throw;
+                }
+
+                badDataFound(exception);
+                model = null;
+                return false;
+            }
         }
 
         /// <summary>

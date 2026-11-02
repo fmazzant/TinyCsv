@@ -58,5 +58,21 @@ namespace TinyCsv.Conversions
         {
             return System.Convert.ChangeType(value, targetType, provider);
         }
+
+        /// <summary>
+        /// Converts a string to target type value, returning false when the value is not valid for the target type
+        /// (see CsvOptions.ValidateValues). The default implementation uses ConvertBack and returns true.
+        /// </summary>
+        /// <param name="value">The value that is produced by the binding target.</param>
+        /// <param name="targetType">The type to convert to.</param>
+        /// <param name="parameter">The converter parameter to use.</param>
+        /// <param name="provider">The format provider.</param>
+        /// <param name="result">The converted value, or the default value when the value is not valid.</param>
+        /// <returns>false when the value is not valid for the target type</returns>
+        public virtual bool TryConvertBack(string value, Type targetType, object parameter, IFormatProvider provider, out object result)
+        {
+            result = ConvertBack(value, targetType, parameter, provider);
+            return true;
+        }
     }
 }
