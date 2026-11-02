@@ -63,7 +63,7 @@ namespace TinyCsv.Tests
                 o.Handlers.Start += (s, e) => events.Add("start");
                 o.Handlers.Write.RowHeader += (s, e) => events.Add($"header:{e.Index}:{e.RowHeader}");
                 o.Handlers.Write.RowWriting += (s, e) => events.Add($"writing:{e.Index}:{e.Model.Name}");
-                o.Handlers.Write.RowWrittin += (s, e) => events.Add($"written:{e.Index}:{e.Row}");
+                o.Handlers.Write.RowWritten += (s, e) => events.Add($"written:{e.Index}:{e.Row}");
                 o.Handlers.Completed += (s, e) => events.Add($"completed:{e.Elements}");
             });
 
@@ -82,6 +82,26 @@ namespace TinyCsv.Tests
         }
 
         [Fact]
+        public void Write_ObsoleteRowWrittin_IsStillRaised()
+        {
+            var written = new List<string>();
+            var writtin = new List<string>();
+            var csv = Csv.Person(o =>
+            {
+                o.EnableHandlers = true;
+                o.Handlers.Write.RowWritten += (s, e) => written.Add($"{e.Index}:{e.Model.Name}:{e.Row}");
+#pragma warning disable CS0618 // RowWrittin is obsolete, kept until 4.0
+                o.Handlers.Write.RowWrittin += (s, e) => writtin.Add($"{e.Index}:{e.Model.Name}:{e.Row}");
+#pragma warning restore CS0618
+            });
+
+            csv.Save(new MemoryStream(), People);
+
+            Assert.Equal(new[] { "0:Mario:1;Mario;Roma", "1:Luigi:2;Luigi;Milano" }, written);
+            Assert.Equal(written, writtin);
+        }
+
+        [Fact]
         public void Handlers_DisabledByDefault()
         {
             var raised = 0;
@@ -95,7 +115,7 @@ namespace TinyCsv.Tests
                 o.Handlers.Read.RowRead += (s, e) => raised++;
                 o.Handlers.Write.RowHeader += (s, e) => raised++;
                 o.Handlers.Write.RowWriting += (s, e) => raised++;
-                o.Handlers.Write.RowWrittin += (s, e) => raised++;
+                o.Handlers.Write.RowWritten += (s, e) => raised++;
             });
 
             csv.LoadFromText("Id;Name;City\n1;Mario;Roma").ToList();
