@@ -35,22 +35,18 @@ namespace TinyCsv.Conversions
     /// <summary>
     /// Provides a unified way of converting Guid of values to string
     /// </summary>
-    public sealed class GuidConverter : DefaultValueConverter, IValueConverter
+    public sealed class GuidConverter : ParsableValueConverter<Guid>, IValueConverter
     {
         /// <summary>
-        /// Converts a string to target type value.
+        /// Parses a value that is not empty
         /// </summary>
-        /// <param name="value">The value that is produced by the binding target.</param>
-        /// <param name="targetType">The type to convert to.</param>
-        /// <param name="parameter">The converter parameter to use.</param>
-        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        /// <param name="value">the value, not empty</param>
+        /// <param name="provider">the format provider</param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        protected override bool TryParse(string value, IFormatProvider provider, out Guid result)
         {
-            if (Guid.TryParse(value, out var guid))
-            {
-                return guid;
-            }
-            return targetType.IsNullable() ? null : default(Guid);
+            return Guid.TryParse(value, out result);
         }
     }
 }

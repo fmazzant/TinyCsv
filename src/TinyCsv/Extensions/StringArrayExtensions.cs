@@ -29,6 +29,10 @@
 
 namespace TinyCsv.Extensions
 {
+    using System;
+    using TinyCsv.Conversions;
+    using TinyCsv.Exceptions;
+
     /// <summary>
     /// String extensions
     /// </summary>
@@ -68,14 +72,45 @@ namespace TinyCsv.Extensions
                 if (fieldIndex < values.Length)
                 {
                     var value = values[fieldIndex];
-                    var propertyName = column.ColumnNameInternal;
-                    var property = options.FasterProperties[propertyName];
-                    var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.GetFormatProvider(options.Culture));
-                    property.Setter(model, typedValue);
+                    var property = options.FasterProperties[column.ColumnNameInternal];
+                    try
+                    {
+                        property.Setter(model, column.ConvertBack(value, options));
+                    }
+                    catch (Exception exception) when (!(exception is CsvException))
+                    {
+                        throw new InvalidColumnValueException(column.ColumnName, value,
+                            $"The value '{value}' cannot be converted to {column.ColumnType.Name}: {exception.Message}", exception);
+                    }
                 }
             }
 
             return model;
+        }
+
+        /// <summary>
+        /// Converts the value of the column. With ValidateValues, a value that is not valid for the type of the column
+        /// throws an InvalidColumnValueException, otherwise it is converted to the default value.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="column"></param>
+        /// <param name="value"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidColumnValueException"></exception>
+        private static object ConvertBack<T>(this CsvColumn column, string value, CsvOptions<T> options)
+        {
+            var provider = column.GetFormatProvider(options.Culture);
+            if (options.ValidateValues && column.Converter is DefaultValueConverter converter)
+            {
+                if (!converter.TryConvertBack(value, column.ColumnType, null, provider, out var result))
+                {
+                    throw new InvalidColumnValueException(column.ColumnName, value,
+                        $"The value '{value}' is not a valid {column.ColumnType.Name}.");
+                }
+                return result;
+            }
+            return column.Converter.ConvertBack(value, column.ColumnType, null, provider);
         }
     }
 }

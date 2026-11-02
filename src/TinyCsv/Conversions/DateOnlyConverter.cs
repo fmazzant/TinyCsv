@@ -37,20 +37,20 @@ namespace TinyCsv.Conversions
     /// <summary>
     /// Provides a unified way of converting DateOnly of values to string
     /// </summary>
-    public sealed class DateOnlyConverter : DefaultValueConverter, IValueConverter
+    public sealed class DateOnlyConverter : ParsableValueConverter<DateOnly>, IValueConverter
     {
         /// <summary>
-        /// Converts a string to target type value.
+        /// Parses a value that is not empty
         /// </summary>
-        /// <param name="value">The value that is produced by the binding target.</param>
-        /// <param name="targetType">The type to convert to.</param>
-        /// <param name="parameter">The converter parameter to use.</param>
-        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        /// <param name="value">the value, not empty</param>
+        /// <param name="provider">the format provider</param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        protected override bool TryParse(string value, IFormatProvider provider, out DateOnly result)
         {
-            return FormattedValueParser.ConvertBack<DateOnly>(value, targetType, provider,
-                (string v, string format, IFormatProvider p, out DateOnly r) => DateOnly.TryParseExact(v, format, p, DateTimeStyles.None, out r),
-                (string v, IFormatProvider p, out DateOnly r) => DateOnly.TryParse(v, p, DateTimeStyles.None, out r));
+            return GetColumnFormat(provider) is string format
+                ? DateOnly.TryParseExact(value, format, provider, DateTimeStyles.None, out result)
+                : DateOnly.TryParse(value, provider, DateTimeStyles.None, out result);
         }
     }
 }

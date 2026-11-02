@@ -36,23 +36,18 @@ namespace TinyCsv.Conversions
     /// <summary>
     /// Provides a unified way of converting Int16 of values to string
     /// </summary>
-    public sealed class Int16Converter : DefaultValueConverter, IValueConverter
+    public sealed class Int16Converter : ParsableValueConverter<short>, IValueConverter
     {
         /// <summary>
-        /// Converts a string to target type value.
+        /// Parses a value that is not empty
         /// </summary>
-        /// <param name="value">The value that is produced by the binding target.</param>
-        /// <param name="targetType">The type to convert to.</param>
-        /// <param name="parameter">The converter parameter to use.</param>
-        /// <param name="culture">The culture to use in the converter.</param>
-        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        /// <param name="value">the value, not empty</param>
+        /// <param name="provider">the format provider</param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        protected override bool TryParse(string value, IFormatProvider provider, out short result)
         {
-            if (short.TryParse(value, NumberStyles.Any, provider, out short result))
-            {
-                return result;
-            }
-            return targetType.IsNullable() ? null : default(short);
+            return short.TryParse(value, NumberStyles.Any, provider, out result);
         }
     }
 }
