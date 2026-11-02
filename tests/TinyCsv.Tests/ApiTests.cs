@@ -145,7 +145,10 @@ namespace TinyCsv.Tests
             Assert.Equal(expected, csv.GetAllLinesAndFieldsFromFile(path).ToList());
             Assert.Equal(expected, csv.GetAllLinesAndFieldsFromStream(Stream(Text)).ToList());
             Assert.Equal(expected, csv.GetAllLinesAndFieldsFromStream(new StreamReader(Stream(Text))).ToList());
+            Assert.Equal(expected, csv.GetAllLinesAndFieldsFromText(Text).ToList());
+#pragma warning disable CS0618 // obsolete name, kept until 4.0
             Assert.Equal(expected, csv.GetAlGetAllLinesAndFieldslLinesFromText(Text).ToList());
+#pragma warning restore CS0618
         }
 
         // ---------- save ----------

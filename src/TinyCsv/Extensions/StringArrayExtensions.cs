@@ -43,16 +43,34 @@ namespace TinyCsv.Extensions
         public static T GetModelFromStringArray<T>(this string[] values, CsvOptions<T> options)
             where T : new()
         {
+            return values.GetModelFromStringArray(options, null);
+        }
+
+        /// <summary>
+        /// Get model from string array
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="options"></param>
+        /// <param name="fieldIndexes">the index of the field of each column, in the order of Columns (see MapColumnsByHeader).
+        /// When null, the ColumnIndex of each column is used.</param>
+        /// <returns></returns>
+        internal static T GetModelFromStringArray<T>(this string[] values, CsvOptions<T> options, int[] fieldIndexes)
+            where T : new()
+        {
             var model = new T();
 
+            var columnPosition = 0;
             foreach (var column in options.Columns)
             {
-                if (column.ColumnIndex < values.Length)
+                var fieldIndex = fieldIndexes == null ? column.ColumnIndex : fieldIndexes[columnPosition];
+                columnPosition++;
+
+                if (fieldIndex < values.Length)
                 {
-                    var value = values[column.ColumnIndex];
+                    var value = values[fieldIndex];
                     var propertyName = column.ColumnNameInternal;
                     var property = options.FasterProperties[propertyName];
-                    var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
+                    var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.GetFormatProvider(options.Culture));
                     property.Setter(model, typedValue);
                 }
             }
