@@ -410,10 +410,10 @@ The [competitive benchmark](benchmark/README.md#competitive-benchmark) reads and
 
 | Library | Read | Write |
 |---|---:|---:|
-| **TinyCsv** | **54.6 ms / 23.7 MB** | **35.6 ms / 2.2 MB** |
-| CsvHelper | 112.1 ms / 53.2 MB | 80.3 ms / 25.2 MB |
-| Sylvan | 28.4 ms / 23.8 MB | 39.3 ms / 0.05 MB |
-| Sep | 52.9 ms / 23.7 MB | 45.1 ms / 0.02 MB |
+| **TinyCsv** | **53.7 ms / 23.7 MB** | **36.6 ms / 2.2 MB** |
+| CsvHelper | 119.1 ms / 53.2 MB | 80.7 ms / 25.2 MB |
+| Sylvan | 28.3 ms / 23.8 MB | 38.5 ms / 0.05 MB |
+| Sep | 53.8 ms / 23.7 MB (median 45.1 ms) | 45.9 ms / 0.02 MB |
 
 TinyCsv and CsvHelper map the columns to the properties, while Sylvan and Sep are used with a hand written mapping.
 Environment: BenchmarkDotNet 0.14.0, .NET 8.0.29, Windows Server 2019 (Hyper-V), Intel Xeon Platinum 8370C 2.80GHz.
