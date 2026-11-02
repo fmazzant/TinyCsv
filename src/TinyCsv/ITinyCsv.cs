@@ -150,6 +150,15 @@ namespace TinyCsv
         /// <param name="text"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
+        IEnumerable<string[]> GetAllLinesAndFieldsFromText(string text, Encoding encoding = null);
+
+        /// <summary>
+        /// Get all lines and fields
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        [Obsolete("Use GetAllLinesAndFieldsFromText instead. GetAlGetAllLinesAndFieldslLinesFromText will be removed in 4.0.")]
         IEnumerable<string[]> GetAlGetAllLinesAndFieldslLinesFromText(string text, Encoding encoding = null);
 
 #if NET452 || NET462 || NET472 || NET48 || NETSTANDARD2_0

@@ -5,12 +5,12 @@ TinyCsv is a .NET library to read and write CSV data in an easy way.
 
 To use it in your project, add the Mafe.TinyCsv NuGet package to your project.
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/3.0.0)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/3.0.1)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv?style=flat-square)
 
 It is available an AspNetCore extension:
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.3.0)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.3.1)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.AspNetCore?style=flat-square)
 
 Define the model that you want to use, like this:
@@ -109,6 +109,18 @@ Furthermore:
 - added the `net10.0` target;
 - `netstandard2.0` and `net462`-`net48` depend on `System.Memory`.
 
+### Renamed in 3.0.1
+
+Two names with a typo have a new name.
+The old names still work, but they are obsolete (warning `CS0618`) and they will be removed in 4.0:
+
+| Obsolete | New |
+|---|---|
+| `GetAlGetAllLinesAndFieldslLinesFromText` | `GetAllLinesAndFieldsFromText` |
+| `Handlers.Write.RowWrittin` (`RowWrittinEventArgs<T>`) | `Handlers.Write.RowWritten` (`RowWrittenEventArgs<T>`) |
+
+3.0.1 replaces 3.0.0, which has been unlisted from NuGet.
+
 ## Custom Value Converter
 
 It is possible to define a custom converter for a column, like this:
@@ -200,7 +212,7 @@ and the write handlers are:
 ```c#
 options.Handlers.Write.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
 options.Handlers.Write.RowWriting += (s, e) => Console.WriteLine($"{e.Index} - {e.Model}");
-options.Handlers.Write.RowWrittin += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
+options.Handlers.Write.RowWritten += (s, e) => Console.WriteLine($"{e.Index} - {e.Row}");
 ```
 
 The handlers are enabled if the option "EnableHandlers" is set true value, like this:
@@ -275,7 +287,7 @@ Each cell is the mean time and the allocated memory.
 
 ### LoadFromText
 
-| N | 2.1.0 | 2.2.2 | 3.0.0 |
+| N | 2.1.0 | 2.2.2 | 3.0.1 |
 |---:|---:|---:|---:|
 | 100 | 0.072 ms / 119 KB | 0.106 ms / 195 KB | **0.065 ms / 94 KB** |
 | 1,000 | 0.727 ms / 1.14 MB | 1.067 ms / 1.89 MB | **0.647 ms / 0.82 MB** |
@@ -283,11 +295,11 @@ Each cell is the mean time and the allocated memory.
 | 100,000 | 74.4 ms / 114.0 MB | 110.6 ms / 188.7 MB | **71.5 ms / 81.2 MB** |
 | 1,000,000 | 772 ms / 1,140 MB | 1,099 ms / 1,887 MB | **679 ms / 812 MB** |
 
-With 1,000,000 rows, 3.0.0 reads **38% faster** than 2.2.2 and allocates **57% less memory**.
+With 1,000,000 rows, 3.0.1 reads **38% faster** than 2.2.2 and allocates **57% less memory**.
 
 ### SaveToText
 
-| N | 2.1.0 | 2.2.2 | 3.0.0 |
+| N | 2.1.0 | 2.2.2 | 3.0.1 |
 |---:|---:|---:|---:|
 | 100 | 0.092 ms / 107 KB | 0.093 ms / 107 KB | 0.100 ms / 124 KB |
 | 1,000 | 1.117 ms / 1.10 MB | 1.120 ms / 1.10 MB | 1.105 ms / 1.26 MB |
@@ -295,11 +307,11 @@ With 1,000,000 rows, 3.0.0 reads **38% faster** than 2.2.2 and allocates **57% l
 | 100,000 | 94.4 ms / 100.7 MB | 95.8 ms / 100.7 MB | 104.4 ms / 116.7 MB |
 | 1,000,000 | 988 ms / 1,103 MB | 983 ms / 1,103 MB | 1,107 ms / 1,263 MB |
 
-In 3.0.0, `Save` escapes the values as RFC 4180, so the saved file is always read back as it is.
+In 3.0, `Save` escapes the values as RFC 4180, so the saved file is always read back as it is.
 The write is about 12% slower and allocates about 15% more memory than 2.2.2.
 
 Environment: BenchmarkDotNet 0.13.12, .NET 8.0.29, Windows Server 2019 (Hyper-V), Intel Xeon Platinum 8370C 2.80GHz.
-The 3.0.0 column was measured with the 3.0.0-rc1 package, which has the same code as 3.0.0.
+The 3.0.1 column was measured with the 3.0.0-rc1 package, which has the same reader and writer as 3.0.1.
 The full report is in [benchmark/results](benchmark/results/TinyCsvLibraryBenchmark-report-github.md).
 
 <details>
@@ -314,7 +326,7 @@ The full report is in [benchmark/results](benchmark/results/TinyCsvLibraryBenchm
 
 Is available the Mafe.TinyCsv.Extensions library to use the TinyCsv in your project and it is downloadable in the NuGet package.
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.3.0)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.3.1)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.AspNetCore?style=flat-square)
 
 It's possible to use the extensions methods in your project, like this:
