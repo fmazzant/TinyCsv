@@ -275,6 +275,22 @@ namespace TinyCsv.Conversions
         }
 
         /// <summary>
+        /// Parses the value (see TryParse with a span)
+        /// </summary>
+        public bool TryParse(string value, out DateTime result)
+        {
+            return TryParse(value.AsSpan(), out result);
+        }
+
+        /// <summary>
+        /// Parses the value (see TryParse with a span)
+        /// </summary>
+        public bool TryParse(string value, out DateTimeOffset result)
+        {
+            return TryParse(value.AsSpan(), out result);
+        }
+
+        /// <summary>
         /// Parses the value as DateTimeOffset.TryParseExact with DateTimeStyles.None does: the offset is the one
         /// of the local time zone. Returns false when the value is not valid: then DateTimeOffset.TryParseExact must be used.
         /// </summary>

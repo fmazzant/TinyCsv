@@ -48,22 +48,19 @@ namespace TinyCsv.Conversions
         /// <param name="provider">the format provider</param>
         /// <param name="result"></param>
         /// <returns></returns>
+#if NETSTANDARD2_1 || NETCOREAPP
         protected override bool TryParse(string value, IFormatProvider provider, out DateOnly result)
         {
-            if (GetColumnFormat(provider) is string format)
-            {
-                // the fast parser returns true only when the result is the same of DateOnly.TryParseExact
-                return DateTimeFormatParser.Get(ref parserCache, format, provider)?.TryParse(value.AsSpan(), out result) == true
-                    || DateOnly.TryParseExact(value, format, provider, DateTimeStyles.None, out result);
-            }
-            return DateOnly.TryParse(value, provider, DateTimeStyles.None, out result);
+            return TryParseValue(value.AsSpan(), provider, out result);
         }
 
-#if NETSTANDARD2_1 || NETCOREAPP
         /// <summary>
         /// Parses a value that is not empty, without creating a string
         /// </summary>
         internal override bool TryParseValue(ReadOnlySpan<char> value, IFormatProvider provider, out DateOnly result)
+#else
+        protected override bool TryParse(string value, IFormatProvider provider, out DateOnly result)
+#endif
         {
             if (GetColumnFormat(provider) is string format)
             {
@@ -73,7 +70,6 @@ namespace TinyCsv.Conversions
             }
             return DateOnly.TryParse(value, provider, DateTimeStyles.None, out result);
         }
-#endif
     }
 }
 #endif
