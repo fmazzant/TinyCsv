@@ -30,6 +30,7 @@
 namespace TinyCsv.Conversions
 {
     using System;
+    using System.Globalization;
     using TinyCsv.Extensions;
 
     /// <summary>
@@ -47,7 +48,7 @@ namespace TinyCsv.Conversions
         {
             if (value is byte byteValue)
             {
-                return byteValue.ToString();
+                return byteValue.ToString(provider);
             }
             return default(string);
         }
@@ -61,7 +62,7 @@ namespace TinyCsv.Conversions
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
-            if (byte.TryParse(value, out var byteValue))
+            if (byte.TryParse(value, NumberStyles.Integer, provider, out var byteValue))
             {
                 return byteValue;
             }

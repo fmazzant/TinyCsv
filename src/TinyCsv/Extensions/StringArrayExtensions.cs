@@ -70,7 +70,7 @@ namespace TinyCsv.Extensions
                     var value = values[fieldIndex];
                     var propertyName = column.ColumnNameInternal;
                     var property = options.FasterProperties[propertyName];
-                    var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.ColumnFormatProvider);
+                    var typedValue = column.Converter.ConvertBack(value, column.ColumnType, null, column.GetFormatProvider(options.Culture));
                     property.Setter(model, typedValue);
                 }
             }
