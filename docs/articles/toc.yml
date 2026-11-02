@@ -1,0 +1,32 @@
+- name: Getting started
+  href: getting-started.md
+- name: Reading
+  href: reading.md
+- name: Writing
+  href: writing.md
+- name: Columns and mapping
+  href: mapping.md
+- name: Attributes
+  href: attributes.md
+- name: Value converters
+  href: converters.md
+- name: Quoting and multi-line values
+  href: quoting.md
+- name: Culture
+  href: culture.md
+- name: Bad data and errors
+  href: bad-data.md
+- name: Events
+  href: events.md
+- name: Dependency injection
+  href: aspnetcore.md
+- name: Examples
+  href: examples.md
+- name: Migrating from CsvHelper
+  href: migrating-from-csvhelper.md
+- name: Upgrading
+  href: upgrading.md
+- name: Compile-time analyzers
+  href: analyzers.md
+- name: Performance
+  href: performance.md

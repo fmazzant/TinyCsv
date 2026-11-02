@@ -5,8 +5,12 @@ TinyCsv is a .NET library to read and write CSV data in an easy way.
 
 To use it in your project, add the Mafe.TinyCsv NuGet package to your project.
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/3.3.0)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/3.4.0)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv?style=flat-square)
+[![codecov](https://img.shields.io/codecov/c/github/fmazzant/TinyCsv?style=flat-square)](https://codecov.io/gh/fmazzant/TinyCsv)
+
+📖 **Documentation: [fmazzant.github.io/TinyCsv](https://fmazzant.github.io/TinyCsv/)**, with [practical examples](https://fmazzant.github.io/TinyCsv/articles/examples.html),
+a [Migrating from CsvHelper](https://fmazzant.github.io/TinyCsv/articles/migrating-from-csvhelper.html) guide and the [API reference](https://fmazzant.github.io/TinyCsv/api/TinyCsv.html).
 
 It is available an AspNetCore extension:
 
@@ -161,6 +165,17 @@ To read the values with the culture of the machine, as in 3.0, set `options.Cult
 | Exceptions thrown while reading | without the position | they derive from `CsvException`, with `RowIndex`, `Row`, `ColumnName` and `Value`, and the message ends with the position, i.e. `(row 2, column Id)` |
 | Message of `InvalidColumnCountException` | `Invalid column count 2 at 3 line, required 3 columns` | `Invalid column count 2, required 3 columns. (row 2)` |
 | Built-in converters of numbers, dates, `bool`, `char` and `Guid` | derive from `DefaultValueConverter` | derive from `ParsableValueConverter<T>`, that derives from `DefaultValueConverter` |
+
+### Changes in 3.4
+
+3.4 includes the [compile-time analyzers](#compile-time-analyzers) in the package. Furthermore:
+
+| Area | 3.3 | 3.4 |
+|---|---|---|
+| A wrong mapping (i.e. `AddColumn(m => m.Name.Length)`, `[Column(converter: typeof(string))]`) | an exception at runtime | an error at compile time (TCSV001, TCSV004, TCSV006) |
+| `GetAllText`/`GetAllLines` of a sequence that can be enumerated once (i.e. the result of `LoadFromText`) | only the header was written, the rows were lost | every row is written |
+
+The errors of the analyzers are reported only on mappings that throw at runtime. To restore the previous build, set their severity to `none` in `.editorconfig`.
 
 ## Custom Value Converter
 
@@ -399,6 +414,21 @@ and you can use it, like this
 ```c#
  var csv = new TinyCsv<AttributeModel>();
 ```
+
+## Compile-time analyzers
+
+The package includes Roslyn analyzers that report a wrong mapping while you write the code, instead of an exception when the file is read:
+
+| Id | Severity | Description |
+|---|---|---|
+| TCSV001 | Error | The column must be a property of the model (`m => m.Name.Length` is not) |
+| TCSV002 | Warning | The property of the column must have a public getter and setter |
+| TCSV003 | Warning | The type of the column needs a converter |
+| TCSV004 | Error | The `converter`/`formatProvider` of `[Column]` or the type of `[SkipRow]` must implement the interface and have a public parameterless constructor |
+| TCSV005 | Warning | Two columns have the same index |
+| TCSV006 | Error | `[MapColumnsByHeader]` requires `[HasHeaderRecord(true)]` |
+
+See [the documentation](https://fmazzant.github.io/TinyCsv/articles/analyzers.html) for the details and how to configure them.
 
 ## Performance
 
