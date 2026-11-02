@@ -33,6 +33,7 @@ namespace TinyCsv
     using System.Globalization;
     using System.Linq.Expressions;
     using TinyCsv.Conversions;
+    using TinyCsv.Exceptions;
 
     /// <summary>
     /// The column definition.
@@ -75,6 +76,11 @@ namespace TinyCsv
         public IValueConverter Converter { get; internal set; }
 
         /// <summary>
+        /// The accessor of the column (see Data.CsvColumnAccessor), created the first time the column is read or written
+        /// </summary>
+        internal object Accessor { get; set; }
+
+        /// <summary>
         /// Value format provider
         /// </summary>
         private IFormatProvider _FormatProvider = null;
@@ -110,6 +116,45 @@ namespace TinyCsv
         /// The format provider of the last culture, see GetFormatProvider
         /// </summary>
         private DefaultFormatProvider _CultureFormatProvider = null;
+
+        /// <summary>
+        /// Converts the value of the column. With validateValues (see CsvOptions.ValidateValues), a value that is not valid
+        /// for the type of the column throws an InvalidColumnValueException, otherwise it is converted to the default value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="provider">the format provider of the column, see GetFormatProvider</param>
+        /// <param name="validateValues"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidColumnValueException"></exception>
+        internal object ConvertBack(string value, IFormatProvider provider, bool validateValues)
+        {
+            if (validateValues && Converter is DefaultValueConverter converter)
+            {
+                if (!converter.TryConvertBack(value, ColumnType, null, provider, out var result))
+                {
+                    throw NotValidValueException(value);
+                }
+                return result;
+            }
+            return Converter.ConvertBack(value, ColumnType, null, provider);
+        }
+
+        /// <summary>
+        /// The exception of a value that is not valid for the type of the column (see CsvOptions.ValidateValues)
+        /// </summary>
+        internal InvalidColumnValueException NotValidValueException(string value)
+        {
+            return new InvalidColumnValueException(ColumnName, value, $"The value '{value}' is not a valid {ColumnType.Name}.");
+        }
+
+        /// <summary>
+        /// The exception of a value that cannot be converted, i.e. by a custom converter or by the setter of the property
+        /// </summary>
+        internal InvalidColumnValueException NotConvertibleValueException(string value, Exception exception)
+        {
+            return new InvalidColumnValueException(ColumnName, value,
+                $"The value '{value}' cannot be converted to {ColumnType.Name}: {exception.Message}", exception);
+        }
 
         /// <summary>
         /// Returns the format provider used to read and write the values of the column:
