@@ -48,5 +48,15 @@ namespace TinyCsv.Conversions
         {
             return Guid.TryParse(value, out result);
         }
+
+#if NETSTANDARD2_1 || NETCOREAPP
+        /// <summary>
+        /// Parses a value that is not empty, without creating a string
+        /// </summary>
+        internal override bool TryParseValue(ReadOnlySpan<char> value, IFormatProvider provider, out Guid result)
+        {
+            return Guid.TryParse(value, out result);
+        }
+#endif
     }
 }

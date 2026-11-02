@@ -47,7 +47,21 @@ namespace TinyCsv.Conversions
         /// <returns></returns>
         protected override bool TryParse(string value, IFormatProvider provider, out long result)
         {
-            return long.TryParse(value, NumberStyles.Any, provider, out result);
+            // NumberStyles.Integer is much faster, and a value that it parses is the same with NumberStyles.Any
+            return long.TryParse(value, NumberStyles.Integer, provider, out result)
+                || long.TryParse(value, NumberStyles.Any, provider, out result);
         }
+
+#if NETSTANDARD2_1 || NETCOREAPP
+        /// <summary>
+        /// Parses a value that is not empty, without creating a string
+        /// </summary>
+        internal override bool TryParseValue(ReadOnlySpan<char> value, IFormatProvider provider, out long result)
+        {
+            // NumberStyles.Integer is much faster, and a value that it parses is the same with NumberStyles.Any
+            return long.TryParse(value, NumberStyles.Integer, provider, out result)
+                || long.TryParse(value, NumberStyles.Any, provider, out result);
+        }
+#endif
     }
 }

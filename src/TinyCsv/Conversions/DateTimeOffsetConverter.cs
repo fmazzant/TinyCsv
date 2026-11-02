@@ -38,6 +38,8 @@ namespace TinyCsv.Conversions
     /// </summary>
     public sealed class DateTimeOffsetConverter : ParsableValueConverter<DateTimeOffset>, IValueConverter
     {
+        private DateTimeFormatParser.Cache parserCache;
+
         /// <summary>
         /// Parses a value that is not empty
         /// </summary>
@@ -47,9 +49,29 @@ namespace TinyCsv.Conversions
         /// <returns></returns>
         protected override bool TryParse(string value, IFormatProvider provider, out DateTimeOffset result)
         {
-            return GetColumnFormat(provider) is string format
-                ? DateTimeOffset.TryParseExact(value, format, provider, DateTimeStyles.None, out result)
-                : DateTimeOffset.TryParse(value, provider, DateTimeStyles.None, out result);
+            if (GetColumnFormat(provider) is string format)
+            {
+                // the fast parser returns true only when the result is the same of DateTimeOffset.TryParseExact
+                return DateTimeFormatParser.Get(ref parserCache, format, provider)?.TryParse(value.AsSpan(), out result) == true
+                    || DateTimeOffset.TryParseExact(value, format, provider, DateTimeStyles.None, out result);
+            }
+            return DateTimeOffset.TryParse(value, provider, DateTimeStyles.None, out result);
         }
+
+#if NETSTANDARD2_1 || NETCOREAPP
+        /// <summary>
+        /// Parses a value that is not empty, without creating a string
+        /// </summary>
+        internal override bool TryParseValue(ReadOnlySpan<char> value, IFormatProvider provider, out DateTimeOffset result)
+        {
+            if (GetColumnFormat(provider) is string format)
+            {
+                // the fast parser returns true only when the result is the same of DateTimeOffset.TryParseExact
+                return DateTimeFormatParser.Get(ref parserCache, format, provider)?.TryParse(value, out result) == true
+                    || DateTimeOffset.TryParseExact(value, format, provider, DateTimeStyles.None, out result);
+            }
+            return DateTimeOffset.TryParse(value, provider, DateTimeStyles.None, out result);
+        }
+#endif
     }
 }

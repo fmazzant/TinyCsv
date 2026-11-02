@@ -64,5 +64,15 @@ namespace TinyCsv.Conversions
         {
             return sbyte.TryParse(value, NumberStyles.Integer, provider, out result);
         }
+
+#if NETSTANDARD2_1 || NETCOREAPP
+        /// <summary>
+        /// Parses a value that is not empty, without creating a string
+        /// </summary>
+        internal override bool TryParseValue(ReadOnlySpan<char> value, IFormatProvider provider, out sbyte result)
+        {
+            return sbyte.TryParse(value, NumberStyles.Integer, provider, out result);
+        }
+#endif
     }
 }
