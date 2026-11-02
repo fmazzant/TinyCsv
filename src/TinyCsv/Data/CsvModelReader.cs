@@ -222,10 +222,7 @@ namespace TinyCsv.Data
                     }
                     catch (Exception exception) when (!(exception is CsvException))
                     {
-                        var column = binding.Column;
-                        var text = value.ToString();
-                        throw new InvalidColumnValueException(column.ColumnName, text,
-                            $"The value '{text}' cannot be converted to {column.ColumnType.Name}: {exception.Message}", exception);
+                        throw binding.Column.NotConvertibleValueException(value.ToString(), exception);
                     }
                 }
             }
