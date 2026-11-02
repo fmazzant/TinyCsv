@@ -47,12 +47,29 @@ namespace TinyCsv.Conversions
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
         public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
         {
+            TryConvertBack(value, targetType, parameter, provider, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Converts a string to target type value, returning false when the value is not a name of the enum.
+        /// </summary>
+        /// <param name="value">The value that is produced by the binding target.</param>
+        /// <param name="targetType">The type to convert to.</param>
+        /// <param name="parameter">The converter parameter to use.</param>
+        /// <param name="provider">The format provider.</param>
+        /// <param name="result">The converted value, or the default value when the value is not valid.</param>
+        /// <returns>false when the value is not empty and it is not a name of the enum</returns>
+        public override bool TryConvertBack(string value, Type targetType, object parameter, IFormatProvider provider, out object result)
+        {
             var enumType = Nullable.GetUnderlyingType(targetType) ?? targetType;
             if (value != null && Enum.GetNames(enumType).Contains(value))
             {
-                return Enum.Parse(enumType, value);
+                result = Enum.Parse(enumType, value);
+                return true;
             }
-            return targetType.IsNullable() ? null : Activator.CreateInstance(enumType);
+            result = targetType.IsNullable() ? null : Activator.CreateInstance(enumType);
+            return string.IsNullOrWhiteSpace(value);
         }
     }
 }

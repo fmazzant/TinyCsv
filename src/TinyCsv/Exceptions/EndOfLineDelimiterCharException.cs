@@ -36,7 +36,7 @@ namespace TinyCsv.Exceptions
     /// Defines End Of Line Delimiter Char exception
     /// </summary>
     [Serializable]
-    public class EndOfLineDelimiterCharException : Exception
+    public class EndOfLineDelimiterCharException : CsvException
     {
         /// <summary>
         /// Create a new instance of EndOfLineDelimiterCharException
