@@ -256,7 +256,7 @@ namespace TinyCsv
                 options.Handlers.Write.OnRowWriting(index, model);
                 var line = model.GetLineFromGenericType(options);
                 writer.WriteLine(line);
-                options.Handlers.Write.OnRowWrittin(index, model, line);
+                options.Handlers.Write.OnRowWritten(index, model, line);
                 index++;
             }
             options.Handlers.OnCompleted(index);
@@ -315,7 +315,7 @@ namespace TinyCsv
                 options.Handlers.Write.OnRowWriting(index, model);
                 var line = model.GetLineFromGenericType(options);
                 await writer.WriteLineAsync(line).ConfigureAwait(false);
-                options.Handlers.Write.OnRowWrittin(index, model, line);
+                options.Handlers.Write.OnRowWritten(index, model, line);
                 index++;
             }
             options.Handlers.OnCompleted(index);
@@ -503,9 +503,21 @@ namespace TinyCsv
         /// <param name="text"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public IEnumerable<string[]> GetAlGetAllLinesAndFieldslLinesFromText(string text, Encoding encoding = null)
+        public IEnumerable<string[]> GetAllLinesAndFieldsFromText(string text, Encoding encoding = null)
         {
             return GetAllLinesAndFieldsFromStream(CreateReader(text, encoding));
+        }
+
+        /// <summary>
+        /// Get all lines and fields
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        [Obsolete("Use GetAllLinesAndFieldsFromText instead. GetAlGetAllLinesAndFieldslLinesFromText will be removed in 4.0.")]
+        public IEnumerable<string[]> GetAlGetAllLinesAndFieldslLinesFromText(string text, Encoding encoding = null)
+        {
+            return GetAllLinesAndFieldsFromText(text, encoding);
         }
     }
 }

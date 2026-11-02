@@ -570,7 +570,15 @@ namespace TinyCsv
             /// <summary>
             /// Occors when row is written
             /// </summary>
+            public EventHandler<RowWrittenEventArgs<T>> RowWritten { get; set; }
+
+            /// <summary>
+            /// Occors when row is written
+            /// </summary>
+#pragma warning disable CS0618 // RowWrittinEventArgs<T> is obsolete
+            [Obsolete("Use RowWritten instead. RowWrittin will be removed in 4.0.")]
             public EventHandler<RowWrittinEventArgs<T>> RowWrittin { get; set; }
+#pragma warning restore CS0618
 
             /// <summary>
             /// Handlers is enabled
@@ -636,29 +644,30 @@ namespace TinyCsv
             }
 
             /// <summary>
-            /// Reise row is writtin event
-            /// </summary>
-            /// <param name="e"></param>
-            internal void OnRowWrittin(RowWrittinEventArgs<T> e)
-            {
-                if (!Enabled) return;
-                RowWrittin?.Invoke(this, e);
-            }
-
-            /// <summary>
-            /// Reise row is writtin event
+            /// Reise row is written event
             /// </summary>
             /// <param name="index"></param>
+            /// <param name="model"></param>
             /// <param name="row"></param>
-            internal void OnRowWrittin(int index, T model, string row)
+            internal void OnRowWritten(int index, T model, string row)
             {
                 if (!Enabled) return;
-                OnRowWrittin(new RowWrittinEventArgs<T>
-                {
-                    Index = index,
-                    Model = model,
-                    Row = row
-                });
+#pragma warning disable CS0618 // RowWrittin is kept until 4.0
+                var rowWrittin = RowWrittin;
+                if (RowWritten == null && rowWrittin == null) return;
+
+                // RowWrittinEventArgs<T> derives from RowWrittenEventArgs<T>, so the same
+                // instance is passed to the handlers of both RowWritten and RowWrittin.
+                RowWrittenEventArgs<T> e = rowWrittin != null
+                    ? new RowWrittinEventArgs<T>()
+                    : new RowWrittenEventArgs<T>();
+                e.Index = index;
+                e.Model = model;
+                e.Row = row;
+
+                RowWritten?.Invoke(this, e);
+                rowWrittin?.Invoke(this, (RowWrittinEventArgs<T>)e);
+#pragma warning restore CS0618
             }
         }
     }
