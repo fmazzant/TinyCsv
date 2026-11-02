@@ -51,21 +51,22 @@ dotnet run -c Release -- --filter * --job short         # quicker, less accurate
 
 ### Results
 
-| Read 100,000 rows | Mean | Allocated |
-|---|---:|---:|
-| Sylvan | 28.4 ms | 23.8 MB |
-| Sep | 52.9 ms | 23.7 MB |
-| **TinyCsv** | **54.6 ms** | **23.7 MB** |
-| CsvHelper | 112.1 ms | 53.2 MB |
+| Read 100,000 rows | Mean | Median | Allocated |
+|---|---:|---:|---:|
+| Sylvan | 28.3 ms | 28.4 ms | 23.8 MB |
+| Sep | 53.8 ms | 45.1 ms | 23.7 MB |
+| **TinyCsv** | **53.7 ms** | **53.4 ms** | **23.7 MB** |
+| CsvHelper | 119.1 ms | 115.9 ms | 53.2 MB |
 
 | Write 100,000 rows | Mean | Allocated |
 |---|---:|---:|
-| **TinyCsv** | **35.6 ms** | **2.2 MB** |
-| Sylvan | 39.3 ms | 0.05 MB |
-| Sep | 45.1 ms | 0.02 MB |
-| CsvHelper | 80.3 ms | 25.2 MB |
+| **TinyCsv** | **36.6 ms** | **2.2 MB** |
+| Sylvan | 38.5 ms | 0.05 MB |
+| Sep | 45.9 ms | 0.02 MB |
+| CsvHelper | 80.7 ms | 25.2 MB |
 
 Environment: BenchmarkDotNet 0.14.0, .NET 8.0.29, Windows Server 2019 (Hyper-V), Intel Xeon Platinum 8370C 2.80GHz.
+The Sep read is noisy on this machine (standard deviation 12.9 ms), so its median is more meaningful than its mean.
 The full reports, with 1,000 rows too, are the [read report](results/CompetitiveReadBenchmark-report-github.md) and the [write report](results/CompetitiveWriteBenchmark-report-github.md).
 
 The read of TinyCsv creates the string of a record only when it is needed: when the events are enabled, when `SkipRow` is set and for the exceptions.
