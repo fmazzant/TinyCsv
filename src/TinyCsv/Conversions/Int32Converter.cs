@@ -39,6 +39,14 @@ namespace TinyCsv.Conversions
     public sealed class Int32Converter : ParsableValueConverter<int>, IValueConverter
     {
         /// <summary>
+        /// The fast parser of the values, see ValueParser
+        /// </summary>
+        internal override ValueParser<int> GetParser(IFormatProvider provider)
+        {
+            return Int32ValueParser.Create(provider);
+        }
+
+        /// <summary>
         /// Parses a value that is not empty
         /// </summary>
         /// <param name="value">the value, not empty</param>

@@ -166,6 +166,73 @@ namespace TinyCsv.Data
             return ReadFields(new ReadOnlySpan<char>(buffer, start, length), new RecordSource(null, buffer, start), columnsCount, ref fields);
         }
 
+        /// <summary>
+        /// Reads the fields of a record without quotes whose delimiters are known (see CsvRecordReader.HasDelimiters),
+        /// with the same result of ReadFields: the fields are the chars between the delimiters.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="start">the start of the record in the buffer</param>
+        /// <param name="length">the length of the record</param>
+        /// <param name="delimiters">the positions of the delimiters, from the start of the record</param>
+        /// <param name="delimiterCount">the number of the delimiters</param>
+        /// <param name="columnsCount">the expected number of columns, used as initial capacity</param>
+        /// <param name="fields">the buffer of the fields: it grows when it is too small</param>
+        /// <returns>the number of fields</returns>
+        internal int ReadFields(char[] buffer, int start, int length, int[] delimiters, int delimiterCount, int columnsCount, ref CsvField[] fields)
+        {
+            if (length == 0)
+            {
+                return 0;
+            }
+            if (buffer[start] == options.Comment && !options.AllowComment)
+            {
+                throw new NotAllowCommentException();
+            }
+
+            // the fields between the delimiters, and the last one (or an empty field after a delimiter at the end)
+            var required = delimiterCount + 1;
+            if (fields == null || fields.Length < required)
+            {
+                fields = new CsvField[Math.Max(required, Math.Max(columnsCount, 8))];
+            }
+
+            var count = 0;
+            var fieldStart = 0;
+            for (int k = 0; k < delimiterCount; k++)
+            {
+                var end = delimiters[k];
+                fields[count++] = Field(buffer, start + fieldStart, end - fieldStart);
+                fieldStart = end + 1;
+            }
+
+            if (delimiterCount > 0 && fieldStart == length)
+            {
+                // "a;b;" with 3 columns: the last field is empty, it is not an end of line delimiter
+                if (count < columnsCount)
+                {
+                    fields[count++] = CsvField.Empty;
+                }
+                else if (!options.EndOfLineDelimiterChar)
+                {
+                    throw new EndOfLineDelimiterCharException($"The delimiter {options.Delimiter} in the end of line is not valid!");
+                }
+                return count;
+            }
+
+            fields[count++] = Field(buffer, start + fieldStart, length - fieldStart);
+            return count;
+        }
+
+        private CsvField Field(char[] buffer, int start, int length)
+        {
+            if (trimData)
+            {
+                var span = new ReadOnlySpan<char>(buffer);
+                TrimSpaces(span, ref start, ref length);
+            }
+            return new CsvField(buffer, start, length);
+        }
+
         private int ReadFields(ReadOnlySpan<char> span, RecordSource source, int columnsCount, ref CsvField[] fields)
         {
             if (span[0] == options.Comment && !options.AllowComment)

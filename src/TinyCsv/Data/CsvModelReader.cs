@@ -175,7 +175,9 @@ namespace TinyCsv.Data
 
             try
             {
-                var count = DataReader.ReadFields(records.Buffer, records.CurrentStart, records.CurrentLength, columnsCount, ref fields);
+                var count = records.HasDelimiters
+                    ? DataReader.ReadFields(records.Buffer, records.CurrentStart, records.CurrentLength, records.Delimiters, records.DelimiterCount, columnsCount, ref fields)
+                    : DataReader.ReadFields(records.Buffer, records.CurrentStart, records.CurrentLength, columnsCount, ref fields);
                 if (options.ValidateColumnCount && columnsCount > count)
                 {
                     throw new InvalidColumnCountException($"Invalid column count {count}, required {columnsCount} columns.");
