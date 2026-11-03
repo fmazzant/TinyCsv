@@ -55,5 +55,21 @@ namespace TinyCsv.Streams
             : base(encoding.GetBytes(text))
         {
         }
+
+        /// <summary>
+        /// The reader of a text. With UTF-8 the text is read as it is, because encoding and decoding it
+        /// returns the same text, apart from a leading byte order mark that is removed.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        internal static TextReader CreateReader(string text, Encoding encoding)
+        {
+            if (encoding is UTF8Encoding && text != null)
+            {
+                return new StringReader(text.Length > 0 && text[0] == '﻿' ? text.Substring(1) : text);
+            }
+            return new StreamReader(new TextMemoryStream(text, encoding), encoding, true);
+        }
     }
 }
