@@ -22,6 +22,18 @@ public class WriteBenchmarks : BenchmarkBase
     [Benchmark]
     public long Sep() => Write(Libraries.WriteSep);
 
+    [Benchmark]
+    public long FileHelpers() => Write(Libraries.WriteFileHelpers);
+
+    [Benchmark]
+    public long RecordParser() => Write(Libraries.WriteRecordParser);
+
+    [Benchmark]
+    public long Csv() => Write(Libraries.WriteCsv);
+
+    [Benchmark]
+    public long NRecoCsv() => Write(Libraries.WriteNReco);
+
     private long Write(Action<Stream, Model[]> write)
     {
         stream.Position = 0;
@@ -42,6 +54,10 @@ public class WriteBenchmarks : BenchmarkBase
             ("CsvHelper", Libraries.WriteCsvHelper),
             ("Sylvan", Libraries.WriteSylvan),
             ("Sep", Libraries.WriteSep),
+            ("FileHelpers", Libraries.WriteFileHelpers),
+            ("RecordParser", Libraries.WriteRecordParser),
+            ("Csv", Libraries.WriteCsv),
+            ("NReco.Csv", Libraries.WriteNReco),
         };
         foreach (var library in libraries)
         {
