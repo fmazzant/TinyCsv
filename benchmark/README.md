@@ -58,10 +58,14 @@ Before measuring, the setup checks that every library reads the same models and 
 
 ```bash
 cd benchmark/TinyCsv.Benchmarks
-dotnet run -c Release                                   # all, about 25 minutes
-dotnet run -c Release -- --filter *Read*                # only the read
-dotnet run -c Release -- --filter * --job short         # quicker, less accurate
+dotnet run -c Release -f net8.0                                 # all, on .NET 8, about 25 minutes
+dotnet run -c Release -f net10.0                                # all, on .NET 10
+dotnet run -c Release -f net10.0 -- --filter *Read*             # only the read
+dotnet run -c Release -f net10.0 -- --filter * --job short      # quicker, less accurate
+dotnet run -c Release -f net10.0 -- --runtimes net8.0 net10.0   # .NET 8 and .NET 10 in the same table
 ```
+
+The project targets .NET 8 and .NET 10, so `dotnet run` needs the framework (`-f`).
 
 ### Results
 

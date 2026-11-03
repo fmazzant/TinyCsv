@@ -39,6 +39,14 @@ namespace TinyCsv.Conversions
     public sealed class DecimalConverter : ParsableValueConverter<decimal>, IValueConverter
     {
         /// <summary>
+        /// The fast parser of the values, see ValueParser
+        /// </summary>
+        internal override ValueParser<decimal> GetParser(IFormatProvider provider)
+        {
+            return DecimalValueParser.Create(provider);
+        }
+
+        /// <summary>
         /// True when NumberStyles.Any reads a number without the currency symbol as NumberStyles.Number does:
         /// with NumberStyles.Any the currency separators are matched before the number separators.
         /// </summary>

@@ -39,6 +39,14 @@ namespace TinyCsv.Conversions
     /// </summary>
     public sealed class DateOnlyConverter : ParsableValueConverter<DateOnly>, IValueConverter
     {
+        /// <summary>
+        /// The fast parser of the values, see ValueParser
+        /// </summary>
+        internal override ValueParser<DateOnly> GetParser(IFormatProvider provider)
+        {
+            return DateOnlyValueParser.Create(GetColumnFormat(provider), provider);
+        }
+
         private DateTimeFormatParser.Cache parserCache;
 
         /// <summary>
