@@ -52,9 +52,9 @@ namespace TinyCsv.Tests
                 try
                 {
                     var count = findDelimiters && records.HasDelimiters
-                        ? fieldsReader.ReadFields(records.Buffer, records.CurrentStart, records.CurrentLength, records.Delimiters, records.DelimiterCount, columnsCount, ref fields)
+                        ? fieldsReader.ReadFields(records, columnsCount, ref fields)
                         : fieldsReader.ReadFields(records.Buffer, records.CurrentStart, records.CurrentLength, columnsCount, ref fields);
-                    result.Add(record + " => [" + string.Join("|", fields.Take(count).Select(f => f.ToString())) + "]");
+                    result.Add(record + " => [" + string.Join("|", (fields ?? new CsvField[0]).Take(count).Select(f => f.ToString())) + "]");
                 }
                 catch (Exception exception)
                 {
@@ -90,6 +90,30 @@ namespace TinyCsv.Tests
 
                 Assert.Equal(Read(text, chunkSize, options, columnsCount, false), Read(text, chunkSize, options, columnsCount, true));
             }
+        }
+
+        [Fact]
+        public void QuotedFields_AreReadFromTheRecord()
+        {
+            var csv = new TinyCsv<Person>(options =>
+            {
+                options.HasHeaderRecord = false;
+                options.Delimiter = ";";
+                options.Columns.AddColumn(m => m.Id);
+                options.Columns.AddColumn(m => m.Name);
+                options.Columns.AddColumn(m => m.City);
+            });
+            var padding = new string('x', 40);
+            var text = "1;\"a \"\"quoted\"\" name\";\"multi\r\nline\"\r\n"
+                + "2;\"\";\"" + padding + "\"\n"
+                + "3;\"\"\"\";  \"spaced\"\n"
+                + "4;\"after\"x;\"in\"side\"";
+
+            var people = csv.LoadFromText(text).ToList();
+
+            Assert.Equal(new[] { 1, 2, 3, 4 }, people.Select(p => p.Id));
+            Assert.Equal(new[] { "a \"quoted\" name", "", "\"", "afterx" }, people.Select(p => p.Name));
+            Assert.Equal(new[] { "multi\r\nline", padding, "  \"spaced\"", "inside\"" }, people.Select(p => p.City));
         }
 
         [Fact]
