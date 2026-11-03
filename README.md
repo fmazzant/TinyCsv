@@ -183,6 +183,103 @@ and the [class map](#class-map). Furthermore:
 
 To keep the columns of 3.4, define the columns or use a [class map](#class-map).
 
+#### Examples of 3.5
+
+The examples use a model without attributes, with a nested address, and its class map:
+
+```c#
+public class Customer
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public decimal Balance { get; set; }
+    public Address Address { get; set; }
+}
+
+public class Address
+{
+    public string Street { get; set; }
+    public string City { get; set; }
+}
+
+public sealed class CustomerMap : CsvClassMap<Customer>
+{
+    public CustomerMap()
+    {
+        Options(o =>
+        {
+            o.HasHeaderRecord = true;
+            o.Delimiter = ";";
+            o.DetectDelimiter = true; // the files to read may use another delimiter
+        });
+        Map(m => m.Id);
+        Map(m => m.Name).Name("customer_name");
+        Map(m => m.Balance).Format("0.00");
+        Map(m => m.Address.Street); // the column Address_Street
+        Map(m => m.Address.City);   // the column Address_City
+    }
+}
+```
+
+Convert a large file, whose delimiter is not known, to a file with the semicolon, one record at a time:
+
+```c#
+var csv = new TinyCsv<Customer>(new CustomerMap());
+
+await using (var writer = csv.CreateWriter("customers_export.csv"))
+{
+    await foreach (var customer in csv.LoadFromFileAsync("customers.csv"))
+    {
+        customer.Name = customer.Name.ToUpperInvariant();
+        await writer.WriteRecordAsync(customer);
+    }
+}
+```
+
+The input file, i.e. with the pipe:
+
+```text
+Id|customer_name|Balance|Address_Street|Address_City
+1|Mario Rossi|10.50|Via Roma 1|Firenze
+2|"Bianchi | Luigi"|20.00|Via Milano 2|Milano
+```
+
+The output file:
+
+```text
+Id;customer_name;Balance;Address_Street;Address_City
+1;MARIO ROSSI;10.50;Via Roma 1;Firenze
+2;BIANCHI | LUIGI;20.00;Via Milano 2;Milano
+```
+
+Write the records of a sequence that is not in memory, on a stream that stays open:
+
+```c#
+using (var writer = csv.CreateWriter(stream))
+{
+    foreach (var customer in GetCustomersFromDatabase())
+    {
+        writer.WriteRecord(customer);
+    }
+}
+```
+
+Look at a file whose columns are not known, without a model:
+
+```c#
+var records = new TinyCsvRecords(options => options.DetectDelimiter = true);
+
+foreach (var record in records.LoadDynamicFromFile("customers.csv"))
+{
+    Console.WriteLine($"{record.customer_name} lives in {record.Address_City}");
+}
+
+DataTable table = records.LoadDataTableFromFile("customers.csv");
+Console.WriteLine($"{table.Columns.Count} columns, {table.Rows.Count} rows");
+```
+
+These examples, and others, are in [CsvSampleConsoleApp](samples/CsvSampleConsoleApp/Features35.cs).
+
 ## Custom Value Converter
 
 It is possible to define a custom converter for a column, like this:
@@ -600,7 +697,7 @@ In 3.0, `Save` escapes the values as RFC 4180, so the saved file is always read 
 The write is about 12% slower and allocates about 15% more memory than 2.2.2.
 
 Environment: BenchmarkDotNet 0.13.12, .NET 8.0.29, Windows Server 2019 (Hyper-V), Intel Xeon Platinum 8370C 2.80GHz.
-The 3.0 column was measured with the 3.0.0-rc1 package. The results of 3.4.0 will be added after its release.
+The 3.0 column was measured with the 3.0.0-rc1 package. The results of 3.5.0 will be added after its release.
 The full report is in [benchmark/results](benchmark/results/TinyCsvLibraryBenchmark-report-github.md).
 
 <details>

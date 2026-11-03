@@ -3,7 +3,7 @@
      
 # The following is the format of the CSV file
 "1";"   Name 1   ";"1.12";02/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.mywebsite.it;A;
-"2";"Name "2.1";Name 2.2";"2.2";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.mywebsite.it;A;
+"2";"Name ""2.1"";Name 2.2";"2.2";20/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.mywebsite.it;A;
 "3";"Name 3";"3.31";21/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.mywebsite.it;A;
 "4";"Name 4";"4.78";22/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.mywebsite.it;A;
 "5";"Name 5";"5.45";23/04/2022;"aGVsbG8sIHdvcmxkIQ==";https://www.mywebsite.it;B;
