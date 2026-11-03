@@ -11,14 +11,28 @@ There are two benchmarks, both with [BenchmarkDotNet](https://benchmarkdotnet.or
 
 `TinyCsv.Benchmarks` references the TinyCsv project, so it measures the code of the repository, and compares it with:
 
-| Library | Version | Mapping |
-|---|---|---|
-| [CsvHelper](https://joshclose.github.io/CsvHelper/) | 33.1.0 | automatic, by header name |
-| [Sylvan.Data.Csv](https://github.com/MarkPflug/Sylvan) | 1.4.3 | hand written (`GetInt32`, `GetDecimal`, ...), `Sylvan.Data` to write |
-| [Sep](https://github.com/nietras/Sep) | 0.11.0 | hand written (`Parse<int>`, `Format`, ...) |
+| Library | Version | Read | Write | Mapping |
+|---|---|:---:|:---:|---|
+| [CsvHelper](https://joshclose.github.io/CsvHelper/) | 33.1.0 | ✓ | ✓ | automatic, by header name |
+| [Sylvan.Data.Csv](https://github.com/MarkPflug/Sylvan) | 1.4.3 | ✓ | ✓ | hand written (`GetInt32`, `GetDecimal`, ...), `Sylvan.Data` to write |
+| [Sep](https://github.com/nietras/Sep) | 0.11.0 | ✓ | ✓ | hand written (`Parse<int>`, `Format`, ...) |
+| [FileHelpers](https://www.filehelpers.net/) | 3.5.2 | ✓ | ✓ | attributes on a record class with fields, copied to and from the model |
+| [TinyCsvParser](https://github.com/bytefish/TinyCsvParser) | 3.0.11 | ✓ | | `CsvMapping<T>` by column index |
+| [RecordParser](https://github.com/leandromoh/RecordParser) | 2.3.0 | ✓ | ✓ | builders by column index, without parallelism |
+| [Csv](https://github.com/stevehansen/csv) | 3.0.0 | ✓ | ✓ | hand written, from and to strings |
+| [NReco.Csv](https://github.com/nreco/csv) | 1.0.3 | ✓ | ✓ | hand written, from and to strings |
+| [LumenWorksCsvReader](https://github.com/phatcher/CsvReader) | 4.0.0 | ✓ | | hand written, from strings |
+| [TextFieldParser](https://learn.microsoft.com/dotnet/api/microsoft.visualbasic.fileio.textfieldparser) | .NET 8 | ✓ | | hand written, from strings |
 
-TinyCsv and CsvHelper map the columns to the properties, while Sylvan and Sep are used with a hand written mapping,
-as their documentation suggests: they are lower level libraries, so they are the reference of the fastest possible result.
+TinyCsv, CsvHelper, FileHelpers, TinyCsvParser and RecordParser map the columns to the properties (FileHelpers to the fields of its record class).
+Sylvan and Sep are used with a hand written mapping, as their documentation suggests:
+they are lower level libraries, so they are the reference of the fastest possible result.
+Csv, NReco.Csv, LumenWorks and `TextFieldParser` (the parser of `Microsoft.VisualBasic.FileIO`, in the .NET runtime) return the values as strings,
+that are converted by the same hand written mapping.
+TinyCsvParser, LumenWorks and `TextFieldParser` only read.
+
+In TinyCsvParser 3.0, a mapped `string` property keeps the doubled quotes of a quoted value (i.e. `""delimiter""`),
+so `Notes` is mapped with `MapUsing` and `CsvRow.GetString`, that removes them.
 
 ### What is measured
 
