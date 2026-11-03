@@ -1,8 +1,0 @@
-- name: Docs
-  href: articles/
-- name: Examples
-  href: articles/examples.md
-- name: API
-  href: api/
-- name: GitHub
-  href: https://github.com/fmazzant/TinyCsv
