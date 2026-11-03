@@ -7,17 +7,53 @@ namespace TinyCsv.Benchmarks;
 /// </summary>
 public class ReadBenchmarks : BenchmarkBase
 {
+    private static readonly (string Name, Func<string, IEnumerable<Model>> Read)[] Libraries =
+    [
+        ("TinyCsv", Benchmarks.Libraries.ReadTinyCsv),
+        ("CsvHelper", Benchmarks.Libraries.ReadCsvHelper),
+        ("Sylvan", Benchmarks.Libraries.ReadSylvan),
+        ("Sep", Benchmarks.Libraries.ReadSep),
+        ("FileHelpers", Benchmarks.Libraries.ReadFileHelpers),
+        ("TinyCsvParser", Benchmarks.Libraries.ReadTinyCsvParser),
+        ("RecordParser", Benchmarks.Libraries.ReadRecordParser),
+        ("Csv", Benchmarks.Libraries.ReadCsv),
+        ("NReco.Csv", Benchmarks.Libraries.ReadNReco),
+        ("LumenWorks", Benchmarks.Libraries.ReadLumenWorks),
+        ("TextFieldParser", Benchmarks.Libraries.ReadTextFieldParser),
+    ];
+
     [Benchmark(Baseline = true)]
-    public int TinyCsv() => Consume(Libraries.ReadTinyCsv(text));
+    public int TinyCsv() => Consume(Benchmarks.Libraries.ReadTinyCsv(text));
 
     [Benchmark]
-    public int CsvHelper() => Consume(Libraries.ReadCsvHelper(text));
+    public int CsvHelper() => Consume(Benchmarks.Libraries.ReadCsvHelper(text));
 
     [Benchmark]
-    public int Sylvan() => Consume(Libraries.ReadSylvan(text));
+    public int Sylvan() => Consume(Benchmarks.Libraries.ReadSylvan(text));
 
     [Benchmark]
-    public int Sep() => Consume(Libraries.ReadSep(text));
+    public int Sep() => Consume(Benchmarks.Libraries.ReadSep(text));
+
+    [Benchmark]
+    public int FileHelpers() => Consume(Benchmarks.Libraries.ReadFileHelpers(text));
+
+    [Benchmark]
+    public int TinyCsvParser() => Consume(Benchmarks.Libraries.ReadTinyCsvParser(text));
+
+    [Benchmark]
+    public int RecordParser() => Consume(Benchmarks.Libraries.ReadRecordParser(text));
+
+    [Benchmark]
+    public int Csv() => Consume(Benchmarks.Libraries.ReadCsv(text));
+
+    [Benchmark]
+    public int NRecoCsv() => Consume(Benchmarks.Libraries.ReadNReco(text));
+
+    [Benchmark]
+    public int LumenWorks() => Consume(Benchmarks.Libraries.ReadLumenWorks(text));
+
+    [Benchmark]
+    public int TextFieldParser() => Consume(Benchmarks.Libraries.ReadTextFieldParser(text));
 
     private static int Consume(IEnumerable<Model> models)
     {
@@ -34,10 +70,10 @@ public class ReadBenchmarks : BenchmarkBase
     /// </summary>
     protected override void Verify()
     {
-        Check("TinyCsv", Libraries.ReadTinyCsv(text));
-        Check("CsvHelper", Libraries.ReadCsvHelper(text));
-        Check("Sylvan", Libraries.ReadSylvan(text));
-        Check("Sep", Libraries.ReadSep(text));
+        foreach (var library in Libraries)
+        {
+            Check(library.Name, library.Read(text));
+        }
     }
 
     private void Check(string library, IEnumerable<Model> read)
