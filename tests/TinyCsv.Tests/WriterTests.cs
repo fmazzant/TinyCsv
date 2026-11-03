@@ -67,5 +67,27 @@ namespace TinyCsv.Tests
             Assert.Equal("Mario \"Super\"\nRossi", result.Name);
             Assert.Equal("Roma", result.City);
         }
+
+        [Fact]
+        public void GetAllText_FromLazySequence_WritesEveryRow()
+        {
+            var input = Csv.Person(o => o.HasHeaderRecord = true);
+            var output = Csv.Person(o => { o.HasHeaderRecord = true; o.Delimiter = ","; o.NewLine = "\n"; });
+
+            var text = output.GetAllText(input.LoadFromText(input.GetAllText(People)));
+
+            Assert.Equal("Id,Name,City\n1,Mario,Roma\n2,Rossi; Luigi,Milano", text);
+        }
+
+        [Fact]
+        public async System.Threading.Tasks.Task GetAllTextAsync_FromLazySequence_WritesEveryRow()
+        {
+            var input = Csv.Person(o => o.HasHeaderRecord = true);
+            var output = Csv.Person(o => { o.HasHeaderRecord = true; o.Delimiter = ","; o.NewLine = "\n"; });
+
+            var text = await output.GetAllTextAsync(input.LoadFromText(input.GetAllText(People)));
+
+            Assert.Equal("Id,Name,City\n1,Mario,Roma\n2,Rossi; Luigi,Milano", text);
+        }
     }
 }

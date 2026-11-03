@@ -387,26 +387,7 @@ namespace TinyCsv
         /// <exception cref="NotImplementedException"></exception>
         public string[] GetAllLines(IEnumerable<T> models)
         {
-            var index = 0;
-
-            var count = models.Count() + (Options.HasHeaderRecord ? 1 : 0);
-            var lines = new string[count];
-
-            if (Options.HasHeaderRecord)
-            {
-                lines[index] = Options.AsColumnsHeaderLine();
-                index++;
-            }
-
-            var builder = new CsvLineBuilder<T>(Options);
-            foreach (var model in models)
-            {
-                builder.Build(model);
-                lines[index] = builder.ToString();
-                index++;
-            }
-
-            return lines;
+            return BuildAllLines(models, CancellationToken.None);
         }
 
         /// <summary>
@@ -431,8 +412,18 @@ namespace TinyCsv
         /// <exception cref="NotImplementedException"></exception>
         public Task<string[]> GetAllLinesAsync(IEnumerable<T> models, CancellationToken cancellationToken = default)
         {
+            return Task.FromResult(BuildAllLines(models, cancellationToken));
+        }
+
+        /// <summary>
+        /// Builds the lines of the models: the header, if any, and a line for each model
+        /// </summary>
+        private string[] BuildAllLines(IEnumerable<T> models, CancellationToken cancellationToken)
+        {
             var index = 0;
 
+            // enumerated once: a lazy sequence (i.e. LoadFromText) cannot be enumerated twice
+            models = models as ICollection<T> ?? models.ToList();
             var count = models.Count() + (Options.HasHeaderRecord ? 1 : 0);
             var lines = new string[count];
 
@@ -452,7 +443,7 @@ namespace TinyCsv
                 index++;
             }
 
-            return Task.FromResult(lines);
+            return lines;
         }
 
         /// <summary>
