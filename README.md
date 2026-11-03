@@ -653,17 +653,25 @@ var csv = new TinyCsv<Product>(options =>
 ### Compared with other libraries
 
 The [competitive benchmark](benchmark/README.md#competitive-benchmark) reads and writes 100,000 rows of 8 typed columns
-(`int`, `string`, `decimal`, `DateTime`, `bool`, with some quoted values) with TinyCsv, [CsvHelper](https://joshclose.github.io/CsvHelper/),
-[Sylvan.Data.Csv](https://github.com/MarkPflug/Sylvan) and [Sep](https://github.com/nietras/Sep).
+(`int`, `string`, `decimal`, `DateTime`, `bool`, with some quoted values) with TinyCsv and 10 other libraries for .NET.
 
-| Library | Read | Write |
+| Library | Read (median) | Write (median) |
 |---|---:|---:|
-| **TinyCsv** | **53.7 ms / 23.7 MB** | **36.6 ms / 2.2 MB** |
-| CsvHelper | 119.1 ms / 53.2 MB | 80.7 ms / 25.2 MB |
-| Sylvan | 28.3 ms / 23.8 MB | 38.5 ms / 0.05 MB |
-| Sep | 53.8 ms / 23.7 MB (median 45.1 ms) | 45.9 ms / 0.02 MB |
+| [Sylvan.Data.Csv](https://github.com/MarkPflug/Sylvan) | 46.8 ms / 23.8 MB | 40.1 ms / 0.05 MB |
+| [Sep](https://github.com/nietras/Sep) | 47.5 ms / 23.7 MB | 46.7 ms / 0.02 MB |
+| **TinyCsv** | **54.3 ms / 23.7 MB** | **38.5 ms / 2.2 MB** |
+| [RecordParser](https://github.com/leandromoh/RecordParser) | 71.7 ms / 25.7 MB | 42.9 ms / 0.02 MB |
+| [NReco.Csv](https://github.com/nreco/csv) | 77.0 ms / 41.8 MB | 48.6 ms / 21.3 MB |
+| [Csv](https://github.com/stevehansen/csv) | 77.0 ms / 85.0 MB | 53.4 ms / 20.5 MB |
+| [TinyCsvParser](https://github.com/bytefish/TinyCsvParser) | 103.1 ms / 84.7 MB | - |
+| [LumenWorksCsvReader](https://github.com/phatcher/CsvReader) | 119.1 ms / 164.5 MB | - |
+| [FileHelpers](https://www.filehelpers.net/) | 135.6 ms / 92.9 MB | 67.4 ms / 103.0 MB |
+| [CsvHelper](https://joshclose.github.io/CsvHelper/) | 173.4 ms / 53.2 MB | 88.4 ms / 25.2 MB |
+| [TextFieldParser](https://learn.microsoft.com/dotnet/api/microsoft.visualbasic.fileio.textfieldparser) | 419.7 ms / 1,026.5 MB | - |
 
-TinyCsv and CsvHelper map the columns to the properties, while Sylvan and Sep are used with a hand written mapping.
+TinyCsv, CsvHelper, FileHelpers, TinyCsvParser and RecordParser map the columns to the properties,
+while the other libraries are used with a hand written mapping: the [benchmark page](benchmark/README.md#competitive-benchmark) says how each library is used.
+TinyCsvParser, LumenWorks and `TextFieldParser` only read.
 Environment: BenchmarkDotNet 0.14.0, .NET 8.0.29, Windows Server 2019 (Hyper-V), Intel Xeon Platinum 8370C 2.80GHz.
 
 ### Compared with the previous versions

@@ -12,7 +12,7 @@ namespace TinyCsv.Benchmarks;
 /// Reads and writes the models with each library, in the way suggested by its documentation.
 /// TinyCsv and CsvHelper map the columns to the properties, Sylvan and Sep are used with a hand written mapping.
 /// </summary>
-public static class Libraries
+public static partial class Libraries
 {
     private const string DateFormat = "yyyy-MM-dd";
     private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
