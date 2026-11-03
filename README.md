@@ -7,7 +7,6 @@ To use it in your project, add the Mafe.TinyCsv NuGet package to your project.
 
 [![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/3.4.0)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv?style=flat-square)
-[![codecov](https://img.shields.io/codecov/c/github/fmazzant/TinyCsv?style=flat-square)](https://codecov.io/gh/fmazzant/TinyCsv)
 
 Coming from CsvHelper? See the [Migrating from CsvHelper](https://github.com/fmazzant/TinyCsv/blob/master/docs/migrating-from-csvhelper.md) guide.
 
@@ -167,14 +166,9 @@ To read the values with the culture of the machine, as in 3.0, set `options.Cult
 
 ### Changes in 3.4
 
-3.4 includes the [compile-time analyzers](#compile-time-analyzers) in the package. Furthermore:
-
 | Area | 3.3 | 3.4 |
 |---|---|---|
-| A wrong mapping (i.e. `AddColumn(m => m.Name.Length)`, `[Column(converter: typeof(string))]`) | an exception at runtime | an error at compile time (TCSV001, TCSV004, TCSV006) |
 | `GetAllText`/`GetAllLines` of a sequence that can be enumerated once (i.e. the result of `LoadFromText`) | only the header was written, the rows were lost | every row is written |
-
-The errors of the analyzers are reported only on mappings that throw at runtime. To restore the previous build, set their severity to `none` in `.editorconfig`.
 
 ## Custom Value Converter
 
@@ -413,21 +407,6 @@ and you can use it, like this
 ```c#
  var csv = new TinyCsv<AttributeModel>();
 ```
-
-## Compile-time analyzers
-
-The package includes Roslyn analyzers that report a wrong mapping while you write the code, instead of an exception when the file is read:
-
-| Id | Severity | Description |
-|---|---|---|
-| TCSV001 | Error | The column must be a property of the model (`m => m.Name.Length` is not) |
-| TCSV002 | Warning | The property of the column must have a public getter and setter |
-| TCSV003 | Warning | The type of the column needs a converter |
-| TCSV004 | Error | The `converter`/`formatProvider` of `[Column]` or the type of `[SkipRow]` must implement the interface and have a public parameterless constructor |
-| TCSV005 | Warning | Two columns have the same index |
-| TCSV006 | Error | `[MapColumnsByHeader]` requires `[HasHeaderRecord(true)]` |
-
-To turn off a rule, set its severity in `.editorconfig`, for example `dotnet_diagnostic.TCSV003.severity = none`.
 
 ## Performance
 

@@ -27,12 +27,4 @@ jobs:
       run: dotnet build --no-restore src/TinyCsv.sln
 
     - name: Test
-      run: dotnet test --no-build src/TinyCsv.sln --collect:"XPlat Code Coverage" --results-directory ./coverage
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v5
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        directory: ./coverage
-        files: '**/coverage.cobertura.xml'
-        fail_ci_if_error: false
+      run: dotnet test --no-build src/TinyCsv.sln
