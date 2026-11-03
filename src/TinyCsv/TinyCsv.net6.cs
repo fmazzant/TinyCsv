@@ -100,7 +100,8 @@ namespace TinyCsv
         /// <returns></returns>
         private async IAsyncEnumerable<T> LoadFromReaderAsync(TextReader textReader, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            var reader = new CsvModelReader<T>(Options, textReader);
+            var source = await CsvReadSource.OpenAsync(textReader, Options, cancellationToken).ConfigureAwait(false);
+            var reader = new CsvModelReader<T>(Options.WithDelimiter(source.Delimiter), source.Reader);
             while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
             {
                 cancellationToken.ThrowIfCancellationRequested();

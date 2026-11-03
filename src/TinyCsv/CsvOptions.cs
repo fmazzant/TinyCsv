@@ -133,6 +133,17 @@ namespace TinyCsv
         public string Delimiter { get; set; } = ";";
 
         /// <summary>
+        /// Detects the delimiter from the first records when reading, among <see cref="DelimiterCandidates"/>.
+        /// <see cref="Delimiter"/> is used when no candidate is found and when writing.
+        /// </summary>
+        public bool DetectDelimiter { get; set; } = false;
+
+        /// <summary>
+        /// The delimiters that <see cref="DetectDelimiter"/> looks for: comma, semicolon, tab and pipe
+        /// </summary>
+        public string[] DelimiterCandidates { get; set; } = { ",", ";", "	", "|" };
+
+        /// <summary>
         /// Respects new line (either \r\n or \n) characters inside field values enclosed in double quotes.
         /// </summary>
         public bool AllowRowEnclosedInDoubleQuotesValues { get; set; } = true;
@@ -374,6 +385,10 @@ namespace TinyCsv
                 {
                     this.MapColumnsByHeader = mapColumnsByHeader.MapColumnsByHeader;
                 }
+                if (attribute is DetectDelimiterAttribute detectDelimiter)
+                {
+                    this.DetectDelimiter = detectDelimiter.DetectDelimiter;
+                }
                 if (attribute is CultureAttribute culture)
                 {
                     this.Culture = culture.Culture;
@@ -383,6 +398,45 @@ namespace TinyCsv
                     this.ValidateValues = validateValues.ValidateValues;
                 }
             }
+        }
+
+        /// <summary>
+        /// Uses the columns and the options of a class map, defined outside the model
+        /// </summary>
+        /// <param name="classMap"></param>
+        /// <returns></returns>
+        public CsvOptions<T> UseClassMap(CsvClassMap<T> classMap)
+        {
+            if (classMap == null)
+            {
+                throw new ArgumentNullException(nameof(classMap));
+            }
+            classMap.Apply(this);
+            return this;
+        }
+
+        /// <summary>
+        /// Uses the columns and the options of a class map, defined outside the model
+        /// </summary>
+        /// <typeparam name="TClassMap"></typeparam>
+        /// <returns></returns>
+        public CsvOptions<T> UseClassMap<TClassMap>() where TClassMap : CsvClassMap<T>, new()
+        {
+            return UseClassMap(new TClassMap());
+        }
+
+        /// <summary>
+        /// A copy of the options with another delimiter (i.e. the detected one): the columns and the handlers are shared
+        /// </summary>
+        internal CsvOptions<T> WithDelimiter(string delimiter)
+        {
+            if (delimiter == Delimiter)
+            {
+                return this;
+            }
+            var options = (CsvOptions<T>)MemberwiseClone();
+            options.Delimiter = delimiter;
+            return options;
         }
 
         /// <summary>

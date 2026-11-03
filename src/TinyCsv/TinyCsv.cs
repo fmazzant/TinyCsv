@@ -73,6 +73,15 @@ namespace TinyCsv
         }
 
         /// <summary>
+        /// Create a new instance of TinyCsv with the columns and the options of a class map, defined outside the model
+        /// </summary>
+        /// <param name="classMap"></param>
+        public TinyCsv(CsvClassMap<T> classMap)
+            : this(options => options.UseClassMap(classMap))
+        {
+        }
+
+        /// <summary>
         /// Create a new instance of TinyCsv taking the options from attributes
         /// </summary>
         public TinyCsv()
@@ -148,26 +157,11 @@ namespace TinyCsv
 
         private StreamReader CreateReader(Stream stream) => new StreamReader(stream, ReaderEncoding, true);
 
-        /// <summary>
-        /// The reader of a text. With UTF-8 the text is read as it is, because encoding and decoding it
-        /// returns the same text, apart from a leading byte order mark that is removed.
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="encoding"></param>
-        /// <returns></returns>
-        private TextReader CreateReader(string text, Encoding encoding)
-        {
-            var textEncoding = encoding ?? ReaderEncoding;
-            if (textEncoding is UTF8Encoding && text != null)
-            {
-                return new StringReader(text.Length > 0 && text[0] == '﻿' ? text.Substring(1) : text);
-            }
-            return new StreamReader(new TextMemoryStream(text, textEncoding), textEncoding, true);
-        }
+        private TextReader CreateReader(string text, Encoding encoding) => TextMemoryStream.CreateReader(text, encoding ?? ReaderEncoding);
 
-        private StreamWriter CreateWriter(string path) => new StreamWriter(path, false, WriterEncoding);
+        private StreamWriter CreateStreamWriter(string path) => new StreamWriter(path, false, WriterEncoding);
 
-        private StreamWriter CreateWriter(Stream stream) => new StreamWriter(stream, WriterEncoding);
+        private StreamWriter CreateStreamWriter(Stream stream) => new StreamWriter(stream, WriterEncoding);
 
         /// <summary>
         /// Reads a csv file and returns a list of objects.
@@ -197,7 +191,8 @@ namespace TinyCsv
         /// <returns></returns>
         private IEnumerable<T> LoadFromReader(TextReader textReader)
         {
-            var reader = new CsvModelReader<T>(Options, textReader);
+            var source = CsvReadSource.Open(textReader, Options);
+            var reader = new CsvModelReader<T>(Options.WithDelimiter(source.Delimiter), source.Reader);
             while (reader.Read())
             {
                 if (reader.TryReadModel(out var model))
@@ -236,7 +231,7 @@ namespace TinyCsv
         /// <param name="models"></param>
         public void Save(string path, IEnumerable<T> models)
         {
-            using (var streamWriter = CreateWriter(path))
+            using (var streamWriter = CreateStreamWriter(path))
             {
                 Save(streamWriter, models);
             }
@@ -249,40 +244,9 @@ namespace TinyCsv
         /// <param name="models"></param>
         public void Save(StreamWriter streamWriter, IEnumerable<T> models)
         {
-            var index = 0;
-            var options = this.Options;
-            var writer = new CsvDataWriter<T>(options, streamWriter);
-
-            options.Handlers.OnStart();
-            if (options.HasHeaderRecord)
-            {
-                var headers = options.AsColumnsHeaderLine();
-                options.Handlers.Write.OnRowHeader(index, headers);
-                writer.WriteLine(headers);
-                index++;
-            }
-            var builder = new CsvLineBuilder<T>(options);
-            var handlers = options.Handlers.Write;
-            foreach (var model in models)
-            {
-                handlers.OnRowWriting(index, model);
-                builder.Build(model);
-                if (handlers.Enabled)
-                {
-                    var line = builder.ToString();
-                    writer.WriteLine(line);
-                    handlers.OnRowWritten(index, model, line);
-                }
-                else
-                {
-                    // the line is written from the buffer, without creating the string
-                    builder.WriteTo(streamWriter);
-                    streamWriter.WriteLine();
-                }
-                index++;
-            }
-            options.Handlers.OnCompleted(index);
-            writer.Flush();
+            var writer = new TinyCsvWriter<T>(Options, streamWriter, true);
+            writer.WriteRecords(models);
+            writer.Complete();
         }
 
         /// <summary>
@@ -292,7 +256,7 @@ namespace TinyCsv
         /// <param name="models"></param>
         public void Save(Stream stream, IEnumerable<T> models)
         {
-            var streamWriter = CreateWriter(stream);
+            var streamWriter = CreateStreamWriter(stream);
             Save(streamWriter, models);
         }
 
@@ -303,7 +267,7 @@ namespace TinyCsv
         /// <param name="models"></param>
         public async Task SaveAsync(string path, IEnumerable<T> models, CancellationToken cancellationToken = default)
         {
-            using (var file = CreateWriter(path))
+            using (var file = CreateStreamWriter(path))
             {
                 await SaveAsync(file, models, cancellationToken).ConfigureAwait(false);
             }
@@ -316,44 +280,9 @@ namespace TinyCsv
         /// <param name="models"></param>
         public async Task SaveAsync(StreamWriter streamWriter, IEnumerable<T> models, CancellationToken cancellationToken = default)
         {
-            var index = 0;
-
-            var options = this.Options;
-            var writer = new CsvDataWriter<T>(options, streamWriter);
-
-            options.Handlers.OnStart();
-            if (options.HasHeaderRecord)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                var headers = options.AsColumnsHeaderLine();
-                options.Handlers.Write.OnRowHeader(index, headers);
-                await writer.WriteLineAsync(headers).ConfigureAwait(false);
-                index++;
-            }
-
-            var builder = new CsvLineBuilder<T>(options);
-            var handlers = options.Handlers.Write;
-            foreach (var model in models)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                handlers.OnRowWriting(index, model);
-                builder.Build(model);
-                if (handlers.Enabled)
-                {
-                    var line = builder.ToString();
-                    await writer.WriteLineAsync(line).ConfigureAwait(false);
-                    handlers.OnRowWritten(index, model, line);
-                }
-                else
-                {
-                    // the line is written from the buffer, without creating the string
-                    await builder.WriteToAsync(streamWriter).ConfigureAwait(false);
-                    await streamWriter.WriteLineAsync().ConfigureAwait(false);
-                }
-                index++;
-            }
-            options.Handlers.OnCompleted(index);
-            await writer.FlushAsync().ConfigureAwait(false);
+            var writer = new TinyCsvWriter<T>(Options, streamWriter, true);
+            await writer.WriteRecordsAsync(models, cancellationToken).ConfigureAwait(false);
+            await writer.CompleteAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -363,8 +292,40 @@ namespace TinyCsv
         /// <param name="models"></param>
         public Task SaveAsync(Stream stream, IEnumerable<T> models, CancellationToken cancellationToken = default)
         {
-            var streamWriter = CreateWriter(stream);
-            return SaveAsync(streamWriter, models);
+            var streamWriter = CreateStreamWriter(stream);
+            return SaveAsync(streamWriter, models, cancellationToken);
+        }
+
+        /// <summary>
+        /// Creates a writer that writes the records one at a time to a file, for very large files: dispose it at the end.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public TinyCsvWriter<T> CreateWriter(string path)
+        {
+            return new TinyCsvWriter<T>(Options, CreateStreamWriter(path), false);
+        }
+
+        /// <summary>
+        /// Creates a writer that writes the records one at a time to a stream, for very large files: dispose it at the end.
+        /// The stream is left open.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public TinyCsvWriter<T> CreateWriter(Stream stream)
+        {
+            return new TinyCsvWriter<T>(Options, new StreamWriter(stream, WriterEncoding, 1024, true), false);
+        }
+
+        /// <summary>
+        /// Creates a writer that writes the records one at a time to a stream writer, for very large files: dispose it at the end.
+        /// The stream writer is left open.
+        /// </summary>
+        /// <param name="streamWriter"></param>
+        /// <returns></returns>
+        public TinyCsvWriter<T> CreateWriter(StreamWriter streamWriter)
+        {
+            return new TinyCsvWriter<T>(Options, streamWriter, true);
         }
 
         /// <summary>
@@ -468,10 +429,19 @@ namespace TinyCsv
             return GetAllLinesFromReader(streamReader);
         }
 
+        private TinyCsvDataReader<T> OpenDataReader(TextReader textReader)
+        {
+            var source = CsvReadSource.Open(textReader, Options);
+            return new TinyCsvDataReader<T>(Options.WithDelimiter(source.Delimiter), source.Reader);
+        }
+
         private IEnumerable<string> GetAllLinesFromReader(TextReader textReader)
         {
-            var dataReader = new TinyCsvDataReader<T>(Options, textReader);
-            return dataReader.ReadLines();
+            var dataReader = OpenDataReader(textReader);
+            foreach (var line in dataReader.ReadLines())
+            {
+                yield return line;
+            }
         }
 
         /// <summary>
@@ -519,8 +489,11 @@ namespace TinyCsv
 
         private IEnumerable<string[]> GetAllLinesAndFieldsFromReader(TextReader textReader)
         {
-            var dataReader = new TinyCsvDataReader<T>(Options, textReader);
-            return dataReader.ReadLinesAndFields();
+            var dataReader = OpenDataReader(textReader);
+            foreach (var fields in dataReader.ReadLinesAndFields())
+            {
+                yield return fields;
+            }
         }
 
         /// <summary>
