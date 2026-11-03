@@ -80,11 +80,3 @@
 /benchmark/TinyCsv.Benchmarks/bin
 /benchmark/TinyCsv.Benchmarks/obj
 /benchmark/TinyCsv.Benchmarks/BenchmarkDotNet.Artifacts
-
-# DocFX
-
-# TinyCsv.Analyzers
-/src/TinyCsv.Analyzers/bin
-/src/TinyCsv.Analyzers/obj
-/tests/TinyCsv.Analyzers.Tests/bin
-/tests/TinyCsv.Analyzers.Tests/obj

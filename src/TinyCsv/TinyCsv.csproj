@@ -28,12 +28,6 @@
     <InternalsVisibleTo Include="TinyCsv.Tests" />
   </ItemGroup>
 
-  <!-- The Roslyn analyzers, packed in analyzers/dotnet/cs: they report a wrong mapping at compile time -->
-  <ItemGroup>
-    <ProjectReference Include="..\TinyCsv.Analyzers\TinyCsv.Analyzers.csproj" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" SetTargetFramework="TargetFramework=netstandard2.0" PrivateAssets="all" />
-    <None Include="..\TinyCsv.Analyzers\bin\$(Configuration)\netstandard2.0\Mafe.TinyCsv.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-  </ItemGroup>
-
   <ItemGroup>
     <None Include="..\..\LICENSE.md">
       <Pack>True</Pack>
