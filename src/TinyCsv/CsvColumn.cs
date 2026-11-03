@@ -81,6 +81,11 @@ namespace TinyCsv
         internal object Accessor { get; set; }
 
         /// <summary>
+        /// The properties of a nested column (m => m.Address.City), null when the column is a property of the model
+        /// </summary>
+        internal System.Reflection.PropertyInfo[] PropertyPath { get; set; }
+
+        /// <summary>
         /// Value format provider
         /// </summary>
         private IFormatProvider _FormatProvider = null;

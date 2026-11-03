@@ -5,7 +5,7 @@ TinyCsv is a .NET library to read and write CSV data in an easy way.
 
 To use it in your project, add the Mafe.TinyCsv NuGet package to your project.
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/3.4.0)
+[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/3.5.0)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv?style=flat-square)
 
 Coming from CsvHelper? See the [Migrating from CsvHelper](https://github.com/fmazzant/TinyCsv/blob/master/docs/migrating-from-csvhelper.md) guide.
@@ -170,6 +170,19 @@ To read the values with the culture of the machine, as in 3.0, set `options.Cult
 |---|---|---|
 | `GetAllText`/`GetAllLines` of a sequence that can be enumerated once (i.e. the result of `LoadFromText`) | only the header was written, the rows were lost | every row is written |
 
+### Changes in 3.5
+
+3.5 adds the [delimiter detection](#detect-the-delimiter), the [nested properties](#nested-properties),
+the [records without a model](#records-without-a-model), the [writer of one record at a time](#write-one-record-at-a-time)
+and the [class map](#class-map). Furthermore:
+
+| Area | 3.4 | 3.5 |
+|---|---|---|
+| [Automatic columns](#automatic-columns): a property whose type is a class with a public parameterless constructor (i.e. `Address`) | ignored | its properties are columns, i.e. `Address_City` |
+| `SaveAsync(Stream, ...)` | the cancellation token was not used | the cancellation token is used |
+
+To keep the columns of 3.4, define the columns or use a [class map](#class-map).
+
 ## Custom Value Converter
 
 It is possible to define a custom converter for a column, like this:
@@ -267,8 +280,84 @@ var csv = new TinyCsv<Model>(options =>
 });
 ```
 
-The properties whose type has no value converter (i.e. classes and collections) are ignored.
+The properties of a class with a public parameterless constructor are columns too, see [nested properties](#nested-properties).
+The other properties whose type has no value converter (i.e. collections) are ignored.
 To use a format, a custom converter or a different name, define the columns.
+
+### Nested properties
+
+A property of a property is a column, whose name is the names of the properties joined by an underscore:
+
+```c#
+public class Customer
+{
+    public int Id { get; set; }
+    public Address Address { get; set; }
+}
+
+public class Address
+{
+    public string City { get; set; }
+}
+
+var csv = new TinyCsv<Customer>(options =>
+{
+    options.HasHeaderRecord = true;
+    options.Columns.AddColumn(m => m.Id);
+    options.Columns.AddColumn(m => m.Address.City); // the column Address_City
+});
+```
+
+With the [automatic columns](#automatic-columns), the columns are `Id` and `Address_City`.
+When reading, a null object (i.e. `Address`) is created, so its type must have a public parameterless constructor.
+When writing, the value of a null object is empty.
+
+### Detect the delimiter
+
+With `DetectDelimiter`, the delimiter is detected from the first records of the file, when reading:
+
+```c#
+var csv = new TinyCsv<Model>(options =>
+{
+    options.HasHeaderRecord = true;
+    options.DetectDelimiter = true;
+});
+```
+
+- the delimiter is one of `DelimiterCandidates`: comma, semicolon, tab and pipe;
+- the delimiter found the same number of times in each of the first 10 records wins, ignoring the quoted values, the rows to skip and the comments;
+- when no candidate is found, the delimiter is `Delimiter`, that is also the delimiter used to write.
+
+With attributes, use `[DetectDelimiter(true)]` on the model.
+
+### Records without a model
+
+`TinyCsvRecords` reads the records without a model: as dictionaries, as dynamic objects or into a `DataTable`.
+The values are strings, named by the header:
+
+```c#
+var csv = new TinyCsvRecords(options =>
+{
+    options.Delimiter = ",";
+});
+
+foreach (var record in csv.LoadFromFile("file.csv"))
+{
+    Console.WriteLine(record["Name"]);
+}
+
+foreach (var record in csv.LoadDynamicFromFile("file.csv"))
+{
+    Console.WriteLine(record.Name);
+}
+
+DataTable table = csv.LoadDataTableFromFile("file.csv");
+```
+
+- `HasHeaderRecord` is true by default. Without the header, the names are `Field1`, `Field2` and so on;
+- a value beyond the header is named by its position too (i.e. `Field4`), a value missing from a short record is `null`;
+- an empty name of the header is named by its position, a repeated name is followed by a number (i.e. `Name_2`);
+- the dictionaries compare the names with `HeaderNameComparer`, that ignores the case by default.
 
 ### Bad data
 
@@ -324,6 +413,24 @@ await csv.SaveAsync("file_export.csv", models);
 
 The save method takes the file's path and a collection of Model type.
 The method saves the file.
+
+### Write one record at a time
+
+For very large files, the writer writes the records one at a time, without keeping them in memory:
+
+```c#
+using (var writer = csv.CreateWriter("file_export.csv"))
+{
+    foreach (var model in GetModels())
+    {
+        writer.WriteRecord(model);
+    }
+}
+```
+
+The header is written before the first record, and the file is completed when the writer is disposed.
+`CreateWriter` takes a path, a `Stream` or a `StreamWriter`: the stream and the stream writer are left open.
+There are `WriteRecordAsync`, `WriteRecordsAsync` and, for NET5_0_OR_GREATER or NETSTANDARD2_1_OR_GREATER, `await using`.
 
 ## Event handlers
 
@@ -406,6 +513,42 @@ and you can use it, like this
 
 ```c#
  var csv = new TinyCsv<AttributeModel>();
+```
+
+## Class map
+
+A class map defines the columns and the options outside the model, so the model has no attributes:
+
+```c#
+public sealed class ProductMap : CsvClassMap<Product>
+{
+    public ProductMap()
+    {
+        Options(o =>
+        {
+            o.HasHeaderRecord = true;
+            o.Delimiter = ",";
+        });
+        Map(m => m.Id);
+        Map(m => m.Name).Name("product_name");
+        Map(m => m.Price).Format("0.00");
+        Map(m => m.Supplier.Name); // the column Supplier_Name
+    }
+}
+
+var csv = new TinyCsv<Product>(new ProductMap());
+```
+
+`Map` takes the property and returns the column, with `Index`, `Name`, `Format`, `FormatProvider` and `Converter`.
+The index is the position of `Map` and the name is the property name, unless they are set.
+To change the options of the map, use `UseClassMap` and then the options:
+
+```c#
+var csv = new TinyCsv<Product>(options =>
+{
+    options.UseClassMap<ProductMap>();
+    options.Delimiter = ";";
+});
 ```
 
 ## Performance
