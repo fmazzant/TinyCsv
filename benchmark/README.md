@@ -58,7 +58,7 @@ Before measuring, the setup checks that every library reads the same models and 
 
 ```bash
 cd benchmark/TinyCsv.Benchmarks
-dotnet run -c Release                                   # all, about 10 minutes
+dotnet run -c Release                                   # all, about 25 minutes
 dotnet run -c Release -- --filter *Read*                # only the read
 dotnet run -c Release -- --filter * --job short         # quicker, less accurate
 ```
@@ -67,20 +67,33 @@ dotnet run -c Release -- --filter * --job short         # quicker, less accurate
 
 | Read 100,000 rows | Mean | Median | Allocated |
 |---|---:|---:|---:|
-| Sylvan | 28.3 ms | 28.4 ms | 23.8 MB |
-| Sep | 53.8 ms | 45.1 ms | 23.7 MB |
-| **TinyCsv** | **53.7 ms** | **53.4 ms** | **23.7 MB** |
-| CsvHelper | 119.1 ms | 115.9 ms | 53.2 MB |
+| Sylvan | 46.5 ms | 46.8 ms | 23.8 MB |
+| Sep | 47.5 ms | 47.5 ms | 23.7 MB |
+| **TinyCsv** | **55.1 ms** | **54.3 ms** | **23.7 MB** |
+| RecordParser | 71.7 ms | 71.7 ms | 25.7 MB |
+| NReco.Csv | 77.3 ms | 77.0 ms | 41.8 MB |
+| Csv | 79.1 ms | 77.0 ms | 85.0 MB |
+| TinyCsvParser | 103.0 ms | 103.1 ms | 84.7 MB |
+| LumenWorks | 130.2 ms | 119.1 ms | 164.5 MB |
+| FileHelpers | 135.8 ms | 135.6 ms | 92.9 MB |
+| CsvHelper | 172.6 ms | 173.4 ms | 53.2 MB |
+| TextFieldParser | 423.4 ms | 419.7 ms | 1,026.5 MB |
 
-| Write 100,000 rows | Mean | Allocated |
-|---|---:|---:|
-| **TinyCsv** | **36.6 ms** | **2.2 MB** |
-| Sylvan | 38.5 ms | 0.05 MB |
-| Sep | 45.9 ms | 0.02 MB |
-| CsvHelper | 80.7 ms | 25.2 MB |
+| Write 100,000 rows | Mean | Median | Allocated |
+|---|---:|---:|---:|
+| **TinyCsv** | **38.6 ms** | **38.5 ms** | **2.2 MB** |
+| Sylvan | 40.5 ms | 40.1 ms | 0.05 MB |
+| RecordParser | 42.9 ms | 42.9 ms | 0.02 MB |
+| Sep | 47.1 ms | 46.7 ms | 0.02 MB |
+| NReco.Csv | 48.9 ms | 48.6 ms | 21.3 MB |
+| Csv | 59.0 ms | 53.4 ms | 20.5 MB |
+| FileHelpers | 67.7 ms | 67.4 ms | 103.0 MB |
+| CsvHelper | 101.0 ms | 88.4 ms | 25.2 MB |
 
 Environment: BenchmarkDotNet 0.14.0, .NET 8.0.29, Windows Server 2019 (Hyper-V), Intel Xeon Platinum 8370C 2.80GHz.
-The Sep read is noisy on this machine (standard deviation 12.9 ms), so its median is more meaningful than its mean.
+The virtual machine is noisy: the absolute times change between runs, so compare the libraries within the same table.
+The read results are from a second run with only the read benchmarks (`--filter *Read*`), because the first one was disturbed by other processes.
+Some results are noisy (standard deviation of LumenWorks read 23.6 ms, CsvHelper write 23.1 ms, Csv write 12.8 ms): their median is more meaningful than their mean.
 The full reports, with 1,000 rows too, are the [read report](results/CompetitiveReadBenchmark-report-github.md) and the [write report](results/CompetitiveWriteBenchmark-report-github.md).
 
 The read of TinyCsv creates the string of a record only when it is needed: when the events are enabled, when `SkipRow` is set and for the exceptions.
