@@ -9,8 +9,7 @@ To use it in your project, add the Mafe.TinyCsv NuGet package to your project.
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv?style=flat-square)
 [![codecov](https://img.shields.io/codecov/c/github/fmazzant/TinyCsv?style=flat-square)](https://codecov.io/gh/fmazzant/TinyCsv)
 
-📖 **Documentation: [fmazzant.github.io/TinyCsv](https://fmazzant.github.io/TinyCsv/)**, with [practical examples](https://fmazzant.github.io/TinyCsv/articles/examples.html),
-a [Migrating from CsvHelper](https://fmazzant.github.io/TinyCsv/articles/migrating-from-csvhelper.html) guide and the [API reference](https://fmazzant.github.io/TinyCsv/api/TinyCsv.html).
+Coming from CsvHelper? See the [Migrating from CsvHelper](https://github.com/fmazzant/TinyCsv/blob/master/docs/migrating-from-csvhelper.md) guide.
 
 It is available an AspNetCore extension:
 
@@ -428,7 +427,7 @@ The package includes Roslyn analyzers that report a wrong mapping while you writ
 | TCSV005 | Warning | Two columns have the same index |
 | TCSV006 | Error | `[MapColumnsByHeader]` requires `[HasHeaderRecord(true)]` |
 
-See [the documentation](https://fmazzant.github.io/TinyCsv/articles/analyzers.html) for the details and how to configure them.
+To turn off a rule, set its severity in `.editorconfig`, for example `dotnet_diagnostic.TCSV003.severity = none`.
 
 ## Performance
 
@@ -479,7 +478,7 @@ In 3.0, `Save` escapes the values as RFC 4180, so the saved file is always read 
 The write is about 12% slower and allocates about 15% more memory than 2.2.2.
 
 Environment: BenchmarkDotNet 0.13.12, .NET 8.0.29, Windows Server 2019 (Hyper-V), Intel Xeon Platinum 8370C 2.80GHz.
-The 3.0 column was measured with the 3.0.0-rc1 package. The results of 3.3.0 will be added after its release.
+The 3.0 column was measured with the 3.0.0-rc1 package. The results of 3.4.0 will be added after its release.
 The full report is in [benchmark/results](benchmark/results/TinyCsvLibraryBenchmark-report-github.md).
 
 <details>
