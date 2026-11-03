@@ -31,6 +31,7 @@ namespace TinyCsv.Data
 {
     using System;
     using System.Globalization;
+    using System.Linq.Expressions;
     using System.Reflection;
     using TinyCsv.Conversions;
     using TinyCsv.Exceptions;
@@ -125,7 +126,9 @@ namespace TinyCsv.Data
             {
                 return accessor;
             }
-            accessor = CreateTyped(column, options) ?? new ConverterColumnAccessor<T>(column, options);
+            accessor = column.PropertyPath != null
+                ? new NestedColumnAccessor<T>(column.PropertyPath)
+                : CreateTyped(column, options) ?? new ConverterColumnAccessor<T>(column, options);
             column.Accessor = accessor;
             return accessor;
         }

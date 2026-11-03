@@ -263,8 +263,8 @@ namespace TinyCsv.Tests
         {
             var csv = new TinyCsv<AutoMappedModel>(o => o.HasHeaderRecord = true);
 
-            Assert.Equal(new[] { "Id", "Name", "Price", "CreatedOn", "Day" }, csv.Options.Columns.Select(c => c.ColumnName));
-            Assert.Equal(new[] { 0, 1, 2, 3, 4 }, csv.Options.Columns.Select(c => c.ColumnIndex));
+            Assert.Equal(new[] { "Id", "Name", "Price", "CreatedOn", "Day", "Address_City" }, csv.Options.Columns.Select(c => c.ColumnName));
+            Assert.Equal(new[] { 0, 1, 2, 3, 4, 5 }, csv.Options.Columns.Select(c => c.ColumnIndex));
         }
 
         [Fact]
@@ -291,7 +291,7 @@ namespace TinyCsv.Tests
             var lines = csv.GetAllLines(new[] { model });
             var result = csv.LoadFromText(string.Join(Environment.NewLine, lines)).Single();
 
-            Assert.Equal("Id;Name;Price;CreatedOn;Day", lines[0]);
+            Assert.Equal("Id;Name;Price;CreatedOn;Day;Address_City", lines[0]);
             Assert.Equal((1, "Mario", (decimal?)null, model.CreatedOn, DayOfWeek.Friday), (result.Id, result.Name, result.Price, result.CreatedOn, result.Day));
         }
 
