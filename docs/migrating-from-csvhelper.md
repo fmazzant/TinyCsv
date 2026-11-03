@@ -69,7 +69,7 @@ await foreach (var product in csv.LoadFromFileAsync("products.csv"))
 }
 ```
 
-The `TinyCsv<T>` instance is reusable: create it once and use it for every read and write of the same format (with ASP.NET Core, see [Dependency injection](aspnetcore.md)).
+The `TinyCsv<T>` instance is reusable: create it once and use it for every read and write of the same format (with ASP.NET Core, see [TinyCsv.AspNetCore](../README.md#tinycsvaspnetcore-extensions)).
 
 ## Writing
 
@@ -256,7 +256,7 @@ var csv = new TinyCsv<Product>(options =>
 
 CsvHelper has no events on the records. TinyCsv raises an event for each row when `EnableHandlers` is true:
 `Handlers.Read.RowHeader`, `RowReading`, `RowRead` and `Handlers.Write.RowHeader`, `RowWriting`, `RowWritten`.
-See [Events](events.md).
+See [Event handlers](../README.md#event-handlers).
 
 ## What TinyCsv does not do
 

@@ -37,7 +37,7 @@ namespace TinyCsv.Analyzers
     internal static class DiagnosticDescriptors
     {
         private const string Category = "TinyCsv.Mapping";
-        private const string HelpLink = "https://fmazzant.github.io/TinyCsv/articles/analyzers.html";
+        private const string HelpLink = "https://github.com/fmazzant/TinyCsv#compile-time-analyzers";
 
         /// <summary>
         /// TCSV001: the expression of AddColumn is not a property of the model
@@ -50,7 +50,7 @@ namespace TinyCsv.Analyzers
             defaultSeverity: DiagnosticSeverity.Error,
             isEnabledByDefault: true,
             description: "AddColumn reads and writes a property of the model, so its expression must be a property of the lambda parameter. A nested property, a field, a method call or a computed value throws an exception at runtime.",
-            helpLinkUri: HelpLink + "#tcsv001");
+            helpLinkUri: HelpLink);
 
         /// <summary>
         /// TCSV002: the property of the column has no public setter or getter
@@ -63,7 +63,7 @@ namespace TinyCsv.Analyzers
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
             description: "A column without a public setter cannot be read (the read throws an InvalidColumnValueException), a column without a public getter cannot be written.",
-            helpLinkUri: HelpLink + "#tcsv002");
+            helpLinkUri: HelpLink);
 
         /// <summary>
         /// TCSV003: the type of the column has no converter
@@ -76,7 +76,7 @@ namespace TinyCsv.Analyzers
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
             description: "A column of a type without a built-in converter is written with ToString() and cannot be read back: the read throws an InvalidColumnValueException.",
-            helpLinkUri: HelpLink + "#tcsv003");
+            helpLinkUri: HelpLink);
 
         /// <summary>
         /// TCSV004: the type in an attribute does not implement the required interface
@@ -89,7 +89,7 @@ namespace TinyCsv.Analyzers
             defaultSeverity: DiagnosticSeverity.Error,
             isEnabledByDefault: true,
             description: "The types of the converter and formatProvider parameters of [Column], and the type of [SkipRow], are created when the model is used: a wrong type throws an exception at runtime.",
-            helpLinkUri: HelpLink + "#tcsv004");
+            helpLinkUri: HelpLink);
 
         /// <summary>
         /// TCSV005: two columns have the same index
@@ -102,7 +102,7 @@ namespace TinyCsv.Analyzers
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
             description: "The index of a column is the position of its value in the row. Two columns with the same index read the same value.",
-            helpLinkUri: HelpLink + "#tcsv005");
+            helpLinkUri: HelpLink);
 
         /// <summary>
         /// TCSV006: MapColumnsByHeader without the header record
@@ -115,6 +115,6 @@ namespace TinyCsv.Analyzers
             defaultSeverity: DiagnosticSeverity.Error,
             isEnabledByDefault: true,
             description: "MapColumnsByHeader reads the names of the columns from the header record: without HasHeaderRecord, the read throws an InvalidOperationException.",
-            helpLinkUri: HelpLink + "#tcsv006");
+            helpLinkUri: HelpLink);
     }
 }

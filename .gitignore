@@ -82,9 +82,6 @@
 /benchmark/TinyCsv.Benchmarks/BenchmarkDotNet.Artifacts
 
 # DocFX
-docs/_site/
-docs/api/
-docs/obj/
 
 # TinyCsv.Analyzers
 /src/TinyCsv.Analyzers/bin
