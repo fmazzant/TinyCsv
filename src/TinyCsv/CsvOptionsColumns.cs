@@ -83,7 +83,7 @@ namespace TinyCsv
         /// <param name="columnFormat"></param>
         public void AddColumn<T>(int columnIndex, Expression<Func<M, T>> expression, string columnFormat = null)
         {
-            this.AddColumn(columnIndex, expression.GetPropertyName(), expression, columnFormat);
+            this.AddColumn(columnIndex, expression.GetColumnName(), expression, columnFormat);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace TinyCsv
         /// <param name="columnFormat"></param>
         public void AddColumn<T>(Expression<Func<M, T>> expression, string columnFormat = null)
         {
-            this.AddColumn(Columns.Count, expression.GetPropertyName(), expression, columnFormat);
+            this.AddColumn(Columns.Count, expression.GetColumnName(), expression, columnFormat);
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace TinyCsv
         /// <param name="formatProvider"></param>
         public void AddColumn<T>(Expression<Func<M, T>> expression, IFormatProvider formatProvider)
         {
-            this.AddColumn(Columns.Count, expression.GetPropertyName(), expression, null, formatProvider);
+            this.AddColumn(Columns.Count, expression.GetColumnName(), expression, null, formatProvider);
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace TinyCsv
         /// <param name="converter"></param>
         public void AddColumn<T>(Expression<Func<M, T>> expression, IValueConverter converter)
         {
-            this.AddColumn(Columns.Count, expression.GetPropertyName(), expression, null, null, converter);
+            this.AddColumn(Columns.Count, expression.GetColumnName(), expression, null, null, converter);
         }
 
         /// <summary>
@@ -195,9 +195,15 @@ namespace TinyCsv
         /// <param name="formatProvider"></param>
         /// <param name="converter"></param>
         /// <param name="propertyName">the model's property, when the column is not defined by an expression</param>
-        private void AddColumn(Type type, int columnIndex, string columnName, Expression expression, string columnFormat = null, IFormatProvider formatProvider = null, IValueConverter converter = null, string propertyName = null)
+        /// <param name="propertyPath">the properties of a nested property, when the column is not defined by an expression</param>
+        internal void AddColumn(Type type, int columnIndex, string columnName, Expression expression, string columnFormat = null, IFormatProvider formatProvider = null, IValueConverter converter = null, string propertyName = null, PropertyInfo[] propertyPath = null)
         {
             var index = columnIndex < 0 ? Columns.Count : columnIndex;
+            var path = propertyPath ?? expression?.GetNestedPropertyPath();
+            if (path != null)
+            {
+                propertyName = ExpressionExtensions.GetPropertyPathName(path);
+            }
 
             Columns.Add(new CsvColumn()
             {
@@ -208,7 +214,8 @@ namespace TinyCsv
                 ColumnExpression = expression,
                 ColumnFormat = columnFormat,
                 ColumnFormatProvider = formatProvider,
-                Converter = converter ?? ValueConverterFactory.CreateValueConverterByType(type)
+                Converter = converter ?? ValueConverterFactory.CreateValueConverterByType(type),
+                PropertyPath = path
             });
         }
 
@@ -230,29 +237,43 @@ namespace TinyCsv
         /// <summary>
         /// Adds a column for each public property of the type that can be read and written
         /// and whose type has a value converter, in the order of declaration.
-        /// The column name is the property name. Properties of other types (i.e. classes and collections) are ignored.
+        /// The column name is the property name. The properties of a class with a public parameterless constructor
+        /// are columns too, named as the nested property: Address.City is Address_City. Collections are ignored.
         /// </summary>
         /// <param name="type"></param>
         internal void AddColumnsFromProperties(Type type)
         {
-            var names = new HashSet<string>();
+            AddColumnsFromProperties(type, new PropertyInfo[0], new HashSet<Type> { type }, new HashSet<string>());
+        }
+
+        private void AddColumnsFromProperties(Type type, PropertyInfo[] parent, HashSet<Type> types, HashSet<string> names)
+        {
             foreach (var property in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
             {
+                var path = new PropertyInfo[parent.Length + 1];
+                parent.CopyTo(path, 0);
+                path[parent.Length] = property;
+                var name = ExpressionExtensions.GetColumnName(path);
+
                 if (property.GetIndexParameters().Length > 0
                     || property.GetGetMethod() == null
                     || property.GetSetMethod() == null
-                    || !names.Add(property.Name))
+                    || !names.Add(name))
                 {
                     continue;
                 }
 
                 var converter = ValueConverterFactory.CreateValueConverterByType(property.PropertyType);
-                if (converter.GetType() == typeof(DefaultValueConverter))
+                if (converter.GetType() != typeof(DefaultValueConverter))
                 {
-                    continue;
+                    AddColumn(property.PropertyType, Columns.Count, name, null, converter: converter, propertyName: property.Name, propertyPath: parent.Length > 0 ? path : null);
                 }
-
-                AddColumn(property.PropertyType, Columns.Count, property.Name, null, converter: converter, propertyName: property.Name);
+                else if (ExpressionExtensions.IsNestedType(property.PropertyType) && types.Add(property.PropertyType))
+                {
+                    // a type that contains itself (i.e. Person.Parent) is not expanded again
+                    AddColumnsFromProperties(property.PropertyType, path, types, names);
+                    types.Remove(property.PropertyType);
+                }
             }
         }
 
