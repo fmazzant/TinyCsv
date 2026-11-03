@@ -58,6 +58,8 @@ var products = csv.LoadFromFile("products.csv").ToList();
 | `new CsvReader(streamReader, ...)` + `GetRecords<T>()` | `LoadFromStream(streamReader)` / `LoadFromStream(stream)` |
 | `new CsvReader(new StringReader(text), ...)` + `GetRecords<T>()` | `LoadFromText(text)` |
 | `GetRecordsAsync<T>()` | `LoadFromFileAsync(path)` (an `IAsyncEnumerable<T>` on .NET 5+ and .NET Standard 2.1) |
+| `GetRecords<dynamic>()` | `new TinyCsvRecords(...).LoadDynamicFromFile(path)`, or `LoadFromFile(path)` for dictionaries |
+| `CsvDataReader` + `DataTable.Load` | `new TinyCsvRecords(...).LoadDataTableFromFile(path)` |
 | `csv.Read()` + `csv.GetField(i)` | `GetAllLinesAndFieldsFromFile(path)`, each item is the `string[]` of a row |
 
 Async:
@@ -93,9 +95,21 @@ string text = csv.GetAllText(products);
 
 The header is written when `HasHeaderRecord` is true. The values are quoted as [RFC 4180](https://www.rfc-editor.org/rfc/rfc4180) when they contain the delimiter, a quote or a new line.
 
+To write one record at a time, as `CsvWriter.WriteRecord`:
+
+```c#
+using (var writer = csv.CreateWriter("products.csv"))
+{
+    foreach (var product in products)
+    {
+        writer.WriteRecord(product);
+    }
+}
+```
+
 ## Mapping
 
-### ClassMap → `options.Columns`
+### ClassMap → `CsvClassMap<T>` or `options.Columns`
 
 CsvHelper:
 
@@ -115,7 +129,26 @@ public sealed class ProductMap : ClassMap<Product>
 csv.Context.RegisterClassMap<ProductMap>();
 ```
 
-TinyCsv:
+TinyCsv, with a class map that keeps the columns outside the model:
+
+```c#
+public sealed class ProductMap : CsvClassMap<Product>
+{
+    public ProductMap()
+    {
+        Options(o => o.HasHeaderRecord = true);
+        Map(m => m.Id).Index(0);
+        Map(m => m.Name).Name("Product name");
+        Map(m => m.CreatedOn).Format("dd/MM/yyyy");
+        Map(m => m.Notes).Converter(new Base64Converter());
+        // Internal is not mapped: it is ignored
+    }
+}
+
+var csv = new TinyCsv<Product>(new ProductMap());
+```
+
+or with the options:
 
 ```c#
 var csv = new TinyCsv<Product>(options =>
@@ -130,21 +163,24 @@ var csv = new TinyCsv<Product>(options =>
 });
 ```
 
-| CsvHelper `MemberMap` | TinyCsv |
-|---|---|
-| `Index(i)` | the order of `AddColumn`, or `AddColumn(i, "Name", m => m.X, converter)` |
-| `Name("x")` | `AddColumn("x", m => m.X)` |
-| `TypeConverterOption.Format("...")` | `AddColumn(m => m.X, "...")` |
-| `TypeConverterOption.CultureInfo(c)` | `AddColumn(m => m.X, c)` (an `IFormatProvider`) |
-| `TypeConverter<C>()` | `AddColumn(m => m.X, new C())` |
-| `Ignore()` | do not add the column |
-| `Optional()` | not supported: with `MapColumnsByHeader`, a missing column throws `MissingColumnException` |
-| `Default(v)` | not supported: an empty value is `null` for a nullable type, otherwise the default value of the type |
-| `Constant(v)` | not supported: set the value after the read |
-| `References<TMap>()` | not supported: the columns are properties of `T`. Read a flat model and project it |
+| CsvHelper `MemberMap` | `CsvClassMap<T>` | `options.Columns` |
+|---|---|---|
+| `Index(i)` | `Index(i)` | the order of `AddColumn`, or `AddColumn(i, "Name", m => m.X, converter)` |
+| `Name("x")` | `Name("x")` | `AddColumn("x", m => m.X)` |
+| `TypeConverterOption.Format("...")` | `Format("...")` | `AddColumn(m => m.X, "...")` |
+| `TypeConverterOption.CultureInfo(c)` | `FormatProvider(c)` | `AddColumn(m => m.X, c)` (an `IFormatProvider`) |
+| `TypeConverter<C>()` | `Converter(new C())` | `AddColumn(m => m.X, new C())` |
+| `Ignore()` | do not map the property | do not add the column |
+| `References<TMap>()`, `Map(m => m.Address.City)` | `Map(m => m.Address.City)` | `AddColumn(m => m.Address.City)` |
+| `Optional()` | not supported | with `MapColumnsByHeader`, a missing column throws `MissingColumnException` |
+| `Default(v)` | not supported | an empty value is `null` for a nullable type, otherwise the default value of the type |
+| `Constant(v)` | not supported | set the value after the read |
+
+A nested property (`m => m.Address.City`) is the column `Address_City`: when reading, the null objects (`Address`) are created.
 
 When no column is defined, TinyCsv maps every public property with a getter, a setter and a supported type, in the order of declaration,
-like the auto map of CsvHelper. As soon as one column is defined, only the defined columns are mapped.
+like the auto map of CsvHelper. The properties of a class with a public parameterless constructor are mapped too, i.e. `Address_City`.
+As soon as one column is defined, only the defined columns are mapped.
 
 ### Attributes
 
@@ -214,6 +250,7 @@ TinyCsv has built-in converters for the primitive types, `decimal`, `DateTime`, 
 | `CsvConfiguration` | `CsvOptions<T>` |
 |---|---|
 | `Delimiter` | `Delimiter` |
+| `DetectDelimiter`, `DetectDelimiterValues` | `DetectDelimiter`, `DelimiterCandidates` (comma, semicolon, tab and pipe) |
 | `HasHeaderRecord` | `HasHeaderRecord` |
 | `Quote` | `DoubleQuotes` |
 | `Escape = '\\'` | `AllowBackSlashToEscapeQuote = true` |
@@ -260,7 +297,7 @@ See [Event handlers](../README.md#event-handlers).
 
 ## What TinyCsv does not do
 
-- dynamic records (`GetRecords<dynamic>()`) and anonymous types: TinyCsv maps to a class with a parameterless constructor;
-- reference maps and nested objects;
+- anonymous types: TinyCsv maps to a class with a parameterless constructor, or reads the records without a model with `TinyCsvRecords`;
+- writing dynamic records and dictionaries;
 - constructor mapping (records with a primary constructor and no setters);
 - reading field by field with `Read()`/`GetField<T>()`: use `GetAllLinesAndFieldsFromFile` to get the raw fields of each row.

@@ -170,20 +170,19 @@ namespace CsvSampleConsoleApp
                 // Options
                 options.HasHeaderRecord = true;
                 options.Delimiter = ";";
-                options.RowsToSkip = 0;
                 options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
                 options.TrimData = true;
-                options.ValidateColumnCount = false;
                 options.EnableHandlers = false;
 
                 // Columns
-                options.Columns.AddColumn(m => m.Id);
-                options.Columns.AddColumn(m => m.Name);
-                options.Columns.AddColumn(m => m.Price);
-                options.Columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
-                options.Columns.AddColumn(m => m.TextBase64, new Base64Converter());
-                options.Columns.AddColumn(m => m.WebSite);
-                options.Columns.AddColumn(m => m.RowType);
+                var columns = options.Columns;
+                columns.AddColumn(m => m.Id);
+                columns.AddColumn(m => m.Name);
+                columns.AddColumn(m => m.Price);
+                columns.AddColumn(m => m.CreatedOn, "dd/MM/yyyy");
+                columns.AddColumn(m => m.TextBase64, new Base64Converter());
+                columns.AddColumn(m => m.WebSite);
+                columns.AddColumn(m => m.RowType);
 
                 //Event Handlers Read
                 options.Handlers.Read.RowHeader += (s, e) => Console.WriteLine($"Row header: {e.RowHeader}");
@@ -240,6 +239,9 @@ namespace CsvSampleConsoleApp
 
             // write on file async
             await csv.SaveAsync("file_export.csv", models);
+
+            // the features of 3.5
+            await Features35.RunAsync();
         }
 
         public static class Memory

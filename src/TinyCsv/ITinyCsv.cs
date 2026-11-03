@@ -292,5 +292,28 @@ namespace TinyCsv
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<string[]> GetAllLinesAsync(IEnumerable<T> models, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Creates a writer that writes the records one at a time to a file, for very large files: dispose it at the end.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        TinyCsvWriter<T> CreateWriter(string path);
+
+        /// <summary>
+        /// Creates a writer that writes the records one at a time to a stream, for very large files: dispose it at the end.
+        /// The stream is left open.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        TinyCsvWriter<T> CreateWriter(Stream stream);
+
+        /// <summary>
+        /// Creates a writer that writes the records one at a time to a stream writer, for very large files: dispose it at the end.
+        /// The stream writer is left open.
+        /// </summary>
+        /// <param name="streamWriter"></param>
+        /// <returns></returns>
+        TinyCsvWriter<T> CreateWriter(StreamWriter streamWriter);
     }
 }
