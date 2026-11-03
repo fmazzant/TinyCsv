@@ -48,8 +48,26 @@ namespace TinyCsv
         public void WriteRecord(T model)
         {
             WriteHeaderIfNotStarted();
+            WriteRow(model, options.Handlers.Write);
+        }
 
+        /// <summary>
+        /// Writes the records
+        /// </summary>
+        /// <param name="models"></param>
+        public void WriteRecords(IEnumerable<T> models)
+        {
+            // the header and the handlers once, out of the loop
+            WriteHeaderIfNotStarted();
             var handlers = options.Handlers.Write;
+            foreach (var model in models)
+            {
+                WriteRow(model, handlers);
+            }
+        }
+
+        private void WriteRow(T model, CsvOptions<T>.WriteEventHandlers handlers)
+        {
             handlers.OnRowWriting(Count, model);
             builder.Build(model);
             if (handlers.Enabled)
@@ -65,18 +83,6 @@ namespace TinyCsv
                 writer.WriteLine();
             }
             Count++;
-        }
-
-        /// <summary>
-        /// Writes the records
-        /// </summary>
-        /// <param name="models"></param>
-        public void WriteRecords(IEnumerable<T> models)
-        {
-            foreach (var model in models)
-            {
-                WriteRecord(model);
-            }
         }
 
         /// <summary>
