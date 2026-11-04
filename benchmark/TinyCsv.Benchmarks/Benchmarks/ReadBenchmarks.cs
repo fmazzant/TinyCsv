@@ -23,36 +23,47 @@ public class ReadBenchmarks : BenchmarkBase
     ];
 
     [Benchmark(Baseline = true)]
+    [BenchmarkCategory("Main")]
     public int TinyCsv() => Consume(Benchmarks.Libraries.ReadTinyCsv(text));
 
     [Benchmark]
+    [BenchmarkCategory("Main")]
     public int CsvHelper() => Consume(Benchmarks.Libraries.ReadCsvHelper(text));
 
     [Benchmark]
+    [BenchmarkCategory("Main")]
     public int Sylvan() => Consume(Benchmarks.Libraries.ReadSylvan(text));
 
     [Benchmark]
+    [BenchmarkCategory("Main")]
     public int Sep() => Consume(Benchmarks.Libraries.ReadSep(text));
 
     [Benchmark]
+    [BenchmarkCategory("Other")]
     public int FileHelpers() => Consume(Benchmarks.Libraries.ReadFileHelpers(text));
 
     [Benchmark]
+    [BenchmarkCategory("Other")]
     public int TinyCsvParser() => Consume(Benchmarks.Libraries.ReadTinyCsvParser(text));
 
     [Benchmark]
+    [BenchmarkCategory("Main")]
     public int RecordParser() => Consume(Benchmarks.Libraries.ReadRecordParser(text));
 
     [Benchmark]
+    [BenchmarkCategory("Other")]
     public int Csv() => Consume(Benchmarks.Libraries.ReadCsv(text));
 
     [Benchmark]
+    [BenchmarkCategory("Other")]
     public int NRecoCsv() => Consume(Benchmarks.Libraries.ReadNReco(text));
 
     [Benchmark]
+    [BenchmarkCategory("Other")]
     public int LumenWorks() => Consume(Benchmarks.Libraries.ReadLumenWorks(text));
 
     [Benchmark]
+    [BenchmarkCategory("Other")]
     public int TextFieldParser() => Consume(Benchmarks.Libraries.ReadTextFieldParser(text));
 
     private static int Consume(IEnumerable<Model> models)

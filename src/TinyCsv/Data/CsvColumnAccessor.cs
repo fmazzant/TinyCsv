@@ -47,8 +47,8 @@ namespace TinyCsv.Data
         public CsvColumnBinding(CsvColumn column, CsvOptions<T> options)
         {
             Column = column;
-            Accessor = CsvColumnAccessor<T>.Get(column, options);
             Provider = column.GetFormatProvider(options.Culture);
+            Accessor = CsvColumnAccessor<T>.Get(column, options).Bind(Provider);
 
             // the format providers whose result is known: the others are used by the converter
             if (Provider is CsvColumn.DefaultFormatProvider formatProvider)
@@ -113,6 +113,18 @@ namespace TinyCsv.Data
         /// Appends the value of the property of the model to the line
         /// </summary>
         public abstract void AppendValue(T model, CsvLineBuilder<T> line, CsvColumnBinding<T> binding);
+
+        /// <summary>
+        /// Returns the accessor of a binding with the format provider: the accessors that depend on the provider
+        /// (i.e. the fast parser of the values) return a copy, the others return this accessor.
+        /// The accessor of the column is shared, so it is never changed.
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <returns></returns>
+        public virtual CsvColumnAccessor<T> Bind(IFormatProvider provider)
+        {
+            return this;
+        }
 
         /// <summary>
         /// Returns the accessor of the column, created the first time
@@ -233,6 +245,7 @@ namespace TinyCsv.Data
         private readonly Action<T, TValue> setter;
         private readonly ParsableValueConverter<TValue> converter;
         private readonly bool defaultConvert;
+        private readonly ValueParser<TValue> parser;
 
         public ParsableColumnAccessor(PropertyInfo property, ParsableValueConverter<TValue> converter, bool defaultConvert)
         {
@@ -242,10 +255,33 @@ namespace TinyCsv.Data
             this.defaultConvert = defaultConvert;
         }
 
+        private ParsableColumnAccessor(ParsableColumnAccessor<T, TValue> accessor, ValueParser<TValue> parser)
+        {
+            getter = accessor.getter;
+            setter = accessor.setter;
+            converter = accessor.converter;
+            defaultConvert = accessor.defaultConvert;
+            this.parser = parser;
+        }
+
+        public override CsvColumnAccessor<T> Bind(IFormatProvider provider)
+        {
+            var valueParser = converter.GetParser(provider);
+            return valueParser == null ? this : new ParsableColumnAccessor<T, TValue>(this, valueParser);
+        }
+
         public override void SetValue(T model, CsvField value, CsvColumnBinding<T> binding, bool validateValues)
         {
-            // as ParsableValueConverter.TryConvertBack: an empty value is the default value
             var span = value.Span;
+
+            // the common values, without looking up the culture and the format
+            if (parser != null && parser.TryParse(span, out var fast))
+            {
+                setter(model, fast);
+                return;
+            }
+
+            // as ParsableValueConverter.TryConvertBack: an empty value is the default value
             var isEmpty = IsWhiteSpace(span);
             if (!isEmpty && converter.TryParseValue(span, binding.Provider, out var parsed))
             {

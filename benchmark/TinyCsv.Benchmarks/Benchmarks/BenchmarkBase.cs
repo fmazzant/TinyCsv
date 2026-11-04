@@ -5,7 +5,6 @@ namespace TinyCsv.Benchmarks;
 
 [MemoryDiagnoser]
 [GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByParams)]
-[CategoriesColumn]
 public abstract class BenchmarkBase
 {
     [Params(1_000, 100_000)]
