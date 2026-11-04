@@ -34,6 +34,11 @@ namespace TinyCsv.Data
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
+#if NET8_0_OR_GREATER
+    using System.Numerics;
+    using System.Runtime.CompilerServices;
+    using System.Runtime.Intrinsics;
+#endif
 
     /// <summary>
     /// Reads logical CSV records from a TextReader.
@@ -55,8 +60,15 @@ namespace TinyCsv.Data
         private readonly char[] stops;
         private readonly char[] quotedStops;
         private readonly bool backwardFieldStart;
+        private readonly bool findDelimiters;
 
         private char[] buffer = new char[InitialBufferSize];
+        private int[] delimiters;
+        private int delimiterCount;
+        private bool recordHasQuote;
+        private int[] quotedFields;
+        private int quotedFieldCount;
+        private bool recordRead;
         private int length;
         private int recordStart;
         private int fieldStart;
@@ -108,7 +120,48 @@ namespace TinyCsv.Data
             }
             stops = stopChars.ToArray();
             quotedStops = quotedStopChars.ToArray();
+
+#if NET8_0_OR_GREATER
+            // with a single char delimiter (and without backslash escapes) the delimiters are found while looking for
+            // the end of the record, in blocks of chars (see TryReadRecordAndDelimiters), so the fields are not scanned again
+            findDelimiters = allowBackwardFieldStart && !backslash && delimiter.Length == 1
+                && delimiter[0] != quote && delimiter[0] != '\r' && delimiter[0] != '\n';
+            if (findDelimiters)
+            {
+                delimiters = new int[16];
+                quotedFields = new int[4];
+            }
+#endif
         }
+
+        /// <summary>
+        /// True when the positions of the delimiters of the current record are known (see Delimiters):
+        /// the fields are the chars between the delimiters, or between the quotes of a quoted field (see QuotedFields).
+        /// A record with other quotes (i.e. spaces before a quoted field, chars after the closing quote,
+        /// a quote inside a field or a quoted field not closed) does not have the delimiters.
+        /// </summary>
+        public bool HasDelimiters => findDelimiters && !recordHasQuote;
+
+        /// <summary>
+        /// The quoted fields of the current record (see HasDelimiters): the index of the field multiplied by 2,
+        /// plus 1 when the field has an escaped (doubled) quote. The quotes are the first and the last char of the field.
+        /// </summary>
+        public int[] QuotedFields => quotedFields;
+
+        /// <summary>
+        /// The number of the quoted fields of the current record (see QuotedFields)
+        /// </summary>
+        public int QuotedFieldCount => quotedFieldCount;
+
+        /// <summary>
+        /// The positions of the delimiters of the current record, from CurrentStart (see HasDelimiters)
+        /// </summary>
+        public int[] Delimiters => delimiters;
+
+        /// <summary>
+        /// The number of the delimiters of the current record (see HasDelimiters)
+        /// </summary>
+        public int DelimiterCount => delimiterCount;
 
         /// <summary>
         /// Read the next record, without the trailing new line. Returns null at the end of the stream.
@@ -205,6 +258,12 @@ namespace TinyCsv.Data
         /// <returns></returns>
         private bool TryReadRecord()
         {
+#if NET8_0_OR_GREATER
+            if (findDelimiters)
+            {
+                return TryReadRecordAndDelimiters();
+            }
+#endif
             var i = scanPosition;
             while (i < length)
             {
@@ -287,6 +346,267 @@ namespace TinyCsv.Data
             return false;
         }
 
+#if NET8_0_OR_GREATER
+        private const int BlockSize = 32;
+        private const int RecordFound = -1;
+        private const int NeedData = -2;
+
+        /// <summary>
+        /// As TryReadRecord, finding also the delimiters of the record (see HasDelimiters).
+        /// The chars are scanned in blocks of 32: a block is compared with the delimiter, the quote and the new lines
+        /// at once, and only the chars found are handled one by one.
+        /// </summary>
+        /// <returns></returns>
+        private bool TryReadRecordAndDelimiters()
+        {
+            if (recordRead)
+            {
+                // the first scan of a new record
+                delimiterCount = 0;
+                recordHasQuote = false;
+                quotedFieldCount = 0;
+                recordRead = false;
+            }
+
+            var d = delimiter[0];
+            // without quoting the quote is not special: a new line is searched in its place
+            var q = quoting ? quote : '\n';
+            var i = scanPosition;
+            while (i < length)
+            {
+                if (length - i >= BlockSize)
+                {
+                    var blockStart = i;
+                    var stops = FindChars(ref buffer[blockStart], d, q, out var delimiterBits);
+                    if (inQuotes)
+                    {
+                        // in a quoted field only the quotes matter: the delimiters and the new lines belong to the field
+                        if (stops == 0)
+                        {
+                            i = blockStart + BlockSize;
+                            continue;
+                        }
+                        i = OnSpecialChar(blockStart + BitOperations.TrailingZeroCount(stops));
+                        if (i < 0)
+                        {
+                            return i == RecordFound;
+                        }
+                        continue;
+                    }
+
+                    // the delimiters before the first quote or new line, then the quote or the new line
+                    var stop = BitOperations.TrailingZeroCount(stops);
+                    if (stop < BlockSize)
+                    {
+                        delimiterBits &= (1u << stop) - 1;
+                    }
+                    if (delimiterBits != 0)
+                    {
+                        AddDelimiters(blockStart - recordStart, delimiterBits);
+                    }
+                    if (stops == 0)
+                    {
+                        i = blockStart + BlockSize;
+                        continue;
+                    }
+                    i = OnSpecialChar(blockStart + stop);
+                    if (i < 0)
+                    {
+                        return i == RecordFound;
+                    }
+                    continue;
+                }
+
+                var c = buffer[i];
+                if (c == d || c == q || c == '\r' || c == '\n')
+                {
+                    i = OnSpecialChar(i);
+                    if (i < 0)
+                    {
+                        return i == RecordFound;
+                    }
+                }
+                else
+                {
+                    i++;
+                }
+            }
+            scanPosition = i;
+            return false;
+        }
+
+        /// <summary>
+        /// Adds the delimiters of the bits, from the offset in the record
+        /// </summary>
+        private void AddDelimiters(int offset, uint bits)
+        {
+            var count = delimiterCount;
+            if (count + BlockSize > delimiters.Length)
+            {
+                Array.Resize(ref delimiters, Math.Max(delimiters.Length * 2, count + BlockSize));
+            }
+            var positions = delimiters;
+            do
+            {
+                positions[count++] = offset + BitOperations.TrailingZeroCount(bits);
+                bits &= bits - 1;
+            }
+            while (bits != 0);
+            delimiterCount = count;
+        }
+
+        /// <summary>
+        /// Handles the delimiter, the quote or the new line at the position, as TryReadRecord does.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns>the next position to scan, RecordFound or NeedData (then scanPosition is set)</returns>
+        private int OnSpecialChar(int position)
+        {
+            var c = buffer[position];
+            if (inQuotes)
+            {
+                // the delimiters and the new lines belong to the quoted field
+                if (c != quote)
+                {
+                    return position + 1;
+                }
+                // a doubled quote is an escaped quote, otherwise it closes the field
+                if (position + 1 < length)
+                {
+                    if (buffer[position + 1] == quote)
+                    {
+                        if (quotedFieldCount > 0)
+                        {
+                            quotedFields[quotedFieldCount - 1] |= 1;
+                        }
+                        return position + 2;
+                    }
+                    // the fields between the quotes are known when the closing quote ends the field
+                    var next = buffer[position + 1];
+                    if (next != delimiter[0] && next != '\r' && next != '\n')
+                    {
+                        recordHasQuote = true;
+                    }
+                    inQuotes = false;
+                    return position + 1;
+                }
+                if (endOfStream)
+                {
+                    inQuotes = false;
+                    return position + 1;
+                }
+                scanPosition = position;
+                return NeedData;
+            }
+
+            if (c == delimiter[0])
+            {
+                if (delimiterCount == delimiters.Length)
+                {
+                    Array.Resize(ref delimiters, delimiters.Length * 2);
+                }
+                delimiters[delimiterCount++] = position - recordStart;
+                fieldStart = position + 1;
+                return position + 1;
+            }
+
+            if (c == '\r' || c == '\n')
+            {
+                var next = position;
+                if (c == '\r')
+                {
+                    if (position + 1 < length)
+                    {
+                        if (buffer[position + 1] == '\n') { next++; }
+                    }
+                    else if (!endOfStream)
+                    {
+                        scanPosition = position;
+                        return NeedData;
+                    }
+                }
+                CurrentStart = recordStart;
+                CurrentLength = position - recordStart;
+                recordStart = fieldStart = scanPosition = next + 1;
+                recordRead = true;
+                return RecordFound;
+            }
+
+            // the quote: it opens a quoted field only at the start of the field, elsewhere it is a literal char
+            // the field starts after the last delimiter (the blocks do not update fieldStart, see AddDelimiters)
+            fieldStart = recordStart + (delimiterCount > 0 ? delimiters[delimiterCount - 1] + 1 : 0);
+            inQuotes = IsFieldStart(position);
+            if (inQuotes && position == fieldStart)
+            {
+                if (quotedFieldCount == quotedFields.Length)
+                {
+                    Array.Resize(ref quotedFields, quotedFields.Length * 2);
+                }
+                quotedFields[quotedFieldCount++] = delimiterCount << 1;
+            }
+            else
+            {
+                // a quote inside a field, or spaces before the quote
+                recordHasQuote = true;
+            }
+            return position + 1;
+        }
+
+        /// <summary>
+        /// The bits of the 32 chars from the reference that are the quote or a new line (the result)
+        /// and the bits of the delimiters
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint FindChars(ref char chars, char delimiter, char quote, out uint delimiters)
+        {
+            ref var start = ref Unsafe.As<char, ushort>(ref chars);
+            if (Vector512.IsHardwareAccelerated)
+            {
+                var v = Vector512.LoadUnsafe(ref start);
+                delimiters = (uint)Vector512.Equals(v, Vector512.Create((ushort)delimiter)).ExtractMostSignificantBits();
+                var stops = Vector512.Equals(v, Vector512.Create((ushort)quote))
+                    | Vector512.Equals(v, Vector512.Create((ushort)'\r'))
+                    | Vector512.Equals(v, Vector512.Create((ushort)'\n'));
+                return (uint)stops.ExtractMostSignificantBits();
+            }
+            if (Vector256.IsHardwareAccelerated)
+            {
+                var low = FindChars256(ref start, delimiter, quote, out var lowDelimiters);
+                var high = FindChars256(ref Unsafe.Add(ref start, 16), delimiter, quote, out var highDelimiters);
+                delimiters = lowDelimiters | (highDelimiters << 16);
+                return low | (high << 16);
+            }
+            var stops0 = FindChars128(ref start, delimiter, quote, out var delimiters0);
+            var stops1 = FindChars128(ref Unsafe.Add(ref start, 8), delimiter, quote, out var delimiters1);
+            var stops2 = FindChars128(ref Unsafe.Add(ref start, 16), delimiter, quote, out var delimiters2);
+            var stops3 = FindChars128(ref Unsafe.Add(ref start, 24), delimiter, quote, out var delimiters3);
+            delimiters = delimiters0 | (delimiters1 << 8) | (delimiters2 << 16) | (delimiters3 << 24);
+            return stops0 | (stops1 << 8) | (stops2 << 16) | (stops3 << 24);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint FindChars256(ref ushort start, char delimiter, char quote, out uint delimiters)
+        {
+            var v = Vector256.LoadUnsafe(ref start);
+            delimiters = Vector256.Equals(v, Vector256.Create((ushort)delimiter)).ExtractMostSignificantBits();
+            var stops = Vector256.Equals(v, Vector256.Create((ushort)quote))
+                | Vector256.Equals(v, Vector256.Create((ushort)'\r'))
+                | Vector256.Equals(v, Vector256.Create((ushort)'\n'));
+            return stops.ExtractMostSignificantBits();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint FindChars128(ref ushort start, char delimiter, char quote, out uint delimiters)
+        {
+            var v = Vector128.LoadUnsafe(ref start);
+            delimiters = Vector128.Equals(v, Vector128.Create((ushort)delimiter)).ExtractMostSignificantBits();
+            var stops = Vector128.Equals(v, Vector128.Create((ushort)quote))
+                | Vector128.Equals(v, Vector128.Create((ushort)'\r'))
+                | Vector128.Equals(v, Vector128.Create((ushort)'\n'));
+            return stops.ExtractMostSignificantBits();
+        }
+#endif
+
         /// <summary>
         /// True when only (trimmable) spaces are between the field start and the position
         /// </summary>
@@ -338,7 +658,10 @@ namespace TinyCsv.Data
             CurrentStart = recordStart;
             CurrentLength = length - recordStart;
             recordStart = fieldStart = scanPosition = length;
+            // a quoted field not closed
+            recordHasQuote |= inQuotes;
             inQuotes = false;
+            recordRead = true;
             return true;
         }
 

@@ -30,6 +30,7 @@
 namespace TinyCsv.Data
 {
     using TinyCsv.Exceptions;
+    using TinyCsv.Helpers;
 
     using System;
     using System.IO;
@@ -50,7 +51,8 @@ namespace TinyCsv.Data
         private readonly CsvColumnBinding<T>[] bindings;
         private readonly CsvRecordReader records;
         private CsvField[] fields;
-        private int[] fieldIndexes;
+        private int[] columnFieldIndexes;
+        private readonly Func<T> createModel = ModelFactory<T>.Create;
         private int recordIndex;
         private int index;
         private string line;
@@ -72,6 +74,12 @@ namespace TinyCsv.Data
             this.options = options;
             this.columnsCount = options.Columns.Count;
             this.bindings = CsvColumnBinding<T>.Create(options);
+            // the field of each column: its index, or the index found in the header record (see MapColumnsByHeader)
+            this.columnFieldIndexes = new int[bindings.Length];
+            for (int position = 0; position < bindings.Length; position++)
+            {
+                columnFieldIndexes[position] = bindings[position].Column.ColumnIndex;
+            }
             this.records = new CsvRecordReader(textReader, options);
             DataReader = new TinyCsvDataReader<T>(options, textReader);
             options.Handlers.OnStart();
@@ -167,7 +175,7 @@ namespace TinyCsv.Data
                 }
                 if (options.MapColumnsByHeader)
                 {
-                    fieldIndexes = options.GetFieldIndexesByHeader(DataReader.GetFieldsByLine(Line, columnsCount));
+                    columnFieldIndexes = options.GetFieldIndexesByHeader(DataReader.GetFieldsByLine(Line, columnsCount));
                 }
                 model = null;
                 return false;
@@ -175,13 +183,17 @@ namespace TinyCsv.Data
 
             try
             {
-                var count = DataReader.ReadFields(records.Buffer, records.CurrentStart, records.CurrentLength, columnsCount, ref fields);
+                // with the delimiters of the record the fields are created only for the columns (see GetField)
+                var hasDelimiters = records.HasDelimiters;
+                var count = hasDelimiters
+                    ? DataReader.CountFields(records.Buffer, records.CurrentStart, records.CurrentLength, records.Delimiters, records.DelimiterCount, columnsCount)
+                    : DataReader.ReadFields(records.Buffer, records.CurrentStart, records.CurrentLength, columnsCount, ref fields);
                 if (options.ValidateColumnCount && columnsCount > count)
                 {
                     throw new InvalidColumnCountException($"Invalid column count {count}, required {columnsCount} columns.");
                 }
 
-                model = CreateModel(count);
+                model = CreateModel(count, hasDelimiters);
                 return true;
             }
             catch (CsvException exception)
@@ -203,30 +215,55 @@ namespace TinyCsv.Data
         /// Creates the model from the fields of the record, as GetModelFromStringArray does
         /// </summary>
         /// <param name="count">the number of fields</param>
+        /// <param name="hasDelimiters">true when the fields are created from the delimiters of the record, false when they are in the fields buffer</param>
         /// <returns></returns>
         /// <exception cref="InvalidColumnValueException"></exception>
-        private T CreateModel(int count)
+        private T CreateModel(int count, bool hasDelimiters)
         {
-            var model = new T();
+            var model = createModel();
             var validateValues = options.ValidateValues;
-            for (int position = 0; position < bindings.Length; position++)
+            var fieldIndexes = columnFieldIndexes;
+            var dataReader = DataReader;
+            var buffer = records.Buffer;
+            var start = records.CurrentStart;
+            var length = records.CurrentLength;
+            var delimiters = records.Delimiters;
+            var delimiterCount = records.DelimiterCount;
+            // the quoted fields are found in the record, the others are the chars between the delimiters
+            var hasQuotedFields = records.QuotedFieldCount > 0;
+            var position = 0;
+            try
             {
-                var binding = bindings[position];
-                var fieldIndex = fieldIndexes == null ? binding.Column.ColumnIndex : fieldIndexes[position];
-                if (fieldIndex < count)
+                for (; position < bindings.Length; position++)
                 {
-                    var value = fields[fieldIndex];
-                    try
+                    var fieldIndex = fieldIndexes[position];
+                    if (fieldIndex < count)
                     {
+                        var binding = bindings[position];
+                        var value = !hasDelimiters ? fields[fieldIndex]
+                            : hasQuotedFields ? dataReader.GetField(records, fieldIndex)
+                            : dataReader.GetField(buffer, start, length, delimiters, delimiterCount, fieldIndex);
                         binding.Accessor.SetValue(model, value, binding, validateValues);
-                    }
-                    catch (Exception exception) when (!(exception is CsvException))
-                    {
-                        throw binding.Column.NotConvertibleValueException(value.ToString(), exception);
                     }
                 }
             }
+            catch (Exception exception) when (!(exception is CsvException))
+            {
+                var value = GetField(fieldIndexes[position], hasDelimiters);
+                throw bindings[position].Column.NotConvertibleValueException(value.ToString(), exception);
+            }
             return model;
+        }
+
+        /// <summary>
+        /// The field at the index of the current record
+        /// </summary>
+        /// <param name="fieldIndex"></param>
+        /// <param name="hasDelimiters">true when the field is created from the delimiters of the record, false when it is in the fields buffer</param>
+        /// <returns></returns>
+        private CsvField GetField(int fieldIndex, bool hasDelimiters)
+        {
+            return hasDelimiters ? DataReader.GetField(records, fieldIndex) : fields[fieldIndex];
         }
 
         /// <summary>

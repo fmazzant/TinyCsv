@@ -111,6 +111,17 @@ namespace TinyCsv.Conversions
         }
 
         /// <summary>
+        /// Returns the fast parser of the values with the format provider, resolved once for a read,
+        /// or null when the values are parsed only by TryParseValue (see ValueParser)
+        /// </summary>
+        /// <param name="provider">the format provider</param>
+        /// <returns></returns>
+        internal virtual ValueParser<TValue> GetParser(IFormatProvider provider)
+        {
+            return null;
+        }
+
+        /// <summary>
         /// Returns the format of the column, if any
         /// </summary>
         /// <param name="provider"></param>

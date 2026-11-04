@@ -166,6 +166,157 @@ namespace TinyCsv.Data
             return ReadFields(new ReadOnlySpan<char>(buffer, start, length), new RecordSource(null, buffer, start), columnsCount, ref fields);
         }
 
+        /// <summary>
+        /// Reads the fields of the current record of the reader, when its delimiters are known (see CsvRecordReader.HasDelimiters),
+        /// with the same result of ReadFields
+        /// </summary>
+        /// <param name="records"></param>
+        /// <param name="columnsCount">the expected number of columns, used as initial capacity</param>
+        /// <param name="fields">the buffer of the fields: it grows when it is too small</param>
+        /// <returns>the number of fields</returns>
+        internal int ReadFields(CsvRecordReader records, int columnsCount, ref CsvField[] fields)
+        {
+            var count = CountFields(records.Buffer, records.CurrentStart, records.CurrentLength, records.Delimiters, records.DelimiterCount, columnsCount);
+            if (fields == null || fields.Length < count)
+            {
+                fields = new CsvField[Math.Max(count, Math.Max(columnsCount, 8))];
+            }
+            for (int index = 0; index < count; index++)
+            {
+                fields[index] = GetField(records, index);
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// The field at the index of the current record of the reader, when its delimiters are known (see CsvRecordReader.HasDelimiters):
+        /// a quoted field is the value between the quotes, with the escaped quotes unescaped
+        /// </summary>
+        /// <param name="records"></param>
+        /// <param name="index">the index of the field, less than the number of the fields</param>
+        /// <returns></returns>
+        internal CsvField GetField(CsvRecordReader records, int index)
+        {
+            var quotedFields = records.QuotedFields;
+            for (int k = 0; k < records.QuotedFieldCount; k++)
+            {
+                var quoted = quotedFields[k];
+                if (quoted >> 1 != index)
+                {
+                    continue;
+                }
+                var delimiters = records.Delimiters;
+                var fieldStart = index == 0 ? 0 : delimiters[index - 1] + 1;
+                var fieldEnd = index < records.DelimiterCount ? delimiters[index] : records.CurrentLength;
+                // the value between the quotes, that are the first and the last char of the field
+                var start = records.CurrentStart + fieldStart + 1;
+                var length = fieldEnd - fieldStart - 2;
+                return (quoted & 1) == 0
+                    ? new CsvField(records.Buffer, start, length)
+                    : new CsvField(Unescape(records.Buffer, start, length));
+            }
+            return GetField(records.Buffer, records.CurrentStart, records.CurrentLength, records.Delimiters, records.DelimiterCount, index);
+        }
+
+        /// <summary>
+        /// The value of a quoted field with the doubled quotes as single quotes
+        /// </summary>
+        private string Unescape(char[] buffer, int start, int length)
+        {
+#if NET8_0_OR_GREATER
+            // the quotes are doubled, so the value has half of them
+            var quotes = new ReadOnlySpan<char>(buffer, start, length).Count(quote);
+            return string.Create(length - quotes / 2, (buffer, start, length, quote), (chars, state) =>
+            {
+                var count = 0;
+                var end = state.start + state.length;
+                for (int i = state.start; i < end; i++)
+                {
+                    chars[count++] = state.buffer[i];
+                    if (state.buffer[i] == state.quote)
+                    {
+                        // the second quote of a doubled quote
+                        i++;
+                    }
+                }
+            });
+#else
+            var chars = new char[length];
+            var count = 0;
+            var end = start + length;
+            for (int i = start; i < end; i++)
+            {
+                chars[count++] = buffer[i];
+                if (buffer[i] == quote)
+                {
+                    // the second quote of a doubled quote
+                    i++;
+                }
+            }
+            return new string(chars, 0, count);
+#endif
+        }
+
+        /// <summary>
+        /// The number of the fields of a record without quotes whose delimiters are known, as ReadFields:
+        /// the fields are not created, see GetField.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="start">the start of the record in the buffer</param>
+        /// <param name="length">the length of the record</param>
+        /// <param name="delimiters">the positions of the delimiters, from the start of the record</param>
+        /// <param name="delimiterCount">the number of the delimiters</param>
+        /// <param name="columnsCount">the expected number of columns</param>
+        /// <returns></returns>
+        internal int CountFields(char[] buffer, int start, int length, int[] delimiters, int delimiterCount, int columnsCount)
+        {
+            if (length == 0)
+            {
+                return 0;
+            }
+            if (buffer[start] == options.Comment && !options.AllowComment)
+            {
+                throw new NotAllowCommentException();
+            }
+            if (delimiterCount > 0 && delimiters[delimiterCount - 1] == length - 1)
+            {
+                // "a;b;" with 3 columns: the last field is empty, it is not an end of line delimiter
+                if (delimiterCount < columnsCount)
+                {
+                    return delimiterCount + 1;
+                }
+                if (!options.EndOfLineDelimiterChar)
+                {
+                    throw new EndOfLineDelimiterCharException($"The delimiter {options.Delimiter} in the end of line is not valid!");
+                }
+                return delimiterCount;
+            }
+            return delimiterCount + 1;
+        }
+
+        /// <summary>
+        /// The field at the index of a record without quotes whose delimiters are known (see CountFields)
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="start">the start of the record in the buffer</param>
+        /// <param name="length">the length of the record</param>
+        /// <param name="delimiters">the positions of the delimiters, from the start of the record</param>
+        /// <param name="delimiterCount">the number of the delimiters</param>
+        /// <param name="index">the index of the field, less than the number of the fields</param>
+        /// <returns></returns>
+        internal CsvField GetField(char[] buffer, int start, int length, int[] delimiters, int delimiterCount, int index)
+        {
+            var fieldStart = index == 0 ? 0 : delimiters[index - 1] + 1;
+            var fieldEnd = index < delimiterCount ? delimiters[index] : length;
+            var fieldLength = fieldEnd - fieldStart;
+            fieldStart += start;
+            if (trimData)
+            {
+                TrimSpaces(new ReadOnlySpan<char>(buffer), ref fieldStart, ref fieldLength);
+            }
+            return new CsvField(buffer, fieldStart, fieldLength);
+        }
+
         private int ReadFields(ReadOnlySpan<char> span, RecordSource source, int columnsCount, ref CsvField[] fields)
         {
             if (span[0] == options.Comment && !options.AllowComment)

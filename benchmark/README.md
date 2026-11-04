@@ -58,45 +58,58 @@ Before measuring, the setup checks that every library reads the same models and 
 
 ```bash
 cd benchmark/TinyCsv.Benchmarks
-dotnet run -c Release                                   # all, about 25 minutes
-dotnet run -c Release -- --filter *Read*                # only the read
-dotnet run -c Release -- --filter * --job short         # quicker, less accurate
+dotnet run -c Release -f net10.0 -- --filter *                                 # the main libraries, on .NET 10
+dotnet run -c Release -f net10.0 -- --filter *Read*                            # only the read
+dotnet run -c Release -f net10.0 -- --filter * --job short                     # quicker, less accurate
+dotnet run -c Release -f net10.0 -- --filter * --runtimes net8.0 net10.0       # .NET 8 and .NET 10 in the same table
+dotnet run -c Release -f net10.0 -- --filter * --anyCategories Main Other      # all the libraries
 ```
+
+The project targets .NET 8 and .NET 10, so `dotnet run` needs the framework (`-f`).
+Running all the libraries is slow, so by default only the `Main` category runs:
+TinyCsv, CsvHelper (the most popular library) and Sylvan, Sep and RecordParser (the fastest ones).
+The other libraries are in the `Other` category, and their results below are from the last full run.
 
 ### Results
 
-| Read 100,000 rows | Mean | Median | Allocated |
+| Read 100,000 rows | .NET 8 | .NET 10 | Allocated |
 |---|---:|---:|---:|
-| Sylvan | 46.5 ms | 46.8 ms | 23.8 MB |
-| Sep | 47.5 ms | 47.5 ms | 23.7 MB |
-| **TinyCsv** | **55.1 ms** | **54.3 ms** | **23.7 MB** |
-| RecordParser | 71.7 ms | 71.7 ms | 25.7 MB |
-| NReco.Csv | 77.3 ms | 77.0 ms | 41.8 MB |
-| Csv | 79.1 ms | 77.0 ms | 85.0 MB |
-| TinyCsvParser | 103.0 ms | 103.1 ms | 84.7 MB |
-| LumenWorks | 130.2 ms | 119.1 ms | 164.5 MB |
-| FileHelpers | 135.8 ms | 135.6 ms | 92.9 MB |
-| CsvHelper | 172.6 ms | 173.4 ms | 53.2 MB |
-| TextFieldParser | 423.4 ms | 419.7 ms | 1,026.5 MB |
+| Sylvan | 28.4 ms | 24.1 ms | 23.8 MB |
+| **TinyCsv** | **31.9 ms** | **25.5 ms** | **23.7 MB** |
+| Sep | 46.2 ms | 40.6 ms | 23.7 MB |
+| RecordParser | 68.6 ms | 61.4 ms | 23.7 MB |
+| NReco.Csv ¹ | 86.5 ms | 83.1 ms | 41.8 MB |
+| Csv ¹ | 90.5 ms | 84.2 ms | 73.0 MB |
+| TinyCsvParser ¹ | 111.1 ms | 92.4 ms | 68.6 MB |
+| CsvHelper | 109.9 ms | 99.4 ms | 53.2 MB |
+| LumenWorks ¹ | 126.5 ms | 119.3 ms | 164.5 MB |
+| FileHelpers ¹ | 147.0 ms | 126.7 ms | 92.9 MB |
+| TextFieldParser ¹ | 471.8 ms | 425.8 ms | 1,026.5 MB |
 
-| Write 100,000 rows | Mean | Median | Allocated |
+| Write 100,000 rows | .NET 8 | .NET 10 | Allocated |
 |---|---:|---:|---:|
-| **TinyCsv** | **38.6 ms** | **38.5 ms** | **2.2 MB** |
-| Sylvan | 40.5 ms | 40.1 ms | 0.05 MB |
-| RecordParser | 42.9 ms | 42.9 ms | 0.02 MB |
-| Sep | 47.1 ms | 46.7 ms | 0.02 MB |
-| NReco.Csv | 48.9 ms | 48.6 ms | 21.3 MB |
-| Csv | 59.0 ms | 53.4 ms | 20.5 MB |
-| FileHelpers | 67.7 ms | 67.4 ms | 103.0 MB |
-| CsvHelper | 101.0 ms | 88.4 ms | 25.2 MB |
+| **TinyCsv** | **35.7 ms** | **31.4 ms** | **2.2 MB** |
+| RecordParser | 41.0 ms | 30.6 ms | 0.02 MB |
+| Sylvan | 38.8 ms | 33.9 ms | 0.05 MB |
+| Csv ¹ | 44.3 ms | 34.2 ms | 19.6 MB |
+| Sep | 44.8 ms | 41.2 ms | 0.02 MB |
+| NReco.Csv ¹ | 48.1 ms | 41.8 ms | 21.3 MB |
+| FileHelpers ¹ | 64.9 ms | 59.9 ms | 103.0 MB |
+| CsvHelper | 81.6 ms | 71.3 ms | 25.2 MB |
 
-Environment: BenchmarkDotNet 0.14.0, .NET 8.0.29, Windows Server 2019 (Hyper-V), Intel Xeon Platinum 8370C 2.80GHz.
+The times are the means, the libraries are sorted by the .NET 10 time and the allocated memory is the one of .NET 10.
+Environment: BenchmarkDotNet 0.15.2, .NET 8.0.29 and .NET 10.0.11, Windows Server 2019 (Hyper-V), Intel Xeon Platinum 8370C 2.80GHz.
 The virtual machine is noisy: the absolute times change between runs, so compare the libraries within the same table.
-The read results are from a second run with only the read benchmarks (`--filter *Read*`), because the first one was disturbed by other processes.
-Some results are noisy (standard deviation of LumenWorks read 23.6 ms, CsvHelper write 23.1 ms, Csv write 12.8 ms): their median is more meaningful than their mean.
-The full reports, with 1,000 rows too, are the [read report](results/CompetitiveReadBenchmark-report-github.md) and the [write report](results/CompetitiveWriteBenchmark-report-github.md).
+The main libraries are from the last run (about 14 minutes, read and write on .NET 8 and .NET 10):
+the full reports, with 1,000 rows too, are the [read report](results/CompetitiveReadBenchmark-main-report-github.md) and the [write report](results/CompetitiveWriteBenchmark-main-report-github.md).
+
+¹ From the previous run with all the libraries (the [read report](results/CompetitiveReadBenchmark-report-github.md) and the [write report](results/CompetitiveWriteBenchmark-report-github.md)),
+not measured again: compare them with the other libraries with care.
 
 The read of TinyCsv creates the string of a record only when it is needed: when the events are enabled, when `SkipRow` is set and for the exceptions.
+On .NET 8 and later, with a single char delimiter, the delimiters are found while looking for the end of the record (32 chars at a time, with the vector instructions),
+so the fields of a record without quotes are not scanned again.
+The `int`, `long` and `decimal` columns read the common values (i.e. `123`, `-1.50`) with a fast parser resolved once for each read, that returns the same result of `TryParse`.
 A `DateTime`, `DateTimeOffset` or `DateOnly` column with a fixed width format (i.e. `yyyy-MM-dd` or `dd/MM/yyyy HH:mm:ss`) is read by a fast parser,
 that returns the same result of `TryParseExact`: the other formats and the columns without a format use `TryParseExact` and `TryParse`.
 
