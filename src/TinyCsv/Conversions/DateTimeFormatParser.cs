@@ -53,15 +53,41 @@ namespace TinyCsv.Conversions
             Second,
         }
 
-        private readonly Part[] parts;
-        private readonly string[] literals;
         private readonly int length;
+
+        // the position of each part in the value (-1 when the format does not have it), and the literal chars
+        private readonly int yearAt = -1, monthAt = -1, dayAt = -1, hourAt = -1, minuteAt = -1, secondAt = -1;
+        private readonly int[] literalPositions;
+        private readonly char[] literalChars;
+        private readonly bool repeatedPart;
 
         private DateTimeFormatParser(Part[] parts, string[] literals, int length)
         {
-            this.parts = parts;
-            this.literals = literals;
             this.length = length;
+            var positions = new List<int>();
+            var chars = new List<char>();
+            var position = 0;
+            for (int p = 0; p < parts.Length; p++)
+            {
+                switch (parts[p])
+                {
+                    case Part.Literal:
+                        foreach (var c in literals[p])
+                        {
+                            positions.Add(position++);
+                            chars.Add(c);
+                        }
+                        continue;
+                    case Part.Year: repeatedPart |= yearAt >= 0; yearAt = position; position += 4; break;
+                    case Part.Month: repeatedPart |= monthAt >= 0; monthAt = position; position += 2; break;
+                    case Part.Day: repeatedPart |= dayAt >= 0; dayAt = position; position += 2; break;
+                    case Part.Hour: repeatedPart |= hourAt >= 0; hourAt = position; position += 2; break;
+                    case Part.Minute: repeatedPart |= minuteAt >= 0; minuteAt = position; position += 2; break;
+                    case Part.Second: repeatedPart |= secondAt >= 0; secondAt = position; position += 2; break;
+                }
+            }
+            literalPositions = positions.ToArray();
+            literalChars = chars.ToArray();
         }
 
         /// <summary>
@@ -214,64 +240,61 @@ namespace TinyCsv.Conversions
         public bool TryParse(ReadOnlySpan<char> value, out DateTime result)
         {
             result = default;
-            if (value.Length != length)
+            // a part twice (i.e. "dd/MM/dd") is left to DateTime.TryParseExact
+            if (value.Length != length || repeatedPart)
             {
                 return false;
             }
 
-            int year = -1, month = -1, day = -1, hour = -1, minute = -1, second = -1;
-            var position = 0;
-            for (int p = 0; p < parts.Length; p++)
+            var positions = literalPositions;
+            var chars = literalChars;
+            for (int k = 0; k < positions.Length; k++)
             {
-                var part = parts[p];
-                if (part == Part.Literal)
+                if (value[positions[k]] != chars[k])
                 {
-                    var literal = literals[p];
-                    for (int k = 0; k < literal.Length; k++)
-                    {
-                        if (value[position + k] != literal[k])
-                        {
-                            return false;
-                        }
-                    }
-                    position += literal.Length;
-                    continue;
-                }
-
-                var digits = part == Part.Year ? 4 : 2;
-                var number = 0;
-                for (int k = 0; k < digits; k++)
-                {
-                    var c = value[position + k];
-                    if (c < '0' || c > '9')
-                    {
-                        return false;
-                    }
-                    number = number * 10 + (c - '0');
-                }
-                position += digits;
-
-                // a part twice (i.e. "dd/MM/dd") is left to DateTime.TryParseExact, a missing time part is 0
-                switch (part)
-                {
-                    case Part.Year: if (year >= 0) return false; year = number; break;
-                    case Part.Month: if (month >= 0) return false; month = number; break;
-                    case Part.Day: if (day >= 0) return false; day = number; break;
-                    case Part.Hour: if (hour >= 0) return false; hour = number; break;
-                    case Part.Minute: if (minute >= 0) return false; minute = number; break;
-                    case Part.Second: if (second >= 0) return false; second = number; break;
+                    return false;
                 }
             }
 
-            // a date without year, month or day uses the current date in DateTime.TryParseExact
+            // a missing part is -1, a part that is not a number is -2
+            var year = Number(value, yearAt, 4);
+            var month = Number(value, monthAt, 2);
+            var day = Number(value, dayAt, 2);
+            var hour = Number(value, hourAt, 2);
+            var minute = Number(value, minuteAt, 2);
+            var second = Number(value, secondAt, 2);
+
+            // a date without year, month or day uses the current date in DateTime.TryParseExact, a missing time part is 0
             if (year < 1 || month < 1 || month > 12 || day < 1 || day > DateTime.DaysInMonth(year, month)
-                || hour > 23 || minute > 59 || second > 59)
+                || hour < -1 || hour > 23 || minute < -1 || minute > 59 || second < -1 || second > 59)
             {
                 return false;
             }
 
             result = new DateTime(year, month, day, Math.Max(hour, 0), Math.Max(minute, 0), Math.Max(second, 0));
             return true;
+        }
+
+        /// <summary>
+        /// The number of the digits at the position: -1 when the position is -1 (a missing part), -2 when a char is not a digit
+        /// </summary>
+        private static int Number(ReadOnlySpan<char> value, int position, int digits)
+        {
+            if (position < 0)
+            {
+                return -1;
+            }
+            var number = 0;
+            for (int k = 0; k < digits; k++)
+            {
+                var digit = (uint)(value[position + k] - '0');
+                if (digit > 9)
+                {
+                    return -2;
+                }
+                number = number * 10 + (int)digit;
+            }
+            return number;
         }
 
         /// <summary>

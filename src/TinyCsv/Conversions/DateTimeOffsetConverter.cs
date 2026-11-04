@@ -38,6 +38,14 @@ namespace TinyCsv.Conversions
     /// </summary>
     public sealed class DateTimeOffsetConverter : ParsableValueConverter<DateTimeOffset>, IValueConverter
     {
+        /// <summary>
+        /// The fast parser of the values, see ValueParser
+        /// </summary>
+        internal override ValueParser<DateTimeOffset> GetParser(IFormatProvider provider)
+        {
+            return DateTimeOffsetValueParser.Create(GetColumnFormat(provider), provider);
+        }
+
         private DateTimeFormatParser.Cache parserCache;
 
         /// <summary>

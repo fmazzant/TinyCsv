@@ -11,27 +11,35 @@ public class WriteBenchmarks : BenchmarkBase
     private readonly MemoryStream stream = new();
 
     [Benchmark(Baseline = true)]
+    [BenchmarkCategory("Main")]
     public long TinyCsv() => Write(Libraries.WriteTinyCsv);
 
     [Benchmark]
+    [BenchmarkCategory("Main")]
     public long CsvHelper() => Write(Libraries.WriteCsvHelper);
 
     [Benchmark]
+    [BenchmarkCategory("Main")]
     public long Sylvan() => Write(Libraries.WriteSylvan);
 
     [Benchmark]
+    [BenchmarkCategory("Main")]
     public long Sep() => Write(Libraries.WriteSep);
 
     [Benchmark]
+    [BenchmarkCategory("Other")]
     public long FileHelpers() => Write(Libraries.WriteFileHelpers);
 
     [Benchmark]
+    [BenchmarkCategory("Main")]
     public long RecordParser() => Write(Libraries.WriteRecordParser);
 
     [Benchmark]
+    [BenchmarkCategory("Other")]
     public long Csv() => Write(Libraries.WriteCsv);
 
     [Benchmark]
+    [BenchmarkCategory("Other")]
     public long NRecoCsv() => Write(Libraries.WriteNReco);
 
     private long Write(Action<Stream, Model[]> write)
