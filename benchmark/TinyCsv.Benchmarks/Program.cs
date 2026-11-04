@@ -8,6 +8,6 @@ using BenchmarkDotNet.Running;
 // All the libraries:  dotnet run -c Release -f net10.0 -- --filter * --anyCategories Main Other
 if (!args.Any(a => a is "--anyCategories" or "--allCategories"))
 {
-    args = [.. args, "--anyCategories", "Main"];
+    args = args.Concat(new[] { "--anyCategories", "Main" }).ToArray();
 }
 BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
