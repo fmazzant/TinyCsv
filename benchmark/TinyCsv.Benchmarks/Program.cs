@@ -1,7 +1,13 @@
 using BenchmarkDotNet.Running;
 
-// Run all:            dotnet run -c Release -f net10.0
+// By default only the "Main" category runs: TinyCsv, CsvHelper (the most popular), Sylvan, Sep and RecordParser (the fastest).
+// Run the main ones:  dotnet run -c Release -f net10.0 -- --filter *
 // Run a subset:       dotnet run -c Release -f net10.0 -- --filter *Read*
 // Quick (less exact): dotnet run -c Release -f net10.0 -- --filter * --job short
-// .NET 8 and 10:      dotnet run -c Release -f net10.0 -- --runtimes net8.0 net10.0
+// .NET 8 and 10:      dotnet run -c Release -f net10.0 -- --filter * --runtimes net8.0 net10.0
+// All the libraries:  dotnet run -c Release -f net10.0 -- --filter * --anyCategories Main Other
+if (!args.Any(a => a is "--anyCategories" or "--allCategories"))
+{
+    args = [.. args, "--anyCategories", "Main"];
+}
 BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
