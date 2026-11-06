@@ -8,7 +8,7 @@ To use it in your project, add the Mafe.TinyCsv NuGet package to your project.
 [![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/3.5.0)
 ![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv?style=flat-square)
 
-Coming from CsvHelper? See the [Migrating from CsvHelper](https://github.com/fmazzant/TinyCsv/blob/master/docs/migrating-from-csvhelper.md) guide.
+Coming from CsvHelper? See the [Migrating from CsvHelper](https://github.com/fmazzant/TinyCsv/blob/main/docs/migrating-from-csvhelper.md) guide.
 
 It is available an AspNetCore extension:
 
