@@ -2,8 +2,7 @@ name: Publish AspNetCore on NuGet
  
 on:
   push:
-    branches: [ master ]
-    paths: [ 'src/**' ]
+    tags: [ 'v*' ]
   workflow_dispatch:
   
 jobs:
