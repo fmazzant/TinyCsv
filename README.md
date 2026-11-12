@@ -2,7 +2,10 @@
 
 [![NuGet](https://img.shields.io/nuget/v/Mafesoft.TinyCsv?style=flat-square&label=nuget)](https://www.nuget.org/packages/Mafesoft.TinyCsv)
 [![Downloads](https://img.shields.io/nuget/dt/Mafesoft.TinyCsv?style=flat-square&label=downloads)](https://www.nuget.org/packages/Mafesoft.TinyCsv)
+[![Build](https://img.shields.io/github/actions/workflow/status/fmazzant/TinyCsv/ci.yml?branch=main&style=flat-square&label=build)](https://github.com/fmazzant/TinyCsv/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE.md)
+[![CodeQL](https://img.shields.io/github/actions/workflow/status/fmazzant/TinyCsv/codeql.yml?branch=main&style=flat-square&label=codeql)](https://github.com/fmazzant/TinyCsv/actions/workflows/codeql.yml)
+[![.NET](https://img.shields.io/badge/.NET-10%20%7C%208%20%7C%20Standard%202.1%20%7C%20Standard%202.0%20%7C%20Framework%204.6.2-512BD4?style=flat-square)](#packages)
 
 [![Mafe.TinyCsv downloads](https://img.shields.io/nuget/dt/Mafe.TinyCsv?style=flat-square&label=Mafe.TinyCsv%20downloads)](https://www.nuget.org/packages/Mafe.TinyCsv)
 

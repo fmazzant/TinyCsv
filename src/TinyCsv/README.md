@@ -1,5 +1,12 @@
 # Mafesoft.TinyCsv
 
+[![NuGet](https://img.shields.io/nuget/v/Mafesoft.TinyCsv?style=flat-square&label=nuget)](https://www.nuget.org/packages/Mafesoft.TinyCsv)
+[![Downloads](https://img.shields.io/nuget/dt/Mafesoft.TinyCsv?style=flat-square&label=downloads)](https://www.nuget.org/packages/Mafesoft.TinyCsv)
+[![Build](https://img.shields.io/github/actions/workflow/status/fmazzant/TinyCsv/ci.yml?branch=main&style=flat-square&label=build)](https://github.com/fmazzant/TinyCsv/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](https://github.com/fmazzant/TinyCsv/blob/main/LICENSE.md)
+
+[![Mafe.TinyCsv downloads](https://img.shields.io/nuget/dt/Mafe.TinyCsv?style=flat-square&label=Mafe.TinyCsv%20downloads)](https://www.nuget.org/packages/Mafe.TinyCsv)
+
 Read and write CSV files with strongly typed models and a few lines of options, from .NET Framework 4.6.2 to .NET 10:
 lambda columns, attributes or class maps, header mapping, delimiter detection, per-row error handling,
 records without a model (dictionary, `dynamic`, `DataTable`) and streaming async read and write.
