@@ -5,6 +5,15 @@ All notable changes to the `Mafesoft.TinyCsv*` packages (`Mafe.TinyCsv*` up to 3
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.1] - 2026-11-12
+
+No changes to the library code: same features as 4.0.0.
+
+### Fixed
+
+- Release workflow: publishing a version that is already on nuget.org no longer fails, and a GitHub Release that
+  already exists for the tag gets the packages attached instead of failing.
+
 ## [4.0.0] - Unreleased
 
 The `Mafesoft.*` release: the packages and the namespaces have a new name and a few APIs changed.
