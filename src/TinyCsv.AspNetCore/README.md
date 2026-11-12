@@ -32,7 +32,7 @@ The instances are singletons of the service provider: two service providers do n
 
 ## Links
 
-- [Documentation](https://github.com/fmazzant/TinyCsv#tinycsvaspnetcore-extensions)
+- [Documentation](https://github.com/fmazzant/TinyCsv#aspnet-core)
 - [Migrating to 4.0](https://github.com/fmazzant/TinyCsv#migrating-to-40) (from `Mafe.TinyCsv.AspNetCore` and `Mafe.TinyCsv.Extensions`)
 - [Changelog](https://github.com/fmazzant/TinyCsv/blob/main/CHANGELOG.md)
 - [Issues](https://github.com/fmazzant/TinyCsv/issues)
