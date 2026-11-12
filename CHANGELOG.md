@@ -36,6 +36,9 @@ dotnet add package Mafesoft.TinyCsv.AspNetCore
   is documented. ([#68](https://github.com/fmazzant/TinyCsv/issues/68))
 - Package icon, per-package readme, license in both packages, SourceLink and symbol packages (`.snupkg`),
   deterministic build; this changelog. ([#69](https://github.com/fmazzant/TinyCsv/issues/69))
+- Samples on .NET 10, one file per topic (read and write, class map, records without a model, bad data), attributes and
+  minimal API; one solution at the root (`TinyCsv.slnx`) with src, tests, samples and benchmarks; the versions benchmark
+  of the old `Mafe.TinyCsv` packages is retired. ([#71](https://github.com/fmazzant/TinyCsv/issues/71))
 
 ### Added
 

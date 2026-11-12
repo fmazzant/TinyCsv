@@ -12,9 +12,9 @@ Thanks for helping to improve Mafesoft.TinyCsv! Bug reports, ideas and pull requ
 Requirements: the .NET 10 SDK and the .NET 8 runtime (the tests also run on .NET Framework 4.8 on Windows).
 
 ```
-dotnet build -c Release src/TinyCsv.sln
-dotnet test -c Release src/TinyCsv.sln
-dotnet pack -c Release -o ./artifacts src/TinyCsv.sln
+dotnet build -c Release TinyCsv.slnx
+dotnet test -c Release TinyCsv.slnx
+dotnet pack -c Release -o ./artifacts TinyCsv.slnx
 ```
 
 `dotnet pack` also runs the package validation (`src/Directory.Build.props`): the public API must be the same on every
@@ -22,7 +22,7 @@ target framework. An intentional difference is recorded in `CompatibilitySuppres
 regenerated with:
 
 ```
-dotnet pack -c Release src/TinyCsv.sln -p:ApiCompatGenerateSuppressionFile=true
+dotnet pack -c Release TinyCsv.slnx -p:ApiCompatGenerateSuppressionFile=true
 ```
 
 The samples and the benchmarks reference the libraries as projects, so they must keep building after every change.

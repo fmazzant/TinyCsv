@@ -681,7 +681,7 @@ Environment: BenchmarkDotNet 0.15.2, .NET 10.0.11, Windows Server 2019 (Hyper-V)
 
 ### Compared with the previous versions
 
-The [versions benchmark](benchmark/README.md#versions-benchmark) compares the last versions of TinyCsv with [BenchmarkDotNet](https://benchmarkdotnet.org/), reading and writing `N` rows of 7 columns.
+The [versions benchmark](benchmark/README.md#versions-benchmark-retired) (retired in 4.0) compared the versions of `Mafe.TinyCsv` with [BenchmarkDotNet](https://benchmarkdotnet.org/), reading and writing `N` rows of 7 columns.
 Each cell is the mean time and the allocated memory.
 
 #### LoadFromText
@@ -710,7 +710,7 @@ In 3.0, `Save` escapes the values as RFC 4180, so the saved file is always read 
 The write is about 12% slower and allocates about 15% more memory than 2.2.2.
 
 Environment: BenchmarkDotNet 0.13.12, .NET 8.0.29, Windows Server 2019 (Hyper-V), Intel Xeon Platinum 8370C 2.80GHz.
-The 3.0 column was measured with the 3.0.0-rc1 package. The results of 3.5.0 will be added after its release.
+The 3.0 column was measured with the 3.0.0-rc1 package.
 The full report is in [benchmark/results](benchmark/results/TinyCsvLibraryBenchmark-report-github.md).
 
 <details>
@@ -825,9 +825,9 @@ starting from the defaults that are different.
 Requirements: the .NET 10 SDK and the .NET 8 runtime (on Windows the tests also run on .NET Framework 4.8).
 
 ```shell
-dotnet build -c Release src/TinyCsv.sln
-dotnet test -c Release src/TinyCsv.sln
-dotnet pack -c Release -o ./artifacts src/TinyCsv.sln
+dotnet build -c Release TinyCsv.slnx
+dotnet test -c Release TinyCsv.slnx
+dotnet pack -c Release -o ./artifacts TinyCsv.slnx
 ```
 
 The samples are in [samples](samples) and the benchmarks in [benchmark](benchmark/README.md).

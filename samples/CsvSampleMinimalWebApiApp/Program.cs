@@ -1,62 +1,35 @@
-/// <summary>
-/// 
-/// The MIT License (MIT)
-/// 
-/// Copyright (c) 2022 Federico Mazzanti
-/// 
-/// Permission is hereby granted, free of charge, to any person
-/// obtaining a copy of this software and associated documentation
-/// files (the "Software"), to deal in the Software without
-/// restriction, including without limitation the rights to use,
-/// copy, modify, merge, publish, distribute, sublicense, and/or sell
-/// copies of the Software, and to permit persons to whom the
-/// Software is furnished to do so, subject to the following
-/// conditions:
-/// 
-/// The above copyright notice and this permission notice shall be
-/// included in all copies or substantial portions of the Software.
-/// 
-/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-/// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-/// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-/// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-/// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-/// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-/// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-/// OTHER DEALINGS IN THE SOFTWARE.
-/// 
-/// </summary>
-
-using Microsoft.AspNetCore.Authorization;
-using Models;
+// TinyCsv in a minimal API: a typed singleton, named (keyed) instances and ITinyCsvFactory.
 using Mafesoft.TinyCsv;
 using Mafesoft.TinyCsv.AspNetCore;
 using Mafesoft.TinyCsv.AspNetCore.Extensions;
-using Mafesoft.TinyCsv.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddTinyCsv<Model1>("Model1", options =>
+// one instance per model: inject ITinyCsv<Model1>
+builder.Services.AddTinyCsv<Model1>(options =>
 {
-    // Options
     options.HasHeaderRecord = true;
-    options.Delimiter = ";";
-    options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
-
-    // columns
+    options.SkipRow = (row, index) => string.IsNullOrWhiteSpace(row); // the comments (#) are skipped by default
     options.Columns.AddColumn(m => m.Id);
     options.Columns.AddColumn(m => m.Name);
     options.Columns.AddColumn(m => m.Price);
 });
 
-// Add services to the container.
-builder.Services.AddTinyCsv<Model2>("Model2", options => InitOptionsModel2(options));
+// named instances: keyed services on .NET 8+, ITinyCsvFactory.Get everywhere
+builder.Services
+    .AddTinyCsv<Model2>("model2", ConfigureModel2)
+    .AddTinyCsv<Model2>("model2-it", options =>
+    {
+        ConfigureModel2(options);
+        options.Culture = new System.Globalization.CultureInfo("it-IT");
+    });
 
-void InitOptionsModel2(CsvOptions<Model2> options)
+static void ConfigureModel2(CsvOptions<Model2> options)
 {
     options.HasHeaderRecord = true;
-    options.Delimiter = ";";
-    options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
+    options.SkipRow = (row, index) => string.IsNullOrWhiteSpace(row);
     options.Columns.AddColumn(0, m => m.Id);
     options.Columns.AddColumn(1, m => m.Name);
     options.Columns.AddColumn(3, m => m.CreatedOn, "dd/MM/yyyy");
@@ -64,31 +37,22 @@ void InitOptionsModel2(CsvOptions<Model2> options)
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.MapGet("/", () => "TinyCsv sample: /model1, /model2, /model2-it, /model2.csv");
 
-app.UseHttpsRedirection();
+// the records are streamed to the response (IAsyncEnumerable<T>)
+app.MapGet("/model1", (ITinyCsv<Model1> csv) => csv.LoadFromFileAsync("model1.csv"));
 
-app.MapGet("/", [AllowAnonymous] async () => await Task.FromResult("Hello, world!"));
-app.MapGet("/csv1", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
+app.MapGet("/model2", (ITinyCsvFactory factory) => factory.Get<Model2>("model2").LoadFromFileAsync("model2.csv"));
+
+app.MapGet("/model2-it", ([FromKeyedServices("model2-it")] ITinyCsv<Model2> csv) => csv.LoadFromFileAsync("model2.csv"));
+
+// writes a CSV file as response
+app.MapGet("/model2.csv", async (HttpContext context, ITinyCsvFactory factory) =>
 {
-    var tinyCsv = tinyCsvFactory.Get<Model1>("Model1");
-    var result = await tinyCsv.LoadFromFileAsync("model1.csv").ToListAsync();
-    Console.WriteLine($"{result?.Count()}");
-    return result;
-});
-app.MapGet("/csv2", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
-{
-    var tinyCsv = tinyCsvFactory.Get<Model2>("Model2");
-    var result = await tinyCsv.LoadFromFileAsync("model2.csv").ToListAsync();
-    Console.WriteLine($"{result?.Count}");
-    return result;
-});
-app.MapGet("/csv3", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
-{
-    var tinyCsv = tinyCsvFactory.Create<Model2>(options => InitOptionsModel2(options));
-    var result = await tinyCsv.LoadFromFileAsync("model2.csv").ToListAsync();
-    Console.WriteLine($"{result?.Count}");
-    return result;
+    var csv = factory.Get<Model2>("model2");
+    context.Response.ContentType = "text/csv; charset=utf-8";
+    context.Response.Headers.ContentDisposition = "attachment; filename=model2.csv";
+    await csv.SaveAsync(context.Response.Body, csv.LoadFromFileAsync("model2.csv"), context.RequestAborted);
 });
 
 app.Run();
