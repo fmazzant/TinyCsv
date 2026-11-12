@@ -53,5 +53,7 @@ Breaking changes are accepted only in a major version, with a note in the **Migr
 1. Set the same `<Version>` in `src/TinyCsv/TinyCsv.csproj` and `src/TinyCsv.AspNetCore/TinyCsv.AspNetCore.csproj`.
 2. In `CHANGELOG.md` replace `Unreleased` with the release date (`## [4.0.0] - 2026-12-01`).
 3. Merge into `main`, then push the tag: `git tag v4.0.0 && git push origin v4.0.0`.
+   The *NuGet* workflow (`.github/workflows/nuget.yml`) checks the versions and the CHANGELOG section, runs the tests,
+   publishes both packages with NuGet Trusted Publishing (environment `production`, no API key) and creates the GitHub Release.
 4. After the first release of a major version, set `PackageValidationBaselineVersion` in `src/Directory.Build.props`
    to the released version, to catch accidental breaking changes in the minor versions.

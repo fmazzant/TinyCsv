@@ -39,6 +39,9 @@ dotnet add package Mafesoft.TinyCsv.AspNetCore
 - Samples on .NET 10, one file per topic (read and write, class map, records without a model, bad data), attributes and
   minimal API; one solution at the root (`TinyCsv.slnx`) with src, tests, samples and benchmarks; the versions benchmark
   of the old `Mafe.TinyCsv` packages is retired. ([#71](https://github.com/fmazzant/TinyCsv/issues/71))
+- Publishing: one `nuget.yml` workflow for both packages, with NuGet Trusted Publishing (OIDC, environment `production`)
+  instead of a long-lived API key; the tests run before publishing and a tag creates the GitHub Release.
+  ([#85](https://github.com/fmazzant/TinyCsv/issues/85))
 
 ### Added
 
