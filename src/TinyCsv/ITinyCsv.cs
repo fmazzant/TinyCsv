@@ -136,7 +136,7 @@ namespace Mafesoft.TinyCsv
         /// <returns></returns>
         IEnumerable<string[]> GetAllLinesAndFieldsFromText(string text, Encoding encoding = null);
 
-#if NET452 || NET462 || NET472 || NET48 || NETSTANDARD2_0
+#if NETFRAMEWORK || NETSTANDARD2_0
 
         /// <summary>
         /// Reads a csv file and returns a list of objects asynchronously.

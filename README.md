@@ -134,6 +134,17 @@ The APIs marked obsolete in 3.x have been removed:
 | `CsvOptions.SkipEmptyRows = true` | `SkipRow = (row, index) => string.IsNullOrWhiteSpace(row)` |
 | `ICsvDataReader.GetFieldsByLine(string line)` | `GetFieldsByLine(line, columnsCount)` |
 
+### Target frameworks
+
+| Package | 3.x | 4.0 |
+|---|---|---|
+| `Mafesoft.TinyCsv` | net5.0, net6.0, net7.0, net8.0, net10.0, netstandard2.0, netstandard2.1, net452, net462, net472, net48 | netstandard2.0, netstandard2.1, net462, net8.0, net10.0 |
+| `Mafesoft.TinyCsv.AspNetCore` | netstandard2.0, netstandard2.1, net5.0, net6.0, net7.0, net8.0, net10.0 | netstandard2.0, net8.0, net10.0 |
+
+- .NET 5, 6 and 7 are out of support: the applications on these versions use the `netstandard2.1` (`Mafesoft.TinyCsv`) or `netstandard2.0` (`Mafesoft.TinyCsv.AspNetCore`) asset.
+- .NET Framework 4.5.2 is no longer supported; .NET Framework 4.7.2 and 4.8 use the `net462` asset.
+- `System.Memory` is referenced only by `netstandard2.0` and `net462`.
+
 ## Breaking changes in 3.0
 
 TinyCsv 3.0 has a new reader, based on `Span<char>`, that reads a CSV record instead of a physical line.
