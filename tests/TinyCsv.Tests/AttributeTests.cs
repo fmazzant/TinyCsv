@@ -124,7 +124,7 @@ namespace Mafesoft.TinyCsv.Tests
             Assert.Equal('"', options.DoubleQuotes);
             Assert.True(options.EndOfLineDelimiterChar);
             Assert.False(options.HasHeaderRecord);
-            Assert.Equal(Environment.NewLine, options.NewLine);
+            Assert.Equal(CsvOptions.DefaultNewLine, options.NewLine);
             Assert.Equal(0u, options.RowsToSkip);
             Assert.False(options.SkipRow("anything", 0));
             Assert.False(options.TrimData);
@@ -140,7 +140,7 @@ namespace Mafesoft.TinyCsv.Tests
             Assert.Equal(Encoding.Unicode, new TextEncodingAttribute("utf-16").TextEncoding);
             Assert.Equal(Encoding.UTF8, new TextEncodingAttribute(string.Empty).TextEncoding);
             Assert.Equal(Encoding.Unicode, new TextEncodingAttribute(1200).TextEncoding);
-            Assert.Equal(Environment.NewLine, new NewLineAttribute().NewLine);
+            Assert.Equal(CsvOptions.DefaultNewLine, new NewLineAttribute().NewLine);
             Assert.Equal(typeof(HashSkipRow), new SkipRowAttribute(typeof(HashSkipRow)).SkipRowType);
         }
 

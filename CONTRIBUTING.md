@@ -11,7 +11,7 @@ Thanks for helping to improve Mafesoft.TinyCsv! Bug reports, ideas and pull requ
 
 Requirements: the .NET 10 SDK and the .NET 8 runtime (the tests also run on .NET Framework 4.8 on Windows).
 
-```
+```shell
 dotnet build -c Release TinyCsv.slnx
 dotnet test -c Release TinyCsv.slnx
 dotnet pack -c Release -o ./artifacts TinyCsv.slnx
@@ -21,7 +21,7 @@ dotnet pack -c Release -o ./artifacts TinyCsv.slnx
 target framework. An intentional difference is recorded in `CompatibilitySuppressions.xml` (next to the `.csproj`),
 regenerated with:
 
-```
+```shell
 dotnet pack -c Release TinyCsv.slnx -p:ApiCompatGenerateSuppressionFile=true
 ```
 

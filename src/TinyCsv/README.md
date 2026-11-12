@@ -8,7 +8,7 @@ Target frameworks: .NET 10, .NET 8, .NET Standard 2.1, .NET Standard 2.0, .NET F
 
 ## Quick start
 
-```
+```shell
 dotnet add package Mafesoft.TinyCsv
 ```
 

@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 The `Mafesoft.*` release: the packages and the namespaces have a new name and a few APIs changed.
 Read [Migrating to 4.0](README.md#migrating-to-40) before upgrading.
 
-```
+```shell
 dotnet add package Mafesoft.TinyCsv
 dotnet add package Mafesoft.TinyCsv.AspNetCore
 ```
