@@ -104,17 +104,6 @@ namespace Mafesoft.TinyCsv.Tests
             Assert.Throws<FileNotFoundException>(() => Csv().LoadFromFile(path));
         }
 
-#pragma warning disable CS0618 // obsolete API are still supported
-        [Fact]
-        public void Obsolete_Load()
-        {
-            File.WriteAllText(path, Text);
-
-            AssertPeople(Csv().Load(path).ToList());
-            AssertPeople(Csv().Load(new StreamReader(Stream(Text))).ToList());
-        }
-#pragma warning restore CS0618
-
         // ---------- lines and fields ----------
 
         [Fact]
@@ -146,9 +135,6 @@ namespace Mafesoft.TinyCsv.Tests
             Assert.Equal(expected, csv.GetAllLinesAndFieldsFromStream(Stream(Text)).ToList());
             Assert.Equal(expected, csv.GetAllLinesAndFieldsFromStream(new StreamReader(Stream(Text))).ToList());
             Assert.Equal(expected, csv.GetAllLinesAndFieldsFromText(Text).ToList());
-#pragma warning disable CS0618 // obsolete name, kept until 4.0
-            Assert.Equal(expected, csv.GetAlGetAllLinesAndFieldslLinesFromText(Text).ToList());
-#pragma warning restore CS0618
         }
 
         // ---------- save ----------
@@ -248,10 +234,6 @@ namespace Mafesoft.TinyCsv.Tests
             AssertPeople(await csv.LoadFromStreamAsync(Stream(Text)));
             AssertPeople(await csv.LoadFromStreamAsync(new StreamReader(Stream(Text))));
             AssertPeople(await csv.LoadFromFileAsync(path));
-#pragma warning disable CS0618
-            AssertPeople(await csv.LoadAsync(path));
-            AssertPeople(await csv.LoadAsync(new StreamReader(Stream(Text))));
-#pragma warning restore CS0618
             File.Delete(path);
         }
 #endif

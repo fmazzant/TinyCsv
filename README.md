@@ -108,6 +108,32 @@ second line"
 
 The file above contains 2 rows. `Save` escapes the values in the same way, so a saved file is always read back as it is.
 
+## Migrating to 4.0
+
+4.0.0 is a breaking release.
+
+### Packages and namespaces
+
+| 3.x | 4.0 |
+|---|---|
+| `Mafe.TinyCsv` | `Mafesoft.TinyCsv` |
+| `Mafe.TinyCsv.AspNetCore` | `Mafesoft.TinyCsv.AspNetCore` |
+| `using TinyCsv;` (and `TinyCsv.*`) | `using Mafesoft.TinyCsv;` (and `Mafesoft.TinyCsv.*`) |
+
+### Removed APIs
+
+The APIs marked obsolete in 3.x have been removed:
+
+| Removed | Use instead |
+|---|---|
+| `Load(string path)` | `LoadFromFile(path)` |
+| `Load(StreamReader reader)` | `LoadFromStream(reader)` |
+| `LoadAsync(string path)`, `LoadAsync(StreamReader reader)` | `LoadFromFileAsync(path)`, `LoadFromStreamAsync(reader)` |
+| `GetAlGetAllLinesAndFieldslLinesFromText` | `GetAllLinesAndFieldsFromText` |
+| `Handlers.Write.RowWrittin` (`RowWrittinEventArgs<T>`) | `Handlers.Write.RowWritten` (`RowWrittenEventArgs<T>`) |
+| `CsvOptions.SkipEmptyRows = true` | `SkipRow = (row, index) => string.IsNullOrWhiteSpace(row)` |
+| `ICsvDataReader.GetFieldsByLine(string line)` | `GetFieldsByLine(line, columnsCount)` |
+
 ## Breaking changes in 3.0
 
 TinyCsv 3.0 has a new reader, based on `Span<char>`, that reads a CSV record instead of a physical line.
@@ -145,7 +171,7 @@ Furthermore:
 ### Renamed in 3.1.0
 
 Two names with a typo have a new name.
-The old names still work, but they are obsolete (warning `CS0618`) and they will be removed in 4.0:
+The old names were obsolete (warning `CS0618`) in 3.x and have been removed in 4.0:
 
 | Obsolete | New |
 |---|---|

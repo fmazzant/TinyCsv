@@ -106,17 +106,6 @@ namespace Mafesoft.TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        [Obsolete($"Use {nameof(LoadFromFile)} to load from file", false)]
-        public IEnumerable<T> Load(string path)
-        {
-            return LoadFromFile(path);
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
         public IEnumerable<T> LoadFromFile(string path)
         {
             var streamReader = CreateReader(path);
@@ -162,17 +151,6 @@ namespace Mafesoft.TinyCsv
         private StreamWriter CreateStreamWriter(string path) => new StreamWriter(path, false, WriterEncoding);
 
         private StreamWriter CreateStreamWriter(Stream stream) => new StreamWriter(stream, WriterEncoding);
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects.
-        /// </summary>
-        /// <param name="streamReader"></param>
-        /// <returns></returns>
-        [Obsolete($"Use {nameof(LoadFromStream)} to load from file", false)]
-        public IEnumerable<T> Load(StreamReader streamReader)
-        {
-            return LoadFromStream(streamReader);
-        }
 
         /// <summary>
         /// Reads a csv file and returns a list of generic objects T.
@@ -518,16 +496,5 @@ namespace Mafesoft.TinyCsv
             return GetAllLinesAndFieldsFromReader(CreateReader(text, encoding));
         }
 
-        /// <summary>
-        /// Get all lines and fields
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="encoding"></param>
-        /// <returns></returns>
-        [Obsolete("Use GetAllLinesAndFieldsFromText instead. GetAlGetAllLinesAndFieldslLinesFromText will be removed in 4.0.")]
-        public IEnumerable<string[]> GetAlGetAllLinesAndFieldslLinesFromText(string text, Encoding encoding = null)
-        {
-            return GetAllLinesAndFieldsFromText(text, encoding);
-        }
     }
 }

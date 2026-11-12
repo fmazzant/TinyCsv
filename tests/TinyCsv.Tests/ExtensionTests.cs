@@ -107,15 +107,6 @@ namespace Mafesoft.TinyCsv.Tests
             Assert.Throws<NotAllowCommentException>(() => "# comment".SkipRow(0, Options(o => o.AllowComment = false)));
         }
 
-#pragma warning disable CS0618 // SkipEmptyRows is obsolete
-        [Fact]
-        public void StringExtensions_SkipRow_SkipEmptyRows()
-        {
-            Assert.True("  ".SkipRow(0, Options(o => o.SkipEmptyRows = true)));
-            Assert.False("  ".SkipRow(0, Options()));
-        }
-#pragma warning restore CS0618
-
         [Theory]
         [InlineData("plain", "plain")]
         [InlineData("a;b", "\"a;b\"")]

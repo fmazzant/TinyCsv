@@ -47,22 +47,6 @@ namespace Mafesoft.TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        [Obsolete($"Use {nameof(LoadFromFile)} to load from file", false)]
-        IEnumerable<T> Load(string path);
-
-        /// <summary>
-        /// Reads a csv from streamreader and returns a list of objects.
-        /// </summary>
-        /// <param name="streamReader"></param>
-        /// <returns></returns>
-        [Obsolete($"Use {nameof(LoadFromStream)} to load from file", false)]
-        IEnumerable<T> Load(StreamReader streamReader);
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
         IEnumerable<T> LoadFromFile(string path);
 
         /// <summary>
@@ -151,15 +135,6 @@ namespace Mafesoft.TinyCsv
         /// <param name="encoding"></param>
         /// <returns></returns>
         IEnumerable<string[]> GetAllLinesAndFieldsFromText(string text, Encoding encoding = null);
-
-        /// <summary>
-        /// Get all lines and fields
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="encoding"></param>
-        /// <returns></returns>
-        [Obsolete("Use GetAllLinesAndFieldsFromText instead. GetAlGetAllLinesAndFieldslLinesFromText will be removed in 4.0.")]
-        IEnumerable<string[]> GetAlGetAllLinesAndFieldslLinesFromText(string text, Encoding encoding = null);
 
 #if NET452 || NET462 || NET472 || NET48 || NETSTANDARD2_0
 

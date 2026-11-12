@@ -74,17 +74,6 @@ namespace Mafesoft.TinyCsv
         /// <summary>
         /// Reads a csv file and returns a list of objects asynchronously.
         /// </summary>
-        /// <param name="streamReader"></param>
-        /// <returns></returns>
-        [Obsolete($"Use {nameof(LoadFromStreamAsync)} to load from file", false)]
-        public IAsyncEnumerable<T> LoadAsync(StreamReader streamReader)
-        {
-            return this.LoadFromStreamAsync(streamReader);
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
         public IAsyncEnumerable<T> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default)

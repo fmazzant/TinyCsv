@@ -47,35 +47,12 @@ namespace Mafesoft.TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        [Obsolete($"Use {nameof(LoadFromFileAsync)} to load from file", false)]
-        public Task<IEnumerable<T>> LoadAsync(string path, CancellationToken cancellationToken = default)
-        {
-            return LoadFromFileAsync(path, cancellationToken);
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
         public async Task<IEnumerable<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default)
         {
             using (var streamReader = CreateReader(path))
             {
                 return await LoadFromStreamAsync(streamReader, cancellationToken: cancellationToken).ConfigureAwait(false);
             }
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="streamReader"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [Obsolete($"Use {nameof(LoadFromStreamAsync)} to load from file", false)]
-        public Task<IEnumerable<T>> LoadAsync(StreamReader streamReader, CancellationToken cancellationToken = default)
-        {
-            return LoadFromStreamAsync(streamReader, cancellationToken);
         }
 
         /// <summary>
