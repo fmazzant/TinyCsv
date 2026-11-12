@@ -98,32 +98,29 @@ jobs:
           fi
         done
 
-    # Checked before publishing, so a missing CHANGELOG section does not leave the packages without a release.
+    # Never blocks the publish: the date of the heading is not checked ("## [4.0.0] - Unreleased" is fine),
+    # and a missing or empty section only gives a warning and a release with a link to CHANGELOG.md.
     - name: Extract the release notes from CHANGELOG.md
       if: github.ref_type == 'tag'
       env:
         VERSION: ${{ steps.version.outputs.version }}
       run: |
-        # Keep a Changelog headings: "## [4.0.0] - 2026-12-01" (also accepted: "## 4.0.0").
+        # Keep a Changelog headings: "## [4.0.0] - 2026-12-01", "## [4.0.0] - Unreleased", "## 4.0.0", ...
         HEADING="$(grep -E "^## \[?${VERSION//./\\.}\]?( |$)" CHANGELOG.md | head -n 1 | tr -d '\r')"
-        if [ -z "$HEADING" ]; then
-          echo "::error::CHANGELOG.md has no '## [$VERSION]' section"
-          exit 1
+        NOTES="$RUNNER_TEMP/release-notes.md"
+        : > "$NOTES"
+        if [ -n "$HEADING" ]; then
+          # Prints the lines between the heading and the next "## " heading.
+          awk -v heading="$HEADING" '
+            { sub(/\r$/, "") }
+            $0 == heading { found = 1; next }
+            found && /^## / { exit }
+            found { print }
+          ' CHANGELOG.md > "$NOTES"
         fi
-        if echo "$HEADING" | grep -qi 'unreleased'; then
-          echo "::error::The CHANGELOG.md section of $VERSION is still 'Unreleased': set the release date ($HEADING)"
-          exit 1
-        fi
-        # Prints the lines between the heading and the next "## " heading.
-        awk -v heading="$HEADING" '
-          { sub(/\r$/, "") }
-          $0 == heading { found = 1; next }
-          found && /^## / { exit }
-          found { print }
-        ' CHANGELOG.md > "$RUNNER_TEMP/release-notes.md"
-        if ! grep -q '[^[:space:]]' "$RUNNER_TEMP/release-notes.md"; then
-          echo "::error::The CHANGELOG.md section of $VERSION is empty"
-          exit 1
+        if ! grep -q '[^[:space:]]' "$NOTES"; then
+          echo "::warning::CHANGELOG.md has no notes for $VERSION: the release links to CHANGELOG.md"
+          echo "See [CHANGELOG.md](https://github.com/$GITHUB_REPOSITORY/blob/main/CHANGELOG.md)." > "$NOTES"
         fi
 
     - name: Restore dependencies
