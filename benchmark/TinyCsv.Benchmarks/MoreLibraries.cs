@@ -6,7 +6,7 @@ using RecordParser.Builders.Writer;
 using RecordParser.Extensions;
 using RecordParser.Parsers;
 
-namespace TinyCsv.Benchmarks;
+namespace Mafesoft.TinyCsv.Benchmarks;
 
 /// <summary>
 /// The other libraries: FileHelpers, TinyCsvParser and RecordParser map the columns to the properties (or fields),

@@ -1,4 +1,4 @@
-namespace TinyCsv.Tests
+namespace Mafesoft.TinyCsv.Tests
 {
     using System;
     using System.Collections.Generic;
@@ -6,8 +6,8 @@ namespace TinyCsv.Tests
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using TinyCsv.Data;
-    using TinyCsv.Exceptions;
+    using Mafesoft.TinyCsv.Data;
+    using Mafesoft.TinyCsv.Exceptions;
     using Xunit;
 
     public class RecordReaderTests

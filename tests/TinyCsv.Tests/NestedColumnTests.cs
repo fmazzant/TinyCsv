@@ -1,8 +1,8 @@
-namespace TinyCsv.Tests
+namespace Mafesoft.TinyCsv.Tests
 {
     using System;
     using System.Linq;
-    using TinyCsv.Exceptions;
+    using Mafesoft.TinyCsv.Exceptions;
     using Xunit;
 
     public class NestedColumnTests

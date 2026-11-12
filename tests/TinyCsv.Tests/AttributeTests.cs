@@ -1,11 +1,11 @@
-namespace TinyCsv.Tests
+namespace Mafesoft.TinyCsv.Tests
 {
     using System;
     using System.Globalization;
     using System.Linq;
     using System.Text;
-    using TinyCsv.Attributes;
-    using TinyCsv.Exceptions;
+    using Mafesoft.TinyCsv.Attributes;
+    using Mafesoft.TinyCsv.Exceptions;
     using Xunit;
 
     public class HashSkipRow : ISkipRow

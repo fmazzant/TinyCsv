@@ -6,7 +6,7 @@ namespace CsvSampleConsoleApp
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-    using TinyCsv;
+    using Mafesoft.TinyCsv;
 
     public class Address
     {

@@ -27,13 +27,13 @@
 ///
 /// </summary>
 
-namespace TinyCsv.Data
+namespace Mafesoft.TinyCsv.Data
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
-    using TinyCsv.Extensions;
+    using Mafesoft.TinyCsv.Extensions;
 
     /// <summary>
     /// Builds the lines of the models in a reusable buffer, so a line is written without creating strings.

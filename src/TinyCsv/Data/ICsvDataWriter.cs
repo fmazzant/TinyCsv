@@ -26,7 +26,7 @@
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
-namespace TinyCsv.Data
+namespace Mafesoft.TinyCsv.Data
 {
     using System.Collections.Generic;
     using System.Threading;

@@ -27,7 +27,7 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Extensions
+namespace Mafesoft.TinyCsv.Extensions
 {
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;

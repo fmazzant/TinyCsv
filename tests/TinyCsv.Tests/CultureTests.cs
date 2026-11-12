@@ -1,9 +1,9 @@
-namespace TinyCsv.Tests
+namespace Mafesoft.TinyCsv.Tests
 {
     using System;
     using System.Globalization;
     using System.Linq;
-    using TinyCsv.Attributes;
+    using Mafesoft.TinyCsv.Attributes;
     using Xunit;
 
     public class CultureModel

@@ -28,11 +28,11 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Conversions
+namespace Mafesoft.TinyCsv.Conversions
 {
     using System;
     using System.Globalization;
-    using TinyCsv.Extensions;
+    using Mafesoft.TinyCsv.Extensions;
 
     /// <summary>
     /// Provides a unified way of converting DateOnly of values to string

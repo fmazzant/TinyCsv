@@ -27,11 +27,11 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Extensions
+namespace Mafesoft.TinyCsv.Extensions
 {
     using System;
-    using TinyCsv.Conversions;
-    using TinyCsv.Exceptions;
+    using Mafesoft.TinyCsv.Conversions;
+    using Mafesoft.TinyCsv.Exceptions;
 
     /// <summary>
     /// String extensions

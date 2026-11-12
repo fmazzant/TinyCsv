@@ -27,7 +27,7 @@
 ///
 /// </summary>
 
-namespace TinyCsv.Data
+namespace Mafesoft.TinyCsv.Data
 {
     using System;
     using System.Collections.Generic;
@@ -35,7 +35,7 @@ namespace TinyCsv.Data
     using System.Runtime.CompilerServices;
     using System.Text;
     using System.Threading;
-    using TinyCsv.Exceptions;
+    using Mafesoft.TinyCsv.Exceptions;
 
     /// <summary>
     /// TinyCsvDataReader

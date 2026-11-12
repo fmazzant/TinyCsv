@@ -27,11 +27,11 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Attributes
+namespace Mafesoft.TinyCsv.Attributes
 {
     using System;
     using System.Linq.Expressions;
-    using TinyCsv.Conversions;
+    using Mafesoft.TinyCsv.Conversions;
 
     /// <summary>
     /// Allows comment inside the content

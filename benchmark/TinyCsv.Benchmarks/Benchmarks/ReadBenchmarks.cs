@@ -1,6 +1,6 @@
 using BenchmarkDotNet.Attributes;
 
-namespace TinyCsv.Benchmarks;
+namespace Mafesoft.TinyCsv.Benchmarks;
 
 /// <summary>
 /// Reads N rows from a string and enumerates the models

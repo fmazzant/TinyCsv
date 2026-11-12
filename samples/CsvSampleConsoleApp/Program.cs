@@ -35,9 +35,9 @@ namespace CsvSampleConsoleApp
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using TinyCsv;
-    using TinyCsv.Conversions;
-    using TinyCsv.Extensions;
+    using Mafesoft.TinyCsv;
+    using Mafesoft.TinyCsv.Conversions;
+    using Mafesoft.TinyCsv.Extensions;
 
     public enum RowType { A, B }
 

@@ -1,5 +1,5 @@
 
-namespace TinyCsv
+namespace Mafesoft.TinyCsv
 {
     using System;
     using System.Collections.Generic;
@@ -8,9 +8,9 @@ namespace TinyCsv
     using System.Globalization;
     using System.IO;
     using System.Text;
-    using TinyCsv.Data;
-    using TinyCsv.Exceptions;
-    using TinyCsv.Streams;
+    using Mafesoft.TinyCsv.Data;
+    using Mafesoft.TinyCsv.Exceptions;
+    using Mafesoft.TinyCsv.Streams;
 
     /// <summary>
     /// The options of <see cref="TinyCsvRecords"/>: <see cref="CsvOptions.HasHeaderRecord"/> is true by default,

@@ -27,7 +27,7 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Streams
+namespace Mafesoft.TinyCsv.Streams
 {
     using System.IO;
     using System.Text;

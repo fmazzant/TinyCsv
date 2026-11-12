@@ -27,7 +27,7 @@
 /// 
 /// </summary>
 
-namespace TinyCsv
+namespace Mafesoft.TinyCsv
 {
     using System;
     using System.Collections;
@@ -35,10 +35,10 @@ namespace TinyCsv
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
-    using TinyCsv.Attributes;
-    using TinyCsv.Conversions;
-    using TinyCsv.Extensions;
-    using TinyCsv.Factory;
+    using Mafesoft.TinyCsv.Attributes;
+    using Mafesoft.TinyCsv.Conversions;
+    using Mafesoft.TinyCsv.Extensions;
+    using Mafesoft.TinyCsv.Factory;
 
     /// <summary>
     /// Csv Options Collection Columns

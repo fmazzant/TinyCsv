@@ -27,7 +27,7 @@
 /// 
 /// </summary>
 
-namespace TinyCsv
+namespace Mafesoft.TinyCsv
 {
     using System;
     using System.Collections.Concurrent;
@@ -36,10 +36,10 @@ namespace TinyCsv
     using System.Linq;
     using System.Reflection;
     using System.Text;
-    using TinyCsv.Args;
-    using TinyCsv.Attributes;
-    using TinyCsv.Exceptions;
-    using TinyCsv.Helpers;
+    using Mafesoft.TinyCsv.Args;
+    using Mafesoft.TinyCsv.Attributes;
+    using Mafesoft.TinyCsv.Exceptions;
+    using Mafesoft.TinyCsv.Helpers;
 
     /// <summary>
     ///  Csv Options abstract definition

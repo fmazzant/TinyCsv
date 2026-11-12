@@ -1,12 +1,12 @@
 
-namespace TinyCsv
+namespace Mafesoft.TinyCsv
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
-    using TinyCsv.Data;
+    using Mafesoft.TinyCsv.Data;
 
     /// <summary>
     /// Writes the records one at a time, without keeping them in memory: for very large files.

@@ -1,5 +1,5 @@
 
-namespace TinyCsv.Data
+namespace Mafesoft.TinyCsv.Data
 {
     using System;
     using System.Linq.Expressions;

@@ -1,7 +1,7 @@
 using System.Text;
 using BenchmarkDotNet.Attributes;
 
-namespace TinyCsv.Benchmarks;
+namespace Mafesoft.TinyCsv.Benchmarks;
 
 /// <summary>
 /// Writes N models to a MemoryStream (UTF-8)

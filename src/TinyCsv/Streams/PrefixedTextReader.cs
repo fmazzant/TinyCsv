@@ -1,5 +1,5 @@
 
-namespace TinyCsv.Streams
+namespace Mafesoft.TinyCsv.Streams
 {
     using System;
     using System.IO;

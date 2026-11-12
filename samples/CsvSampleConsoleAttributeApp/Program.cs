@@ -34,10 +34,10 @@ namespace CsvSampleConsoleAttributeApp
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using TinyCsv;
-    using TinyCsv.Attributes;
-    using TinyCsv.Conversions;
-    using TinyCsv.Extensions;
+    using Mafesoft.TinyCsv;
+    using Mafesoft.TinyCsv.Attributes;
+    using Mafesoft.TinyCsv.Conversions;
+    using Mafesoft.TinyCsv.Extensions;
 
     [Delimiter(";")]
     [RowsToSkip(0)]

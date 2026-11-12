@@ -7,10 +7,10 @@ TinyCsv has a smaller API: one object, `TinyCsv<T>`, configured once with its op
 
 ```shell
 dotnet remove package CsvHelper
-dotnet add package Mafe.TinyCsv
+dotnet add package Mafesoft.TinyCsv
 ```
 
-The namespaces are `TinyCsv`, `TinyCsv.Attributes`, `TinyCsv.Conversions` and `TinyCsv.Exceptions`.
+The namespaces are `Mafesoft.TinyCsv`, `Mafesoft.TinyCsv.Attributes`, `Mafesoft.TinyCsv.Conversions` and `Mafesoft.TinyCsv.Exceptions`.
 
 ## The defaults are different
 

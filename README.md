@@ -1,19 +1,33 @@
 
 # TinyCsv
 
+[![NuGet](https://img.shields.io/nuget/v/Mafesoft.TinyCsv?style=flat-square&label=nuget)](https://www.nuget.org/packages/Mafesoft.TinyCsv)
+[![Downloads](https://img.shields.io/nuget/dt/Mafesoft.TinyCsv?style=flat-square&label=downloads)](https://www.nuget.org/packages/Mafesoft.TinyCsv)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE.md)
+
+[![Mafe.TinyCsv downloads](https://img.shields.io/nuget/dt/Mafe.TinyCsv?style=flat-square&label=Mafe.TinyCsv%20downloads)](https://www.nuget.org/packages/Mafe.TinyCsv)
+
 TinyCsv is a .NET library to read and write CSV data in an easy way.
 
-To use it in your project, add the Mafe.TinyCsv NuGet package to your project.
+To use it in your project, add the Mafesoft.TinyCsv NuGet package to your project:
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv/3.5.0)
-![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv?style=flat-square)
+```shell
+dotnet add package Mafesoft.TinyCsv
+```
+
+```c#
+using Mafesoft.TinyCsv;
+```
+
+> Since 4.0.0 the packages are published as `Mafesoft.TinyCsv` and `Mafesoft.TinyCsv.AspNetCore` (previously `Mafe.TinyCsv` and `Mafe.TinyCsv.AspNetCore`)
+> and every namespace starts with `Mafesoft.`: `using TinyCsv;` becomes `using Mafesoft.TinyCsv;`, `using TinyCsv.Attributes;` becomes `using Mafesoft.TinyCsv.Attributes;` and so on.
 
 Coming from CsvHelper? See the [Migrating from CsvHelper](https://github.com/fmazzant/TinyCsv/blob/main/docs/migrating-from-csvhelper.md) guide.
 
 It is available an AspNetCore extension:
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.4.0)
-![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.AspNetCore?style=flat-square)
+[![NuGet](https://img.shields.io/nuget/v/Mafesoft.TinyCsv.AspNetCore?style=flat-square&label=nuget)](https://www.nuget.org/packages/Mafesoft.TinyCsv.AspNetCore)
+[![Downloads](https://img.shields.io/nuget/dt/Mafesoft.TinyCsv.AspNetCore?style=flat-square&label=downloads)](https://www.nuget.org/packages/Mafesoft.TinyCsv.AspNetCore)
 
 Define the model that you want to use, like this:
 
@@ -721,10 +735,16 @@ The full report is in [benchmark/results](benchmark/results/TinyCsvLibraryBenchm
 
 ## TinyCsv.AspNetCore Extensions
 
-Is available the Mafe.TinyCsv.Extensions library to use the TinyCsv in your project and it is downloadable in the NuGet package.
+The Mafesoft.TinyCsv.AspNetCore package registers TinyCsv in the ASP.NET Core dependency injection:
 
-[![Nuget](https://img.shields.io/nuget/v/Mafe.TinyCsv.AspNetCore?style=flat-square)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore/2.4.0)
-![Nuget](https://img.shields.io/nuget/dt/Mafe.TinyCsv.AspNetCore?style=flat-square)
+```shell
+dotnet add package Mafesoft.TinyCsv.AspNetCore
+```
+
+```c#
+using Mafesoft.TinyCsv;
+using Mafesoft.TinyCsv.AspNetCore.Extensions;
+```
 
 Since 2.4.0 the package depends only on `Microsoft.Extensions.DependencyInjection`: the previous versions referenced the ASP.NET Core 2.2 packages,
 that are out of support and include `Microsoft.AspNetCore.Server.Kestrel.Core` 2.2.0, with a critical vulnerability ([GHSA-5rrx-jjjq-q2r5](https://github.com/advisories/GHSA-5rrx-jjjq-q2r5)).

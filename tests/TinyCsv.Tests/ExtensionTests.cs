@@ -1,11 +1,11 @@
-namespace TinyCsv.Tests
+namespace Mafesoft.TinyCsv.Tests
 {
     using System;
     using System.Linq;
     using System.Linq.Expressions;
-    using TinyCsv.Exceptions;
-    using TinyCsv.Extensions;
-    using TinyCsv.Helpers;
+    using Mafesoft.TinyCsv.Exceptions;
+    using Mafesoft.TinyCsv.Extensions;
+    using Mafesoft.TinyCsv.Helpers;
     using Xunit;
 
     public class ExtensionTests

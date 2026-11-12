@@ -27,7 +27,7 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.AspNetCore
+namespace Mafesoft.TinyCsv.AspNetCore
 {
     using System;
     using System.Collections.Concurrent;

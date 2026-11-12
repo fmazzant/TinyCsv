@@ -29,7 +29,7 @@
 /// 
 /// </summary>
 
-namespace TinyCsv
+namespace Mafesoft.TinyCsv
 {
     using System;
     using System.Collections.Generic;
@@ -37,8 +37,8 @@ namespace TinyCsv
     using System.Runtime.CompilerServices;
     using System.Text;
     using System.Threading;
-    using TinyCsv.Data;
-    using TinyCsv.Streams;
+    using Mafesoft.TinyCsv.Data;
+    using Mafesoft.TinyCsv.Streams;
 
     public sealed partial class TinyCsv<T>
     {

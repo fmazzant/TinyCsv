@@ -27,15 +27,15 @@
 ///
 /// </summary>
 
-namespace TinyCsv.Data
+namespace Mafesoft.TinyCsv.Data
 {
     using System;
     using System.Globalization;
     using System.Linq.Expressions;
     using System.Reflection;
-    using TinyCsv.Conversions;
-    using TinyCsv.Exceptions;
-    using TinyCsv.Helpers;
+    using Mafesoft.TinyCsv.Conversions;
+    using Mafesoft.TinyCsv.Exceptions;
+    using Mafesoft.TinyCsv.Helpers;
 
     /// <summary>
     /// The column of a read or a write: the column, its accessor and its format provider,

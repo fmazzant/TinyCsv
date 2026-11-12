@@ -26,11 +26,11 @@
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
-namespace TinyCsv.Factory
+namespace Mafesoft.TinyCsv.Factory
 {
     using System;
     using System.Numerics;
-    using TinyCsv.Conversions;
+    using Mafesoft.TinyCsv.Conversions;
 
     public static class ValueConverterFactory
     {
