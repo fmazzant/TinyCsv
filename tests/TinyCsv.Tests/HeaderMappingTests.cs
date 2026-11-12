@@ -217,7 +217,6 @@ namespace Mafesoft.TinyCsv.Tests
             Assert.Equal((1, "Mario", "Roma"), (result.Id, result.Name, result.City));
         }
 
-#if NET5_0_OR_GREATER
         [Fact]
         public async Task MapByHeader_Async()
         {
@@ -240,21 +239,6 @@ namespace Mafesoft.TinyCsv.Tests
                 }
             });
         }
-#else
-        [Fact]
-        public async Task MapByHeader_Async()
-        {
-            var result = (await ByHeader().LoadFromTextAsync("City;Id;Name\nRoma;1;Mario")).ToList();
-
-            Assert.Equal((1, "Mario", "Roma"), (result[0].Id, result[0].Name, result[0].City));
-        }
-
-        [Fact]
-        public async Task MapByHeader_Async_MissingColumn_Throws()
-        {
-            await Assert.ThrowsAsync<MissingColumnException>(() => ByHeader().LoadFromTextAsync("Id;Name\n1;Mario"));
-        }
-#endif
 
         // ---------- automatic columns ----------
 

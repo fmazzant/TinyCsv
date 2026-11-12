@@ -57,12 +57,16 @@ namespace Mafesoft.TinyCsv.Data
         /// <returns></returns>
         IEnumerable<string[]> ReadLinesAndFields();
 
-#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Read Lines 
         /// </summary>
         /// <returns></returns>
         IAsyncEnumerable<string> ReadLinesAsync(CancellationToken cancellationToken = default);
-#endif
+
+        /// <summary>
+        /// Get lines field asynchronously
+        /// </summary>
+        /// <returns></returns>
+        IAsyncEnumerable<string[]> ReadLinesAndFieldsAsync(CancellationToken cancellationToken = default);
     }
 }

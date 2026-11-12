@@ -1,4 +1,3 @@
-#if NET5_0_OR_GREATER
 namespace Mafesoft.TinyCsv.Tests
 {
     using System.Collections.Generic;
@@ -71,4 +70,3 @@ namespace Mafesoft.TinyCsv.Tests
         }
     }
 }
-#endif

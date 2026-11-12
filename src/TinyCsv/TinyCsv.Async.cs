@@ -1,6 +1,4 @@
-﻿#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-
-/// <summary>
+﻿/// <summary>
 /// 
 /// The MIT License (MIT)
 /// 
@@ -37,6 +35,7 @@ namespace Mafesoft.TinyCsv
     using System.Runtime.CompilerServices;
     using System.Text;
     using System.Threading;
+    using System.Threading.Tasks;
     using Mafesoft.TinyCsv.Data;
     using Mafesoft.TinyCsv.Streams;
 
@@ -125,7 +124,46 @@ namespace Mafesoft.TinyCsv
         {
             return LoadFromReaderAsync(CreateReader(text, encoding), cancellationToken);
         }
+
+        /// <summary>
+        /// Writes the models of an async sequence to a csv file, one at a time, without buffering them
+        /// (i.e. from EF Core AsAsyncEnumerable()).
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="models"></param>
+        /// <param name="cancellationToken"></param>
+        public async Task SaveAsync(string path, IAsyncEnumerable<T> models, CancellationToken cancellationToken = default)
+        {
+            using (var file = CreateStreamWriter(path))
+            {
+                await SaveAsync(file, models, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Writes the models of an async sequence to a stream writer, one at a time, without buffering them.
+        /// The stream writer is left open.
+        /// </summary>
+        /// <param name="streamWriter"></param>
+        /// <param name="models"></param>
+        /// <param name="cancellationToken"></param>
+        public async Task SaveAsync(StreamWriter streamWriter, IAsyncEnumerable<T> models, CancellationToken cancellationToken = default)
+        {
+            var writer = new TinyCsvWriter<T>(Options, streamWriter, true);
+            await writer.WriteRecordsAsync(models, cancellationToken).ConfigureAwait(false);
+            await writer.CompleteAsync().ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Writes the models of an async sequence to a stream, one at a time, without buffering them.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="models"></param>
+        /// <param name="cancellationToken"></param>
+        public Task SaveAsync(Stream stream, IAsyncEnumerable<T> models, CancellationToken cancellationToken = default)
+        {
+            var streamWriter = CreateStreamWriter(stream);
+            return SaveAsync(streamWriter, models, cancellationToken);
+        }
     }
 }
-
-#endif

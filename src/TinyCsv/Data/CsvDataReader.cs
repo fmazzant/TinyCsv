@@ -35,6 +35,7 @@ namespace Mafesoft.TinyCsv.Data
     using System.Runtime.CompilerServices;
     using System.Text;
     using System.Threading;
+    using System.Threading.Tasks;
     using Mafesoft.TinyCsv.Exceptions;
 
     /// <summary>
@@ -597,7 +598,6 @@ namespace Mafesoft.TinyCsv.Data
         }
 
 
-#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Read the records. A record is a logical row: a quoted field may span multiple lines.
         /// </summary>
@@ -619,6 +619,20 @@ namespace Mafesoft.TinyCsv.Data
                 yield return record;
             }
         }
-#endif
+
+        /// <summary>
+        /// Get lines field asynchronously
+        /// </summary>
+        /// <returns></returns>
+        public async IAsyncEnumerable<string[]> ReadLinesAndFieldsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            await foreach (var line in ReadLinesAsync(cancellationToken).ConfigureAwait(false))
+            {
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    yield return GetFieldsByLine(line);
+                }
+            }
+        }
     }
 }

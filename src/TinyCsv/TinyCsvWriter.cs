@@ -14,10 +14,7 @@ namespace Mafesoft.TinyCsv
     /// Create it with <see cref="TinyCsv{T}.CreateWriter(string)"/> and dispose it at the end.
     /// </summary>
     /// <typeparam name="T">the model</typeparam>
-    public sealed class TinyCsvWriter<T> : IDisposable
-#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        , IAsyncDisposable
-#endif
+    public sealed class TinyCsvWriter<T> : IDisposable, IAsyncDisposable
         where T : class, new()
     {
         private readonly CsvOptions<T> options;
@@ -126,6 +123,20 @@ namespace Mafesoft.TinyCsv
         }
 
         /// <summary>
+        /// Writes the records of an async sequence, one at a time, without buffering them
+        /// (i.e. from EF Core AsAsyncEnumerable()).
+        /// </summary>
+        /// <param name="models"></param>
+        /// <param name="cancellationToken"></param>
+        public async Task WriteRecordsAsync(IAsyncEnumerable<T> models, CancellationToken cancellationToken = default)
+        {
+            await foreach (var model in models.WithCancellation(cancellationToken).ConfigureAwait(false))
+            {
+                await WriteRecordAsync(model, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Writes the buffered rows
         /// </summary>
         public void Flush()
@@ -217,7 +228,6 @@ namespace Mafesoft.TinyCsv
             }
         }
 
-#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Completes the file and closes the writer, when it is created by TinyCsv
         /// </summary>
@@ -226,9 +236,13 @@ namespace Mafesoft.TinyCsv
             await CompleteAsync().ConfigureAwait(false);
             if (!leaveOpen)
             {
+#if NETFRAMEWORK || NETSTANDARD2_0
+                // TextWriter.DisposeAsync is not available: the rows are already flushed by CompleteAsync
+                writer.Dispose();
+#else
                 await writer.DisposeAsync().ConfigureAwait(false);
+#endif
             }
         }
-#endif
     }
 }

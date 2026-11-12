@@ -136,42 +136,6 @@ namespace Mafesoft.TinyCsv
         /// <returns></returns>
         IEnumerable<string[]> GetAllLinesAndFieldsFromText(string text, Encoding encoding = null);
 
-#if NETFRAMEWORK || NETSTANDARD2_0
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        Task<IEnumerable<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Reads a csv from stream and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="streamReader"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<IEnumerable<T>> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Reads a csv from stream and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<IEnumerable<T>> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Reads a csv from text and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        Task<IEnumerable<T>> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default);
-
-#endif
-
-#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-
         /// <summary>
         /// Reads a csv file and returns a list of objects asynchronously.
         /// </summary>
@@ -199,8 +163,6 @@ namespace Mafesoft.TinyCsv
         /// <param name="text"></param>
         /// <returns></returns>
         IAsyncEnumerable<T> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default);
-
-#endif
 
         /// <summary>
         /// Writes a list of objects to a csv file.
@@ -243,6 +205,30 @@ namespace Mafesoft.TinyCsv
         /// <param name="path"></param>
         /// <param name="models"></param>
         Task SaveAsync(Stream stream, IEnumerable<T> models, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Writes the models of an async sequence to a csv file, one at a time, without buffering them.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="models"></param>
+        /// <param name="cancellationToken"></param>
+        Task SaveAsync(string path, IAsyncEnumerable<T> models, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Writes the models of an async sequence to a stream writer, one at a time, without buffering them.
+        /// </summary>
+        /// <param name="streamWriter"></param>
+        /// <param name="models"></param>
+        /// <param name="cancellationToken"></param>
+        Task SaveAsync(StreamWriter streamWriter, IAsyncEnumerable<T> models, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Writes the models of an async sequence to a stream, one at a time, without buffering them.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="models"></param>
+        /// <param name="cancellationToken"></param>
+        Task SaveAsync(Stream stream, IAsyncEnumerable<T> models, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get all csv text

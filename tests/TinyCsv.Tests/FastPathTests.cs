@@ -257,7 +257,6 @@ namespace Mafesoft.TinyCsv.Tests
             Assert.Equal(people.Select(p => (p.Id, p.Name, p.City)), read.Select(p => (p.Id, p.Name, p.City ?? "")));
         }
 
-#if NET5_0_OR_GREATER
         [Fact]
         public async Task LoadFromTextAsync_ManyRecords_AcrossTheBuffer()
         {
@@ -272,7 +271,6 @@ namespace Mafesoft.TinyCsv.Tests
 
             Assert.Equal(people.Select(p => (p.Id, p.Name, p.City)), read.Select(p => (p.Id, p.Name, p.City ?? "")));
         }
-#endif
 
         [Fact]
         public void LoadFromText_SkipRow_ReceivesTheRecordAndTheIndex()

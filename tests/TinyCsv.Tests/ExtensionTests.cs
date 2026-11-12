@@ -167,7 +167,6 @@ namespace Mafesoft.TinyCsv.Tests
             Assert.Equal("Mario", properties["Name"].Getter(person));
         }
 
-#if NET5_0_OR_GREATER
         [Fact]
         public async System.Threading.Tasks.Task AsyncEnumerableExtensions_ToListAsync()
         {
@@ -176,6 +175,5 @@ namespace Mafesoft.TinyCsv.Tests
 
             Assert.Equal(new[] { 1, 2 }, result.Select(x => x.Id));
         }
-#endif
     }
 }

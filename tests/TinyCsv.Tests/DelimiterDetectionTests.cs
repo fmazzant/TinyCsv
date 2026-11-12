@@ -130,7 +130,6 @@ namespace Mafesoft.TinyCsv.Tests
             Assert.Equal("Mario", people[0].Name);
         }
 
-#if NET5_0_OR_GREATER
         [Fact]
         public async Task LoadFromTextAsync_DetectsTheDelimiter()
         {
@@ -144,6 +143,5 @@ namespace Mafesoft.TinyCsv.Tests
 
             Assert.Equal("Milano", people[1].City);
         }
-#endif
     }
 }

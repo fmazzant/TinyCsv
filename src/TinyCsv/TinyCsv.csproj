@@ -23,6 +23,8 @@
   <!-- Span support where it is not built-in -->
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'net462'">
     <PackageReference Include="System.Memory" Version="4.6.3" />
+    <!-- IAsyncEnumerable<T> / IAsyncDisposable: the same async API on every target framework -->
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>

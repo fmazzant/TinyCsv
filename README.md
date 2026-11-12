@@ -145,6 +145,24 @@ The APIs marked obsolete in 3.x have been removed:
 - .NET Framework 4.5.2 is no longer supported; .NET Framework 4.7.2 and 4.8 use the `net462` asset.
 - `System.Memory` is referenced only by `netstandard2.0` and `net462`.
 
+### Async API
+
+On `netstandard2.0` and .NET Framework, `LoadFromFileAsync`, `LoadFromStreamAsync` and `LoadFromTextAsync` returned a
+`Task<IEnumerable<T>>` with the whole file in memory. In 4.0 they return an `IAsyncEnumerable<T>` on every target framework
+(`Microsoft.Bcl.AsyncInterfaces` is referenced by `netstandard2.0` and `net462`), so the same code compiles everywhere:
+
+```c#
+// 3.x on .NET Framework / netstandard2.0
+var models = await csv.LoadFromFileAsync(path);
+
+// 4.0 on every target framework
+await foreach (var model in csv.LoadFromFileAsync(path)) { }
+// or
+var models = await csv.LoadFromFileAsync(path).ToListAsync(); // using Mafesoft.TinyCsv.Extensions;
+```
+
+`TinyCsvWriter<T>` implements `IAsyncDisposable` on every target framework.
+
 ## Breaking changes in 3.0
 
 TinyCsv 3.0 has a new reader, based on `Span<char>`, that reads a CSV record instead of a physical line.
@@ -373,20 +391,31 @@ foreach(var model in models){
 }
 ```
 
-or you can to use the asynchronously method, like this:
+or you can to use the asynchronously method, that returns an `IAsyncEnumerable<T>` on every target framework
+(from .NET Framework 4.6.2 to .NET 10): the records are read one at a time, without loading the whole file in memory.
 
 ```c#
-var models = await csv.LoadFromFileAsync("file.csv");
-await foreach(var model in models){
+await foreach (var model in csv.LoadFromFileAsync("file.csv"))
+{
     // processing
 }
 ```
 
-for NET5_0_OR_GREATER or NETSTANDARD2_1_OR_GREATER, like this:
+or, to get a list (`ToListAsync` is in `Mafesoft.TinyCsv.Extensions`; on .NET 10 it is the one of `System.Linq`):
 
 ```c#
 var models = await csv.LoadFromFileAsync("file.csv").ToListAsync();
 ```
+
+`SaveAsync` and `TinyCsvWriter<T>.WriteRecordsAsync` accept an `IAsyncEnumerable<T>` as well,
+so a source can be copied to a file without buffering it (i.e. from EF Core `AsAsyncEnumerable()`):
+
+```c#
+await csv.SaveAsync("orders.csv", db.Orders.AsNoTracking().AsAsyncEnumerable());
+```
+
+The records without a model can be read asynchronously as dictionaries with
+`TinyCsvRecords.LoadFromFileAsync`, `LoadFromStreamAsync` and `LoadFromTextAsync`.
 
 The load method returns a collection of Model type items and takes as argument the file's path.
 
@@ -578,7 +607,7 @@ using (var writer = csv.CreateWriter("file_export.csv"))
 
 The header is written before the first record, and the file is completed when the writer is disposed.
 `CreateWriter` takes a path, a `Stream` or a `StreamWriter`: the stream and the stream writer are left open.
-There are `WriteRecordAsync`, `WriteRecordsAsync` and, for NET5_0_OR_GREATER or NETSTANDARD2_1_OR_GREATER, `await using`.
+There are `WriteRecordAsync`, `WriteRecordsAsync` (with an `IEnumerable<T>` or an `IAsyncEnumerable<T>`) and `await using`, on every target framework.
 
 ## Event handlers
 

@@ -31,6 +31,54 @@ namespace Mafesoft.TinyCsv.Tests
             Assert.Equal("Milano", records[1]["city"]);
         }
 
+        private static async System.Threading.Tasks.Task<List<T>> ToListAsync<T>(IAsyncEnumerable<T> items)
+        {
+            var result = new List<T>();
+            await foreach (var item in items)
+            {
+                result.Add(item);
+            }
+            return result;
+        }
+
+        [Fact]
+        public async System.Threading.Tasks.Task LoadAsync_ReadsDictionaries()
+        {
+            var path = Path.Combine(Path.GetTempPath(), $"tinycsv-{Guid.NewGuid():N}.csv");
+            File.WriteAllText(path, Text);
+            try
+            {
+                var fromText = await ToListAsync(Records().LoadFromTextAsync(Text));
+                var fromStream = await ToListAsync(Records().LoadFromStreamAsync(new MemoryStream(Encoding.UTF8.GetBytes(Text))));
+                var fromFile = await ToListAsync(Records().LoadFromFileAsync(path));
+
+                foreach (var records in new[] { fromText, fromStream, fromFile })
+                {
+                    Assert.Equal(2, records.Count);
+                    Assert.Equal("Rossi, Luigi", records[1]["Name"]);
+                    Assert.Equal("Milano", records[1]["city"]);
+                }
+            }
+            finally
+            {
+                File.Delete(path);
+            }
+        }
+
+        [Fact]
+        public async System.Threading.Tasks.Task LoadAsync_BadData_IsReported()
+        {
+            var errors = new List<CsvException>();
+            var records = await ToListAsync(Records(o =>
+            {
+                o.ValidateColumnCount = true;
+                o.BadDataFound = errors.Add;
+            }).LoadFromTextAsync("Id,Name\n1,Mario\n2\n3,Luigi"));
+
+            Assert.Equal(new[] { "1", "3" }, records.Select(r => r["Id"]));
+            Assert.Single(errors);
+        }
+
         [Fact]
         public void LoadFromText_WithoutHeader_NamesAreFields()
         {
