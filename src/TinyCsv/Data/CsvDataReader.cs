@@ -53,7 +53,7 @@ namespace Mafesoft.TinyCsv.Data
         private readonly char quote;
         private readonly char[] delimiter;
         private readonly StringBuilder builder = new StringBuilder();
-        private CsvField[] fieldsBuffer;
+        private CsvField[] fieldsBuffer = Array.Empty<CsvField>();
 
         /// <summary>
         /// Create a TinyCsvDataReader instance
@@ -89,7 +89,7 @@ namespace Mafesoft.TinyCsv.Data
         {
             var records = new CsvRecordReader(reader, options);
             var index = 0;
-            string record;
+            string? record;
             while ((record = records.ReadRecord()) != null)
             {
                 if (IsToSkip(record, index++))
@@ -325,7 +325,7 @@ namespace Mafesoft.TinyCsv.Data
                 throw new NotAllowCommentException();
             }
 
-            if (fields == null)
+            if (fields == null || fields.Length == 0)
             {
                 fields = new CsvField[columnsCount > 0 ? columnsCount : 8];
             }
@@ -430,11 +430,11 @@ namespace Mafesoft.TinyCsv.Data
         /// </summary>
         private readonly struct RecordSource
         {
-            private readonly string text;
-            private readonly char[] chars;
+            private readonly string? text;
+            private readonly char[]? chars;
             private readonly int offset;
 
-            public RecordSource(string text, char[] chars, int offset)
+            public RecordSource(string? text, char[]? chars, int offset)
             {
                 this.text = text;
                 this.chars = chars;
@@ -446,7 +446,8 @@ namespace Mafesoft.TinyCsv.Data
             /// </summary>
             public CsvField Slice(int start, int length)
             {
-                return chars != null ? new CsvField(chars, offset + start, length) : new CsvField(text, start, length);
+                // text is set when chars is null
+                return chars != null ? new CsvField(chars, offset + start, length) : new CsvField(text ?? string.Empty, start, length);
             }
         }
 
@@ -606,7 +607,7 @@ namespace Mafesoft.TinyCsv.Data
         {
             var records = new CsvRecordReader(reader, options);
             var index = 0;
-            string record;
+            string? record;
             while ((record = await records.ReadRecordAsync(cancellationToken).ConfigureAwait(false)) != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();

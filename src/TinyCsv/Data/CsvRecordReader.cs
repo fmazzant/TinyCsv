@@ -63,10 +63,10 @@ namespace Mafesoft.TinyCsv.Data
         private readonly bool findDelimiters;
 
         private char[] buffer = new char[InitialBufferSize];
-        private int[] delimiters;
+        private int[] delimiters = Array.Empty<int>();
         private int delimiterCount;
         private bool recordHasQuote;
-        private int[] quotedFields;
+        private int[] quotedFields = Array.Empty<int>();
         private int quotedFieldCount;
         private bool recordRead;
         private int length;
@@ -167,7 +167,7 @@ namespace Mafesoft.TinyCsv.Data
         /// Read the next record, without the trailing new line. Returns null at the end of the stream.
         /// </summary>
         /// <returns></returns>
-        public string ReadRecord()
+        public string? ReadRecord()
         {
             return Read() ? CurrentToString() : null;
         }
@@ -177,7 +177,7 @@ namespace Mafesoft.TinyCsv.Data
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<string> ReadRecordAsync(CancellationToken cancellationToken = default)
+        public async Task<string?> ReadRecordAsync(CancellationToken cancellationToken = default)
         {
             return await ReadAsync(cancellationToken).ConfigureAwait(false) ? CurrentToString() : null;
         }

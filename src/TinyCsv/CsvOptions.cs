@@ -82,9 +82,9 @@ namespace Mafesoft.TinyCsv
         string NewLine { get; set; }
 
         /// <summary>
-        /// Represents a character encoding
+        /// Represents a character encoding. Null is UTF-8.
         /// </summary>
-        Encoding TextEncoding { get; set; }
+        Encoding? TextEncoding { get; set; }
 
         /// <summary>
         /// Allows skipping of initial rows without csv data
@@ -92,9 +92,9 @@ namespace Mafesoft.TinyCsv
         uint RowsToSkip { get; set; }
 
         /// <summary>
-        /// Allows skipt row by condition
+        /// Allows skipt row by condition. Null does not skip any row.
         /// </summary>
-        Func<string, int, bool> SkipRow { get; set; }
+        Func<string, int, bool>? SkipRow { get; set; }
 
         /// <summary>
         /// Can be used to trim each cell
@@ -150,9 +150,10 @@ namespace Mafesoft.TinyCsv
         public bool DetectDelimiter { get; set; } = false;
 
         /// <summary>
-        /// The delimiters that <see cref="DetectDelimiter"/> looks for: comma, semicolon, tab and pipe
+        /// The delimiters that <see cref="DetectDelimiter"/> looks for: comma, semicolon, tab and pipe.
+        /// When null, the delimiter is not detected and <see cref="Delimiter"/> is used.
         /// </summary>
-        public string[] DelimiterCandidates { get; set; } = { ",", ";", "	", "|" };
+        public string[]? DelimiterCandidates { get; set; } = { ",", ";", "	", "|" };
 
         /// <summary>
         /// Respects new line (either \r\n or \n) characters inside field values enclosed in double quotes.
@@ -183,8 +184,9 @@ namespace Mafesoft.TinyCsv
         /// <summary>
         /// The encoding to read and write. The default is UTF-8, written without the byte order mark (BOM);
         /// set <c>new UTF8Encoding(true)</c> to write the BOM (i.e. for Excel). When reading, a BOM takes precedence.
+        /// Null is the same as the default.
         /// </summary>
-        public Encoding TextEncoding { get; set; } = Encoding.UTF8;
+        public Encoding? TextEncoding { get; set; } = Encoding.UTF8;
 
         /// <summary>
         /// Allows skipping of initial rows without csv data
@@ -192,9 +194,9 @@ namespace Mafesoft.TinyCsv
         public uint RowsToSkip { get; set; } = 0;
 
         /// <summary>
-        /// Allows skipt row by condition
+        /// Allows skipt row by condition. Null does not skip any row.
         /// </summary>
-        public Func<string, int, bool> SkipRow { get; set; } = NotSkipRow;
+        public Func<string, int, bool>? SkipRow { get; set; } = NotSkipRow;
 
         /// <summary>
         /// The default SkipRow, that does not skip any row: the readers do not create the string of the record to call it
@@ -230,16 +232,16 @@ namespace Mafesoft.TinyCsv
 
         /// <summary>
         /// Compares the names in the header record with the column names when MapColumnsByHeader is true.
-        /// The default ignores the case.
+        /// The default ignores the case. Null is the same as the default.
         /// </summary>
-        public StringComparer HeaderNameComparer { get; set; } = StringComparer.OrdinalIgnoreCase;
+        public StringComparer? HeaderNameComparer { get; set; } = StringComparer.OrdinalIgnoreCase;
 
         /// <summary>
         /// The culture used to read and write the values: numbers, dates and the columns with a format.
         /// The default is the invariant culture, so the files do not depend on the culture of the machine.
-        /// A column with a ColumnFormatProvider uses its provider.
+        /// A column with a ColumnFormatProvider uses its provider. Null is the invariant culture.
         /// </summary>
-        public CultureInfo Culture { get; set; } = CultureInfo.InvariantCulture;
+        public CultureInfo? Culture { get; set; } = CultureInfo.InvariantCulture;
 
         /// <summary>
         /// A value that is not empty and that cannot be converted to the type of its column (i.e. "abc" for an int)
@@ -252,7 +254,7 @@ namespace Mafesoft.TinyCsv
         /// the row is skipped and the read goes on. The exception has the row, the column and the value of the error.
         /// When null (default), the exception is thrown.
         /// </summary>
-        public Action<CsvException> BadDataFound { get; set; }
+        public Action<CsvException>? BadDataFound { get; set; }
 
         /// <summary>
         /// Enable handlers if necessary
@@ -293,7 +295,8 @@ namespace Mafesoft.TinyCsv
         {
             Columns = new CsvOptionsColumns<T>();
             Handlers = new EventHandlers(this);
-            this.SetOptionPropertiesFromType(typeof(T));
+            FasterProperties = PropertyHelper<T>.GetPropertiesExpressionTree(typeof(T));
+            Properties = GetProperties(typeof(T));
         }
 
         /// <summary>
@@ -305,22 +308,23 @@ namespace Mafesoft.TinyCsv
             Handlers = new EventHandlers(this);
             Columns = new CsvOptionsColumns<T>(type);
             this.SetOptionValueFromType(type);
-            this.SetOptionPropertiesFromType(type);
+            FasterProperties = PropertyHelper<T>.GetPropertiesExpressionTree(type);
+            Properties = GetProperties(type);
         }
 
         /// <summary>
-        /// Set Option Properties From Type
+        /// The public instance properties of the type, by name
         /// </summary>
         /// <param name="type"></param>
-        private void SetOptionPropertiesFromType(Type type)
+        private static ConcurrentDictionary<string, PropertyInfo> GetProperties(Type type)
         {
-            FasterProperties = PropertyHelper<T>.GetPropertiesExpressionTree(type);
-            Properties = new ConcurrentDictionary<string, PropertyInfo>();
+            var result = new ConcurrentDictionary<string, PropertyInfo>();
             var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             foreach (var property in properties)
             {
-                Properties.TryAdd(property.Name, property);
+                result.TryAdd(property.Name, property);
             }
+            return result;
         }
 
         /// <summary>
@@ -499,7 +503,7 @@ namespace Mafesoft.TinyCsv
                 }
                 else
                 {
-                    missing.Add(column.ColumnName);
+                    missing.Add(column.ColumnName ?? string.Empty);
                 }
                 columnIndex++;
             }
@@ -519,12 +523,12 @@ namespace Mafesoft.TinyCsv
             /// <summary>
             /// Occors when TinyCsv is staring
             /// </summary>
-            public event EventHandler<StartEventArgs> Start;
+            public event EventHandler<StartEventArgs>? Start;
 
             /// <summary>
             /// Occors when TinyCsv is completed
             /// </summary>
-            public event EventHandler<CompletedEventArgs> Completed;
+            public event EventHandler<CompletedEventArgs>? Completed;
 
             /// <summary>
             /// Options
@@ -614,17 +618,17 @@ namespace Mafesoft.TinyCsv
             /// <summary>
             /// Occors when row header is reading
             /// </summary>
-            public EventHandler<RowHeaderReadingEventArgs> RowHeader { get; set; }
+            public EventHandler<RowHeaderReadingEventArgs>? RowHeader { get; set; }
 
             /// <summary>
             /// Occors when row is reading
             /// </summary>
-            public EventHandler<RowReadingEventArgs> RowReading { get; set; }
+            public EventHandler<RowReadingEventArgs>? RowReading { get; set; }
 
             /// <summary>
             /// Occors when row is read
             /// </summary>
-            public EventHandler<RowReadEventArgs<T>> RowRead { get; set; }
+            public EventHandler<RowReadEventArgs<T>>? RowRead { get; set; }
 
             /// <summary>
             /// Create an instance of Read event handlers
@@ -729,17 +733,17 @@ namespace Mafesoft.TinyCsv
             /// <summary>
             /// Occors when row header is writing
             /// </summary>
-            public EventHandler<RowHeaderWritingEventArgs> RowHeader { get; set; }
+            public EventHandler<RowHeaderWritingEventArgs>? RowHeader { get; set; }
 
             /// <summary>
             /// Occors when row is writting
             /// </summary>
-            public EventHandler<RowWritingEventArgs<T>> RowWriting { get; set; }
+            public EventHandler<RowWritingEventArgs<T>>? RowWriting { get; set; }
 
             /// <summary>
             /// Occors when row is written
             /// </summary>
-            public EventHandler<RowWrittenEventArgs<T>> RowWritten { get; set; }
+            public EventHandler<RowWrittenEventArgs<T>>? RowWritten { get; set; }
 
             /// <summary>
             /// Handlers is enabled

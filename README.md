@@ -198,6 +198,18 @@ var models = await csv.LoadFromFileAsync(path).ToListAsync(); // using Mafesoft.
   `Get<T>` with a name that is not registered throws `KeyNotFoundException` (before: `ArgumentNullException`).
 - The package references `Microsoft.Extensions.DependencyInjection.Abstractions` instead of `Microsoft.Extensions.DependencyInjection`.
 
+### Nullable reference types
+
+Both packages are annotated for nullable reference types. A project with `<Nullable>enable</Nullable>` may see new warnings,
+i.e. for the options that may be null (`BadDataFound`, `SkipRow`, `Culture`, `TextEncoding`, `HeaderNameComparer`:
+null is the default behavior), for the values of `TinyCsvRecords` (`IDictionary<string, string?>`: a value missing from a short record is null)
+and for `ITinyCsvFactory.TryGet<T>`, whose `out` value is not null when it returns true.
+
+`IValueConverter`:
+- `ConvertBack(string value, ...)` receives the text of the field, never null: an empty field is an empty string. It returns `object?`.
+- `Convert(object? value, ...)` receives null for a null property, and it returns `string?`: null and an empty string are written as an empty field.
+- `parameter` is `object?` (TinyCsv passes null), `provider` is never null.
+
 ## Breaking changes in 3.0
 
 TinyCsv 3.0 has a new reader, based on `Span<char>`, that reads a CSV record instead of a physical line.
@@ -391,10 +403,10 @@ It is possible to define a custom converter for a column, like this:
 ```c#
 public class Base64Converter : IValueConverter
 {
-    public string Convert(object value, object parameter, IFormatProvider provider) 
+    public string? Convert(object? value, object? parameter, IFormatProvider provider) 
         => Base64Encode($"{value}");
 
-    public object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider) 
+    public object? ConvertBack(string value, Type targetType, object? parameter, IFormatProvider provider) 
         => Base64Decode(value);
 
     private string Base64Encode(string plainText)

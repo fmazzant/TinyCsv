@@ -41,7 +41,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// <summary>
         /// The fast parser of the values, see ValueParser
         /// </summary>
-        internal override ValueParser<decimal> GetParser(IFormatProvider provider)
+        internal override ValueParser<decimal>? GetParser(IFormatProvider provider)
         {
             return DecimalValueParser.Create(provider);
         }

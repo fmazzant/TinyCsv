@@ -30,6 +30,7 @@
 namespace Mafesoft.TinyCsv.AspNetCore
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// Creates TinyCsv instances and returns the instances registered by name
@@ -73,8 +74,8 @@ namespace Mafesoft.TinyCsv.AspNetCore
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="name"></param>
-        /// <param name="tinyCsv"></param>
+        /// <param name="tinyCsv">the TinyCsv instance when the method returns true, otherwise null</param>
         /// <returns></returns>
-        bool TryGet<T>(string name, out ITinyCsv<T> tinyCsv) where T : class, new();
+        bool TryGet<T>(string name, [NotNullWhen(true)] out ITinyCsv<T>? tinyCsv) where T : class, new();
     }
 }

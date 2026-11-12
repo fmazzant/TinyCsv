@@ -32,27 +32,38 @@ namespace Mafesoft.TinyCsv.Conversions
     using System;
 
     /// <summary>
-    /// Defines the interface to convert the types of values to string and the string to types of values
+    /// Defines the interface to convert the types of values to string and the string to types of values.
+    /// <para>
+    /// Writing: <see cref="Convert"/> receives the value of the property, that is null when the property is null,
+    /// and it may return null: null and an empty string are written as an empty field.
+    /// </para>
+    /// <para>
+    /// Reading: <see cref="ConvertBack"/> receives the text of the field, that is never null:
+    /// an empty field is an empty string. It may return null (i.e. for a reference or a nullable type),
+    /// that is assigned to the property.
+    /// </para>
     /// </summary>
     public interface IValueConverter
     {
         /// <summary>
         /// Converts a value to string.
         /// </summary>
-        /// <param name="value">The value produced by the binding source.</param>
-        /// <param name="parameter">The converter parameter to use. In this case is DefaultValue</param>
-        /// <param name="provider">The IFormatProvider to use in the converter.</param>
-        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        string Convert(object value, object parameter, IFormatProvider provider);
+        /// <param name="value">The value of the property: null when the property is null.</param>
+        /// <param name="parameter">The converter parameter: TinyCsv passes null.</param>
+        /// <param name="provider">The IFormatProvider to use in the converter: the ColumnFormatProvider of the column,
+        /// or the culture of the options with the format of the column, if any. It is never null.</param>
+        /// <returns>The text of the field. Null and an empty string are written as an empty field.</returns>
+        string? Convert(object? value, object? parameter, IFormatProvider provider);
 
         /// <summary>
         /// Converts a string to target type value.
         /// </summary>
-        /// <param name="value">The value that is produced by the binding target.</param>
-        /// <param name="targetType">The type to convert to.</param>
-        /// <param name="parameter">The converter parameter to use.</param>
-        /// <param name="provider">The IFormatProvider to use in the converter.</param>
-        /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider);
+        /// <param name="value">The text of the field, never null: an empty field is an empty string.</param>
+        /// <param name="targetType">The type to convert to: the type of the column.</param>
+        /// <param name="parameter">The converter parameter: TinyCsv passes null.</param>
+        /// <param name="provider">The IFormatProvider to use in the converter: the ColumnFormatProvider of the column,
+        /// or the culture of the options with the format of the column, if any. It is never null.</param>
+        /// <returns>The value assigned to the property, that may be null.</returns>
+        object? ConvertBack(string value, Type targetType, object? parameter, IFormatProvider provider);
     }
 }

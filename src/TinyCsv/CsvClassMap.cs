@@ -29,7 +29,7 @@ namespace Mafesoft.TinyCsv
     public abstract class CsvClassMap<T>
     {
         private readonly List<CsvMemberMap> members = new List<CsvMemberMap>();
-        private Action<CsvOptions<T>> configure;
+        private Action<CsvOptions<T>>? configure;
 
         /// <summary>
         /// Maps a property of the model, or a nested property (m => m.Address.City), to a column.
@@ -79,10 +79,10 @@ namespace Mafesoft.TinyCsv
         private readonly Type type;
         private readonly Expression expression;
         private int index = -1;
-        private string name;
-        private string format;
-        private IFormatProvider formatProvider;
-        private IValueConverter converter;
+        private string? name;
+        private string? format;
+        private IFormatProvider? formatProvider;
+        private IValueConverter? converter;
 
         internal CsvMemberMap(Type type, Expression expression)
         {
@@ -106,7 +106,7 @@ namespace Mafesoft.TinyCsv
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public CsvMemberMap Name(string name)
+        public CsvMemberMap Name(string? name)
         {
             this.name = name;
             return this;
@@ -117,7 +117,7 @@ namespace Mafesoft.TinyCsv
         /// </summary>
         /// <param name="format"></param>
         /// <returns></returns>
-        public CsvMemberMap Format(string format)
+        public CsvMemberMap Format(string? format)
         {
             this.format = format;
             return this;
@@ -128,7 +128,7 @@ namespace Mafesoft.TinyCsv
         /// </summary>
         /// <param name="formatProvider"></param>
         /// <returns></returns>
-        public CsvMemberMap FormatProvider(IFormatProvider formatProvider)
+        public CsvMemberMap FormatProvider(IFormatProvider? formatProvider)
         {
             this.formatProvider = formatProvider;
             return this;
@@ -139,7 +139,7 @@ namespace Mafesoft.TinyCsv
         /// </summary>
         /// <param name="converter"></param>
         /// <returns></returns>
-        public CsvMemberMap Converter(IValueConverter converter)
+        public CsvMemberMap Converter(IValueConverter? converter)
         {
             this.converter = converter;
             return this;

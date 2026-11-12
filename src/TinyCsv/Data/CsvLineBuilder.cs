@@ -127,9 +127,9 @@ namespace Mafesoft.TinyCsv.Data
         /// Appends a field, escaped if necessary. A null value is an empty field.
         /// </summary>
         /// <param name="value"></param>
-        public void AppendField(string value)
+        public void AppendField(string? value)
         {
-            if (string.IsNullOrEmpty(value))
+            if (value == null || value.Length == 0)
             {
                 return;
             }
@@ -139,7 +139,8 @@ namespace Mafesoft.TinyCsv.Data
         /// <summary>
         /// Appends a value as string.Format(culture, "{0}", value) does, with the format of the column (if any)
         /// </summary>
-        public void AppendFormatted<TValue>(TValue value, string format, IFormatProvider culture)
+        public void AppendFormatted<TValue>(TValue value, string? format, IFormatProvider culture)
+            where TValue : struct
         {
 #if NET6_0_OR_GREATER
             if (value is ISpanFormattable)

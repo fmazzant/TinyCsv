@@ -45,7 +45,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// <param name="targetType">The type to convert to.</param>
         /// <param name="parameter">The converter parameter to use.</param>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        public override object? ConvertBack(string value, Type targetType, object? parameter, IFormatProvider provider)
         {
             TryConvertBack(value, targetType, parameter, provider, out var result);
             return result;
@@ -60,7 +60,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// <param name="provider">The format provider.</param>
         /// <param name="result">The converted value, or the default value when the value is not valid.</param>
         /// <returns>false when the value is not empty and it is not a name of the enum</returns>
-        public override bool TryConvertBack(string value, Type targetType, object parameter, IFormatProvider provider, out object result)
+        public override bool TryConvertBack(string value, Type targetType, object? parameter, IFormatProvider provider, out object? result)
         {
             var enumType = Nullable.GetUnderlyingType(targetType) ?? targetType;
             if (value != null && Enum.GetNames(enumType).Contains(value))

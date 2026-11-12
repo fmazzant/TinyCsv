@@ -120,7 +120,7 @@ namespace Mafesoft.TinyCsv
         /// <param name="encoding"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public IAsyncEnumerable<T> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default)
+        public IAsyncEnumerable<T> LoadFromTextAsync(string text, Encoding? encoding = null, CancellationToken cancellationToken = default)
         {
             return LoadFromReaderAsync(CreateReader(text, encoding), cancellationToken);
         }

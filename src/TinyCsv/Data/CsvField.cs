@@ -38,8 +38,8 @@ namespace Mafesoft.TinyCsv.Data
     /// </summary>
     internal readonly struct CsvField
     {
-        private readonly string text;
-        private readonly char[] chars;
+        private readonly string? text;
+        private readonly char[]? chars;
         private readonly int start;
         private readonly int length;
 
@@ -89,7 +89,9 @@ namespace Mafesoft.TinyCsv.Data
             {
                 return length == 0 ? string.Empty : new string(chars, start, length);
             }
-            return start == 0 && length == text.Length ? text : text.Substring(start, length);
+            // text is set when chars is null (the default CsvField is empty)
+            var value = text ?? string.Empty;
+            return start == 0 && length == value.Length ? value : value.Substring(start, length);
         }
     }
 }

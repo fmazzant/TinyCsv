@@ -33,6 +33,7 @@ namespace Mafesoft.TinyCsv.Data
     using Mafesoft.TinyCsv.Helpers;
 
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
@@ -50,12 +51,12 @@ namespace Mafesoft.TinyCsv.Data
         private readonly int columnsCount;
         private readonly CsvColumnBinding<T>[] bindings;
         private readonly CsvRecordReader records;
-        private CsvField[] fields;
+        private CsvField[] fields = Array.Empty<CsvField>();
         private int[] columnFieldIndexes;
         private readonly Func<T> createModel = ModelFactory<T>.Create;
         private int recordIndex;
         private int index;
-        private string line;
+        private string? line;
 
         /// <summary>
         /// The reader of the fields
@@ -158,7 +159,7 @@ namespace Mafesoft.TinyCsv.Data
         /// <param name="model">the model, when the method returns true</param>
         /// <returns></returns>
         /// <exception cref="CsvException">bad data, when BadDataFound is null</exception>
-        public bool TryReadModel(out T model)
+        public bool TryReadModel([NotNullWhen(true)] out T? model)
         {
             var index = this.index++;
             var handlers = options.Handlers.Read;

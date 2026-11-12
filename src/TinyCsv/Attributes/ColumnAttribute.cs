@@ -47,32 +47,32 @@ namespace Mafesoft.TinyCsv.Attributes
         /// <summary>
         /// Column's name
         /// </summary>
-        public string ColumnName { get; internal set; }
+        public string? ColumnName { get; internal set; }
 
         /// <summary>
         /// Column's type
         /// </summary>
-        public Type ColumnType { get; internal set; }
+        public Type? ColumnType { get; internal set; }
 
         /// <summary>
         /// Column expression
         /// </summary>
-        public Expression ColumnExpression { get; internal set; }
+        public Expression? ColumnExpression { get; internal set; }
 
         /// <summary>
         /// Column's value format
         /// </summary>
-        public string ColumnFormat { get; internal set; }
+        public string? ColumnFormat { get; internal set; }
 
         /// <summary>
         /// Column's Format Provider
         /// </summary>
-        public IFormatProvider ColumnFormatProvider { get; internal set; }
+        public IFormatProvider? ColumnFormatProvider { get; internal set; }
 
         /// <summary>
         /// Converter
         /// </summary>
-        public IValueConverter Converter { get; internal set; }
+        public IValueConverter? Converter { get; internal set; }
 
         /// <summary>
         /// Contructor
@@ -82,7 +82,7 @@ namespace Mafesoft.TinyCsv.Attributes
         /// <param name="type"></param>
         /// <param name="format"></param>
         /// <param name="converter"></param>
-        public ColumnAttribute(int index = -1, string name = null, Type type = null, string format = null, Type formatProvider = null, Type converter = null)
+        public ColumnAttribute(int index = -1, string? name = null, Type? type = null, string? format = null, Type? formatProvider = null, Type? converter = null)
             : base()
         {
             ColumnIndex = index;
@@ -93,12 +93,12 @@ namespace Mafesoft.TinyCsv.Attributes
 
             if (formatProvider != null)
             {
-                ColumnFormatProvider = (IFormatProvider)Activator.CreateInstance(formatProvider);
+                ColumnFormatProvider = (IFormatProvider?)Activator.CreateInstance(formatProvider);
             }
 
             if (converter != null)
             {
-                Converter = (IValueConverter)Activator.CreateInstance(converter);
+                Converter = (IValueConverter?)Activator.CreateInstance(converter);
             }
         }
     }

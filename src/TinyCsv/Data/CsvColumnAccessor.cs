@@ -56,7 +56,7 @@ namespace Mafesoft.TinyCsv.Data
                 Format = formatProvider.CustomFormat;
                 Culture = formatProvider.Culture;
             }
-            else if (Provider != null && Provider.GetType() == typeof(CultureInfo))
+            else if (Provider.GetType() == typeof(CultureInfo))
             {
                 Culture = (CultureInfo)Provider;
             }
@@ -71,12 +71,12 @@ namespace Mafesoft.TinyCsv.Data
         /// <summary>
         /// The format of the column, when the provider is a DefaultFormatProvider
         /// </summary>
-        public string Format { get; }
+        public string? Format { get; }
 
         /// <summary>
         /// The culture used to format the value, or null when the value is formatted by the converter
         /// </summary>
-        public CultureInfo Culture { get; }
+        public CultureInfo? Culture { get; }
 
         /// <summary>
         /// Creates the bindings of the columns of the options
@@ -145,7 +145,7 @@ namespace Mafesoft.TinyCsv.Data
             return accessor;
         }
 
-        private static CsvColumnAccessor<T> CreateTyped(CsvColumn column, CsvOptions<T> options)
+        private static CsvColumnAccessor<T>? CreateTyped(CsvColumn column, CsvOptions<T> options)
         {
             if (typeof(T).IsValueType
                 || column.Converter == null
@@ -177,7 +177,7 @@ namespace Mafesoft.TinyCsv.Data
                             return null;
                         }
                         var accessorType = typeof(ParsableColumnAccessor<,>).MakeGenericType(typeof(T), valueType);
-                        return (CsvColumnAccessor<T>)Activator.CreateInstance(accessorType, property, column.Converter, IsDefaultConvert(converterType));
+                        return (CsvColumnAccessor<T>?)Activator.CreateInstance(accessorType, property, column.Converter, IsDefaultConvert(converterType));
                     }
                 }
             }
@@ -197,9 +197,10 @@ namespace Mafesoft.TinyCsv.Data
             return convert != null && convert.DeclaringType == typeof(DefaultValueConverter);
         }
 
-        internal static TDelegate CreateDelegate<TDelegate>(MethodInfo method) where TDelegate : class
+        internal static TDelegate CreateDelegate<TDelegate>(MethodInfo? method) where TDelegate : class
         {
-            return (TDelegate)(object)Delegate.CreateDelegate(typeof(TDelegate), method);
+            // Delegate.CreateDelegate throws the same ArgumentNullException for a null method
+            return (TDelegate)(object)Delegate.CreateDelegate(typeof(TDelegate), method ?? throw new ArgumentNullException(nameof(method)));
         }
     }
 
@@ -245,7 +246,7 @@ namespace Mafesoft.TinyCsv.Data
         private readonly Action<T, TValue> setter;
         private readonly ParsableValueConverter<TValue> converter;
         private readonly bool defaultConvert;
-        private readonly ValueParser<TValue> parser;
+        private readonly ValueParser<TValue>? parser;
 
         public ParsableColumnAccessor(PropertyInfo property, ParsableValueConverter<TValue> converter, bool defaultConvert)
         {
@@ -330,13 +331,13 @@ namespace Mafesoft.TinyCsv.Data
     {
         private readonly CsvOptions<T> options;
         private readonly string propertyName;
-        private readonly PropertyHelper<T> property;
+        private readonly PropertyHelper<T>? property;
 
         public ConverterColumnAccessor(CsvColumn column, CsvOptions<T> options)
         {
             this.options = options;
             propertyName = column.ColumnNameInternal;
-            if (propertyName != null && options.FasterProperties != null)
+            if (options.FasterProperties != null)
             {
                 options.FasterProperties.TryGetValue(propertyName, out property);
             }
@@ -347,12 +348,12 @@ namespace Mafesoft.TinyCsv.Data
 
         public override void SetValue(T model, CsvField value, CsvColumnBinding<T> binding, bool validateValues)
         {
-            Property.Setter(model, binding.Column.ConvertBack(value.ToString(), binding.Provider, validateValues));
+            Property.SetValue(model, binding.Column.ConvertBack(value.ToString(), binding.Provider, validateValues));
         }
 
         public override void AppendValue(T model, CsvLineBuilder<T> line, CsvColumnBinding<T> binding)
         {
-            var value = Property.Getter(model);
+            var value = Property.GetValue(model);
             line.AppendField(binding.Column.Converter.Convert(value, null, binding.Provider));
         }
     }

@@ -44,6 +44,6 @@ namespace Mafesoft.TinyCsv.Args
         /// <summary>
         /// Row model
         /// </summary>
-        public T Model { get; internal set; }
+        public T Model { get; internal set; } = default!; // always set by the handlers when the event is raised
     }
 }

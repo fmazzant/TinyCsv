@@ -30,6 +30,7 @@
 namespace Mafesoft.TinyCsv
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.Linq.Expressions;
     using Mafesoft.TinyCsv.Conversions;
@@ -48,51 +49,53 @@ namespace Mafesoft.TinyCsv
         /// <summary>
         /// Column's name
         /// </summary>
-        public string ColumnName { get; internal set; }
+        public string ColumnName { get; internal set; } = string.Empty;
 
         /// <summary>
         /// Column's name
         /// </summary>
-        internal string ColumnNameInternal { get; set; }
+        internal string ColumnNameInternal { get; set; } = string.Empty;
 
         /// <summary>
         /// Column's type
         /// </summary>
-        public Type ColumnType { get; internal set; }
+        public Type ColumnType { get; internal set; } = typeof(object);
 
         /// <summary>
         /// Column expression
         /// </summary>
-        public Expression ColumnExpression { get; internal set; }
+        public Expression? ColumnExpression { get; internal set; }
 
         /// <summary>
         /// Column's value format
         /// </summary>
-        public string ColumnFormat { get; internal set; }
+        public string? ColumnFormat { get; internal set; }
 
         /// <summary>
         /// Converter
         /// </summary>
-        public IValueConverter Converter { get; internal set; }
+        public IValueConverter Converter { get; internal set; } = new DefaultValueConverter();
 
         /// <summary>
         /// The accessor of the column (see Data.CsvColumnAccessor), created the first time the column is read or written
         /// </summary>
-        internal object Accessor { get; set; }
+        internal object? Accessor { get; set; }
 
         /// <summary>
         /// The properties of a nested column (m => m.Address.City), null when the column is a property of the model
         /// </summary>
-        internal System.Reflection.PropertyInfo[] PropertyPath { get; set; }
+        internal System.Reflection.PropertyInfo[]? PropertyPath { get; set; }
 
         /// <summary>
         /// Value format provider
         /// </summary>
-        private IFormatProvider _FormatProvider = null;
+        private IFormatProvider? _FormatProvider = null;
 
         /// <summary>
-        /// Column's value format provider
+        /// Column's value format provider. When it is not set (or it is set to null),
+        /// it is the invariant culture with the ColumnFormat, if any.
         /// </summary>
+        [AllowNull]
         public IFormatProvider ColumnFormatProvider
         {
             get
@@ -100,13 +103,14 @@ namespace Mafesoft.TinyCsv
                 var formatProvider = _FormatProvider;
                 if (formatProvider == null)
                 {
-                    if (string.IsNullOrEmpty(ColumnFormat))
+                    var columnFormat = ColumnFormat;
+                    if (columnFormat == null || columnFormat.Length == 0)
                     {
                         formatProvider = CultureInfo.InvariantCulture;
                     }
                     else
                     {
-                        formatProvider = new DefaultFormatProvider(ColumnFormat);
+                        formatProvider = new DefaultFormatProvider(columnFormat);
                     }
                 }
                 return formatProvider;
@@ -120,7 +124,7 @@ namespace Mafesoft.TinyCsv
         /// <summary>
         /// The format provider of the last culture, see GetFormatProvider
         /// </summary>
-        private DefaultFormatProvider _CultureFormatProvider = null;
+        private DefaultFormatProvider? _CultureFormatProvider = null;
 
         /// <summary>
         /// Converts the value of the column. With validateValues (see CsvOptions.ValidateValues), a value that is not valid
@@ -131,7 +135,7 @@ namespace Mafesoft.TinyCsv
         /// <param name="validateValues"></param>
         /// <returns></returns>
         /// <exception cref="InvalidColumnValueException"></exception>
-        internal object ConvertBack(string value, IFormatProvider provider, bool validateValues)
+        internal object? ConvertBack(string value, IFormatProvider provider, bool validateValues)
         {
             if (validateValues && Converter is DefaultValueConverter converter)
             {
@@ -167,7 +171,7 @@ namespace Mafesoft.TinyCsv
         /// </summary>
         /// <param name="culture">the culture of the options (see CsvOptions.Culture)</param>
         /// <returns></returns>
-        internal IFormatProvider GetFormatProvider(CultureInfo culture)
+        internal IFormatProvider GetFormatProvider(CultureInfo? culture)
         {
             if (_FormatProvider != null)
             {
@@ -175,15 +179,16 @@ namespace Mafesoft.TinyCsv
             }
 
             culture = culture ?? CultureInfo.InvariantCulture;
-            if (string.IsNullOrEmpty(ColumnFormat))
+            var columnFormat = ColumnFormat;
+            if (columnFormat == null || columnFormat.Length == 0)
             {
                 return culture;
             }
 
             var formatProvider = _CultureFormatProvider;
-            if (formatProvider == null || !ReferenceEquals(formatProvider.Culture, culture) || formatProvider.CustomFormat != ColumnFormat)
+            if (formatProvider == null || !ReferenceEquals(formatProvider.Culture, culture) || formatProvider.CustomFormat != columnFormat)
             {
-                formatProvider = new DefaultFormatProvider(ColumnFormat, culture);
+                formatProvider = new DefaultFormatProvider(columnFormat, culture);
                 _CultureFormatProvider = formatProvider;
             }
             return formatProvider;
@@ -218,7 +223,7 @@ namespace Mafesoft.TinyCsv
             /// </summary>
             /// <param name="customFormat"></param>
             /// <param name="culture"></param>
-            public DefaultFormatProvider(string customFormat, CultureInfo culture)
+            public DefaultFormatProvider(string customFormat, CultureInfo? culture)
             {
                 CustomFormat = customFormat;
                 Culture = culture ?? CultureInfo.InvariantCulture;
@@ -229,7 +234,7 @@ namespace Mafesoft.TinyCsv
             /// </summary>
             /// <param name="formatType"></param>
             /// <returns></returns>
-            public object GetFormat(Type formatType)
+            public object? GetFormat(Type? formatType)
             {
                 return formatType == typeof(ICustomFormatter) ? this : Culture.GetFormat(formatType);
             }
@@ -241,11 +246,11 @@ namespace Mafesoft.TinyCsv
             /// <param name="arg"></param>
             /// <param name="formatProvider"></param>
             /// <returns></returns>
-            public string Format(string format, object arg, IFormatProvider formatProvider)
+            public string Format(string? format, object? arg, IFormatProvider? formatProvider)
             {
                 return arg is IFormattable formattable
                     ? formattable.ToString(CustomFormat, Culture)
-                    : arg?.ToString();
+                    : arg?.ToString() ?? string.Empty;
             }
         }
     }

@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net8.0;net10.0</TargetFrameworks>
     <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
     <NeutralLanguage>en</NeutralLanguage>
     <Description>TinyCsv AspNetCore is a .NET library utilities to read and write CSV data in an easy way on AspNetCore project.</Description>
     <PackageProjectUrl>https://github.com/fmazzant/TinyCsv</PackageProjectUrl>

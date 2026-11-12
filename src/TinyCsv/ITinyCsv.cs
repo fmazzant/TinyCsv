@@ -68,7 +68,7 @@ namespace Mafesoft.TinyCsv
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        IEnumerable<T> LoadFromText(string text, Encoding encoding = null);
+        IEnumerable<T> LoadFromText(string text, Encoding? encoding = null);
 
         /// <summary>
         /// Get all lines
@@ -105,7 +105,7 @@ namespace Mafesoft.TinyCsv
         /// <param name="text"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        IEnumerable<string> GetAllLinesFromText(string text, Encoding encoding = null);
+        IEnumerable<string> GetAllLinesFromText(string text, Encoding? encoding = null);
 
         /// <summary>
         /// Get all lines and fields
@@ -134,7 +134,7 @@ namespace Mafesoft.TinyCsv
         /// <param name="text"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        IEnumerable<string[]> GetAllLinesAndFieldsFromText(string text, Encoding encoding = null);
+        IEnumerable<string[]> GetAllLinesAndFieldsFromText(string text, Encoding? encoding = null);
 
         /// <summary>
         /// Reads a csv file and returns a list of objects asynchronously.
@@ -162,7 +162,7 @@ namespace Mafesoft.TinyCsv
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        IAsyncEnumerable<T> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default);
+        IAsyncEnumerable<T> LoadFromTextAsync(string text, Encoding? encoding = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Writes a list of objects to a csv file.

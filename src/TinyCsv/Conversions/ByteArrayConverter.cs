@@ -43,7 +43,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// <param name="value">The value produced by the binding source.</param>
         /// <param name="parameter">The converter parameter to use. In this case is DefaultValue</param>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public override string Convert(object value, object parameter, IFormatProvider provider)
+        public override string? Convert(object? value, object? parameter, IFormatProvider provider)
         {
             if (value is byte[] byteArray)
             {
@@ -59,7 +59,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// <param name="targetType">The type to convert to.</param>
         /// <param name="parameter">The converter parameter to use.</param>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        public override object? ConvertBack(string value, Type targetType, object? parameter, IFormatProvider provider)
         {
             if (!string.IsNullOrWhiteSpace(value))
             {
@@ -77,7 +77,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// <param name="provider">The format provider.</param>
         /// <param name="result">The converted value, or null when the value is not valid.</param>
         /// <returns>false when the value is not empty and it is not a valid base64 string</returns>
-        public override bool TryConvertBack(string value, Type targetType, object parameter, IFormatProvider provider, out object result)
+        public override bool TryConvertBack(string value, Type targetType, object? parameter, IFormatProvider provider, out object? result)
         {
             try
             {

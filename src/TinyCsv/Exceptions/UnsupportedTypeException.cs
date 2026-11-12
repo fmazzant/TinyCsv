@@ -51,7 +51,7 @@ namespace Mafesoft.TinyCsv.Exceptions
         /// Create a new instance of UnsupportedTypeException
         /// </summary>
         /// <param name="message"></param>
-        public UnsupportedTypeException(string message)
+        public UnsupportedTypeException(string? message)
             : base(message)
         {
         }
@@ -61,7 +61,7 @@ namespace Mafesoft.TinyCsv.Exceptions
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-        public UnsupportedTypeException(string message, Exception innerException)
+        public UnsupportedTypeException(string? message, Exception? innerException)
             : base(message, innerException)
         {
         }

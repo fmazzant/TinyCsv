@@ -146,7 +146,7 @@ namespace Mafesoft.TinyCsv
 
         private StreamReader CreateReader(Stream stream) => new StreamReader(stream, ReaderEncoding, true);
 
-        private TextReader CreateReader(string text, Encoding encoding) => TextMemoryStream.CreateReader(text, encoding ?? ReaderEncoding);
+        private TextReader CreateReader(string text, Encoding? encoding) => TextMemoryStream.CreateReader(text, encoding ?? ReaderEncoding);
 
         private StreamWriter CreateStreamWriter(string path) => new StreamWriter(path, false, WriterEncoding);
 
@@ -197,7 +197,7 @@ namespace Mafesoft.TinyCsv
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public IEnumerable<T> LoadFromText(string text, Encoding encoding = null)
+        public IEnumerable<T> LoadFromText(string text, Encoding? encoding = null)
         {
             return LoadFromReader(CreateReader(text, encoding));
         }
@@ -439,7 +439,7 @@ namespace Mafesoft.TinyCsv
         /// <param name="text"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public IEnumerable<string> GetAllLinesFromText(string text, Encoding encoding = null)
+        public IEnumerable<string> GetAllLinesFromText(string text, Encoding? encoding = null)
         {
             return GetAllLinesFromReader(CreateReader(text, encoding));
         }
@@ -491,7 +491,7 @@ namespace Mafesoft.TinyCsv
         /// <param name="text"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public IEnumerable<string[]> GetAllLinesAndFieldsFromText(string text, Encoding encoding = null)
+        public IEnumerable<string[]> GetAllLinesAndFieldsFromText(string text, Encoding? encoding = null)
         {
             return GetAllLinesAndFieldsFromReader(CreateReader(text, encoding));
         }

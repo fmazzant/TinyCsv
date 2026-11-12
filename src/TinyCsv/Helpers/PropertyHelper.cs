@@ -41,9 +41,42 @@ namespace Mafesoft.TinyCsv.Helpers
     /// <typeparam name="T"></typeparam>
     public class PropertyHelper<T>
     {
-        public string Name { get; set; }
-        public Func<T, object> Getter { get; set; }
-        public Action<T, object> Setter { get; set; }
+        /// <summary>
+        /// The name of the property
+        /// </summary>
+        public string Name { get; set; } = string.Empty;
+
+        /// <summary>
+        /// The getter of the property, null when the property has no public getter
+        /// </summary>
+        public Func<T, object?>? Getter { get; set; }
+
+        /// <summary>
+        /// The setter of the property, null when the property has no public setter
+        /// </summary>
+        public Action<T, object?>? Setter { get; set; }
+
+        /// <summary>
+        /// Gets the value of the property
+        /// </summary>
+        /// <exception cref="NullReferenceException">the property has no public getter</exception>
+        internal object? GetValue(T model)
+        {
+            // a property without getter throws as calling the missing delegate did
+            var getter = Getter ?? throw new NullReferenceException();
+            return getter(model);
+        }
+
+        /// <summary>
+        /// Sets the value of the property
+        /// </summary>
+        /// <exception cref="NullReferenceException">the property has no public setter</exception>
+        internal void SetValue(T model, object? value)
+        {
+            // a property without setter throws as calling the missing delegate did
+            var setter = Setter ?? throw new NullReferenceException();
+            setter(model, value);
+        }
 
         private static readonly ConcurrentDictionary<Type, PropertyHelper<T>[]> CacheExpressionTree = new ConcurrentDictionary<Type, PropertyHelper<T>[]>();
 
@@ -56,17 +89,17 @@ namespace Mafesoft.TinyCsv.Helpers
         {
             return CacheExpressionTree.GetOrAdd(type, x => x.GetProperties().Select(property =>
             {
-                Type eventLogCustomType = property.DeclaringType;
+                Type eventLogCustomType = property.DeclaringType ?? throw new ArgumentException($"The property {property.Name} has no declaring type.");
                 Type propertyType = property.PropertyType;
 
                 var instance = LinqExpression.Parameter(typeof(T));
 
-                Func<T, object> getter = null;
+                Func<T, object?>? getter = null;
                 var getMethod = property.GetGetMethod();
                 if (getMethod != null)
                 {
                     getter =
-                    LinqExpression.Lambda<Func<T, object>>(
+                    LinqExpression.Lambda<Func<T, object?>>(
                       LinqExpression.Convert(
                         LinqExpression.Call(
                           LinqExpression.Convert(instance, eventLogCustomType),
@@ -76,13 +109,13 @@ namespace Mafesoft.TinyCsv.Helpers
                     .Compile();
                 }
 
-                Action<T, object> setter = null;
+                Action<T, object?>? setter = null;
                 var setMethod = property.GetSetMethod();
                 if (setMethod != null)
                 {
                     var parameter = LinqExpression.Parameter(typeof(object));
                     setter =
-                    LinqExpression.Lambda<Action<T, object>>(
+                    LinqExpression.Lambda<Action<T, object?>>(
                       LinqExpression.Call(
                         LinqExpression.Convert(instance, eventLogCustomType),
                         setMethod,

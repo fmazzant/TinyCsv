@@ -58,7 +58,7 @@ namespace Mafesoft.TinyCsv.Extensions
         /// <param name="fieldIndexes">the index of the field of each column, in the order of Columns (see MapColumnsByHeader).
         /// When null, the ColumnIndex of each column is used.</param>
         /// <returns></returns>
-        internal static T GetModelFromStringArray<T>(this string[] values, CsvOptions<T> options, int[] fieldIndexes)
+        internal static T GetModelFromStringArray<T>(this string[] values, CsvOptions<T> options, int[]? fieldIndexes)
             where T : new()
         {
             var model = new T();
@@ -75,7 +75,7 @@ namespace Mafesoft.TinyCsv.Extensions
                     var property = options.FasterProperties[column.ColumnNameInternal];
                     try
                     {
-                        property.Setter(model, column.ConvertBack(value, column.GetFormatProvider(options.Culture), options.ValidateValues));
+                        property.SetValue(model, column.ConvertBack(value, column.GetFormatProvider(options.Culture), options.ValidateValues));
                     }
                     catch (Exception exception) when (!(exception is CsvException))
                     {

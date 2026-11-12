@@ -179,7 +179,7 @@ namespace Mafesoft.TinyCsv
         /// <summary>
         /// The header to write, if any, before the first record
         /// </summary>
-        private string Start()
+        private string? Start()
         {
             started = true;
             if (!options.HasHeaderRecord)

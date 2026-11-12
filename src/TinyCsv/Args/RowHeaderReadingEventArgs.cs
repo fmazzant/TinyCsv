@@ -44,6 +44,6 @@ namespace Mafesoft.TinyCsv.Args
         /// <summary>
         /// Row header
         /// </summary>
-        public string RowHeader { get; internal set; }
+        public string RowHeader { get; internal set; } = string.Empty;
     }
 }

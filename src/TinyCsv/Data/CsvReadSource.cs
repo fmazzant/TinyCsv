@@ -97,7 +97,7 @@ namespace Mafesoft.TinyCsv.Data
         /// The candidate found the same number of times in every record wins; between them, the one found more times.
         /// When no candidate is consistent, the candidate found more times in the first record.
         /// </summary>
-        internal static string Detect(string sample, bool complete, CsvOptions options)
+        internal static string? Detect(string sample, bool complete, CsvOptions options)
         {
             var records = SplitRecords(sample, complete, options);
             if (records.Count == 0 || options.DelimiterCandidates == null)
@@ -105,7 +105,7 @@ namespace Mafesoft.TinyCsv.Data
                 return null;
             }
 
-            string best = null;
+            string? best = null;
             var bestConsistent = false;
             var bestCount = 0;
             foreach (var candidate in options.DelimiterCandidates)

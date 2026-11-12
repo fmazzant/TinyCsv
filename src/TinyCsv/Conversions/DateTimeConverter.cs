@@ -41,12 +41,12 @@ namespace Mafesoft.TinyCsv.Conversions
         /// <summary>
         /// The fast parser of the values, see ValueParser
         /// </summary>
-        internal override ValueParser<DateTime> GetParser(IFormatProvider provider)
+        internal override ValueParser<DateTime>? GetParser(IFormatProvider provider)
         {
             return DateTimeValueParser.Create(GetColumnFormat(provider), provider);
         }
 
-        private DateTimeFormatParser.Cache parserCache;
+        private DateTimeFormatParser.Cache? parserCache;
 
         /// <summary>
         /// Parses a value that is not empty

@@ -32,6 +32,7 @@ namespace Mafesoft.TinyCsv.AspNetCore
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// TinyCsv Factory. The instances are kept by the factory instance (there is no static state):
@@ -98,7 +99,7 @@ namespace Mafesoft.TinyCsv.AspNetCore
         }
 
         /// <inheritdoc/>
-        public bool TryGet<T>(string name, out ITinyCsv<T> tinyCsv) where T : class, new()
+        public bool TryGet<T>(string name, [NotNullWhen(true)] out ITinyCsv<T>? tinyCsv) where T : class, new()
         {
             tinyCsv = null;
             if (name != null && instances.TryGetValue(name, out var instance))

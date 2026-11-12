@@ -57,9 +57,8 @@ namespace Mafesoft.TinyCsv.Attributes
         {
             SkipRowType = skipRowType;
 
-            if (typeof(ISkipRow).IsAssignableFrom(skipRowType))
+            if (typeof(ISkipRow).IsAssignableFrom(skipRowType) && Activator.CreateInstance(skipRowType) is ISkipRow skipRowModel)
             {
-                var skipRowModel = (ISkipRow)Activator.CreateInstance(skipRowType);
                 SkipRow = skipRowModel.SkipRow;
             }
             else

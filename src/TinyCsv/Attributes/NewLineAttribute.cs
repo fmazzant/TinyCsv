@@ -46,7 +46,7 @@ namespace Mafesoft.TinyCsv.Attributes
         /// Contructor
         /// </summary>
         /// <param name="hasHeaderRecord"></param>
-        public NewLineAttribute(string newLine = null)
+        public NewLineAttribute(string? newLine = null)
             : base()
         {
             NewLine = newLine ?? CsvOptions.DefaultNewLine;
