@@ -1,0 +1,23 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TinyCsv/TinyCsv.csproj" />
+    <Project Path="src/TinyCsv.AspNetCore/TinyCsv.AspNetCore.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TinyCsv.Tests/TinyCsv.Tests.csproj" />
+    <Project Path="tests/TinyCsv.AspNetCore.Tests/TinyCsv.AspNetCore.Tests.csproj" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/CsvSampleConsoleApp/CsvSampleConsoleApp.csproj" />
+    <Project Path="samples/CsvSampleConsoleAttributeApp/CsvSampleConsoleAttributeApp.csproj" />
+    <Project Path="samples/CsvSampleMinimalWebApiApp/CsvSampleMinimalWebApiApp.csproj" />
+  </Folder>
+  <Folder Name="/benchmark/">
+    <Project Path="benchmark/TinyCsv.Benchmarks/TinyCsv.Benchmarks.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+    <File Path="CHANGELOG.md" />
+    <File Path="src/Directory.Build.props" />
+  </Folder>
+</Solution>

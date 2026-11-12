@@ -42,7 +42,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// <param name="value">The value produced by the binding source.</param>
         /// <param name="parameter">The converter parameter to use. In this case is DefaultValue</param>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public virtual string Convert(object value, object parameter, IFormatProvider provider)
+        public virtual string? Convert(object? value, object? parameter, IFormatProvider provider)
         {
             return string.Format(provider, "{0}", value);
         }
@@ -54,7 +54,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// <param name="targetType">The type to convert to.</param>
         /// <param name="parameter">The converter parameter to use.</param>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public virtual object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        public virtual object? ConvertBack(string value, Type targetType, object? parameter, IFormatProvider provider)
         {
             return System.Convert.ChangeType(value, targetType, provider);
         }
@@ -69,7 +69,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// <param name="provider">The format provider.</param>
         /// <param name="result">The converted value, or the default value when the value is not valid.</param>
         /// <returns>false when the value is not valid for the target type</returns>
-        public virtual bool TryConvertBack(string value, Type targetType, object parameter, IFormatProvider provider, out object result)
+        public virtual bool TryConvertBack(string value, Type targetType, object? parameter, IFormatProvider provider, out object? result)
         {
             result = ConvertBack(value, targetType, parameter, provider);
             return true;

@@ -65,7 +65,7 @@ namespace Mafesoft.TinyCsv.Exceptions
         /// Create a new instance of MissingColumnException
         /// </summary>
         /// <param name="message"></param>
-        public MissingColumnException(string message)
+        public MissingColumnException(string? message)
             : base(message)
         {
         }
@@ -75,7 +75,7 @@ namespace Mafesoft.TinyCsv.Exceptions
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-        public MissingColumnException(string message, Exception innerException)
+        public MissingColumnException(string? message, Exception? innerException)
             : base(message, innerException)
         {
         }

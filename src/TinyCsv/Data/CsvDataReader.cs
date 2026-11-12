@@ -35,6 +35,7 @@ namespace Mafesoft.TinyCsv.Data
     using System.Runtime.CompilerServices;
     using System.Text;
     using System.Threading;
+    using System.Threading.Tasks;
     using Mafesoft.TinyCsv.Exceptions;
 
     /// <summary>
@@ -52,7 +53,7 @@ namespace Mafesoft.TinyCsv.Data
         private readonly char quote;
         private readonly char[] delimiter;
         private readonly StringBuilder builder = new StringBuilder();
-        private CsvField[] fieldsBuffer;
+        private CsvField[] fieldsBuffer = Array.Empty<CsvField>();
 
         /// <summary>
         /// Create a TinyCsvDataReader instance
@@ -88,7 +89,7 @@ namespace Mafesoft.TinyCsv.Data
         {
             var records = new CsvRecordReader(reader, options);
             var index = 0;
-            string record;
+            string? record;
             while ((record = records.ReadRecord()) != null)
             {
                 if (IsToSkip(record, index++))
@@ -324,7 +325,7 @@ namespace Mafesoft.TinyCsv.Data
                 throw new NotAllowCommentException();
             }
 
-            if (fields == null)
+            if (fields == null || fields.Length == 0)
             {
                 fields = new CsvField[columnsCount > 0 ? columnsCount : 8];
             }
@@ -429,11 +430,11 @@ namespace Mafesoft.TinyCsv.Data
         /// </summary>
         private readonly struct RecordSource
         {
-            private readonly string text;
-            private readonly char[] chars;
+            private readonly string? text;
+            private readonly char[]? chars;
             private readonly int offset;
 
-            public RecordSource(string text, char[] chars, int offset)
+            public RecordSource(string? text, char[]? chars, int offset)
             {
                 this.text = text;
                 this.chars = chars;
@@ -445,7 +446,8 @@ namespace Mafesoft.TinyCsv.Data
             /// </summary>
             public CsvField Slice(int start, int length)
             {
-                return chars != null ? new CsvField(chars, offset + start, length) : new CsvField(text, start, length);
+                // text is set when chars is null
+                return chars != null ? new CsvField(chars, offset + start, length) : new CsvField(text ?? string.Empty, start, length);
             }
         }
 
@@ -597,7 +599,6 @@ namespace Mafesoft.TinyCsv.Data
         }
 
 
-#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Read the records. A record is a logical row: a quoted field may span multiple lines.
         /// </summary>
@@ -606,7 +607,7 @@ namespace Mafesoft.TinyCsv.Data
         {
             var records = new CsvRecordReader(reader, options);
             var index = 0;
-            string record;
+            string? record;
             while ((record = await records.ReadRecordAsync(cancellationToken).ConfigureAwait(false)) != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -619,6 +620,20 @@ namespace Mafesoft.TinyCsv.Data
                 yield return record;
             }
         }
-#endif
+
+        /// <summary>
+        /// Get lines field asynchronously
+        /// </summary>
+        /// <returns></returns>
+        public async IAsyncEnumerable<string[]> ReadLinesAndFieldsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            await foreach (var line in ReadLinesAsync(cancellationToken).ConfigureAwait(false))
+            {
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    yield return GetFieldsByLine(line);
+                }
+            }
+        }
     }
 }

@@ -47,22 +47,6 @@ namespace Mafesoft.TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        [Obsolete($"Use {nameof(LoadFromFile)} to load from file", false)]
-        IEnumerable<T> Load(string path);
-
-        /// <summary>
-        /// Reads a csv from streamreader and returns a list of objects.
-        /// </summary>
-        /// <param name="streamReader"></param>
-        /// <returns></returns>
-        [Obsolete($"Use {nameof(LoadFromStream)} to load from file", false)]
-        IEnumerable<T> Load(StreamReader streamReader);
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
         IEnumerable<T> LoadFromFile(string path);
 
         /// <summary>
@@ -84,7 +68,7 @@ namespace Mafesoft.TinyCsv
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        IEnumerable<T> LoadFromText(string text, Encoding encoding = null);
+        IEnumerable<T> LoadFromText(string text, Encoding? encoding = null);
 
         /// <summary>
         /// Get all lines
@@ -121,7 +105,7 @@ namespace Mafesoft.TinyCsv
         /// <param name="text"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        IEnumerable<string> GetAllLinesFromText(string text, Encoding encoding = null);
+        IEnumerable<string> GetAllLinesFromText(string text, Encoding? encoding = null);
 
         /// <summary>
         /// Get all lines and fields
@@ -150,52 +134,7 @@ namespace Mafesoft.TinyCsv
         /// <param name="text"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        IEnumerable<string[]> GetAllLinesAndFieldsFromText(string text, Encoding encoding = null);
-
-        /// <summary>
-        /// Get all lines and fields
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="encoding"></param>
-        /// <returns></returns>
-        [Obsolete("Use GetAllLinesAndFieldsFromText instead. GetAlGetAllLinesAndFieldslLinesFromText will be removed in 4.0.")]
-        IEnumerable<string[]> GetAlGetAllLinesAndFieldslLinesFromText(string text, Encoding encoding = null);
-
-#if NET452 || NET462 || NET472 || NET48 || NETSTANDARD2_0
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        Task<IEnumerable<T>> LoadFromFileAsync(string path, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Reads a csv from stream and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="streamReader"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<IEnumerable<T>> LoadFromStreamAsync(StreamReader streamReader, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Reads a csv from stream and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<IEnumerable<T>> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Reads a csv from text and returns a list of objects asynchronously.
-        /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        Task<IEnumerable<T>> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default);
-
-#endif
-
-#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        IEnumerable<string[]> GetAllLinesAndFieldsFromText(string text, Encoding? encoding = null);
 
         /// <summary>
         /// Reads a csv file and returns a list of objects asynchronously.
@@ -223,9 +162,7 @@ namespace Mafesoft.TinyCsv
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        IAsyncEnumerable<T> LoadFromTextAsync(string text, Encoding encoding = null, CancellationToken cancellationToken = default);
-
-#endif
+        IAsyncEnumerable<T> LoadFromTextAsync(string text, Encoding? encoding = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Writes a list of objects to a csv file.
@@ -268,6 +205,30 @@ namespace Mafesoft.TinyCsv
         /// <param name="path"></param>
         /// <param name="models"></param>
         Task SaveAsync(Stream stream, IEnumerable<T> models, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Writes the models of an async sequence to a csv file, one at a time, without buffering them.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="models"></param>
+        /// <param name="cancellationToken"></param>
+        Task SaveAsync(string path, IAsyncEnumerable<T> models, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Writes the models of an async sequence to a stream writer, one at a time, without buffering them.
+        /// </summary>
+        /// <param name="streamWriter"></param>
+        /// <param name="models"></param>
+        /// <param name="cancellationToken"></param>
+        Task SaveAsync(StreamWriter streamWriter, IAsyncEnumerable<T> models, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Writes the models of an async sequence to a stream, one at a time, without buffering them.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="models"></param>
+        /// <param name="cancellationToken"></param>
+        Task SaveAsync(Stream stream, IAsyncEnumerable<T> models, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get all csv text

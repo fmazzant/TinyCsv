@@ -153,13 +153,6 @@ namespace Mafesoft.TinyCsv.Extensions
         /// <returns></returns>
         public static bool SkipRow<T>(this string line, int index, CsvOptions<T> options)
         {
-            var skipEmptyRows = options.SkipEmptyRows;
-            var isEmpty = string.IsNullOrWhiteSpace(line);
-            if (skipEmptyRows && isEmpty)
-            {
-                return true;
-            }
-
             var allowComment = options.AllowComment;
             var isComment = line.StartsWith(options.Comment.ToString());
             if (isComment)

@@ -47,17 +47,17 @@ namespace Mafesoft.TinyCsv.Exceptions
         /// <summary>
         /// The row with the error, as it is in the csv, if known
         /// </summary>
-        public string Row { get; private set; }
+        public string? Row { get; private set; }
 
         /// <summary>
         /// The name of the column with the error, when the error is about a value
         /// </summary>
-        public string ColumnName { get; protected set; }
+        public string? ColumnName { get; protected set; }
 
         /// <summary>
         /// The value with the error, as it is in the csv, when the error is about a value
         /// </summary>
-        public string Value { get; protected set; }
+        public string? Value { get; protected set; }
 
         /// <summary>
         /// The message, with the row and the column of the error
@@ -87,7 +87,7 @@ namespace Mafesoft.TinyCsv.Exceptions
         /// Create a new instance of CsvException
         /// </summary>
         /// <param name="message"></param>
-        public CsvException(string message)
+        public CsvException(string? message)
             : base(message)
         {
         }
@@ -97,7 +97,7 @@ namespace Mafesoft.TinyCsv.Exceptions
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-        public CsvException(string message, Exception innerException)
+        public CsvException(string? message, Exception? innerException)
             : base(message, innerException)
         {
         }

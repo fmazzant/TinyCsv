@@ -118,7 +118,6 @@ namespace Mafesoft.TinyCsv.Tests
             Assert.Equal("Id;Name;City\n1;Mario;Roma\n2;Luigi;Milano\n", Normalize(Encoding.UTF8.GetString(stream.ToArray())));
         }
 
-#if NET5_0_OR_GREATER
         [Fact]
         public async Task DisposeAsync_FlushesTheRecords()
         {
@@ -132,7 +131,6 @@ namespace Mafesoft.TinyCsv.Tests
 
             Assert.Equal("1;Mario;Roma\n", Normalize(Encoding.UTF8.GetString(stream.ToArray())));
         }
-#endif
 
         [Fact]
         public void Save_StillWritesTheModels()

@@ -49,7 +49,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// <param name="parameter">The converter parameter to use.</param>
         /// <param name="provider">The format provider.</param>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public sealed override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        public sealed override object? ConvertBack(string value, Type targetType, object? parameter, IFormatProvider provider)
         {
             TryConvertBack(value, targetType, parameter, provider, out var result);
             return result;
@@ -64,7 +64,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// <param name="provider">The format provider.</param>
         /// <param name="result">The converted value, or the default value when the value is not valid.</param>
         /// <returns>false when the value is not empty and it cannot be parsed</returns>
-        public sealed override bool TryConvertBack(string value, Type targetType, object parameter, IFormatProvider provider, out object result)
+        public sealed override bool TryConvertBack(string value, Type targetType, object? parameter, IFormatProvider provider, out object? result)
         {
             var isEmpty = string.IsNullOrWhiteSpace(value);
             if (!isEmpty && TryParse(value, provider, out var parsed))
@@ -116,7 +116,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// </summary>
         /// <param name="provider">the format provider</param>
         /// <returns></returns>
-        internal virtual ValueParser<TValue> GetParser(IFormatProvider provider)
+        internal virtual ValueParser<TValue>? GetParser(IFormatProvider provider)
         {
             return null;
         }
@@ -126,7 +126,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// </summary>
         /// <param name="provider"></param>
         /// <returns></returns>
-        protected static string GetColumnFormat(IFormatProvider provider)
+        protected static string? GetColumnFormat(IFormatProvider provider)
         {
             return (provider as CsvColumn.DefaultFormatProvider)?.CustomFormat;
         }

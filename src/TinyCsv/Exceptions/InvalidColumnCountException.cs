@@ -51,7 +51,7 @@ namespace Mafesoft.TinyCsv.Exceptions
         /// Create a new instance of InvalidColumnCountException
         /// </summary>
         /// <param name="message"></param>
-        public InvalidColumnCountException(string message)
+        public InvalidColumnCountException(string? message)
             : base(message)
         {
         }
@@ -61,7 +61,7 @@ namespace Mafesoft.TinyCsv.Exceptions
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-        public InvalidColumnCountException(string message, Exception innerException)
+        public InvalidColumnCountException(string? message, Exception? innerException)
             : base(message, innerException)
         {
         }

@@ -41,14 +41,14 @@ namespace Mafesoft.TinyCsv.Extensions
         /// <param name="value"></param>
         /// <param name="trimData"></param>
         /// <returns></returns>
-        public static string[] GetFieldsFromGenericType<T>(this T model, CsvOptions<T> options)
+        public static string?[] GetFieldsFromGenericType<T>(this T model, CsvOptions<T> options)
             where T : new()
         {
             var values = options.Columns.Select(column =>
             {
                 var propertyName = column.ColumnNameInternal;
                 var property = options.FasterProperties[propertyName];
-                var value = property.Getter(model);
+                var value = property.GetValue(model);
                 var stringValue = column.Converter.Convert(value, null, column.GetFormatProvider(options.Culture));
                 return stringValue?.EnclosedInQuotesIfNecessary(options);
             });

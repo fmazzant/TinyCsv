@@ -61,7 +61,7 @@ namespace Mafesoft.TinyCsv.Conversions
         private readonly char[] literalChars;
         private readonly bool repeatedPart;
 
-        private DateTimeFormatParser(Part[] parts, string[] literals, int length)
+        private DateTimeFormatParser(Part[] parts, string?[] literals, int length)
         {
             this.length = length;
             var positions = new List<int>();
@@ -72,7 +72,7 @@ namespace Mafesoft.TinyCsv.Conversions
                 switch (parts[p])
                 {
                     case Part.Literal:
-                        foreach (var c in literals[p])
+                        foreach (var c in literals[p] ?? string.Empty)
                         {
                             positions.Add(position++);
                             chars.Add(c);
@@ -100,12 +100,22 @@ namespace Mafesoft.TinyCsv.Conversions
         /// </summary>
         internal sealed class Cache
         {
+            public Cache(string format, DateTimeFormatInfo info, DateTimeFormatParser? parser)
+            {
+                Format = format;
+                Info = info;
+                DateSeparator = info.DateSeparator;
+                TimeSeparator = info.TimeSeparator;
+                Calendar = info.Calendar;
+                Parser = parser;
+            }
+
             public string Format;
             public DateTimeFormatInfo Info;
             public string DateSeparator;
             public string TimeSeparator;
             public Calendar Calendar;
-            public DateTimeFormatParser Parser;
+            public DateTimeFormatParser? Parser;
 
             public bool IsFor(string format, DateTimeFormatInfo info)
             {
@@ -122,21 +132,13 @@ namespace Mafesoft.TinyCsv.Conversions
         /// <param name="format"></param>
         /// <param name="provider"></param>
         /// <returns>the parser, or null when the format is not supported</returns>
-        public static DateTimeFormatParser Get(ref Cache cache, string format, IFormatProvider provider)
+        public static DateTimeFormatParser? Get(ref Cache? cache, string format, IFormatProvider provider)
         {
             var info = DateTimeFormatInfo.GetInstance(provider);
             var current = cache;
             if (current == null || !current.IsFor(format, info))
             {
-                current = new Cache
-                {
-                    Format = format,
-                    Info = info,
-                    DateSeparator = info.DateSeparator,
-                    TimeSeparator = info.TimeSeparator,
-                    Calendar = info.Calendar,
-                    Parser = Create(format, info),
-                };
+                current = new Cache(format, info, Create(format, info));
                 cache = current;
             }
             return current.Parser;
@@ -148,7 +150,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// <param name="format"></param>
         /// <param name="info"></param>
         /// <returns></returns>
-        public static DateTimeFormatParser Create(string format, DateTimeFormatInfo info)
+        public static DateTimeFormatParser? Create(string? format, DateTimeFormatInfo? info)
         {
             // a single char is a standard format
             if (format == null || format.Length < 2 || info == null || !(info.Calendar is GregorianCalendar))
@@ -157,7 +159,7 @@ namespace Mafesoft.TinyCsv.Conversions
             }
 
             var parts = new List<Part>();
-            var literals = new List<string>();
+            var literals = new List<string?>();
             var length = 0;
             var i = 0;
             while (i < format.Length)

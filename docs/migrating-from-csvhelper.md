@@ -1,5 +1,7 @@
 # Migrating from CsvHelper
 
+This guide is for TinyCsv 4.0 (`Mafesoft.TinyCsv`).
+
 This guide maps the most common [CsvHelper](https://joshclose.github.io/CsvHelper/) code to TinyCsv.
 TinyCsv has a smaller API: one object, `TinyCsv<T>`, configured once with its options, that reads and writes the whole file.
 
@@ -71,7 +73,7 @@ await foreach (var product in csv.LoadFromFileAsync("products.csv"))
 }
 ```
 
-The `TinyCsv<T>` instance is reusable: create it once and use it for every read and write of the same format (with ASP.NET Core, see [TinyCsv.AspNetCore](../README.md#tinycsvaspnetcore-extensions)).
+The `TinyCsv<T>` instance is reusable: create it once and use it for every read and write of the same format (with ASP.NET Core, see [TinyCsv.AspNetCore](../README.md#aspnet-core)).
 
 ## Writing
 
@@ -255,7 +257,7 @@ TinyCsv has built-in converters for the primitive types, `decimal`, `DateTime`, 
 | `Quote` | `DoubleQuotes` |
 | `Escape = '\\'` | `AllowBackSlashToEscapeQuote = true` |
 | `Comment`, `AllowComments` | `Comment`, `AllowComment` (note the different default) |
-| `NewLine` | `NewLine` (used to write) |
+| `NewLine` | `NewLine` (used to write, `"\r\n"` by default on every operating system) |
 | `Encoding` | `TextEncoding` |
 | `CultureInfo` (constructor) | `Culture` |
 | `TrimOptions = TrimOptions.Trim` | `TrimData = true` (the spaces inside a quoted value are kept) |

@@ -81,7 +81,7 @@ namespace Mafesoft.TinyCsv.Extensions
         /// Each property except the last must be a class with a public parameterless constructor, created when it is null.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        internal static PropertyInfo[] GetNestedPropertyPath(this Expression expression)
+        internal static PropertyInfo[]? GetNestedPropertyPath(this Expression expression)
         {
             var body = expression is LambdaExpression lambdaExpression ? lambdaExpression.Body : expression;
             if (body is UnaryExpression unaryExpression && unaryExpression.NodeType == ExpressionType.Convert)
@@ -144,7 +144,8 @@ namespace Mafesoft.TinyCsv.Extensions
 
             if (expression is MemberExpression memberExpression)
             {
-                if (memberExpression.Expression.NodeType == ExpressionType.MemberAccess)
+                // a static member (without expression) is not a property of the model
+                if (memberExpression.Expression == null || memberExpression.Expression.NodeType == ExpressionType.MemberAccess)
                 {
                     throw new ArgumentException(string.Format("Cannot interpret member from {0}", expression));
                 }

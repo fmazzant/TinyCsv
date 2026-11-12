@@ -27,15 +27,31 @@
 /// 
 /// </summary>
 
-namespace Mafesoft.TinyCsv.Args
+#if NETSTANDARD2_0 || NETFRAMEWORK
+namespace System.Diagnostics.CodeAnalysis
 {
-    using System;
+    // The nullable attributes used by TinyCsv.AspNetCore: they are built-in since netstandard2.1 and .NET Core 3.0.
+    // The copy of Mafesoft.TinyCsv is internal, so it is not visible here.
 
     /// <summary>
-    /// Defines Row Writtin Event Args
+    /// Specifies that when a method returns <see cref="ReturnValue"/>, the parameter will not be null even if the corresponding type allows it.
     /// </summary>
-    [Obsolete("Use RowWrittenEventArgs<T> instead. RowWrittinEventArgs<T> will be removed in 4.0.")]
-    public class RowWrittinEventArgs<T> : RowWrittenEventArgs<T>
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
+    internal sealed class NotNullWhenAttribute : Attribute
     {
+        /// <summary>
+        /// Initializes the attribute with the specified return value condition.
+        /// </summary>
+        /// <param name="returnValue">The return value condition. If the method returns this value, the associated parameter will not be null.</param>
+        public NotNullWhenAttribute(bool returnValue)
+        {
+            ReturnValue = returnValue;
+        }
+
+        /// <summary>
+        /// Gets the return value condition.
+        /// </summary>
+        public bool ReturnValue { get; }
     }
 }
+#endif

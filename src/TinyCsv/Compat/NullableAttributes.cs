@@ -27,38 +27,38 @@
 /// 
 /// </summary>
 
-namespace Mafesoft.TinyCsv.Extensions
+#if NETSTANDARD2_0 || NETFRAMEWORK
+namespace System.Diagnostics.CodeAnalysis
 {
-    using System;
+    // The nullable attributes used by TinyCsv: they are built-in since netstandard2.1 and .NET Core 3.0
 
     /// <summary>
-    /// ITinyCsvFactory
+    /// Specifies that null is allowed as an input even if the corresponding type disallows it.
     /// </summary>
-    [Obsolete("Use: TinyCsv.AspNetCore nuget package!", true)]
-    public interface ITinyCsvFactory
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property, Inherited = false)]
+    internal sealed class AllowNullAttribute : Attribute
+    {
+    }
+
+    /// <summary>
+    /// Specifies that when a method returns <see cref="ReturnValue"/>, the parameter will not be null even if the corresponding type allows it.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
+    internal sealed class NotNullWhenAttribute : Attribute
     {
         /// <summary>
-        /// Create new TinyCsv
+        /// Initializes the attribute with the specified return value condition.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="options"></param>
-        /// <returns></returns>
-        ITinyCsv<T> Create<T>(Action<CsvOptions<T>> options) where T : class, new();
+        /// <param name="returnValue">The return value condition. If the method returns this value, the associated parameter will not be null.</param>
+        public NotNullWhenAttribute(bool returnValue)
+        {
+            ReturnValue = returnValue;
+        }
 
         /// <summary>
-        /// Add TinyCsv with service's name
+        /// Gets the return value condition.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="serviceName"></param>
-        /// <param name="tinyCsv"></param>
-        void Add<T>(string serviceName, ITinyCsv<T> tinyCsv) where T : class, new();
-
-        /// <summary>
-        /// Get TinyCsv by service's name
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="serviceName"></param>
-        /// <returns></returns>
-        ITinyCsv<T> Get<T>(string serviceName) where T : class, new();
+        public bool ReturnValue { get; }
     }
 }
+#endif

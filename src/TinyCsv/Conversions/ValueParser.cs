@@ -50,7 +50,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// <summary>
         /// The number format info of the provider, when it is read only (the parsers rely on it not changing)
         /// </summary>
-        protected static NumberFormatInfo GetReadOnlyNumberFormat(IFormatProvider provider)
+        protected static NumberFormatInfo? GetReadOnlyNumberFormat(IFormatProvider provider)
         {
             var info = NumberFormatInfo.GetInstance(provider);
             return info.IsReadOnly ? info : null;
@@ -59,7 +59,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// <summary>
         /// The date time format info of the provider, when it is read only (the parsers rely on it not changing)
         /// </summary>
-        protected static DateTimeFormatInfo GetReadOnlyDateTimeFormat(IFormatProvider provider)
+        protected static DateTimeFormatInfo? GetReadOnlyDateTimeFormat(IFormatProvider provider)
         {
             var info = DateTimeFormatInfo.GetInstance(provider);
             return info.IsReadOnly ? info : null;
@@ -115,7 +115,7 @@ namespace Mafesoft.TinyCsv.Conversions
             this.allowMinus = allowMinus;
         }
 
-        public static ValueParser<int> Create(IFormatProvider provider)
+        public static ValueParser<int>? Create(IFormatProvider provider)
         {
             var info = GetReadOnlyNumberFormat(provider);
             return info == null ? null : new Int32ValueParser(info.NegativeSign == "-");
@@ -141,7 +141,7 @@ namespace Mafesoft.TinyCsv.Conversions
             this.allowMinus = allowMinus;
         }
 
-        public static ValueParser<long> Create(IFormatProvider provider)
+        public static ValueParser<long>? Create(IFormatProvider provider)
         {
             var info = GetReadOnlyNumberFormat(provider);
             return info == null ? null : new Int64ValueParser(info.NegativeSign == "-");
@@ -174,7 +174,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// The parser, when the decimal converter parses the values with NumberStyles.Number (see DecimalConverter)
         /// and the decimal separator is a char that is not a digit, a sign or the group separator
         /// </summary>
-        public static ValueParser<decimal> Create(IFormatProvider provider)
+        public static ValueParser<decimal>? Create(IFormatProvider provider)
         {
             var info = GetReadOnlyNumberFormat(provider);
             if (info == null
@@ -259,13 +259,13 @@ namespace Mafesoft.TinyCsv.Conversions
             this.parser = parser;
         }
 
-        public static ValueParser<DateTime> Create(string format, IFormatProvider provider)
+        public static ValueParser<DateTime>? Create(string? format, IFormatProvider provider)
         {
             var parser = CreateFormatParser(format, provider);
             return parser == null ? null : new DateTimeValueParser(parser);
         }
 
-        internal static DateTimeFormatParser CreateFormatParser(string format, IFormatProvider provider)
+        internal static DateTimeFormatParser? CreateFormatParser(string? format, IFormatProvider provider)
         {
             if (format == null)
             {
@@ -293,7 +293,7 @@ namespace Mafesoft.TinyCsv.Conversions
             this.parser = parser;
         }
 
-        public static ValueParser<DateTimeOffset> Create(string format, IFormatProvider provider)
+        public static ValueParser<DateTimeOffset>? Create(string? format, IFormatProvider provider)
         {
             var parser = DateTimeValueParser.CreateFormatParser(format, provider);
             return parser == null ? null : new DateTimeOffsetValueParser(parser);
@@ -318,7 +318,7 @@ namespace Mafesoft.TinyCsv.Conversions
             this.parser = parser;
         }
 
-        public static ValueParser<DateOnly> Create(string format, IFormatProvider provider)
+        public static ValueParser<DateOnly>? Create(string? format, IFormatProvider provider)
         {
             var parser = DateTimeValueParser.CreateFormatParser(format, provider);
             return parser == null ? null : new DateOnlyValueParser(parser);

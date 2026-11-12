@@ -56,7 +56,7 @@ namespace Mafesoft.TinyCsv.Attributes
         /// Contructor, usable as attribute: [TextEncoding("utf-16")]
         /// </summary>
         /// <param name="encodingName">the encoding name, i.e. "utf-8", "utf-16", "us-ascii", "iso-8859-1"</param>
-        public TextEncodingAttribute(string encodingName)
+        public TextEncodingAttribute(string? encodingName)
             : base()
         {
             TextEncoding = string.IsNullOrEmpty(encodingName) ? Encoding.UTF8 : Encoding.GetEncoding(encodingName);
@@ -76,7 +76,7 @@ namespace Mafesoft.TinyCsv.Attributes
         /// Contructor. Encoding is not a valid attribute parameter type: to use it as attribute use the name or the code page.
         /// </summary>
         /// <param name="encoding"></param>
-        public TextEncodingAttribute(Encoding encoding)
+        public TextEncodingAttribute(Encoding? encoding)
             : base()
         {
             TextEncoding = encoding ?? Encoding.UTF8;

@@ -1,0 +1,163 @@
+name: NuGet
+
+# Publishes Mafesoft.TinyCsv and Mafesoft.TinyCsv.AspNetCore (one version for both packages):
+# - when a version tag is pushed:
+#     git tag v4.0.0 && git push origin v4.0.0
+#   the tag must match <Version> in both src/TinyCsv/TinyCsv.csproj and src/TinyCsv.AspNetCore/TinyCsv.AspNetCore.csproj;
+# - manually, from GitHub: Actions > NuGet > Run workflow, on a branch (not on a tag):
+#   - "version" empty: publishes the <Version> of the selected branch (the two projects must have the same version);
+#   - "version" filled in (e.g. 4.0.0 or 4.1.0-beta.1): publishes both packages with that version, overriding <Version>.
+#   CLI: gh workflow run nuget.yml --ref main -f version=4.0.0
+# A tag push also creates the GitHub Release of the tag, with the notes of the matching
+# "## [x.y.z]" section of CHANGELOG.md (the manual run publishes only the packages and does not check CHANGELOG.md).
+# The tests run before the packages are built and published. Merging into main does NOT publish anything.
+#
+# Authentication: NuGet Trusted Publishing (https://learn.microsoft.com/nuget/nuget-org/trusted-publishing),
+# no long-lived API key. The NuGet/login step exchanges the GitHub OIDC token for a temporary API key (valid 1 hour).
+# Requires:
+# - on nuget.org (Account > Trusted Publishing) a policy with repository owner "fmazzant", repository "TinyCsv",
+#   workflow file "nuget.yml" (renaming this file breaks publishing) and environment "production"
+#   (it must match the "environment" of the publish job below);
+# - the GitHub environment "production" with the secret NUGET_USER: the nuget.org username (not the email)
+#   of the user who created the policy.
+# If the login fails with "No matching trust policy owned by user '***' was found", the policy does not match
+# this run (owner, repository, workflow file or environment) or NUGET_USER is not the policy creator.
+
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g. 4.0.0 or 4.1.0-beta.1). Empty = the <Version> in the csproj files.'
+        type: string
+        required: false
+        default: ''
+
+permissions:
+  contents: write # needed to create the GitHub Release
+  id-token: write # needed by NuGet/login (Trusted Publishing)
+
+jobs:
+  publish:
+
+    runs-on: ubuntu-latest
+    # Must match the Environment of the NuGet Trusted Publishing policy
+    environment: production
+
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v6
+      with:
+        dotnet-version: |
+          8.0.x
+          10.0.x
+
+    # The overriding version goes in PACKAGE_VERSION, never in VERSION: MSBuild reads the environment variables
+    # as properties, so a VERSION variable would silently change the package version.
+    - name: Check the project versions
+      id: version
+      env:
+        INPUT_VERSION: ${{ inputs.version }}
+      run: |
+        # Tag push: the expected version comes from the tag (v4.0.0 -> 4.0.0), the projects must match it.
+        # Manual run with the version input: that version overrides <Version> in build and pack.
+        # Manual run without it: the expected version is the one of Mafesoft.TinyCsv, the other package must match it.
+        INPUT_VERSION="${INPUT_VERSION// /}"
+        INPUT_VERSION="${INPUT_VERSION#v}"
+        if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+          if [ -n "$INPUT_VERSION" ]; then
+            echo "::error::The version input is for manual runs on a branch, this run is on the tag $GITHUB_REF_NAME"
+            exit 1
+          fi
+          EXPECTED_VERSION="${GITHUB_REF_NAME#v}"
+        elif [ -n "$INPUT_VERSION" ]; then
+          if [[ ! "$INPUT_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::'$INPUT_VERSION' is not a valid version (expected 4.0.0 or 4.1.0-beta.1)"
+            exit 1
+          fi
+          echo "publishing version $INPUT_VERSION (version input, overrides <Version>)"
+          echo "version=$INPUT_VERSION" >> "$GITHUB_OUTPUT"
+          echo "PACKAGE_VERSION=$INPUT_VERSION" >> "$GITHUB_ENV"
+          echo "### Version $INPUT_VERSION (manual run)" >> "$GITHUB_STEP_SUMMARY"
+          exit 0
+        else
+          EXPECTED_VERSION="$(dotnet msbuild src/TinyCsv/TinyCsv.csproj -getProperty:Version)"
+        fi
+        echo "expected version: $EXPECTED_VERSION"
+        echo "version=$EXPECTED_VERSION" >> "$GITHUB_OUTPUT"
+        echo "### Version $EXPECTED_VERSION ($GITHUB_REF_TYPE $GITHUB_REF_NAME)" >> "$GITHUB_STEP_SUMMARY"
+        for PROJECT in src/TinyCsv/TinyCsv.csproj src/TinyCsv.AspNetCore/TinyCsv.AspNetCore.csproj; do
+          PROJECT_VERSION="$(dotnet msbuild "$PROJECT" -getProperty:Version)"
+          echo "$PROJECT: $PROJECT_VERSION"
+          if [ "$EXPECTED_VERSION" != "$PROJECT_VERSION" ]; then
+            echo "::error::$PROJECT has version $PROJECT_VERSION, expected $EXPECTED_VERSION ($GITHUB_REF_TYPE $GITHUB_REF_NAME)"
+            exit 1
+          fi
+        done
+
+    # Never blocks the publish: the date of the heading is not checked ("## [4.0.0] - Unreleased" is fine),
+    # and a missing or empty section only gives a warning and a release with a link to CHANGELOG.md.
+    - name: Extract the release notes from CHANGELOG.md
+      if: github.ref_type == 'tag'
+      env:
+        VERSION: ${{ steps.version.outputs.version }}
+      run: |
+        # Keep a Changelog headings: "## [4.0.0] - 2026-12-01", "## [4.0.0] - Unreleased", "## 4.0.0", ...
+        HEADING="$(grep -E "^## \[?${VERSION//./\\.}\]?( |$)" CHANGELOG.md | head -n 1 | tr -d '\r')"
+        NOTES="$RUNNER_TEMP/release-notes.md"
+        : > "$NOTES"
+        if [ -n "$HEADING" ]; then
+          # Prints the lines between the heading and the next "## " heading.
+          awk -v heading="$HEADING" '
+            { sub(/\r$/, "") }
+            $0 == heading { found = 1; next }
+            found && /^## / { exit }
+            found { print }
+          ' CHANGELOG.md > "$NOTES"
+        fi
+        if ! grep -q '[^[:space:]]' "$NOTES"; then
+          echo "::warning::CHANGELOG.md has no notes for $VERSION: the release links to CHANGELOG.md"
+          echo "See [CHANGELOG.md](https://github.com/$GITHUB_REPOSITORY/blob/main/CHANGELOG.md)." > "$NOTES"
+        fi
+
+    - name: Restore dependencies
+      run: dotnet restore TinyCsv.slnx
+
+    - name: Build
+      run: dotnet build -c Release --no-restore ${PACKAGE_VERSION:+"-p:Version=$PACKAGE_VERSION"} TinyCsv.slnx
+
+    # net48 runs only on Windows, see the CI workflow
+    - name: Test
+      run: |
+        for FRAMEWORK in net10.0 net8.0; do
+          dotnet test -c Release --no-build -f $FRAMEWORK tests/TinyCsv.Tests/TinyCsv.Tests.csproj
+          dotnet test -c Release --no-build -f $FRAMEWORK tests/TinyCsv.AspNetCore.Tests/TinyCsv.AspNetCore.Tests.csproj
+        done
+
+    - name: Package
+      run: |
+        dotnet pack -c Release --no-build ${PACKAGE_VERSION:+"-p:Version=$PACKAGE_VERSION"} -o ./artifacts src/TinyCsv/TinyCsv.csproj
+        dotnet pack -c Release --no-build ${PACKAGE_VERSION:+"-p:Version=$PACKAGE_VERSION"} -o ./artifacts src/TinyCsv.AspNetCore/TinyCsv.AspNetCore.csproj
+
+    # Right before the push: the temporary API key expires after 1 hour.
+    - name: NuGet login (Trusted Publishing)
+      id: nuget-login
+      uses: NuGet/login@v1
+      with:
+        user: ${{ secrets.NUGET_USER }}
+
+    - name: Publish on NuGet
+      run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+    - name: Create the GitHub Release
+      if: github.ref_type == 'tag'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        gh release create "$GITHUB_REF_NAME" ./artifacts/*.nupkg ./artifacts/*.snupkg \
+          --title "$GITHUB_REF_NAME" \
+          --notes-file "$RUNNER_TEMP/release-notes.md" \
+          --verify-tag

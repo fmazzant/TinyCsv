@@ -1,11 +1,6 @@
 # TinyCsv Benchmark
 
-There are two benchmarks, both with [BenchmarkDotNet](https://benchmarkdotnet.org/):
-
-| Project | Compares |
-|---|---|
-| [TinyCsv.Benchmarks](TinyCsv.Benchmarks) | the current source of TinyCsv with other CSV libraries for .NET |
-| [CsvSampleConsoleBenchmarkApp](CsvSampleConsoleBenchmarkApp) | the published versions of TinyCsv |
+[TinyCsv.Benchmarks](TinyCsv.Benchmarks) compares, with [BenchmarkDotNet](https://benchmarkdotnet.org/), the current source of TinyCsv with other CSV libraries for .NET.
 
 ## Competitive benchmark
 
@@ -113,49 +108,13 @@ The `int`, `long` and `decimal` columns read the common values (i.e. `123`, `-1.
 A `DateTime`, `DateTimeOffset` or `DateOnly` column with a fixed width format (i.e. `yyyy-MM-dd` or `dd/MM/yyyy HH:mm:ss`) is read by a fast parser,
 that returns the same result of `TryParseExact`: the other formats and the columns without a format use `TryParseExact` and `TryParse`.
 
-## Versions benchmark
+## Versions benchmark (retired)
 
-`CsvSampleConsoleBenchmarkApp` compares the published versions of TinyCsv.
-Each version is a job that references the `Mafe.TinyCsv` NuGet package, so the same code is measured against every version.
+Up to 3.5 the `CsvSampleConsoleBenchmarkApp` project compared the published versions of `Mafe.TinyCsv`: each version was a
+BenchmarkDotNet job that referenced the NuGet package, reading (`LoadFromText`) and writing (`SaveToText`) `N` rows of 7 columns.
+It has been removed in 4.0.0: the `Mafe.TinyCsv` packages have the old namespaces, so the same code cannot be measured
+against them and `Mafesoft.TinyCsv`.
 
-The model has 7 string columns, and each row is:
-
-```csv
-1;Name 1;1.12;02/04/2022;aGVsbG8sIHdvcmxkIQ==;https://www.mywebsite.it;A;
-```
-
-| Benchmark | Description |
-|---|---|
-| `LoadFromText` | reads `N` rows from a string and enumerates the models |
-| `SaveToText` | writes `N` models to a `MemoryStream` |
-
-`N` is 100, 1,000, 10,000, 100,000 and 1,000,000 rows.
-The `MemoryDiagnoser` reports the allocated memory of each operation.
-
-### Run the versions benchmark
-
-```bash
-cd benchmark/CsvSampleConsoleBenchmarkApp
-dotnet run -c Release
-```
-
-The run takes about 15 minutes with 3 versions.
-The results are written to `BenchmarkDotNet.Artifacts/results` (Markdown, CSV and HTML), which is ignored by Git.
-To publish new results, copy the `*-report-github.md` file to [results](results/TinyCsvLibraryBenchmark-report-github.md), then add a `#` heading on the first line and the `text` language to the first code block, as required by the linter.
-
-To compare other versions, change the jobs in `TinyCsvLibraryBenchmark.Config`:
-
-```c#
-AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "2.2.2"));
-AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "3.2.0"));
-AddJob(BaseJob.WithNuGet("Mafe.TinyCsv", "3.5.0"));
-```
-
-Each version must be published on NuGet: a job with a version that is not published fails to build and its results are `NA`.
-
-### Versions results
-
-The results of 2.1.0, 2.2.2 and 3.0 are in the [Performance](../README.md#performance) section of the main page.
+The results of 2.1.0, 2.2.2 and 3.0 are in the [Performance](../README.md#performance) section of the main page;
+the full report is in [results](results/TinyCsvLibraryBenchmark-report-github.md).
 The 2.2.2 `LoadFromText` result with 10,000 rows is noisy (the median is 11.84 ms).
-
-The full report is in [results](results/TinyCsvLibraryBenchmark-report-github.md).

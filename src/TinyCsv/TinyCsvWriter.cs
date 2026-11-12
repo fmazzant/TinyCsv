@@ -14,16 +14,14 @@ namespace Mafesoft.TinyCsv
     /// Create it with <see cref="TinyCsv{T}.CreateWriter(string)"/> and dispose it at the end.
     /// </summary>
     /// <typeparam name="T">the model</typeparam>
-    public sealed class TinyCsvWriter<T> : IDisposable
-#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        , IAsyncDisposable
-#endif
+    public sealed class TinyCsvWriter<T> : IDisposable, IAsyncDisposable
         where T : class, new()
     {
         private readonly CsvOptions<T> options;
         private readonly TextWriter writer;
         private readonly bool leaveOpen;
         private readonly CsvLineBuilder<T> builder;
+        private readonly string newLine;
         private bool started;
         private bool completed;
 
@@ -33,6 +31,7 @@ namespace Mafesoft.TinyCsv
             this.writer = writer;
             this.leaveOpen = leaveOpen;
             builder = new CsvLineBuilder<T>(options);
+            newLine = options.NewLine ?? CsvOptions.DefaultNewLine;
             options.Handlers.OnStart();
         }
 
@@ -73,14 +72,15 @@ namespace Mafesoft.TinyCsv
             if (handlers.Enabled)
             {
                 var line = builder.ToString();
-                writer.WriteLine(line);
+                writer.Write(line);
+                writer.Write(newLine);
                 handlers.OnRowWritten(Count, model, line);
             }
             else
             {
                 // the line is written from the buffer, without creating the string
                 builder.WriteTo(writer);
-                writer.WriteLine();
+                writer.Write(newLine);
             }
             Count++;
         }
@@ -101,13 +101,14 @@ namespace Mafesoft.TinyCsv
             if (handlers.Enabled)
             {
                 var line = builder.ToString();
-                await writer.WriteLineAsync(line).ConfigureAwait(false);
+                await writer.WriteAsync(line).ConfigureAwait(false);
+                await writer.WriteAsync(newLine).ConfigureAwait(false);
                 handlers.OnRowWritten(Count, model, line);
             }
             else
             {
                 await builder.WriteToAsync(writer).ConfigureAwait(false);
-                await writer.WriteLineAsync().ConfigureAwait(false);
+                await writer.WriteAsync(newLine).ConfigureAwait(false);
             }
             Count++;
         }
@@ -120,6 +121,20 @@ namespace Mafesoft.TinyCsv
         public async Task WriteRecordsAsync(IEnumerable<T> models, CancellationToken cancellationToken = default)
         {
             foreach (var model in models)
+            {
+                await WriteRecordAsync(model, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Writes the records of an async sequence, one at a time, without buffering them
+        /// (i.e. from EF Core AsAsyncEnumerable()).
+        /// </summary>
+        /// <param name="models"></param>
+        /// <param name="cancellationToken"></param>
+        public async Task WriteRecordsAsync(IAsyncEnumerable<T> models, CancellationToken cancellationToken = default)
+        {
+            await foreach (var model in models.WithCancellation(cancellationToken).ConfigureAwait(false))
             {
                 await WriteRecordAsync(model, cancellationToken).ConfigureAwait(false);
             }
@@ -146,7 +161,8 @@ namespace Mafesoft.TinyCsv
             var header = started ? null : Start();
             if (header != null)
             {
-                writer.WriteLine(header);
+                writer.Write(header);
+                writer.Write(newLine);
             }
         }
 
@@ -155,14 +171,15 @@ namespace Mafesoft.TinyCsv
             var header = started ? null : Start();
             if (header != null)
             {
-                await writer.WriteLineAsync(header).ConfigureAwait(false);
+                await writer.WriteAsync(header).ConfigureAwait(false);
+                await writer.WriteAsync(newLine).ConfigureAwait(false);
             }
         }
 
         /// <summary>
         /// The header to write, if any, before the first record
         /// </summary>
-        private string Start()
+        private string? Start()
         {
             started = true;
             if (!options.HasHeaderRecord)
@@ -217,7 +234,6 @@ namespace Mafesoft.TinyCsv
             }
         }
 
-#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Completes the file and closes the writer, when it is created by TinyCsv
         /// </summary>
@@ -226,9 +242,13 @@ namespace Mafesoft.TinyCsv
             await CompleteAsync().ConfigureAwait(false);
             if (!leaveOpen)
             {
+#if NETFRAMEWORK || NETSTANDARD2_0
+                // TextWriter.DisposeAsync is not available: the rows are already flushed by CompleteAsync
+                writer.Dispose();
+#else
                 await writer.DisposeAsync().ConfigureAwait(false);
+#endif
             }
         }
-#endif
     }
 }

@@ -41,7 +41,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// <summary>
         /// The fast parser of the values, see ValueParser
         /// </summary>
-        internal override ValueParser<int> GetParser(IFormatProvider provider)
+        internal override ValueParser<int>? GetParser(IFormatProvider provider)
         {
             return Int32ValueParser.Create(provider);
         }

@@ -51,7 +51,7 @@ namespace Mafesoft.TinyCsv.Exceptions
         /// Create a new instance of NotAllowCommentException
         /// </summary>
         /// <param name="message"></param>
-        public NotAllowCommentException(string message)
+        public NotAllowCommentException(string? message)
             : base(message)
         {
         }
@@ -61,7 +61,7 @@ namespace Mafesoft.TinyCsv.Exceptions
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-        public NotAllowCommentException(string message, Exception innerException)
+        public NotAllowCommentException(string? message, Exception? innerException)
             : base(message, innerException)
         {
         }

@@ -44,7 +44,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// <param name="value">The value produced by the binding source.</param>
         /// <param name="parameter">The converter parameter to use. In this case is DefaultValue</param>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public override string Convert(object value, object parameter, IFormatProvider provider)
+        public override string? Convert(object? value, object? parameter, IFormatProvider provider)
         {
             if (value is sbyte byteValue)
             {

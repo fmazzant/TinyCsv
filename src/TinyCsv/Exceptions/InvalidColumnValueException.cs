@@ -51,7 +51,7 @@ namespace Mafesoft.TinyCsv.Exceptions
         /// Create a new instance of InvalidColumnValueException
         /// </summary>
         /// <param name="message"></param>
-        public InvalidColumnValueException(string message)
+        public InvalidColumnValueException(string? message)
             : base(message)
         {
         }
@@ -61,7 +61,7 @@ namespace Mafesoft.TinyCsv.Exceptions
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-        public InvalidColumnValueException(string message, Exception innerException)
+        public InvalidColumnValueException(string? message, Exception? innerException)
             : base(message, innerException)
         {
         }
@@ -73,7 +73,7 @@ namespace Mafesoft.TinyCsv.Exceptions
         /// <param name="value">the value, as it is in the csv</param>
         /// <param name="message"></param>
         /// <param name="innerException">the exception of the converter, if any</param>
-        public InvalidColumnValueException(string columnName, string value, string message, Exception innerException = null)
+        public InvalidColumnValueException(string columnName, string value, string message, Exception? innerException = null)
             : base(message, innerException)
         {
             ColumnName = columnName;

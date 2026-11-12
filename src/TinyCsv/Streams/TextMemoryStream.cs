@@ -29,6 +29,7 @@
 
 namespace Mafesoft.TinyCsv.Streams
 {
+    using System;
     using System.IO;
     using System.Text;
 
@@ -65,7 +66,11 @@ namespace Mafesoft.TinyCsv.Streams
         /// <returns></returns>
         internal static TextReader CreateReader(string text, Encoding encoding)
         {
-            if (encoding is UTF8Encoding && text != null)
+            if (text == null)
+            {
+                throw new ArgumentNullException(nameof(text));
+            }
+            if (encoding is UTF8Encoding)
             {
                 return new StringReader(text.Length > 0 && text[0] == '﻿' ? text.Substring(1) : text);
             }

@@ -104,17 +104,6 @@ namespace Mafesoft.TinyCsv.Tests
             Assert.Throws<FileNotFoundException>(() => Csv().LoadFromFile(path));
         }
 
-#pragma warning disable CS0618 // obsolete API are still supported
-        [Fact]
-        public void Obsolete_Load()
-        {
-            File.WriteAllText(path, Text);
-
-            AssertPeople(Csv().Load(path).ToList());
-            AssertPeople(Csv().Load(new StreamReader(Stream(Text))).ToList());
-        }
-#pragma warning restore CS0618
-
         // ---------- lines and fields ----------
 
         [Fact]
@@ -146,9 +135,6 @@ namespace Mafesoft.TinyCsv.Tests
             Assert.Equal(expected, csv.GetAllLinesAndFieldsFromStream(Stream(Text)).ToList());
             Assert.Equal(expected, csv.GetAllLinesAndFieldsFromStream(new StreamReader(Stream(Text))).ToList());
             Assert.Equal(expected, csv.GetAllLinesAndFieldsFromText(Text).ToList());
-#pragma warning disable CS0618 // obsolete name, kept until 4.0
-            Assert.Equal(expected, csv.GetAlGetAllLinesAndFieldslLinesFromText(Text).ToList());
-#pragma warning restore CS0618
         }
 
         // ---------- save ----------
@@ -235,26 +221,126 @@ namespace Mafesoft.TinyCsv.Tests
             Assert.Empty(Tests.Csv.Person().GetAllLines(new Person[0]));
         }
 
-        // ---------- async load (framework: Task<IEnumerable<T>>) ----------
+        // ---------- async load and save (IAsyncEnumerable<T> on every target framework) ----------
 
-#if !NET5_0_OR_GREATER
+        private static async Task<System.Collections.Generic.List<TItem>> ToListAsync<TItem>(System.Collections.Generic.IAsyncEnumerable<TItem> items)
+        {
+            var result = new System.Collections.Generic.List<TItem>();
+            await foreach (var item in items)
+            {
+                result.Add(item);
+            }
+            return result;
+        }
+
+        private static async System.Collections.Generic.IAsyncEnumerable<Person> PeopleAsync()
+        {
+            foreach (var person in People)
+            {
+                await Task.Yield();
+                yield return person;
+            }
+        }
+
         [Fact]
-        public async Task Framework_LoadAsync()
+        public async Task LoadAsync_AllEntryPoints()
         {
             File.WriteAllText(path, Text);
             var csv = Csv();
 
-            AssertPeople(await csv.LoadFromTextAsync(Text));
-            AssertPeople(await csv.LoadFromStreamAsync(Stream(Text)));
-            AssertPeople(await csv.LoadFromStreamAsync(new StreamReader(Stream(Text))));
-            AssertPeople(await csv.LoadFromFileAsync(path));
-#pragma warning disable CS0618
-            AssertPeople(await csv.LoadAsync(path));
-            AssertPeople(await csv.LoadAsync(new StreamReader(Stream(Text))));
-#pragma warning restore CS0618
-            File.Delete(path);
+            AssertPeople(await ToListAsync(csv.LoadFromTextAsync(Text)));
+            AssertPeople(await ToListAsync(csv.LoadFromStreamAsync(Stream(Text))));
+            AssertPeople(await ToListAsync(csv.LoadFromStreamAsync(new StreamReader(Stream(Text)))));
+            AssertPeople(await ToListAsync(csv.LoadFromFileAsync(path)));
         }
-#endif
+
+        [Fact]
+        public async Task LoadAsync_IsStreamed_NotLoadedInMemory()
+        {
+            // an endless source: it would never complete if the records were buffered before returning them
+            var count = 0;
+            await foreach (var person in Csv().LoadFromStreamAsync(new EndlessCsvStream("Id;Name;City\n", "1;Mario;Roma\n")))
+            {
+                Assert.Equal("Mario", person.Name);
+                if (++count == 10_000)
+                {
+                    break;
+                }
+            }
+
+            Assert.Equal(10_000, count);
+        }
+
+        [Fact]
+        public async Task SaveAsync_AsyncEnumerable_AllEntryPoints()
+        {
+            var csv = Csv();
+            var expected = "Id;Name;City\n1;Mario;Roma\n2;\"Rossi; Luigi\";Milano\n";
+
+            var stream = new MemoryStream();
+            await csv.SaveAsync(stream, PeopleAsync());
+            Assert.Equal(expected, Normalize(ReadText(stream)));
+
+            var streamWriterTarget = new MemoryStream();
+            using (var streamWriter = new StreamWriter(streamWriterTarget))
+            {
+                await csv.SaveAsync(streamWriter, PeopleAsync());
+                Assert.Equal(expected, Normalize(ReadText(streamWriterTarget)));
+            }
+
+            await csv.SaveAsync(path, PeopleAsync());
+            Assert.Equal(expected, Normalize(File.ReadAllText(path).TrimStart('﻿')));
+        }
+
+        private static string Normalize(string text) => text.Replace("\r\n", "\n");
+
+        [Fact]
+        public async Task Writer_WriteRecordsAsync_AsyncEnumerable()
+        {
+            var stream = new MemoryStream();
+            var writer = Csv().CreateWriter(stream);
+            await writer.WriteRecordsAsync(PeopleAsync());
+            await writer.DisposeAsync();
+
+            Assert.Equal("Id;Name;City\n1;Mario;Roma\n2;\"Rossi; Luigi\";Milano\n", Normalize(ReadText(stream)));
+        }
+
+        /// <summary>
+        /// A read-only stream that returns the header and then the same row forever
+        /// </summary>
+        private sealed class EndlessCsvStream : Stream
+        {
+            private readonly byte[] header;
+            private readonly byte[] row;
+            private long position;
+
+            public EndlessCsvStream(string header, string row)
+            {
+                this.header = Encoding.UTF8.GetBytes(header);
+                this.row = Encoding.UTF8.GetBytes(row);
+            }
+
+            public override int Read(byte[] buffer, int offset, int count)
+            {
+                for (int i = 0; i < count; i++, position++)
+                {
+                    buffer[offset + i] = position < header.Length
+                        ? header[position]
+                        : row[(position - header.Length) % row.Length];
+                }
+                return count;
+            }
+
+            public override bool CanRead => true;
+            public override bool CanSeek => false;
+            public override bool CanWrite => false;
+            public override long Length => throw new NotSupportedException();
+            public override long Position { get => position; set => throw new NotSupportedException(); }
+            public override void Flush() { }
+            public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+            public override void SetLength(long value) => throw new NotSupportedException();
+            public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+        }
 
         // ---------- data reader / writer ----------
 
@@ -282,9 +368,9 @@ namespace Mafesoft.TinyCsv.Tests
         [Fact]
         public void DataWriter_WriteLinesAndFields()
         {
-            var options = Tests.Csv.Person().Options;
+            var options = Tests.Csv.Person(o => o.NewLine = "\n").Options;
             var stream = new MemoryStream();
-            var streamWriter = new StreamWriter(stream) { NewLine = "\n" };
+            var streamWriter = new StreamWriter(stream);
             var writer = new CsvDataWriter<Person>(options, streamWriter);
 
             Assert.Equal(1, writer.WriteLine("a;b"));
@@ -298,9 +384,9 @@ namespace Mafesoft.TinyCsv.Tests
         [Fact]
         public async Task DataWriter_WriteAsync()
         {
-            var options = Tests.Csv.Person().Options;
+            var options = Tests.Csv.Person(o => o.NewLine = "\n").Options;
             var stream = new MemoryStream();
-            var streamWriter = new StreamWriter(stream) { NewLine = "\n" };
+            var streamWriter = new StreamWriter(stream);
             var writer = new CsvDataWriter<Person>(options, streamWriter);
 
             Assert.Equal(1, await writer.WriteLineAsync("a;b"));

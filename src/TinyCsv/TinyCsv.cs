@@ -106,17 +106,6 @@ namespace Mafesoft.TinyCsv
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        [Obsolete($"Use {nameof(LoadFromFile)} to load from file", false)]
-        public IEnumerable<T> Load(string path)
-        {
-            return LoadFromFile(path);
-        }
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
         public IEnumerable<T> LoadFromFile(string path)
         {
             var streamReader = CreateReader(path);
@@ -157,22 +146,11 @@ namespace Mafesoft.TinyCsv
 
         private StreamReader CreateReader(Stream stream) => new StreamReader(stream, ReaderEncoding, true);
 
-        private TextReader CreateReader(string text, Encoding encoding) => TextMemoryStream.CreateReader(text, encoding ?? ReaderEncoding);
+        private TextReader CreateReader(string text, Encoding? encoding) => TextMemoryStream.CreateReader(text, encoding ?? ReaderEncoding);
 
         private StreamWriter CreateStreamWriter(string path) => new StreamWriter(path, false, WriterEncoding);
 
         private StreamWriter CreateStreamWriter(Stream stream) => new StreamWriter(stream, WriterEncoding);
-
-        /// <summary>
-        /// Reads a csv file and returns a list of objects.
-        /// </summary>
-        /// <param name="streamReader"></param>
-        /// <returns></returns>
-        [Obsolete($"Use {nameof(LoadFromStream)} to load from file", false)]
-        public IEnumerable<T> Load(StreamReader streamReader)
-        {
-            return LoadFromStream(streamReader);
-        }
 
         /// <summary>
         /// Reads a csv file and returns a list of generic objects T.
@@ -219,7 +197,7 @@ namespace Mafesoft.TinyCsv
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public IEnumerable<T> LoadFromText(string text, Encoding encoding = null)
+        public IEnumerable<T> LoadFromText(string text, Encoding? encoding = null)
         {
             return LoadFromReader(CreateReader(text, encoding));
         }
@@ -461,7 +439,7 @@ namespace Mafesoft.TinyCsv
         /// <param name="text"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public IEnumerable<string> GetAllLinesFromText(string text, Encoding encoding = null)
+        public IEnumerable<string> GetAllLinesFromText(string text, Encoding? encoding = null)
         {
             return GetAllLinesFromReader(CreateReader(text, encoding));
         }
@@ -513,21 +491,10 @@ namespace Mafesoft.TinyCsv
         /// <param name="text"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public IEnumerable<string[]> GetAllLinesAndFieldsFromText(string text, Encoding encoding = null)
+        public IEnumerable<string[]> GetAllLinesAndFieldsFromText(string text, Encoding? encoding = null)
         {
             return GetAllLinesAndFieldsFromReader(CreateReader(text, encoding));
         }
 
-        /// <summary>
-        /// Get all lines and fields
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="encoding"></param>
-        /// <returns></returns>
-        [Obsolete("Use GetAllLinesAndFieldsFromText instead. GetAlGetAllLinesAndFieldslLinesFromText will be removed in 4.0.")]
-        public IEnumerable<string[]> GetAlGetAllLinesAndFieldslLinesFromText(string text, Encoding encoding = null)
-        {
-            return GetAllLinesAndFieldsFromText(text, encoding);
-        }
     }
 }

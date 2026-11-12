@@ -38,7 +38,7 @@ namespace Mafesoft.TinyCsv.Attributes
     public sealed class NewLineAttribute : Attribute
     {
         /// <summary>
-        /// the newline string defined for this environment
+        /// the line terminator written after each row (the default is CRLF)
         /// </summary>
         public string NewLine { get; private set; }
 
@@ -46,10 +46,10 @@ namespace Mafesoft.TinyCsv.Attributes
         /// Contructor
         /// </summary>
         /// <param name="hasHeaderRecord"></param>
-        public NewLineAttribute(string newLine = null)
+        public NewLineAttribute(string? newLine = null)
             : base()
         {
-            NewLine = newLine ?? Environment.NewLine;
+            NewLine = newLine ?? CsvOptions.DefaultNewLine;
         }
     }
 

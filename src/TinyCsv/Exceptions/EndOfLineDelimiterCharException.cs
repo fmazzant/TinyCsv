@@ -51,7 +51,7 @@ namespace Mafesoft.TinyCsv.Exceptions
         /// Create a new instance of EndOfLineDelimiterCharException
         /// </summary>
         /// <param name="message"></param>
-        public EndOfLineDelimiterCharException(string message)
+        public EndOfLineDelimiterCharException(string? message)
             : base(message)
         {
         }
@@ -61,7 +61,7 @@ namespace Mafesoft.TinyCsv.Exceptions
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-        public EndOfLineDelimiterCharException(string message, Exception innerException)
+        public EndOfLineDelimiterCharException(string? message, Exception? innerException)
             : base(message, innerException)
         {
         }

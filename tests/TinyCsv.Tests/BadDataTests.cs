@@ -267,7 +267,6 @@ namespace Mafesoft.TinyCsv.Tests
 
         // ---------- async ----------
 
-#if NET5_0_OR_GREATER
         [Fact]
         public async Task BadDataFound_Async()
         {
@@ -281,16 +280,5 @@ namespace Mafesoft.TinyCsv.Tests
             Assert.Equal(new[] { 1, 3 }, result.Select(r => r.Id));
             Assert.Equal(2, Assert.Single(errors).RowIndex);
         }
-#else
-        [Fact]
-        public async Task BadDataFound_Async()
-        {
-            var errors = new List<CsvException>();
-            var result = (await Orders(o => o.BadDataFound = errors.Add).LoadFromTextAsync($"{Header}\n1;;;;;\nabc;;;;;\n3;;;;;")).ToList();
-
-            Assert.Equal(new[] { 1, 3 }, result.Select(r => r.Id));
-            Assert.Equal(2, Assert.Single(errors).RowIndex);
-        }
-#endif
     }
 }

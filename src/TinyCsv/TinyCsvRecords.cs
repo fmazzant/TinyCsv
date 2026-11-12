@@ -7,7 +7,10 @@ namespace Mafesoft.TinyCsv
     using System.Dynamic;
     using System.Globalization;
     using System.IO;
+    using System.Runtime.CompilerServices;
     using System.Text;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Mafesoft.TinyCsv.Data;
     using Mafesoft.TinyCsv.Exceptions;
     using Mafesoft.TinyCsv.Streams;
@@ -58,7 +61,7 @@ namespace Mafesoft.TinyCsv
         /// Creates an instance with the options
         /// </summary>
         /// <param name="options"></param>
-        public TinyCsvRecords(Action<CsvRecordOptions> options)
+        public TinyCsvRecords(Action<CsvRecordOptions>? options)
         {
             Options = new CsvRecordOptions();
             options?.Invoke(Options);
@@ -67,7 +70,7 @@ namespace Mafesoft.TinyCsv
         /// <summary>
         /// Reads the records of a file as dictionaries, from the column name to the value
         /// </summary>
-        public IEnumerable<IDictionary<string, string>> LoadFromFile(string path)
+        public IEnumerable<IDictionary<string, string?>> LoadFromFile(string path)
         {
             return LoadFromFile(path, ReadDictionaries);
         }
@@ -75,7 +78,7 @@ namespace Mafesoft.TinyCsv
         /// <summary>
         /// Reads the records of a stream as dictionaries, from the column name to the value
         /// </summary>
-        public IEnumerable<IDictionary<string, string>> LoadFromStream(Stream stream)
+        public IEnumerable<IDictionary<string, string?>> LoadFromStream(Stream stream)
         {
             return ReadDictionaries(CreateReader(stream));
         }
@@ -83,9 +86,39 @@ namespace Mafesoft.TinyCsv
         /// <summary>
         /// Reads the records of a text as dictionaries, from the column name to the value
         /// </summary>
-        public IEnumerable<IDictionary<string, string>> LoadFromText(string text, Encoding encoding = null)
+        public IEnumerable<IDictionary<string, string?>> LoadFromText(string text, Encoding? encoding = null)
         {
             return ReadDictionaries(CreateReader(text, encoding));
+        }
+
+        /// <summary>
+        /// Reads the records of a file asynchronously as dictionaries, from the column name to the value
+        /// </summary>
+        public async IAsyncEnumerable<IDictionary<string, string?>> LoadFromFileAsync(string path, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            using (var reader = new StreamReader(path, ReaderEncoding, true))
+            {
+                await foreach (var record in ReadDictionariesAsync(reader, cancellationToken).ConfigureAwait(false))
+                {
+                    yield return record;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Reads the records of a stream asynchronously as dictionaries, from the column name to the value
+        /// </summary>
+        public IAsyncEnumerable<IDictionary<string, string?>> LoadFromStreamAsync(Stream stream, CancellationToken cancellationToken = default)
+        {
+            return ReadDictionariesAsync(CreateReader(stream), cancellationToken);
+        }
+
+        /// <summary>
+        /// Reads the records of a text asynchronously as dictionaries, from the column name to the value
+        /// </summary>
+        public IAsyncEnumerable<IDictionary<string, string?>> LoadFromTextAsync(string text, Encoding? encoding = null, CancellationToken cancellationToken = default)
+        {
+            return ReadDictionariesAsync(CreateReader(text, encoding), cancellationToken);
         }
 
         /// <summary>
@@ -107,7 +140,7 @@ namespace Mafesoft.TinyCsv
         /// <summary>
         /// Reads the records of a text as dynamic objects, whose properties are the columns
         /// </summary>
-        public IEnumerable<dynamic> LoadDynamicFromText(string text, Encoding encoding = null)
+        public IEnumerable<dynamic> LoadDynamicFromText(string text, Encoding? encoding = null)
         {
             return ReadDynamics(CreateReader(text, encoding));
         }
@@ -134,7 +167,7 @@ namespace Mafesoft.TinyCsv
         /// <summary>
         /// Reads the records of a text into a DataTable, with a string column for each column
         /// </summary>
-        public DataTable LoadDataTableFromText(string text, Encoding encoding = null)
+        public DataTable LoadDataTableFromText(string text, Encoding? encoding = null)
         {
             return ReadDataTable(CreateReader(text, encoding));
         }
@@ -143,7 +176,7 @@ namespace Mafesoft.TinyCsv
 
         private StreamReader CreateReader(Stream stream) => new StreamReader(stream, ReaderEncoding, true);
 
-        private TextReader CreateReader(string text, Encoding encoding) => TextMemoryStream.CreateReader(text, encoding ?? ReaderEncoding);
+        private TextReader CreateReader(string text, Encoding? encoding) => TextMemoryStream.CreateReader(text, encoding ?? ReaderEncoding);
 
         private IEnumerable<TRecord> LoadFromFile<TRecord>(string path, Func<TextReader, IEnumerable<TRecord>> read)
         {
@@ -156,25 +189,45 @@ namespace Mafesoft.TinyCsv
             }
         }
 
-        private IEnumerable<IDictionary<string, string>> ReadDictionaries(TextReader textReader)
+        private IEnumerable<IDictionary<string, string?>> ReadDictionaries(TextReader textReader)
         {
-            var comparer = Options.HeaderNameComparer ?? StringComparer.OrdinalIgnoreCase;
             foreach (var record in ReadRecords(textReader, new List<string>()))
             {
-                var dictionary = new Dictionary<string, string>(record.Names.Count, comparer);
-                for (int i = 0; i < record.Names.Count; i++)
-                {
-                    dictionary[record.Names[i]] = record.Value(i);
-                }
-                yield return dictionary;
+                yield return ToDictionary(record);
             }
+        }
+
+        private async IAsyncEnumerable<IDictionary<string, string?>> ReadDictionariesAsync(TextReader textReader, [EnumeratorCancellation] CancellationToken cancellationToken)
+        {
+            var source = await CsvReadSource.OpenAsync(textReader, Options, cancellationToken).ConfigureAwait(false);
+            var dataReader = new TinyCsvDataReader<CsvRecord>(Options.WithDelimiter(source.Delimiter), source.Reader);
+            var records = new CsvRecordBuilder(Options, source.Delimiter, new List<string>());
+            await foreach (var fields in dataReader.ReadLinesAndFieldsAsync(cancellationToken).ConfigureAwait(false))
+            {
+                var record = records.Next(fields);
+                if (record != null)
+                {
+                    yield return ToDictionary(record);
+                }
+            }
+        }
+
+        private IDictionary<string, string?> ToDictionary(CsvRecord record)
+        {
+            var comparer = Options.HeaderNameComparer ?? StringComparer.OrdinalIgnoreCase;
+            var dictionary = new Dictionary<string, string?>(record.Names.Count, comparer);
+            for (int i = 0; i < record.Names.Count; i++)
+            {
+                dictionary[record.Names[i]] = record.Value(i);
+            }
+            return dictionary;
         }
 
         private IEnumerable<dynamic> ReadDynamics(TextReader textReader)
         {
             foreach (var record in ReadRecords(textReader, new List<string>()))
             {
-                IDictionary<string, object> expando = new ExpandoObject();
+                IDictionary<string, object?> expando = new ExpandoObject();
                 for (int i = 0; i < record.Names.Count; i++)
                 {
                     expando[record.Names[i]] = record.Value(i);
@@ -196,7 +249,7 @@ namespace Mafesoft.TinyCsv
                 var row = table.NewRow();
                 for (int i = 0; i < record.Names.Count; i++)
                 {
-                    row[i] = (object)record.Value(i) ?? DBNull.Value;
+                    row[i] = (object?)record.Value(i) ?? DBNull.Value;
                 }
                 table.Rows.Add(row);
             }
@@ -218,34 +271,64 @@ namespace Mafesoft.TinyCsv
         {
             var source = CsvReadSource.Open(textReader, Options);
             var dataReader = new TinyCsvDataReader<CsvRecord>(Options.WithDelimiter(source.Delimiter), source.Reader);
-            var headerCount = -1;
-            var index = 0;
+            var records = new CsvRecordBuilder(Options, source.Delimiter, names);
             foreach (var fields in dataReader.ReadLinesAndFields())
             {
-                if (index++ == 0 && Options.HasHeaderRecord)
+                var record = records.Next(fields);
+                if (record != null)
+                {
+                    yield return record;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Turns the fields of each row into a record: the header, when there is, sets the names and is not a record
+        /// </summary>
+        private sealed class CsvRecordBuilder
+        {
+            private readonly CsvRecordOptions options;
+            private readonly string delimiter;
+            private readonly List<string> names;
+            private int headerCount = -1;
+            private int index;
+
+            public CsvRecordBuilder(CsvRecordOptions options, string delimiter, List<string> names)
+            {
+                this.options = options;
+                this.delimiter = delimiter;
+                this.names = names;
+            }
+
+            /// <summary>
+            /// The record of the fields, or null for the header and for a skipped bad row
+            /// </summary>
+            public CsvRecord? Next(string[] fields)
+            {
+                if (index++ == 0 && options.HasHeaderRecord)
                 {
                     names.AddRange(CsvRecord.UniqueNames(fields));
                     headerCount = names.Count;
-                    continue;
+                    return null;
                 }
 
-                if (Options.ValidateColumnCount && headerCount >= 0 && fields.Length != headerCount)
+                if (options.ValidateColumnCount && headerCount >= 0 && fields.Length != headerCount)
                 {
                     var exception = new InvalidColumnCountException($"Invalid column count {fields.Length}, required {headerCount} columns.");
-                    exception.SetRow(index - 1, string.Join(source.Delimiter, fields));
-                    if (Options.BadDataFound == null)
+                    exception.SetRow(index - 1, string.Join(delimiter, fields));
+                    if (options.BadDataFound == null)
                     {
                         throw exception;
                     }
-                    Options.BadDataFound(exception);
-                    continue;
+                    options.BadDataFound(exception);
+                    return null;
                 }
 
                 for (int i = names.Count; i < fields.Length; i++)
                 {
                     names.Add(CsvRecord.FieldName(i));
                 }
-                yield return new CsvRecord(names, fields);
+                return new CsvRecord(names, fields);
             }
         }
 
@@ -264,7 +347,7 @@ namespace Mafesoft.TinyCsv
 
             public List<string> Names { get; }
 
-            public string Value(int index) => index < fields.Length ? fields[index] : null;
+            public string? Value(int index) => index < fields.Length ? fields[index] : null;
 
             public static string FieldName(int index) => "Field" + (index + 1).ToString(CultureInfo.InvariantCulture);
 
@@ -277,7 +360,7 @@ namespace Mafesoft.TinyCsv
                 for (int i = 0; i < header.Length; i++)
                 {
                     var name = header[i]?.Trim();
-                    if (string.IsNullOrEmpty(name))
+                    if (name == null || name.Length == 0)
                     {
                         name = FieldName(i);
                     }

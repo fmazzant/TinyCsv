@@ -28,7 +28,7 @@
 /// </summary>
 
 // .NET 10 provides System.Linq.AsyncEnumerable.ToListAsync: this extension would make the calls ambiguous
-#if (NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER) && !NET10_0_OR_GREATER
+#if !NET10_0_OR_GREATER
 namespace Mafesoft.TinyCsv.Extensions
 {
     using System.Collections.Generic;

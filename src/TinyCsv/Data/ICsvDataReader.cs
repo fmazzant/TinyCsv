@@ -47,14 +47,6 @@ namespace Mafesoft.TinyCsv.Data
         /// Get fields by line
         /// </summary>
         /// <param name="line"></param>
-        /// <returns></returns>
-        [Obsolete("Use: string[] GetFieldsByLine(string line, int columnsCount)", true)]
-        string[] GetFieldsByLine(string line);
-
-        /// <summary>
-        /// Get fields by line
-        /// </summary>
-        /// <param name="line"></param>
         /// <param name="columnCount"></param>
         /// <returns></returns>
         string[] GetFieldsByLine(string line, int columnsCount);
@@ -65,12 +57,16 @@ namespace Mafesoft.TinyCsv.Data
         /// <returns></returns>
         IEnumerable<string[]> ReadLinesAndFields();
 
-#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Read Lines 
         /// </summary>
         /// <returns></returns>
         IAsyncEnumerable<string> ReadLinesAsync(CancellationToken cancellationToken = default);
-#endif
+
+        /// <summary>
+        /// Get lines field asynchronously
+        /// </summary>
+        /// <returns></returns>
+        IAsyncEnumerable<string[]> ReadLinesAndFieldsAsync(CancellationToken cancellationToken = default);
     }
 }

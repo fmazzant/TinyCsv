@@ -44,7 +44,7 @@ namespace Mafesoft.TinyCsv.Conversions
         /// <param name="targetType">The type to convert to.</param>
         /// <param name="parameter">The converter parameter to use.</param>
         /// <returns>A converted value. If the method returns null, the valid null value is used.</returns>
-        public override object ConvertBack(string value, Type targetType, object parameter, IFormatProvider provider)
+        public override object? ConvertBack(string value, Type targetType, object? parameter, IFormatProvider provider)
         {
             if (value is not null)
             {

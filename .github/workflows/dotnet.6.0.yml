@@ -21,10 +21,10 @@ jobs:
           10.0.x
 
     - name: Restore dependencies
-      run: dotnet restore src/TinyCsv.sln
+      run: dotnet restore TinyCsv.slnx
 
     - name: Build
-      run: dotnet build --no-restore src/TinyCsv.sln
+      run: dotnet build --no-restore TinyCsv.slnx
 
     - name: Test
-      run: dotnet test --no-build src/TinyCsv.sln
+      run: dotnet test --no-build TinyCsv.slnx
