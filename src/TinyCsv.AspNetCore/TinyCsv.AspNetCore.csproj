@@ -1,22 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- The common package settings (license, readme, icon, SourceLink, symbols) are in src/Directory.Build.props -->
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net8.0;net10.0</TargetFrameworks>
-    <LangVersion>preview</LangVersion>
-    <Nullable>enable</Nullable>
-    <NeutralLanguage>en</NeutralLanguage>
-    <Description>TinyCsv AspNetCore is a .NET library utilities to read and write CSV data in an easy way on AspNetCore project.</Description>
-    <PackageProjectUrl>https://github.com/fmazzant/TinyCsv</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/fmazzant/TinyCsv</RepositoryUrl>
-    <PackageTags>csv,import,export,c-sharp,aspnetcore,mvc, tinycsv</PackageTags>
-    <PackageId>Mafesoft.TinyCsv.AspNetCore</PackageId>
-    <Authors>Federico Mazzanti</Authors>
-    <Copyright>Copyright (c) 2022 Federico Mazzanti</Copyright>
     <AssemblyName>Mafesoft.$(MSBuildProjectName)</AssemblyName>
     <RootNamespace>Mafesoft.$(MSBuildProjectName)</RootNamespace>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PackageId>Mafesoft.TinyCsv.AspNetCore</PackageId>
     <Product>TinyCsv.AspNetCore</Product>
+    <Title>Mafesoft.TinyCsv.AspNetCore</Title>
     <Version>4.0.0</Version>
+    <Description>Registers Mafesoft.TinyCsv in the ASP.NET Core dependency injection: typed singletons, named instances (keyed services on .NET 8+) and ITinyCsvFactory.</Description>
+    <PackageTags>csv;csv-parser;csv-reader;csv-writer;rfc4180;tsv;dotnet;aspnetcore;dependency-injection</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,24 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- The common package settings (license, readme, icon, SourceLink, symbols) are in src/Directory.Build.props -->
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard2.1;net462;net8.0;net10.0</TargetFrameworks>
-    <LangVersion>preview</LangVersion>
-    <Nullable>enable</Nullable>
-    <NeutralLanguage>en</NeutralLanguage>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <Description>TinyCsv is a .NET library to read and write CSV data in an easy way.</Description>
-    <PackageProjectUrl>https://github.com/fmazzant/TinyCsv</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/fmazzant/TinyCsv</RepositoryUrl>
-    <PackageTags>csv,import,export,c-sharp</PackageTags>
-    <PackageId>Mafesoft.TinyCsv</PackageId>
-    <Authors>Federico Mazzanti</Authors>
-    <Copyright>Copyright (c) 2022 Federico Mazzanti</Copyright>
     <AssemblyName>Mafesoft.$(MSBuildProjectName)</AssemblyName>
     <RootNamespace>Mafesoft.$(MSBuildProjectName)</RootNamespace>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PackageId>Mafesoft.TinyCsv</PackageId>
     <Product>TinyCsv</Product>
+    <Title>Mafesoft.TinyCsv</Title>
     <Version>4.0.0</Version>
+    <Description>TinyCsv is a .NET library to read and write CSV data in an easy way: strongly typed models with lambda columns, attributes or class maps, header mapping, delimiter detection, per-row error handling, records without a model and streaming async read and write.</Description>
+    <PackageTags>csv;csv-parser;csv-reader;csv-writer;rfc4180;tsv;dotnet</PackageTags>
   </PropertyGroup>
 
   <!-- Span support where it is not built-in -->
@@ -30,17 +22,6 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="TinyCsv.Tests" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\..\LICENSE.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="..\..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
   </ItemGroup>
 
 </Project>

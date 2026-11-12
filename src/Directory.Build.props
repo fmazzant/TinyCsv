@@ -1,0 +1,44 @@
+<Project>
+
+  <!-- Common settings for all the packages in src/ -->
+  <PropertyGroup>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Authors>Federico Mazzanti</Authors>
+    <Copyright>Copyright (c) 2022-2026 Federico Mazzanti</Copyright>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/fmazzant/TinyCsv</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/fmazzant/TinyCsv</PackageProjectUrl>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <!-- Only a pointer: the full history is in CHANGELOG.md -->
+    <PackageReleaseNotes>Breaking changes in 4.0.0: see "Migrating to 4.0" in the README. Full changelog: https://github.com/fmazzant/TinyCsv/blob/main/CHANGELOG.md</PackageReleaseNotes>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+
+    <!-- SourceLink (included in the .NET SDK), symbol packages and deterministic build -->
+    <Deterministic>true</Deterministic>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    <!-- Package validation: checks that the API is consistent across the target frameworks.
+         After the 4.0.0 release, enable the comparison with the released version, to catch accidental breaking changes in 4.x:
+           <PackageValidationBaselineVersion>4.0.0</PackageValidationBaselineVersion> -->
+    <EnablePackageValidation>true</EnablePackageValidation>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)..\LICENSE.md" Pack="true" PackagePath="" Visible="false" />
+    <!-- Every package has its own short README.md (next to the .csproj), shown on nuget.org -->
+    <None Include="README.md" Pack="true" PackagePath="" />
+    <None Include="$(MSBuildThisFileDirectory)..\assets\icon.png" Pack="true" PackagePath="" Visible="false" />
+  </ItemGroup>
+
+</Project>
