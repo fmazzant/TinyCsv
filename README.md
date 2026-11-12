@@ -119,6 +119,10 @@ The file above contains 2 rows. `Save` escapes the values in the same way, so a 
 | `Mafe.TinyCsv` | `Mafesoft.TinyCsv` |
 | `Mafe.TinyCsv.AspNetCore` | `Mafesoft.TinyCsv.AspNetCore` |
 | `using TinyCsv;` (and `TinyCsv.*`) | `using Mafesoft.TinyCsv;` (and `Mafesoft.TinyCsv.*`) |
+| `Mafe.TinyCsv.Extensions` | retired: use `Mafesoft.TinyCsv.AspNetCore` |
+
+`Mafe.TinyCsv.Extensions` was an old copy of the AspNetCore package, with every type obsolete (compile error) since 2.x:
+it is no longer built nor published, and there is no `Mafesoft.TinyCsv.Extensions` package.
 
 ### Removed APIs
 
