@@ -66,7 +66,7 @@ var csv = new TinyCsv<Model>(options =>
 });
 ```
 
-The options defines that the file has the header in first row and the delimier char is ";", furthermore there are defined some columns.
+The options define that the file has the header in the first row and the delimiter is ";" (the default), furthermore some columns are defined.
 RowsToSkip and SkipRow are used to skip the first rows of the file.
 When `SkipRow` is not set and the handlers are not enabled, the records are read without creating a string for each record, so the read is faster and allocates less memory.
 TrimData is used to remove the white spaces from the data.
@@ -74,6 +74,15 @@ TrimData is used to remove the white spaces from the data.
 The rows starting with the `Comment` char (`#` by default) are skipped when `AllowComment` is true (default),
 while `AllowComment = false` throws a `NotAllowCommentException`.
 The `TextEncoding` option (UTF-8 by default) is used to read and write files, streams and text; a byte order mark, if present, takes precedence while reading.
+
+### Defaults
+
+| Option | Default | Why |
+|---|---|---|
+| `Delimiter` | `";"` | the delimiter of Excel with the Italian and most European regional settings. Set `","` for RFC 4180 files, or `DetectDelimiter = true` to detect it when reading (it is opt-in) |
+| `NewLine` | `"\r\n"` | RFC 4180. It is the same on every operating system, so the same models are written with the same bytes on Windows and Linux. When reading, `\r\n`, `\n` and `\r` are all accepted |
+| `TextEncoding` | UTF-8, written **without** the byte order mark (BOM) | most tools do not want the BOM. Excel needs it to recognize UTF-8: set `options.TextEncoding = new UTF8Encoding(true)` |
+| `HasHeaderRecord` | `false` | |
 
 ## Culture
 
@@ -166,6 +175,16 @@ var models = await csv.LoadFromFileAsync(path).ToListAsync(); // using Mafesoft.
 ```
 
 `TinyCsvWriter<T>` implements `IAsyncDisposable` on every target framework.
+
+### Defaults
+
+- `NewLine` is `"\r\n"` on every operating system (before: `Environment.NewLine`, so `"\n"` on Linux and macOS),
+  and it is used by `Save`, `SaveAsync`, `TinyCsvWriter<T>` and `CsvDataWriter<T>` too (before: only by `GetAllText`;
+  the writers used the `NewLine` of the `TextWriter`). Set `options.NewLine = "\n"` to write the previous files on Linux.
+  Reading is not affected: `\r\n`, `\n` and `\r` are all accepted.
+- `NewLineAttribute()` without a value is `"\r\n"` too.
+- `Delimiter` is still `";"`, `DetectDelimiter` is still opt-in.
+- UTF-8 is still written without the BOM: set `TextEncoding = new UTF8Encoding(true)` to write it.
 
 ### ASP.NET Core
 

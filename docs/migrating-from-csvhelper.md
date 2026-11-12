@@ -255,7 +255,7 @@ TinyCsv has built-in converters for the primitive types, `decimal`, `DateTime`, 
 | `Quote` | `DoubleQuotes` |
 | `Escape = '\\'` | `AllowBackSlashToEscapeQuote = true` |
 | `Comment`, `AllowComments` | `Comment`, `AllowComment` (note the different default) |
-| `NewLine` | `NewLine` (used to write) |
+| `NewLine` | `NewLine` (used to write, `"\r\n"` by default on every operating system) |
 | `Encoding` | `TextEncoding` |
 | `CultureInfo` (constructor) | `Culture` |
 | `TrimOptions = TrimOptions.Trim` | `TrimData = true` (the spaces inside a quoted value are kept) |

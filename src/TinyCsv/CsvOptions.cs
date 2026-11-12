@@ -128,9 +128,20 @@ namespace Mafesoft.TinyCsv
         public bool HasHeaderRecord { get; set; }
 
         /// <summary>
-        /// Delimiter
+        /// The default <see cref="Delimiter"/>: the semicolon, used by Excel with the Italian and most European regional settings
         /// </summary>
-        public string Delimiter { get; set; } = ";";
+        public const string DefaultDelimiter = ";";
+
+        /// <summary>
+        /// The default <see cref="NewLine"/>: CRLF, as RFC 4180. It is the same on every operating system.
+        /// </summary>
+        public const string DefaultNewLine = "\r\n";
+
+        /// <summary>
+        /// Delimiter. The default is the semicolon (<see cref="DefaultDelimiter"/>): set "," for RFC 4180 files,
+        /// or <see cref="DetectDelimiter"/> to detect it when reading.
+        /// </summary>
+        public string Delimiter { get; set; } = DefaultDelimiter;
 
         /// <summary>
         /// Detects the delimiter from the first records when reading, among <see cref="DelimiterCandidates"/>.
@@ -164,12 +175,14 @@ namespace Mafesoft.TinyCsv
         public char Comment { get; set; } = '#';
 
         /// <summary>
-        /// Gets or Set the newline string defined for this environment
+        /// The line terminator written after each row. The default is CRLF (<see cref="DefaultNewLine"/>), as RFC 4180,
+        /// on every operating system. When reading, CRLF, LF and CR are all accepted, whatever the value.
         /// </summary>
-        public string NewLine { get; set; } = Environment.NewLine;
+        public string NewLine { get; set; } = DefaultNewLine;
 
         /// <summary>
-        /// Represents a character encoding
+        /// The encoding to read and write. The default is UTF-8, written without the byte order mark (BOM);
+        /// set <c>new UTF8Encoding(true)</c> to write the BOM (i.e. for Excel). When reading, a BOM takes precedence.
         /// </summary>
         public Encoding TextEncoding { get; set; } = Encoding.UTF8;
 

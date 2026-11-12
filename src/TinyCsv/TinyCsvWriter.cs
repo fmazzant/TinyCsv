@@ -21,6 +21,7 @@ namespace Mafesoft.TinyCsv
         private readonly TextWriter writer;
         private readonly bool leaveOpen;
         private readonly CsvLineBuilder<T> builder;
+        private readonly string newLine;
         private bool started;
         private bool completed;
 
@@ -30,6 +31,7 @@ namespace Mafesoft.TinyCsv
             this.writer = writer;
             this.leaveOpen = leaveOpen;
             builder = new CsvLineBuilder<T>(options);
+            newLine = options.NewLine ?? CsvOptions.DefaultNewLine;
             options.Handlers.OnStart();
         }
 
@@ -70,14 +72,15 @@ namespace Mafesoft.TinyCsv
             if (handlers.Enabled)
             {
                 var line = builder.ToString();
-                writer.WriteLine(line);
+                writer.Write(line);
+                writer.Write(newLine);
                 handlers.OnRowWritten(Count, model, line);
             }
             else
             {
                 // the line is written from the buffer, without creating the string
                 builder.WriteTo(writer);
-                writer.WriteLine();
+                writer.Write(newLine);
             }
             Count++;
         }
@@ -98,13 +101,14 @@ namespace Mafesoft.TinyCsv
             if (handlers.Enabled)
             {
                 var line = builder.ToString();
-                await writer.WriteLineAsync(line).ConfigureAwait(false);
+                await writer.WriteAsync(line).ConfigureAwait(false);
+                await writer.WriteAsync(newLine).ConfigureAwait(false);
                 handlers.OnRowWritten(Count, model, line);
             }
             else
             {
                 await builder.WriteToAsync(writer).ConfigureAwait(false);
-                await writer.WriteLineAsync().ConfigureAwait(false);
+                await writer.WriteAsync(newLine).ConfigureAwait(false);
             }
             Count++;
         }
@@ -157,7 +161,8 @@ namespace Mafesoft.TinyCsv
             var header = started ? null : Start();
             if (header != null)
             {
-                writer.WriteLine(header);
+                writer.Write(header);
+                writer.Write(newLine);
             }
         }
 
@@ -166,7 +171,8 @@ namespace Mafesoft.TinyCsv
             var header = started ? null : Start();
             if (header != null)
             {
-                await writer.WriteLineAsync(header).ConfigureAwait(false);
+                await writer.WriteAsync(header).ConfigureAwait(false);
+                await writer.WriteAsync(newLine).ConfigureAwait(false);
             }
         }
 

@@ -368,9 +368,9 @@ namespace Mafesoft.TinyCsv.Tests
         [Fact]
         public void DataWriter_WriteLinesAndFields()
         {
-            var options = Tests.Csv.Person().Options;
+            var options = Tests.Csv.Person(o => o.NewLine = "\n").Options;
             var stream = new MemoryStream();
-            var streamWriter = new StreamWriter(stream) { NewLine = "\n" };
+            var streamWriter = new StreamWriter(stream);
             var writer = new CsvDataWriter<Person>(options, streamWriter);
 
             Assert.Equal(1, writer.WriteLine("a;b"));
@@ -384,9 +384,9 @@ namespace Mafesoft.TinyCsv.Tests
         [Fact]
         public async Task DataWriter_WriteAsync()
         {
-            var options = Tests.Csv.Person().Options;
+            var options = Tests.Csv.Person(o => o.NewLine = "\n").Options;
             var stream = new MemoryStream();
-            var streamWriter = new StreamWriter(stream) { NewLine = "\n" };
+            var streamWriter = new StreamWriter(stream);
             var writer = new CsvDataWriter<Person>(options, streamWriter);
 
             Assert.Equal(1, await writer.WriteLineAsync("a;b"));

@@ -75,7 +75,8 @@ namespace Mafesoft.TinyCsv.Data
         /// <returns></returns>
         public int WriteLine(string line)
         {
-            writer.WriteLine(line);
+            writer.Write(line);
+            writer.Write(options.NewLine ?? CsvOptions.DefaultNewLine);
             return 1;
         }
 
@@ -116,7 +117,8 @@ namespace Mafesoft.TinyCsv.Data
         public async Task<int> WriteLineAsync(string line, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            await writer.WriteLineAsync(line);
+            await writer.WriteAsync(line);
+            await writer.WriteAsync(options.NewLine ?? CsvOptions.DefaultNewLine);
             return 1;
         }
 
