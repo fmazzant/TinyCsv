@@ -7,7 +7,7 @@ Target frameworks: .NET 10, .NET 8, .NET Standard 2.0.
 
 ## Quick start
 
-```
+```shell
 dotnet add package Mafesoft.TinyCsv.AspNetCore
 ```
 

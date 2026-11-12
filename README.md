@@ -75,7 +75,7 @@ conversions with the culture you choose, per-row error handling and streaming as
 | Zero-copy access to the fields (`Span<char>`) | ❌ not planned | ❌ | ✅ | ✅ | ❌ |
 | Community, documentation, Q&A | ❌ small | ✅ very large | ⚠️ growing | ⚠️ medium | ⚠️ medium |
 
-✅ built in, ⚠️ partial or extra work, ❌ not available, ❔ not verified.
+✅ built-in, ⚠️ partial or extra work, ❌ not available, ❔ not verified.
 Compared with the versions used in the [benchmark](benchmark/TinyCsv.Benchmarks/TinyCsv.Benchmarks.csproj):
 CsvHelper 33.1, Sep 0.11, Sylvan.Data.Csv 1.4, TinyCsvParser 3.0. The speed is in [Performance](#performance).
 The last rows list what the alternatives have and TinyCsv does not (or only partially), so that the comparison is not one-sided.
@@ -87,11 +87,13 @@ for `IDataReader`/`DbDataReader` scenarios (SqlBulkCopy), [Sylvan.Data.Csv](http
 
 ## Packages
 
+<!-- markdownlint-disable MD013 -->
 | Package | Target frameworks | NuGet | Downloads | Legacy downloads |
 |---|---|---|---|---|
 | `Mafesoft.TinyCsv` | net10.0, net8.0, netstandard2.1, netstandard2.0, net462 | [![NuGet](https://img.shields.io/nuget/v/Mafesoft.TinyCsv?style=flat-square&label=nuget)](https://www.nuget.org/packages/Mafesoft.TinyCsv) | [![Downloads](https://img.shields.io/nuget/dt/Mafesoft.TinyCsv?style=flat-square&label=downloads)](https://www.nuget.org/packages/Mafesoft.TinyCsv) | [![Mafe.TinyCsv downloads](https://img.shields.io/nuget/dt/Mafe.TinyCsv?style=flat-square&label=Mafe.TinyCsv)](https://www.nuget.org/packages/Mafe.TinyCsv) |
 | `Mafesoft.TinyCsv.AspNetCore` | net10.0, net8.0, netstandard2.0 | [![NuGet](https://img.shields.io/nuget/v/Mafesoft.TinyCsv.AspNetCore?style=flat-square&label=nuget)](https://www.nuget.org/packages/Mafesoft.TinyCsv.AspNetCore) | [![Downloads](https://img.shields.io/nuget/dt/Mafesoft.TinyCsv.AspNetCore?style=flat-square&label=downloads)](https://www.nuget.org/packages/Mafesoft.TinyCsv.AspNetCore) | [![Mafe.TinyCsv.AspNetCore downloads](https://img.shields.io/nuget/dt/Mafe.TinyCsv.AspNetCore?style=flat-square&label=Mafe.TinyCsv.AspNetCore)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore) |
 | `Mafe.TinyCsv.Extensions` (retired) | - | - | - | [![Mafe.TinyCsv.Extensions downloads](https://img.shields.io/nuget/dt/Mafe.TinyCsv.Extensions?style=flat-square&label=Mafe.TinyCsv.Extensions)](https://www.nuget.org/packages/Mafe.TinyCsv.Extensions) |
+<!-- markdownlint-enable MD013 -->
 
 ## Installation
 
@@ -790,7 +792,7 @@ var models = await csv.LoadFromFileAsync(path).ToListAsync(); // using Mafesoft.
 
 `TinyCsvWriter<T>` implements `IAsyncDisposable` on every target framework.
 
-### Defaults
+### Defaults in 4.0
 
 - `NewLine` is `"\r\n"` on every operating system (before: `Environment.NewLine`, so `"\n"` on Linux and macOS),
   and it is used by `Save`, `SaveAsync`, `TinyCsvWriter<T>` and `CsvDataWriter<T>` too (before: only by `GetAllText`;
@@ -800,7 +802,7 @@ var models = await csv.LoadFromFileAsync(path).ToListAsync(); // using Mafesoft.
 - `Delimiter` is still `";"`, `DetectDelimiter` is still opt-in.
 - UTF-8 is still written without the BOM: set `TextEncoding = new UTF8Encoding(true)` to write it.
 
-### ASP.NET Core
+### ASP.NET Core in 4.0
 
 - `ITinyCsvFactory` and `TinyCsvFactory` are in the `Mafesoft.TinyCsv.AspNetCore` namespace (before: `TinyCsv` and `TinyCsv.AspNetCore`).
 - The registrations are kept by the service provider, not in a static dictionary: two service providers do not share them,

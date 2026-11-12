@@ -44,7 +44,7 @@ app.MapGet("/model1", (ITinyCsv<Model1> csv) => csv.LoadFromFileAsync("model1.cs
 
 app.MapGet("/model2", (ITinyCsvFactory factory) => factory.Get<Model2>("model2").LoadFromFileAsync("model2.csv"));
 
-app.MapGet("/model2-it", ([FromKeyedServices("model2-it")] ITinyCsv<Model2> csv) => csv.LoadFromFileAsync("model2.csv"));
+app.MapGet("/model2-it", LoadModel2It);
 
 // writes a CSV file as response
 app.MapGet("/model2.csv", async (HttpContext context, ITinyCsvFactory factory) =>
@@ -56,3 +56,7 @@ app.MapGet("/model2.csv", async (HttpContext context, ITinyCsvFactory factory) =
 });
 
 app.Run();
+
+// a local function: the keyed service is resolved through the parameter attribute
+static IAsyncEnumerable<Model2> LoadModel2It([FromKeyedServices("model2-it")] ITinyCsv<Model2> csv)
+    => csv.LoadFromFileAsync("model2.csv");
