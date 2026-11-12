@@ -1,9 +1,9 @@
 ﻿/// <summary>
-/// 
+///
 /// The MIT License (MIT)
-/// 
+///
 /// Copyright (c) 2022 Federico Mazzanti
-/// 
+///
 /// Permission is hereby granted, free of charge, to any person
 /// obtaining a copy of this software and associated documentation
 /// files (the "Software"), to deal in the Software without
@@ -12,10 +12,10 @@
 /// copies of the Software, and to permit persons to whom the
 /// Software is furnished to do so, subject to the following
 /// conditions:
-/// 
+///
 /// The above copyright notice and this permission notice shall be
 /// included in all copies or substantial portions of the Software.
-/// 
+///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 /// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 /// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,71 +24,110 @@
 /// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 /// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 /// OTHER DEALINGS IN THE SOFTWARE.
-/// 
+///
 /// </summary>
 
 namespace Mafesoft.TinyCsv.AspNetCore
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
 
     /// <summary>
-    /// TinyCsv Factory
+    /// TinyCsv Factory. The instances are kept by the factory instance (there is no static state):
+    /// each service provider has its own factory and its own registrations.
     /// </summary>
     public sealed class TinyCsvFactory : ITinyCsvFactory
     {
-        private static readonly ConcurrentDictionary<string, object> _tinyCsv = new ConcurrentDictionary<string, object>();
+        private readonly ConcurrentDictionary<string, Lazy<object>> instances = new ConcurrentDictionary<string, Lazy<object>>(StringComparer.Ordinal);
 
         /// <summary>
-        /// TinyCsv Factory
+        /// Creates a factory without registrations
         /// </summary>
         public TinyCsvFactory()
         {
-
         }
 
         /// <summary>
-        /// Add TinyCsv with service's name
+        /// Creates a factory with the registrations of a service collection
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="serviceName"></param>
-        /// <param name="tinyCsv"></param>
-        /// <exception cref="Exception"></exception>
-        public void Add<T>(string serviceName, ITinyCsv<T> tinyCsv) where T : class, new()
+        /// <param name="registrations"></param>
+        internal TinyCsvFactory(IEnumerable<TinyCsvRegistration> registrations)
         {
-            if (_tinyCsv.ContainsKey(serviceName))
+            foreach (var registration in registrations)
             {
-                throw new ArgumentNullException($"TinyCsv with name {serviceName} is already exists");
+                if (!instances.TryAdd(registration.Name, new Lazy<object>(registration.Create)))
+                {
+                    throw DuplicateName(registration.Name);
+                }
             }
-            _tinyCsv.TryAdd(serviceName, tinyCsv);
         }
 
-        /// <summary>
-        /// Create new TinyCsv
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="options"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
+        public void Add<T>(string name, ITinyCsv<T> tinyCsv) where T : class, new()
+        {
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (tinyCsv == null) throw new ArgumentNullException(nameof(tinyCsv));
+
+            if (!instances.TryAdd(name, new Lazy<object>(() => tinyCsv)))
+            {
+                throw DuplicateName(name);
+            }
+        }
+
+        /// <inheritdoc/>
         public ITinyCsv<T> Create<T>(Action<CsvOptions<T>> options) where T : class, new()
         {
-            ITinyCsv<T> tinyCsv = new TinyCsv<T>(options);
-            return tinyCsv;
+            return new TinyCsv<T>(options);
         }
 
-        /// <summary>
-        /// Get TinyCsv by service's name
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="serviceName"></param>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        public ITinyCsv<T> Get<T>(string serviceName) where T : class, new()
+        /// <inheritdoc/>
+        public ITinyCsv<T> Get<T>(string name) where T : class, new()
         {
-            if (!_tinyCsv.ContainsKey(serviceName))
+            if (name == null) throw new ArgumentNullException(nameof(name));
+
+            if (!instances.TryGetValue(name, out var instance))
             {
-                throw new ArgumentNullException($"TinyCsv with name {serviceName} does not exist");
+                throw new KeyNotFoundException($"No TinyCsv is registered with the name '{name}'.");
             }
-            return (ITinyCsv<T>)_tinyCsv[serviceName];
+            if (instance.Value is ITinyCsv<T> tinyCsv)
+            {
+                return tinyCsv;
+            }
+            throw new InvalidOperationException($"The TinyCsv registered with the name '{name}' is {instance.Value.GetType()}, not ITinyCsv<{typeof(T).FullName}>.");
         }
+
+        /// <inheritdoc/>
+        public bool TryGet<T>(string name, out ITinyCsv<T> tinyCsv) where T : class, new()
+        {
+            tinyCsv = null;
+            if (name != null && instances.TryGetValue(name, out var instance))
+            {
+                tinyCsv = instance.Value as ITinyCsv<T>;
+            }
+            return tinyCsv != null;
+        }
+
+        internal static InvalidOperationException DuplicateName(string name)
+        {
+            return new InvalidOperationException($"A TinyCsv with the name '{name}' is already registered.");
+        }
+    }
+
+    /// <summary>
+    /// A TinyCsv registered by name in a service collection:
+    /// the factory of the service provider creates it the first time it is requested
+    /// </summary>
+    internal sealed class TinyCsvRegistration
+    {
+        public TinyCsvRegistration(string name, Func<object> create)
+        {
+            Name = name;
+            Create = create;
+        }
+
+        public string Name { get; }
+
+        public Func<object> Create { get; }
     }
 }

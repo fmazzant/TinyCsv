@@ -19,8 +19,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- only the dependency injection is used (IServiceCollection, TryAddSingleton, BuildServiceProvider) -->
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <!-- only the abstractions are used: IServiceCollection, TryAddSingleton, AddKeyedSingleton (.NET 8+) -->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
   </ItemGroup>
 
   <ItemGroup>

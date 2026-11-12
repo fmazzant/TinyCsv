@@ -1,9 +1,9 @@
 ﻿/// <summary>
-/// 
+///
 /// The MIT License (MIT)
-/// 
+///
 /// Copyright (c) 2022 Federico Mazzanti
-/// 
+///
 /// Permission is hereby granted, free of charge, to any person
 /// obtaining a copy of this software and associated documentation
 /// files (the "Software"), to deal in the Software without
@@ -12,10 +12,10 @@
 /// copies of the Software, and to permit persons to whom the
 /// Software is furnished to do so, subject to the following
 /// conditions:
-/// 
+///
 /// The above copyright notice and this permission notice shall be
 /// included in all copies or substantial portions of the Software.
-/// 
+///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 /// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 /// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,20 +24,23 @@
 /// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 /// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 /// OTHER DEALINGS IN THE SOFTWARE.
-/// 
+///
 /// </summary>
 
-namespace Mafesoft.TinyCsv
+namespace Mafesoft.TinyCsv.AspNetCore
 {
     using System;
 
     /// <summary>
-    /// ITinyCsvFactory
+    /// Creates TinyCsv instances and returns the instances registered by name
+    /// (see <c>AddTinyCsv&lt;T&gt;(name, options)</c>).
+    /// The factory registered in a service collection is a singleton of that container:
+    /// two containers do not share their registrations.
     /// </summary>
     public interface ITinyCsvFactory
     {
         /// <summary>
-        /// Create new TinyCsv
+        /// Creates a new TinyCsv instance with the options
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="options"></param>
@@ -45,19 +48,33 @@ namespace Mafesoft.TinyCsv
         ITinyCsv<T> Create<T>(Action<CsvOptions<T>> options) where T : class, new();
 
         /// <summary>
-        /// Add TinyCsv with service's name
+        /// Adds a TinyCsv instance with a name
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="serviceName"></param>
+        /// <param name="name"></param>
         /// <param name="tinyCsv"></param>
-        void Add<T>(string serviceName, ITinyCsv<T> tinyCsv) where T : class, new();
+        /// <exception cref="ArgumentNullException">name or tinyCsv is null</exception>
+        /// <exception cref="InvalidOperationException">a TinyCsv with the same name already exists</exception>
+        void Add<T>(string name, ITinyCsv<T> tinyCsv) where T : class, new();
 
         /// <summary>
-        /// Get TinyCsv by service's name
+        /// Returns the TinyCsv instance with the name
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="serviceName"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        ITinyCsv<T> Get<T>(string serviceName) where T : class, new();
+        /// <exception cref="ArgumentNullException">name is null</exception>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">no TinyCsv with the name</exception>
+        /// <exception cref="InvalidOperationException">the TinyCsv with the name is not an ITinyCsv&lt;T&gt;</exception>
+        ITinyCsv<T> Get<T>(string name) where T : class, new();
+
+        /// <summary>
+        /// Returns the TinyCsv instance with the name, if it exists and it is an ITinyCsv&lt;T&gt;
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="name"></param>
+        /// <param name="tinyCsv"></param>
+        /// <returns></returns>
+        bool TryGet<T>(string name, out ITinyCsv<T> tinyCsv) where T : class, new();
     }
 }

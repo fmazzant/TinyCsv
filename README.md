@@ -167,6 +167,18 @@ var models = await csv.LoadFromFileAsync(path).ToListAsync(); // using Mafesoft.
 
 `TinyCsvWriter<T>` implements `IAsyncDisposable` on every target framework.
 
+### ASP.NET Core
+
+- `ITinyCsvFactory` and `TinyCsvFactory` are in the `Mafesoft.TinyCsv.AspNetCore` namespace (before: `TinyCsv` and `TinyCsv.AspNetCore`).
+- The registrations are kept by the service provider, not in a static dictionary: two service providers do not share them,
+  and `new TinyCsvFactory()` does not see the instances registered with `AddTinyCsv<T>(name, options)` (inject `ITinyCsvFactory`).
+- `AddTinyCsv<T>(name, options)` no longer calls `BuildServiceProvider`: the instance is created the first time it is requested.
+- New `AddTinyCsv<T>(options)`, that registers `ITinyCsv<T>` as singleton; on .NET 8 or later the named instances are keyed services too.
+- The `AddTinyCsv` methods return the `IServiceCollection`.
+- A name registered twice throws `InvalidOperationException` (before: `ArgumentNullException`);
+  `Get<T>` with a name that is not registered throws `KeyNotFoundException` (before: `ArgumentNullException`).
+- The package references `Microsoft.Extensions.DependencyInjection.Abstractions` instead of `Microsoft.Extensions.DependencyInjection`.
+
 ## Breaking changes in 3.0
 
 TinyCsv 3.0 has a new reader, based on `Span<char>`, that reads a CSV record instead of a physical line.
@@ -813,65 +825,51 @@ dotnet add package Mafesoft.TinyCsv.AspNetCore
 
 ```c#
 using Mafesoft.TinyCsv;
+using Mafesoft.TinyCsv.AspNetCore;
 using Mafesoft.TinyCsv.AspNetCore.Extensions;
 ```
 
-Since 2.4.0 the package depends only on `Microsoft.Extensions.DependencyInjection`: the previous versions referenced the ASP.NET Core 2.2 packages,
-that are out of support and include `Microsoft.AspNetCore.Server.Kestrel.Core` 2.2.0, with a critical vulnerability ([GHSA-5rrx-jjjq-q2r5](https://github.com/advisories/GHSA-5rrx-jjjq-q2r5)).
+The package depends only on `Microsoft.Extensions.DependencyInjection.Abstractions`.
 
-It's possible to use the extensions methods in your project, like this:
+A `TinyCsv<T>` instance is thread-safe after its construction, as long as its options are not changed: it is registered as singleton.
+
+### One instance per model
 
 ```c#
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddTinyCsv<Model1>("Model1", options =>
+builder.Services.AddTinyCsv<Order>(options =>
 {
-    // Options
     options.HasHeaderRecord = true;
-    options.Delimiter = ";";
-    options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
-   
-    // columns
     options.Columns.AddColumn(m => m.Id);
-    options.Columns.AddColumn(m => m.Name);
-    options.Columns.AddColumn(m => m.Price);
+    options.Columns.AddColumn(m => m.Total);
 });
 
-var app = builder.Build();
-
-app.MapGet("/csv1", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
-{
-    var tinyCsv = tinyCsvFactory.Get<Model1>("Model1");
-    var result = await tinyCsv.LoadFromFileAsync("model1.csv");
-    Console.WriteLine($"{result?.Count()}");
-    return result;
-});
-
-app.MapGet("/csv2", [AllowAnonymous] async (ITinyCsvFactory tinyCsvFactory) =>
-{
-    var tinyCsv = tinyCsvFactory.Create<Model2>(options =>
-    {
-        options.HasHeaderRecord = true;
-        options.Delimiter = ";";
-        options.SkipRow = (row, idx) => string.IsNullOrWhiteSpace(row) || row.StartsWith("#");
-        options.Columns.AddColumn(m => m.Id);
-        options.Columns.AddColumn(m => m.Name);
-    });
-    var result = await tinyCsv.LoadFromFileAsync("model2.csv");
-    Console.WriteLine($"{result?.Count()}");
-    return result;
-});
-
-app.Run();
+app.MapGet("/orders", (ITinyCsv<Order> csv) => csv.LoadFromFileAsync("orders.csv"));
 ```
 
-The AddTinyCsv method extension takes the name of the model (the name is a unique key)
-and the options. The method defines a TinyCsv instance.
+### Named instances
 
-The specific model is retriving with the Get method, like this:
+Several instances of the same model are registered with a name, unique in the service collection.
+They are returned by `ITinyCsvFactory.Get<T>(name)` and, on .NET 8 or later, they are also keyed services:
 
 ```c#
-var tinyCsv = tinyCsvFactory.Get<Model1>("Model1");
+builder.Services
+    .AddTinyCsv<Order>("orders-it", o => o.Delimiter = ";")
+    .AddTinyCsv<Order>("orders-us", o => o.Delimiter = ",");
+
+// .NET 8 or later
+app.MapGet("/orders/it", ([FromKeyedServices("orders-it")] ITinyCsv<Order> csv) => csv.LoadFromFileAsync("orders-it.csv"));
+
+// every target framework
+app.MapGet("/orders/us", (ITinyCsvFactory factory) => factory.Get<Order>("orders-us").LoadFromFileAsync("orders-us.csv"));
 ```
 
-The library is very very simple to use.
+`ITinyCsvFactory.Create<T>(options)` creates a new instance, that is not registered.
+
+The factory is a singleton of the service provider: two service providers (i.e. two `WebApplicationFactory` in the integration tests)
+do not share their registrations.
+
+| Error | Exception |
+|---|---|
+| a name registered twice | `InvalidOperationException` (when it is registered) |
+| `Get<T>` with a name that is not registered | `KeyNotFoundException` |
+| `Get<T>` with the name of an instance of another model | `InvalidOperationException` |
