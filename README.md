@@ -65,9 +65,20 @@ conversions with the culture you choose, per-row error handling and streaming as
 | ASP.NET Core integration | ✅ DI; results/formatters planned ([#76](https://github.com/fmazzant/TinyCsv/issues/76)) | ❌ | ❌ | ❌ | ❌ |
 | Native AOT / trimming | to evaluate ([#84](https://github.com/fmazzant/TinyCsv/issues/84)) | ⚠️ | ✅ | ✅ | ⚠️ |
 | `netstandard2.0` (.NET Framework 4.6.2+) | ✅ | ✅ | ❌ | ✅ | ✅ |
+| Immutable models (records, constructor parameters, `init`) | ❌ requires `new()`; to evaluate ([#83](https://github.com/fmazzant/TinyCsv/issues/83)) | ✅ | n/a, manual | ❔ | ❌ |
+| Alternative header names for a column | ❌ one name; planned ([#100](https://github.com/fmazzant/TinyCsv/issues/100)) | ✅ `Name("Id", "ID")` | ⚠️ manual | ❔ | ❌ by index |
+| Several record types in the same file | ❌ to evaluate ([#101](https://github.com/fmazzant/TinyCsv/issues/101)) | ✅ | ⚠️ manual | ⚠️ manual | ❌ |
+| Write without a model (dictionaries, `dynamic`, `DataTable`) | ❌ read only; planned ([#78](https://github.com/fmazzant/TinyCsv/issues/78)) | ✅ | ✅ by column name | ✅ from a `DbDataReader` | ❌ |
+| Configuration hooks (header validation, missing fields, ...) | ⚠️ `HeaderNameComparer`, `SkipRow`, `BadDataFound`; optional columns planned ([#81](https://github.com/fmazzant/TinyCsv/issues/81)) | ✅ many | ❌ | ❔ | ❌ |
+| Allocations when writing (100,000 rows, [benchmark](#performance)) | ⚠️ 2.2 MB; planned ([#102](https://github.com/fmazzant/TinyCsv/issues/102)) | ⚠️ 25.2 MB | ✅ 0.02 MB | ✅ 0.05 MB | n/a |
+| Parallel parsing | ❌ not planned | ❌ | ✅ `ParallelEnumerate` | ❌ | ✅ degree of parallelism |
+| Zero-copy access to the fields (`Span<char>`) | ❌ not planned | ❌ | ✅ | ✅ | ❌ |
+| Community, documentation, Q&A | ❌ small | ✅ very large | ⚠️ growing | ⚠️ medium | ⚠️ medium |
 
+✅ built in, ⚠️ partial or extra work, ❌ not available, ❔ not verified.
 Compared with the versions used in the [benchmark](benchmark/TinyCsv.Benchmarks/TinyCsv.Benchmarks.csproj):
 CsvHelper 33.1, Sep 0.11, Sylvan.Data.Csv 1.4, TinyCsvParser 3.0. The speed is in [Performance](#performance).
+The last rows list what the alternatives have and TinyCsv does not (or only partially), so that the comparison is not one-sided.
 
 **When to choose something else:** if only the raw speed on .NET 8+ matters and you map the columns by hand,
 [Sep](https://github.com/nietras/Sep) is hard to beat; for the largest feature set and ecosystem (dynamic class maps,
