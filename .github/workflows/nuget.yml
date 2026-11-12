@@ -149,15 +149,24 @@ jobs:
       with:
         user: ${{ secrets.NUGET_USER }}
 
+    # --skip-duplicate: a version already on nuget.org is not an error, the push is skipped and the run goes on
+    # (also for the .snupkg symbol packages, pushed together with the .nupkg).
     - name: Publish on NuGet
       run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
 
+    # If the release already exists (e.g. created from the GitHub UI, which also creates the tag and starts
+    # this run), its title and notes are kept and only the packages are attached (replacing same-name assets).
     - name: Create the GitHub Release
       if: github.ref_type == 'tag'
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        gh release create "$GITHUB_REF_NAME" ./artifacts/*.nupkg ./artifacts/*.snupkg \
-          --title "$GITHUB_REF_NAME" \
-          --notes-file "$RUNNER_TEMP/release-notes.md" \
-          --verify-tag
+        if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+          echo "The release $GITHUB_REF_NAME already exists: attaching the packages"
+          gh release upload "$GITHUB_REF_NAME" ./artifacts/*.nupkg ./artifacts/*.snupkg --clobber
+        else
+          gh release create "$GITHUB_REF_NAME" ./artifacts/*.nupkg ./artifacts/*.snupkg \
+            --title "$GITHUB_REF_NAME" \
+            --notes-file "$RUNNER_TEMP/release-notes.md" \
+            --verify-tag
+        fi

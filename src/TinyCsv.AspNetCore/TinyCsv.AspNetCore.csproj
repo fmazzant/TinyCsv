@@ -8,7 +8,7 @@
     <PackageId>Mafesoft.TinyCsv.AspNetCore</PackageId>
     <Product>TinyCsv.AspNetCore</Product>
     <Title>Mafesoft.TinyCsv.AspNetCore</Title>
-    <Version>4.0.0</Version>
+    <Version>4.0.1</Version>
     <Description>Registers Mafesoft.TinyCsv in the ASP.NET Core dependency injection: typed singletons, named instances (keyed services on .NET 8+) and ITinyCsvFactory.</Description>
     <PackageTags>csv;csv-parser;csv-reader;csv-writer;rfc4180;tsv;dotnet;aspnetcore;dependency-injection</PackageTags>
   </PropertyGroup>
