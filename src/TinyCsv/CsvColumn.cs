@@ -27,13 +27,13 @@
 /// 
 /// </summary>
 
-namespace TinyCsv
+namespace Mafesoft.TinyCsv
 {
     using System;
     using System.Globalization;
     using System.Linq.Expressions;
-    using TinyCsv.Conversions;
-    using TinyCsv.Exceptions;
+    using Mafesoft.TinyCsv.Conversions;
+    using Mafesoft.TinyCsv.Exceptions;
 
     /// <summary>
     /// The column definition.

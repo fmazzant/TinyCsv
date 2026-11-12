@@ -1,12 +1,12 @@
-namespace TinyCsv.Tests
+namespace Mafesoft.TinyCsv.Tests
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-    using TinyCsv.Attributes;
-    using TinyCsv.Exceptions;
+    using Mafesoft.TinyCsv.Attributes;
+    using Mafesoft.TinyCsv.Exceptions;
     using Xunit;
 
     [HasHeaderRecord(true)]

@@ -27,10 +27,10 @@
 ///
 /// </summary>
 
-namespace TinyCsv.Data
+namespace Mafesoft.TinyCsv.Data
 {
-    using TinyCsv.Exceptions;
-    using TinyCsv.Helpers;
+    using Mafesoft.TinyCsv.Exceptions;
+    using Mafesoft.TinyCsv.Helpers;
 
     using System;
     using System.IO;

@@ -27,11 +27,11 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Conversions
+namespace Mafesoft.TinyCsv.Conversions
 {
     using System;
     using System.Linq;
-    using TinyCsv.Extensions;
+    using Mafesoft.TinyCsv.Extensions;
 
     /// <summary>
     /// Provides a unified way of converting Enum of values to string

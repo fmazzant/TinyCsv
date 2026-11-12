@@ -1,4 +1,4 @@
-namespace TinyCsv.Tests
+namespace Mafesoft.TinyCsv.Tests
 {
     using System.Collections.Generic;
     using System.IO;

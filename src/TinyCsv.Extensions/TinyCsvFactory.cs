@@ -27,7 +27,7 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Extensions
+namespace Mafesoft.TinyCsv.Extensions
 {
     using System;
     using System.Collections.Generic;

@@ -27,12 +27,12 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Extensions
+namespace Mafesoft.TinyCsv.Extensions
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
-    using TinyCsv.Exceptions;
+    using Mafesoft.TinyCsv.Exceptions;
 
     /// <summary>
     /// String extensions

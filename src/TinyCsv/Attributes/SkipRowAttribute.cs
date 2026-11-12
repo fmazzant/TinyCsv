@@ -27,10 +27,10 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Attributes
+namespace Mafesoft.TinyCsv.Attributes
 {
     using System;
-    using TinyCsv.Exceptions;
+    using Mafesoft.TinyCsv.Exceptions;
 
     /// <summary>
     /// Allows skipt row by condition

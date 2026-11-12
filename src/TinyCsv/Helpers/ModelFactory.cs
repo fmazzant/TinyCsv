@@ -28,7 +28,7 @@
 /// </summary>
 
 
-namespace TinyCsv.Helpers
+namespace Mafesoft.TinyCsv.Helpers
 {
     using System;
     using System.Linq.Expressions;

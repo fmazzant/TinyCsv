@@ -27,7 +27,7 @@
 /// 
 /// </summary>
 
-namespace TinyCsv
+namespace Mafesoft.TinyCsv
 {
     using System;
     using System.Collections.Generic;
@@ -36,9 +36,9 @@ namespace TinyCsv
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using TinyCsv.Data;
-    using TinyCsv.Extensions;
-    using TinyCsv.Streams;
+    using Mafesoft.TinyCsv.Data;
+    using Mafesoft.TinyCsv.Extensions;
+    using Mafesoft.TinyCsv.Streams;
 
     /// <summary>
     /// TinyCsv is a simple csv reader/writer library.

@@ -1,12 +1,12 @@
 
-namespace TinyCsv.Data
+namespace Mafesoft.TinyCsv.Data
 {
     using System.Collections.Generic;
     using System.IO;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using TinyCsv.Streams;
+    using Mafesoft.TinyCsv.Streams;
 
     /// <summary>
     /// The reader of a csv and its delimiter: the delimiter of the options or,

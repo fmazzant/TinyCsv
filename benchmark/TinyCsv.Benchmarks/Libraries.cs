@@ -6,7 +6,7 @@ using nietras.SeparatedValues;
 using Sylvan.Data;
 using Sylvan.Data.Csv;
 
-namespace TinyCsv.Benchmarks;
+namespace Mafesoft.TinyCsv.Benchmarks;
 
 /// <summary>
 /// Reads and writes the models with each library, in the way suggested by its documentation.

@@ -8,13 +8,14 @@
     <PackageProjectUrl>https://github.com/fmazzant/TinyCsv</PackageProjectUrl>
     <RepositoryUrl>https://github.com/fmazzant/TinyCsv</RepositoryUrl>
     <PackageTags>csv,import,export,c-sharp,aspnetcore,mvc, tinycsv</PackageTags>
-    <PackageId>Mafe.TinyCsv.AspNetCore</PackageId>
+    <PackageId>Mafesoft.TinyCsv.AspNetCore</PackageId>
     <Authors>Federico Mazzanti</Authors>
     <Copyright>Copyright (c) 2022 Federico Mazzanti</Copyright>
-    <AssemblyName>Mafe.$(MSBuildProjectName)</AssemblyName>
+    <AssemblyName>Mafesoft.$(MSBuildProjectName)</AssemblyName>
+    <RootNamespace>Mafesoft.$(MSBuildProjectName)</RootNamespace>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Product>TinyCsv.AspNetCore</Product>
-    <Version>2.4.0</Version>
+    <Version>4.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

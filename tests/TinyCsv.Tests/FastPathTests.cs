@@ -1,4 +1,4 @@
-namespace TinyCsv.Tests
+namespace Mafesoft.TinyCsv.Tests
 {
     using System;
     using System.Globalization;
@@ -6,9 +6,9 @@ namespace TinyCsv.Tests
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using TinyCsv.Conversions;
-    using TinyCsv.Exceptions;
-    using TinyCsv.Extensions;
+    using Mafesoft.TinyCsv.Conversions;
+    using Mafesoft.TinyCsv.Exceptions;
+    using Mafesoft.TinyCsv.Extensions;
     using Xunit;
 
     public enum FastPathKind

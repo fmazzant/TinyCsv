@@ -1,10 +1,10 @@
-namespace TinyCsv.Tests
+namespace Mafesoft.TinyCsv.Tests
 {
     using System.IO;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using TinyCsv.Attributes;
+    using Mafesoft.TinyCsv.Attributes;
     using Xunit;
 
     public class DelimiterDetectionTests

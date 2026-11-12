@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text;
 
-namespace TinyCsv.Benchmarks;
+namespace Mafesoft.TinyCsv.Benchmarks;
 
 /// <summary>
 /// The model used by every library: 8 columns of different types.

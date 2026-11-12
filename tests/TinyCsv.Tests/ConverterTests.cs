@@ -1,10 +1,10 @@
-namespace TinyCsv.Tests
+namespace Mafesoft.TinyCsv.Tests
 {
     using System;
     using System.Globalization;
     using System.Numerics;
-    using TinyCsv.Conversions;
-    using TinyCsv.Factory;
+    using Mafesoft.TinyCsv.Conversions;
+    using Mafesoft.TinyCsv.Factory;
     using Xunit;
 
     public enum Color { Red, Green, Blue }

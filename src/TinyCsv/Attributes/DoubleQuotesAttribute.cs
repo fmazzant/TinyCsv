@@ -27,7 +27,7 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Attributes
+namespace Mafesoft.TinyCsv.Attributes
 {
     using System;
 

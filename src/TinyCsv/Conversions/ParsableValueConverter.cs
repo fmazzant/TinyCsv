@@ -27,10 +27,10 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Conversions
+namespace Mafesoft.TinyCsv.Conversions
 {
     using System;
-    using TinyCsv.Extensions;
+    using Mafesoft.TinyCsv.Extensions;
 
     /// <summary>
     /// The base of the converters of a value type that is parsed from a string, i.e. numbers and dates.

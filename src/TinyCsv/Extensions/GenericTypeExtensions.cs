@@ -26,7 +26,7 @@
 /// OTHER DEALINGS IN THE SOFTWARE.
 /// 
 /// </summary>
-namespace TinyCsv.Extensions
+namespace Mafesoft.TinyCsv.Extensions
 {
     using System.Linq;
 

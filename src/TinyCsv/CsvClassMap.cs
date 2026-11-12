@@ -1,11 +1,11 @@
 
-namespace TinyCsv
+namespace Mafesoft.TinyCsv
 {
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
-    using TinyCsv.Conversions;
-    using TinyCsv.Extensions;
+    using Mafesoft.TinyCsv.Conversions;
+    using Mafesoft.TinyCsv.Extensions;
 
     /// <summary>
     /// The columns and the options of a model, defined outside the model: the model has no attributes.

@@ -1,11 +1,11 @@
-namespace TinyCsv.Tests
+namespace Mafesoft.TinyCsv.Tests
 {
     using System;
     using System.Globalization;
     using System.Linq;
     using System.Numerics;
     using System.Threading;
-    using TinyCsv.Conversions;
+    using Mafesoft.TinyCsv.Conversions;
     using Xunit;
 
     public class AllTypes

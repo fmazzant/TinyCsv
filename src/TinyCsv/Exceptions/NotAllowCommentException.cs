@@ -27,7 +27,7 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.Exceptions
+namespace Mafesoft.TinyCsv.Exceptions
 {
     using System;
     using System.Runtime.Serialization;

@@ -1,9 +1,9 @@
-namespace TinyCsv.AspNetCore.Tests
+namespace Mafesoft.TinyCsv.AspNetCore.Tests
 {
     using System;
     using System.Linq;
     using Microsoft.Extensions.DependencyInjection;
-    using TinyCsv.AspNetCore.Extensions;
+    using Mafesoft.TinyCsv.AspNetCore.Extensions;
     using Xunit;
 
     public class Model

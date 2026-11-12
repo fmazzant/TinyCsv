@@ -27,7 +27,7 @@
 /// 
 /// </summary>
 
-namespace TinyCsv.AspNetCore.Extensions
+namespace Mafesoft.TinyCsv.AspNetCore.Extensions
 {
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;

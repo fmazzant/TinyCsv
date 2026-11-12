@@ -1,7 +1,7 @@
-namespace TinyCsv.Tests
+namespace Mafesoft.TinyCsv.Tests
 {
     using System;
-    using TinyCsv.Attributes;
+    using Mafesoft.TinyCsv.Attributes;
 
     public class Person
     {

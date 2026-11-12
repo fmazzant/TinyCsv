@@ -1,5 +1,5 @@
 #if NET5_0_OR_GREATER
-namespace TinyCsv.Tests
+namespace Mafesoft.TinyCsv.Tests
 {
     using System.Collections.Generic;
     using System.Linq;

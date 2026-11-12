@@ -1,4 +1,4 @@
-namespace TinyCsv.Tests
+namespace Mafesoft.TinyCsv.Tests
 {
     using System;
     using System.IO;
@@ -6,8 +6,8 @@ namespace TinyCsv.Tests
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using TinyCsv.Data;
-    using TinyCsv.Streams;
+    using Mafesoft.TinyCsv.Data;
+    using Mafesoft.TinyCsv.Streams;
     using Xunit;
 
     /// <summary>

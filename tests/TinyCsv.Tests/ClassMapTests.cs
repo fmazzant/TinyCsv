@@ -1,9 +1,9 @@
-namespace TinyCsv.Tests
+namespace Mafesoft.TinyCsv.Tests
 {
     using System;
     using System.Globalization;
     using System.Linq;
-    using TinyCsv.Conversions;
+    using Mafesoft.TinyCsv.Conversions;
     using Xunit;
 
     public class ClassMapTests

@@ -1,10 +1,10 @@
-namespace TinyCsv.Tests
+namespace Mafesoft.TinyCsv.Tests
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using TinyCsv.Data;
+    using Mafesoft.TinyCsv.Data;
     using Xunit;
 
     /// <summary>
