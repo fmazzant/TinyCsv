@@ -1,5 +1,12 @@
 # Mafesoft.TinyCsv.AspNetCore
 
+[![NuGet](https://img.shields.io/nuget/v/Mafesoft.TinyCsv.AspNetCore?style=flat-square&label=nuget)](https://www.nuget.org/packages/Mafesoft.TinyCsv.AspNetCore)
+[![Downloads](https://img.shields.io/nuget/dt/Mafesoft.TinyCsv.AspNetCore?style=flat-square&label=downloads)](https://www.nuget.org/packages/Mafesoft.TinyCsv.AspNetCore)
+[![Build](https://img.shields.io/github/actions/workflow/status/fmazzant/TinyCsv/ci.yml?branch=main&style=flat-square&label=build)](https://github.com/fmazzant/TinyCsv/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](https://github.com/fmazzant/TinyCsv/blob/main/LICENSE.md)
+
+[![Mafe.TinyCsv.AspNetCore downloads](https://img.shields.io/nuget/dt/Mafe.TinyCsv.AspNetCore?style=flat-square&label=Mafe.TinyCsv.AspNetCore%20downloads)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore)
+
 Registers [Mafesoft.TinyCsv](https://www.nuget.org/packages/Mafesoft.TinyCsv) in the ASP.NET Core dependency injection.
 It depends only on `Microsoft.Extensions.DependencyInjection.Abstractions`.
 
