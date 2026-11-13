@@ -588,11 +588,22 @@ namespace Mafesoft.TinyCsv.Data
         /// <returns></returns>
         public IEnumerable<string[]> ReadLinesAndFields()
         {
+            return ReadLinesAndFields(0);
+        }
+
+        /// <summary>
+        /// Get lines field
+        /// </summary>
+        /// <param name="columnsCount">the expected number of columns: with fewer fields, a delimiter at the end of the line
+        /// is followed by an empty field, as when the models are read (see EndOfLineDelimiterChar)</param>
+        /// <returns></returns>
+        internal IEnumerable<string[]> ReadLinesAndFields(int columnsCount)
+        {
             foreach (var line in ReadLines())
             {
                 if (!string.IsNullOrWhiteSpace(line))
                 {
-                    var fields = GetFieldsByLine(line);
+                    var fields = GetFieldsByLine(line, columnsCount);
                     yield return fields;
                 }
             }

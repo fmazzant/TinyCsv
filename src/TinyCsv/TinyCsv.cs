@@ -468,7 +468,8 @@ namespace Mafesoft.TinyCsv
         private IEnumerable<string[]> GetAllLinesAndFieldsFromReader(TextReader textReader)
         {
             var dataReader = OpenDataReader(textReader);
-            foreach (var fields in dataReader.ReadLinesAndFields())
+            // the same fields as the models: "1;a;" with 3 columns has an empty last field
+            foreach (var fields in dataReader.ReadLinesAndFields(Options.Columns.Count))
             {
                 yield return fields;
             }

@@ -230,7 +230,8 @@ namespace Mafesoft.TinyCsv.Data
                 && (delimiter.Length == 0
                     || value.IndexOf(delimiter.AsSpan()) >= 0
                     || value.IndexOf(quote) >= 0
-                    || value.IndexOfAny('\r', '\n') >= 0);
+                    || value.IndexOfAny('\r', '\n') >= 0
+                    || (multiCharDelimiter && StringExtensions.EndsWithDelimiterStart(value, delimiter.AsSpan())));
 
             // at most each char escaped, and the quotes
             var required = value.Length * 2 + 2;
@@ -274,7 +275,8 @@ namespace Mafesoft.TinyCsv.Data
             {
                 return true;
             }
-            return multiCharDelimiter && value.IndexOf(delimiter.AsSpan()) >= 0;
+            return multiCharDelimiter
+                && (value.IndexOf(delimiter.AsSpan()) >= 0 || StringExtensions.EndsWithDelimiterStart(value, delimiter.AsSpan()));
         }
 
         private void Append(string value)

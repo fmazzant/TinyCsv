@@ -62,9 +62,10 @@ namespace Mafesoft.TinyCsv.Tests
 
         private static RoundTripModel[] RandomModels(int seed, int count, string delimiter)
         {
-            // with a delimiter of more chars, a value that ends with the first chars of the delimiter is not quoted
-            // by the writer, so it is not read back (i.e. "a|" + "||"): those chars are not used
-            var alphabet = delimiter.Length > 1 ? new string(Alphabet.Where(c => delimiter.IndexOf(c) < 0).ToArray()) : Alphabet;
+            // every char also with a delimiter of more chars: a value that ends with the first chars
+            // of the delimiter is quoted by the writer (i.e. "a|" with "||")
+            _ = delimiter;
+            var alphabet = Alphabet;
             var random = new Random(seed);
             string RandomText()
             {
@@ -222,7 +223,7 @@ namespace Mafesoft.TinyCsv.Tests
             AssertModels(models, fields.Skip(1).Select(f => f.GetModelFromStringArray(csv.Options)).ToList());
 
             // the records without a model return the same fields, by the names of the header
-            // (GetAllLinesAndFields does not return an empty last field, see EndOfLineDelimiterChar: a missing field is empty)
+            // (the records have no columns, so a delimiter at the end of the line ends it: a missing field is empty)
             var records = new TinyCsvRecords(o =>
             {
                 o.Delimiter = delimiter;
