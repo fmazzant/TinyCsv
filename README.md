@@ -38,7 +38,6 @@ If TinyCsv is useful to you, consider [supporting the project](#support). ☕
 - [Migrating from CsvHelper](#migrating-from-csvhelper)
 - [Build and test](#build-and-test)
 - [Contributing](#contributing)
-- [Support](#support)
 - [License](#license)
 
 ## Why TinyCsv

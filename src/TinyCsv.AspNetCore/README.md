@@ -37,12 +37,6 @@ app.MapGet("/orders/us", (ITinyCsvFactory factory) => factory.Get<Order>("orders
 
 The instances are singletons of the service provider: two service providers do not share them.
 
-## Support
-
-If Mafesoft.TinyCsv.AspNetCore saves you time, you can say thanks with a small donation. It is never required, but it helps me keep the project maintained and up to date.
-
-[![Donate](https://img.shields.io/badge/donate-PayPal-00457C?style=flat-square&logo=paypal&logoColor=white)](https://paypal.me/fmazzant)
-
 ## Links
 
 - [Documentation](https://github.com/fmazzant/TinyCsv#aspnet-core)
