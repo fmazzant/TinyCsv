@@ -58,8 +58,10 @@ namespace Mafesoft.TinyCsv.Helpers
             {
                 return Expression.Lambda<Func<T>>(Expression.New(typeof(T))).Compile();
             }
-            catch (Exception)
+            catch (Exception ex) when (ex is NotSupportedException || ex is MemberAccessException || ex is System.Security.SecurityException)
             {
+                // the expression cannot be compiled on this platform (PlatformNotSupportedException is a NotSupportedException)
+                // or the constructor is not accessible to the compiled code (i.e. partial trust): new T() works anyway
                 return () => new T();
             }
         }

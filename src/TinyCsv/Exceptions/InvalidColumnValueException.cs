@@ -85,6 +85,10 @@ namespace Mafesoft.TinyCsv.Exceptions
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
+#if NET8_0_OR_GREATER
+        // as the constructor of Exception: the formatter-based serialization is obsolete on .NET 8+
+        [Obsolete("This API supports obsolete formatter-based serialization. It should not be called or extended by application code.", DiagnosticId = "SYSLIB0051", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+#endif
         protected InvalidColumnValueException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

@@ -60,15 +60,18 @@ namespace Mafesoft.TinyCsv.Data
         private readonly char[] stops;
         private readonly char[] quotedStops;
         private readonly bool backwardFieldStart;
+#if NET8_0_OR_GREATER
+        // the delimiters of the record, found while looking for its end (see TryReadRecordAndDelimiters)
         private readonly bool findDelimiters;
-
-        private char[] buffer = new char[InitialBufferSize];
         private int[] delimiters = Array.Empty<int>();
         private int delimiterCount;
         private bool recordHasQuote;
         private int[] quotedFields = Array.Empty<int>();
         private int quotedFieldCount;
         private bool recordRead;
+#endif
+
+        private char[] buffer = new char[InitialBufferSize];
         private int length;
         private int recordStart;
         private int fieldStart;
@@ -134,6 +137,7 @@ namespace Mafesoft.TinyCsv.Data
 #endif
         }
 
+#if NET8_0_OR_GREATER
         /// <summary>
         /// True when the positions of the delimiters of the current record are known (see Delimiters):
         /// the fields are the chars between the delimiters, or between the quotes of a quoted field (see QuotedFields).
@@ -162,6 +166,20 @@ namespace Mafesoft.TinyCsv.Data
         /// The number of the delimiters of the current record (see HasDelimiters)
         /// </summary>
         public int DelimiterCount => delimiterCount;
+#else
+        // without the vector instructions the delimiters are not found while reading the record:
+        // the fields are always found scanning the record
+
+        public bool HasDelimiters => false;
+
+        public int[] QuotedFields => Array.Empty<int>();
+
+        public int QuotedFieldCount => 0;
+
+        public int[] Delimiters => Array.Empty<int>();
+
+        public int DelimiterCount => 0;
+#endif
 
         /// <summary>
         /// Read the next record, without the trailing new line. Returns null at the end of the stream.
@@ -658,10 +676,12 @@ namespace Mafesoft.TinyCsv.Data
             CurrentStart = recordStart;
             CurrentLength = length - recordStart;
             recordStart = fieldStart = scanPosition = length;
+#if NET8_0_OR_GREATER
             // a quoted field not closed
             recordHasQuote |= inQuotes;
-            inQuotes = false;
             recordRead = true;
+#endif
+            inQuotes = false;
             return true;
         }
 
