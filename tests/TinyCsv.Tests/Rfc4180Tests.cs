@@ -39,8 +39,7 @@ namespace Mafesoft.TinyCsv.Tests
             }
             var fields = csv.GetAllLinesAndFieldsFromText(text)
                 .Skip(csv.Options.HasHeaderRecord ? 1 : 0)
-                // GetAllLinesAndFields does not return an empty field after the last delimiter (EndOfLineDelimiterChar):
-                // a missing field is an empty field, as for the models
+                // GetAllLinesAndFields returns the same fields as the models ("1,a," is "1", "a", ""); a missing field is empty
                 .Select(f => (int.Parse(f[0]), f.Length > 1 ? f[1] : string.Empty, f.Length > 2 ? f[2] : string.Empty))
                 .ToArray();
 

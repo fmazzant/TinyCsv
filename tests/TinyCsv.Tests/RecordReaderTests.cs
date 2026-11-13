@@ -243,6 +243,22 @@ namespace Mafesoft.TinyCsv.Tests
             Assert.Equal("Roma", result.City);
         }
 
+        [Theory]
+        [InlineData("1;a;", new[] { "1", "a", "" })]
+        [InlineData("1;;", new[] { "1", "", "" })]
+        [InlineData("1;a;b;", new[] { "1", "a", "b" })]
+        [InlineData("1;a;b", new[] { "1", "a", "b" })]
+        public void GetAllLinesAndFields_TrailingDelimiter_SameFieldsAsTheModels(string text, string[] expected)
+        {
+            var csv = Csv.Person();
+
+            var fields = csv.GetAllLinesAndFieldsFromText(text).Single();
+            var model = csv.LoadFromText(text).Single();
+
+            Assert.Equal(expected, fields);
+            Assert.Equal(new[] { model.Id.ToString(), model.Name ?? string.Empty, model.City ?? string.Empty }, fields);
+        }
+
         [Fact]
         public void Fields_EndOfLineDelimiterCharFalse_TrailingDelimiterThrows()
         {

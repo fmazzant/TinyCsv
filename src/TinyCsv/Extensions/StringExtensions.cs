@@ -29,6 +29,7 @@
 
 namespace Mafesoft.TinyCsv.Extensions
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
@@ -134,7 +135,8 @@ namespace Mafesoft.TinyCsv.Extensions
             }
 
             var enclosed = options.AllowRowEnclosedInDoubleQuotesValues
-                && (value.Contains(options.Delimiter) || value.Contains(quote) || value.IndexOf('\r') >= 0 || value.IndexOf('\n') >= 0);
+                && (value.Contains(options.Delimiter) || value.Contains(quote) || value.IndexOf('\r') >= 0 || value.IndexOf('\n') >= 0
+                    || EndsWithDelimiterStart(value.AsSpan(), options.Delimiter.AsSpan()));
             if (!enclosed)
             {
                 return value;
@@ -142,6 +144,25 @@ namespace Mafesoft.TinyCsv.Extensions
 
             value = value.Replace(quote, backslash ? "\\" + quote : quote + quote);
             return quote + value + quote;
+        }
+
+        /// <summary>
+        /// True when the value ends with the start of a delimiter of more chars, i.e. "a|" with "||":
+        /// written before the delimiter ("a|||"), the delimiter would be found one char earlier
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="delimiter"></param>
+        /// <returns></returns>
+        internal static bool EndsWithDelimiterStart(ReadOnlySpan<char> value, ReadOnlySpan<char> delimiter)
+        {
+            for (int length = Math.Min(delimiter.Length - 1, value.Length); length > 0; length--)
+            {
+                if (value.EndsWith(delimiter.Slice(0, length)))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>
