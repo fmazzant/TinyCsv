@@ -1,24 +1,19 @@
 <Project>
 
+  <!-- The settings of all the projects (language version, nullable, authors, repository): ../Directory.Build.props -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)..'))" />
+
   <!-- Common settings for all the packages in src/ -->
   <PropertyGroup>
-    <LangVersion>preview</LangVersion>
-    <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
     <NeutralLanguage>en</NeutralLanguage>
-    <Authors>Federico Mazzanti</Authors>
-    <Copyright>Copyright (c) 2022-2026 Federico Mazzanti</Copyright>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/fmazzant/TinyCsv</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/fmazzant/TinyCsv</PackageProjectUrl>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <!-- Only a pointer: the full history is in CHANGELOG.md -->
     <PackageReleaseNotes>Breaking changes in 4.0.0: see "Migrating to 4.0" in the README. Full changelog: https://github.com/fmazzant/TinyCsv/blob/main/CHANGELOG.md</PackageReleaseNotes>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 
-    <!-- SourceLink (included in the .NET SDK), symbol packages and deterministic build -->
-    <Deterministic>true</Deterministic>
+    <!-- SourceLink (included in the .NET SDK) and symbol packages (the deterministic build is in ../Directory.Build.props) -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
@@ -28,10 +23,6 @@
          After the 4.0.0 release, enable the comparison with the released version, to catch accidental breaking changes in 4.x:
            <PackageValidationBaselineVersion>4.0.0</PackageValidationBaselineVersion> -->
     <EnablePackageValidation>true</EnablePackageValidation>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <ItemGroup>

@@ -4,22 +4,20 @@
     <OutputType>Exe</OutputType>
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.15.2" />
-    <PackageReference Include="Csv" Version="3.0.0" />
-    <PackageReference Include="CsvHelper" Version="33.1.0" />
-    <PackageReference Include="FileHelpers" Version="3.5.2" />
-    <PackageReference Include="LumenWorksCsvReader" Version="4.0.0" />
-    <PackageReference Include="NReco.Csv" Version="1.0.3" />
-    <PackageReference Include="RecordParser" Version="2.3.0" />
-    <PackageReference Include="Sep" Version="0.11.0" />
-    <PackageReference Include="Sylvan.Data" Version="0.2.16" />
-    <PackageReference Include="Sylvan.Data.Csv" Version="1.4.3" />
-    <PackageReference Include="TinyCsvParser" Version="3.0.11" />
+    <PackageReference Include="BenchmarkDotNet" />
+    <PackageReference Include="Csv" />
+    <PackageReference Include="CsvHelper" />
+    <PackageReference Include="FileHelpers" />
+    <PackageReference Include="LumenWorksCsvReader" />
+    <PackageReference Include="NReco.Csv" />
+    <PackageReference Include="RecordParser" />
+    <PackageReference Include="Sep" />
+    <PackageReference Include="Sylvan.Data" />
+    <PackageReference Include="Sylvan.Data.Csv" />
+    <PackageReference Include="TinyCsvParser" />
   </ItemGroup>
 
   <ItemGroup>

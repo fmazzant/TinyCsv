@@ -1,0 +1,23 @@
+<Project>
+
+  <!-- Common settings for all the projects (libraries, tests, samples and benchmarks).
+       The package settings of the libraries are in src/Directory.Build.props, that imports this file.
+       The package versions are in Directory.Packages.props (Central Package Management). -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <Authors>Federico Mazzanti</Authors>
+    <Copyright>Copyright (c) 2022-2026 Federico Mazzanti</Copyright>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/fmazzant/TinyCsv</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/fmazzant/TinyCsv</PackageProjectUrl>
+    <Deterministic>true</Deterministic>
+    <!-- only the libraries in src/ are packages -->
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+</Project>
