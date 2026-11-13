@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#72](https://github.com/fmazzant/TinyCsv/issues/72))
 - Tests: RFC 4180 conformance, round trips, every read path, buffer boundaries, AspNetCore.
   ([#75](https://github.com/fmazzant/TinyCsv/issues/75))
-- README: Support section with a PayPal donation link.
+- README and package READMEs: Support section with a PayPal donation link.
 
 ## [4.0.1] - 2026-11-12
 

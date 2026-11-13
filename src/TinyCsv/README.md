@@ -48,6 +48,12 @@ csv.Save("products_export.csv", products);
 
 Defaults: delimiter `;`, new line `\r\n` on every operating system, UTF-8 without BOM.
 
+## Support
+
+If Mafesoft.TinyCsv saves you time, you can say thanks with a small donation. It is never required, but it helps me keep the project maintained and up to date.
+
+[![Donate](https://img.shields.io/badge/donate-PayPal-00457C?style=flat-square&logo=paypal&logoColor=white)](https://paypal.me/fmazzant)
+
 ## Links
 
 - [Documentation](https://github.com/fmazzant/TinyCsv#readme)

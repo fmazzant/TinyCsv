@@ -16,6 +16,8 @@ conversions with the culture you choose, per-row error handling and streaming as
 > **4.0.0:** the packages are now `Mafesoft.TinyCsv` and `Mafesoft.TinyCsv.AspNetCore` (previously `Mafe.TinyCsv*`)
 > and the namespaces start with `Mafesoft.`. See [Migrating to 4.0](#migrating-to-40).
 
+If TinyCsv is useful to you, consider [supporting the project](#support). ☕
+
 ## Contents
 
 - [Why TinyCsv](#why-tinycsv)
@@ -36,6 +38,7 @@ conversions with the culture you choose, per-row error handling and streaming as
 - [Migrating from CsvHelper](#migrating-from-csvhelper)
 - [Build and test](#build-and-test)
 - [Contributing](#contributing)
+- [Support](#support)
 - [License](#license)
 
 ## Why TinyCsv
