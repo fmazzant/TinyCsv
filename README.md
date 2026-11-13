@@ -73,7 +73,7 @@ conversions with the culture you choose, per-row error handling and streaming as
 | Several record types in the same file | ❌ to evaluate ([#101](https://github.com/fmazzant/TinyCsv/issues/101)) | ✅ | ⚠️ manual | ⚠️ manual | ❌ |
 | Write without a model (dictionaries, `dynamic`, `DataTable`) | ❌ read only; planned ([#78](https://github.com/fmazzant/TinyCsv/issues/78)) | ✅ | ✅ by column name | ✅ from a `DbDataReader` | ❌ |
 | Configuration hooks (header validation, missing fields, ...) | ⚠️ `HeaderNameComparer`, `SkipRow`, `BadDataFound`; optional columns planned ([#81](https://github.com/fmazzant/TinyCsv/issues/81)) | ✅ many | ❌ | ❔ | ❌ |
-| Allocations when writing (100,000 rows, [benchmark](#performance)) | ⚠️ 2.2 MB; planned ([#102](https://github.com/fmazzant/TinyCsv/issues/102)) | ⚠️ 25.2 MB | ✅ 0.02 MB | ✅ 0.05 MB | n/a |
+| Allocations when writing (100,000 rows, [benchmark](#performance)) | ✅ 0.01 MB | ⚠️ 25.2 MB | ✅ 0.02 MB | ✅ 0.05 MB | n/a |
 | Parallel parsing | ❌ not planned | ❌ | ✅ `ParallelEnumerate` | ❌ | ✅ degree of parallelism |
 | Zero-copy access to the fields (`Span<char>`) | ❌ not planned | ❌ | ✅ | ✅ | ❌ |
 | Community, documentation, Q&A | ❌ small | ✅ very large | ⚠️ growing | ⚠️ medium | ⚠️ medium |
@@ -675,14 +675,14 @@ The [competitive benchmark](benchmark/README.md#competitive-benchmark) reads and
 
 | Library | Read | Write |
 |---|---:|---:|
-| [Sylvan.Data.Csv](https://github.com/MarkPflug/Sylvan) | 24.1 ms / 23.8 MB | 33.9 ms / 0.05 MB |
-| **TinyCsv** | **25.5 ms / 23.7 MB** | **31.4 ms / 2.2 MB** |
-| [Sep](https://github.com/nietras/Sep) | 40.6 ms / 23.7 MB | 41.2 ms / 0.02 MB |
-| [RecordParser](https://github.com/leandromoh/RecordParser) | 61.4 ms / 23.7 MB | 30.6 ms / 0.02 MB |
+| [Sylvan.Data.Csv](https://github.com/MarkPflug/Sylvan) | 24.1 ms / 23.8 MB | 31.4 ms / 0.05 MB |
+| **TinyCsv** | **25.5 ms / 23.7 MB** | **27.6 ms / 0.01 MB** |
+| [Sep](https://github.com/nietras/Sep) | 40.6 ms / 23.7 MB | 42.1 ms / 0.02 MB |
+| [RecordParser](https://github.com/leandromoh/RecordParser) | 61.4 ms / 23.7 MB | 37.4 ms / 0.02 MB |
 | [NReco.Csv](https://github.com/nreco/csv) ¹ | 83.1 ms / 41.8 MB | 41.8 ms / 21.3 MB |
 | [Csv](https://github.com/stevehansen/csv) ¹ | 84.2 ms / 73.0 MB | 34.2 ms / 19.6 MB |
 | [TinyCsvParser](https://github.com/bytefish/TinyCsvParser) ¹ | 92.4 ms / 68.6 MB | - |
-| [CsvHelper](https://joshclose.github.io/CsvHelper/) | 99.4 ms / 53.2 MB | 71.3 ms / 25.2 MB |
+| [CsvHelper](https://joshclose.github.io/CsvHelper/) | 99.4 ms / 53.2 MB | 72.8 ms / 25.2 MB |
 | [LumenWorksCsvReader](https://github.com/phatcher/CsvReader) ¹ | 119.3 ms / 164.5 MB | - |
 | [FileHelpers](https://www.filehelpers.net/) ¹ | 126.7 ms / 92.9 MB | 59.9 ms / 103.0 MB |
 | [TextFieldParser](https://learn.microsoft.com/dotnet/api/microsoft.visualbasic.fileio.textfieldparser) ¹ | 425.8 ms / 1,026.5 MB | - |

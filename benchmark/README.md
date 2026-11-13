@@ -83,19 +83,19 @@ The other libraries are in the `Other` category, and their results below are fro
 
 | Write 100,000 rows | .NET 8 | .NET 10 | Allocated |
 |---|---:|---:|---:|
-| **TinyCsv** | **35.7 ms** | **31.4 ms** | **2.2 MB** |
-| RecordParser | 41.0 ms | 30.6 ms | 0.02 MB |
-| Sylvan | 38.8 ms | 33.9 ms | 0.05 MB |
+| **TinyCsv** | **36.2 ms** | **27.6 ms** | **0.01 MB** |
+| Sylvan | 56.2 ms | 31.4 ms | 0.05 MB |
 | Csv ¹ | 44.3 ms | 34.2 ms | 19.6 MB |
-| Sep | 44.8 ms | 41.2 ms | 0.02 MB |
+| RecordParser | 49.2 ms | 37.4 ms | 0.02 MB |
 | NReco.Csv ¹ | 48.1 ms | 41.8 ms | 21.3 MB |
+| Sep | 65.2 ms | 42.1 ms | 0.02 MB |
 | FileHelpers ¹ | 64.9 ms | 59.9 ms | 103.0 MB |
-| CsvHelper | 81.6 ms | 71.3 ms | 25.2 MB |
+| CsvHelper | 88.5 ms | 72.8 ms | 25.2 MB |
 
 The times are the means, the libraries are sorted by the .NET 10 time and the allocated memory is the one of .NET 10.
 Environment: BenchmarkDotNet 0.15.2, .NET 8.0.29 and .NET 10.0.11, Windows Server 2019 (Hyper-V), Intel Xeon Platinum 8370C 2.80GHz.
 The virtual machine is noisy: the absolute times change between runs, so compare the libraries within the same table.
-The main libraries are from the last run (about 14 minutes, read and write on .NET 8 and .NET 10):
+The main libraries are from the last runs (read: about 14 minutes; write: about 18 minutes, after the write allocations of TinyCsv were reduced, [#102](https://github.com/fmazzant/TinyCsv/issues/102); .NET 8 and .NET 10):
 the full reports, with 1,000 rows too, are the [read report](results/CompetitiveReadBenchmark-main-report-github.md) and the [write report](results/CompetitiveWriteBenchmark-main-report-github.md).
 
 ¹ From the previous run with all the libraries (the [read report](results/CompetitiveReadBenchmark-report-github.md) and the [write report](results/CompetitiveWriteBenchmark-report-github.md)),
@@ -107,6 +107,10 @@ so the fields of a record without quotes are not scanned again.
 The `int`, `long` and `decimal` columns read the common values (i.e. `123`, `-1.50`) with a fast parser resolved once for each read, that returns the same result of `TryParse`.
 A `DateTime`, `DateTimeOffset` or `DateOnly` column with a fixed width format (i.e. `yyyy-MM-dd` or `dd/MM/yyyy HH:mm:ss`) is read by a fast parser,
 that returns the same result of `TryParseExact`: the other formats and the columns without a format use `TryParseExact` and `TryParse`.
+
+The write of TinyCsv builds each line in a reusable buffer: the numbers and the dates are formatted in the buffer (`TryFormat`, on .NET 8 and later)
+and the values that need the quotes are escaped in the buffer, so writing does not create a string for each value or line
+(the allocated memory is the `StreamWriter` and the setup of the write, the same for 1,000 and 100,000 rows).
 
 ## Versions benchmark (retired)
 

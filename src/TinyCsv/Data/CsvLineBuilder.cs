@@ -32,6 +32,9 @@ namespace Mafesoft.TinyCsv.Data
     using System;
     using System.Collections.Generic;
     using System.IO;
+#if NET6_0_OR_GREATER
+    using System.Runtime.CompilerServices;
+#endif
     using System.Threading.Tasks;
     using Mafesoft.TinyCsv.Extensions;
 
@@ -48,6 +51,12 @@ namespace Mafesoft.TinyCsv.Data
         private readonly char[] escapeChars;
         private readonly bool multiCharDelimiter;
         private readonly bool alwaysEscape;
+        private readonly bool quoting;
+        private readonly bool backslash;
+        private readonly char quote;
+        // true when the escaped field is written in the buffer (see AppendEscaped),
+        // false in the cases where only EnclosedInQuotesIfNecessary gives the same result
+        private readonly bool escapeInBuffer;
         private char[] buffer = new char[256];
         private int length;
 
@@ -56,6 +65,13 @@ namespace Mafesoft.TinyCsv.Data
             this.options = options;
             bindings = CsvColumnBinding<T>.Create(options);
             delimiter = options.Delimiter ?? string.Empty;
+            quoting = options.AllowRowEnclosedInDoubleQuotesValues;
+            backslash = options.AllowBackSlashToEscapeQuote;
+            quote = options.DoubleQuotes;
+            // EnclosedInQuotesIfNecessary looks for the delimiter after doubling the backslashes,
+            // and throws with a null delimiter
+            escapeInBuffer = options.Delimiter != null
+                && !(backslash && (quote == '\\' || delimiter.IndexOf('\\') >= 0));
 
             // the chars that may require EnclosedInQuotesIfNecessary
             var chars = new List<char>();
@@ -133,7 +149,18 @@ namespace Mafesoft.TinyCsv.Data
             {
                 return;
             }
-            Append(NeedsEscape(value.AsSpan()) ? value.EnclosedInQuotesIfNecessary(options) : value);
+            if (!NeedsEscape(value.AsSpan()))
+            {
+                Append(value);
+            }
+            else if (escapeInBuffer)
+            {
+                AppendEscaped(value.AsSpan());
+            }
+            else
+            {
+                Append(value.EnclosedInQuotesIfNecessary(options));
+            }
         }
 
         /// <summary>
@@ -147,7 +174,7 @@ namespace Mafesoft.TinyCsv.Data
             {
                 var start = length;
                 int written;
-                while (!((ISpanFormattable)value).TryFormat(new Span<char>(buffer, length, buffer.Length - length), out written, format, culture))
+                while (!TryFormat(value, new Span<char>(buffer, length, buffer.Length - length), out written, format, culture))
                 {
                     Grow(buffer.Length);
                 }
@@ -162,6 +189,79 @@ namespace Mafesoft.TinyCsv.Data
             }
 #endif
             AppendField(value is IFormattable formattable ? formattable.ToString(format, culture) : value.ToString());
+        }
+
+#if NET6_0_OR_GREATER
+        /// <summary>
+        /// ISpanFormattable.TryFormat of the value: the common types call their TryFormat directly,
+        /// so the value is not boxed (the checks of typeof(TValue) are removed by the JIT)
+        /// </summary>
+        private static bool TryFormat<TValue>(TValue value, Span<char> destination, out int written, string? format, IFormatProvider culture)
+            where TValue : struct
+        {
+            if (typeof(TValue) == typeof(int)) return Unsafe.As<TValue, int>(ref value).TryFormat(destination, out written, format, culture);
+            if (typeof(TValue) == typeof(long)) return Unsafe.As<TValue, long>(ref value).TryFormat(destination, out written, format, culture);
+            if (typeof(TValue) == typeof(decimal)) return Unsafe.As<TValue, decimal>(ref value).TryFormat(destination, out written, format, culture);
+            if (typeof(TValue) == typeof(double)) return Unsafe.As<TValue, double>(ref value).TryFormat(destination, out written, format, culture);
+            if (typeof(TValue) == typeof(float)) return Unsafe.As<TValue, float>(ref value).TryFormat(destination, out written, format, culture);
+            if (typeof(TValue) == typeof(DateTime)) return Unsafe.As<TValue, DateTime>(ref value).TryFormat(destination, out written, format, culture);
+            if (typeof(TValue) == typeof(DateTimeOffset)) return Unsafe.As<TValue, DateTimeOffset>(ref value).TryFormat(destination, out written, format, culture);
+            if (typeof(TValue) == typeof(short)) return Unsafe.As<TValue, short>(ref value).TryFormat(destination, out written, format, culture);
+            if (typeof(TValue) == typeof(byte)) return Unsafe.As<TValue, byte>(ref value).TryFormat(destination, out written, format, culture);
+            if (typeof(TValue) == typeof(uint)) return Unsafe.As<TValue, uint>(ref value).TryFormat(destination, out written, format, culture);
+            if (typeof(TValue) == typeof(ulong)) return Unsafe.As<TValue, ulong>(ref value).TryFormat(destination, out written, format, culture);
+            if (typeof(TValue) == typeof(ushort)) return Unsafe.As<TValue, ushort>(ref value).TryFormat(destination, out written, format, culture);
+            if (typeof(TValue) == typeof(sbyte)) return Unsafe.As<TValue, sbyte>(ref value).TryFormat(destination, out written, format, culture);
+            if (typeof(TValue) == typeof(TimeSpan)) return Unsafe.As<TValue, TimeSpan>(ref value).TryFormat(destination, out written, format, culture);
+            if (typeof(TValue) == typeof(DateOnly)) return Unsafe.As<TValue, DateOnly>(ref value).TryFormat(destination, out written, format, culture);
+            if (typeof(TValue) == typeof(TimeOnly)) return Unsafe.As<TValue, TimeOnly>(ref value).TryFormat(destination, out written, format, culture);
+            return ((ISpanFormattable)value).TryFormat(destination, out written, format, culture);
+        }
+#endif
+
+        /// <summary>
+        /// Appends the field escaped as EnclosedInQuotesIfNecessary does, without creating the escaped string:
+        /// the backslashes doubled (AllowBackSlashToEscapeQuote) and, when the field contains the delimiter,
+        /// a quote or a new line, the field enclosed in quotes with the quotes escaped.
+        /// </summary>
+        private void AppendEscaped(ReadOnlySpan<char> value)
+        {
+            var enclosed = quoting
+                && (delimiter.Length == 0
+                    || value.IndexOf(delimiter.AsSpan()) >= 0
+                    || value.IndexOf(quote) >= 0
+                    || value.IndexOfAny('\r', '\n') >= 0);
+
+            // at most each char escaped, and the quotes
+            var required = value.Length * 2 + 2;
+            if (length + required > buffer.Length)
+            {
+                Grow(required);
+            }
+            var chars = buffer;
+            var position = length;
+            if (enclosed)
+            {
+                chars[position++] = quote;
+            }
+            for (int i = 0; i < value.Length; i++)
+            {
+                var c = value[i];
+                if (backslash && c == '\\')
+                {
+                    chars[position++] = '\\';
+                }
+                else if (enclosed && c == quote)
+                {
+                    chars[position++] = backslash ? '\\' : quote;
+                }
+                chars[position++] = c;
+            }
+            if (enclosed)
+            {
+                chars[position++] = quote;
+            }
+            length = position;
         }
 
         private bool NeedsEscape(ReadOnlySpan<char> value)
