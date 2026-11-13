@@ -31,6 +31,9 @@ the versions of the NuGet packages in `Directory.Packages.props` (Central Packag
 has no `Version`), the package sources in `nuget.config` (only nuget.org), the code style in `.editorconfig`.
 
 The samples and the benchmarks reference the libraries as projects, so they must keep building after every change.
+The *CI* workflow (`.github/workflows/ci.yml`) builds the whole solution and runs the tests on Linux and on Windows
+(also .NET Framework 4.8); the Linux job writes the code coverage summary in the job page and uploads the full report.
+To get the coverage locally: `dotnet test -c Release TinyCsv.slnx --collect "XPlat Code Coverage"`.
 The benchmarks are described in [benchmark/README.md](benchmark/README.md).
 
 ## Code
