@@ -6,6 +6,10 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
+    <!-- the build has no warnings: a new warning is an error.
+         The NuGet audit warnings (a vulnerability published for a package) stay warnings, so they do not break the build of an unrelated change. -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);NU1901;NU1902;NU1903;NU1904</WarningsNotAsErrors>
     <Authors>Federico Mazzanti</Authors>
     <Copyright>Copyright (c) 2022-2026 Federico Mazzanti</Copyright>
     <RepositoryType>git</RepositoryType>
