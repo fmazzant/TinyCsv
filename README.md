@@ -16,6 +16,8 @@ conversions with the culture you choose, per-row error handling and streaming as
 > **4.0.0:** the packages are now `Mafesoft.TinyCsv` and `Mafesoft.TinyCsv.AspNetCore` (previously `Mafe.TinyCsv*`)
 > and the namespaces start with `Mafesoft.`. See [Migrating to 4.0](#migrating-to-40).
 
+If TinyCsv is useful to you, consider [supporting the project](#support). ☕
+
 ## Contents
 
 - [Why TinyCsv](#why-tinycsv)
@@ -852,6 +854,14 @@ The samples are in [samples](samples) and the benchmarks in [benchmark](benchmar
 
 Bug reports, ideas and pull requests are welcome: read [CONTRIBUTING.md](CONTRIBUTING.md).
 The changes of every version are in the [CHANGELOG](CHANGELOG.md); security problems are reported as described in [SECURITY.md](SECURITY.md).
+
+## Support
+
+If TinyCsv saves you time, you can say thanks with a small donation. It is never required, but it helps me keep the project maintained and up to date.
+
+[![Donate](https://img.shields.io/badge/donate-PayPal-00457C?style=flat-square&logo=paypal&logoColor=white)](https://paypal.me/fmazzant)
+
+A star on GitHub, a bug report or a pull request help too. Thank you!
 
 ## License
 

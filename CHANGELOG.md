@@ -5,6 +5,31 @@ All notable changes to the `Mafesoft.TinyCsv*` packages (`Mafe.TinyCsv*` up to 3
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.2] - 2026-11-14
+
+### Fixed
+
+- Writing with a delimiter of more than one character: a value that ends with the start of the delimiter (`"a|"` with
+  `"||"`) is quoted, so it is read back correctly. ([#113](https://github.com/fmazzant/TinyCsv/issues/113))
+- `GetAllLinesAndFields`: an empty last field is no longer lost (`"1;a;"` with 3 columns gives `"1"`, `"a"`, `""`).
+  ([#113](https://github.com/fmazzant/TinyCsv/issues/113))
+
+### Changed
+
+- Fewer allocations when writing: the values are escaped directly in the line buffer and, on .NET 8+, the common
+  value types are formatted without boxing. Writing 100,000 rows allocates about 8 KB instead of 2.2 MB. The output
+  is unchanged. ([#102](https://github.com/fmazzant/TinyCsv/issues/102))
+- No compiler warnings, dead code removed, `TreatWarningsAsErrors`. The `SerializationInfo` constructors of the
+  exceptions are kept and marked obsolete (`SYSLIB0051`) on .NET 8+, like the ones of `Exception`.
+  ([#74](https://github.com/fmazzant/TinyCsv/issues/74))
+- Build: common `Directory.Build.props`, Central Package Management, `global.json`, `.editorconfig`.
+  ([#73](https://github.com/fmazzant/TinyCsv/issues/73))
+- CI on Linux and Windows (the tests also run on .NET Framework 4.8), samples and benchmarks built, code coverage.
+  ([#72](https://github.com/fmazzant/TinyCsv/issues/72))
+- Tests: RFC 4180 conformance, round trips, every read path, buffer boundaries, AspNetCore.
+  ([#75](https://github.com/fmazzant/TinyCsv/issues/75))
+- README: Support section with a PayPal donation link.
+
 ## [4.0.1] - 2026-11-12
 
 No changes to the library code: same features as 4.0.0.
@@ -14,7 +39,7 @@ No changes to the library code: same features as 4.0.0.
 - Release workflow: publishing a version that is already on nuget.org no longer fails, and a GitHub Release that
   already exists for the tag gets the packages attached instead of failing.
 
-## [4.0.0] - Unreleased
+## [4.0.0] - 2026-11-12
 
 The `Mafesoft.*` release: the packages and the namespaces have a new name and a few APIs changed.
 Read [Migrating to 4.0](README.md#migrating-to-40) before upgrading.
