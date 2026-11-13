@@ -1,5 +1,10 @@
 name: CI
 
+# Builds the whole solution (libraries, tests, samples and benchmarks: the samples and the benchmarks are only built,
+# not run) and runs the tests:
+# - on Linux: .NET 8 and .NET 10, with the code coverage (summary in the job, report in the artifacts);
+# - on Windows: .NET 8, .NET 10 and .NET Framework 4.8 (TinyCsv.Tests adds net48 on Windows).
+
 on:
   push:
     branches: [ main ]
@@ -12,7 +17,18 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: Build and test (${{ matrix.os }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+
+    runs-on: ${{ matrix.os }}
+
+    defaults:
+      run:
+        shell: bash
 
     steps:
     - uses: actions/checkout@v7
@@ -31,11 +47,32 @@ jobs:
       run: dotnet build -c Release --no-restore TinyCsv.slnx
 
     - name: Test
+      if: runner.os != 'Linux'
       run: dotnet test -c Release --no-build TinyCsv.slnx --logger trx --results-directory TestResults
+
+    - name: Test with coverage
+      if: runner.os == 'Linux'
+      run: dotnet test -c Release --no-build TinyCsv.slnx --logger trx --results-directory TestResults --collect "XPlat Code Coverage"
+
+    # One report for all the test projects and target frameworks, only for the libraries (Mafesoft.*)
+    - name: Coverage report
+      if: runner.os == 'Linux'
+      run: |
+        dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.6.0
+        reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:coverage-report \
+          -reporttypes:"MarkdownSummaryGithub;HtmlInline;Cobertura" -assemblyfilters:"+Mafesoft.*"
+        cat coverage-report/SummaryGithub.md >> "$GITHUB_STEP_SUMMARY"
+
+    - name: Upload coverage report
+      if: runner.os == 'Linux'
+      uses: actions/upload-artifact@v7
+      with:
+        name: coverage-report
+        path: coverage-report
 
     - name: Upload test results
       if: always()
       uses: actions/upload-artifact@v7
       with:
-        name: test-results
+        name: test-results-${{ matrix.os }}
         path: TestResults
