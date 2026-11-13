@@ -9,7 +9,8 @@ Thanks for helping to improve Mafesoft.TinyCsv! Bug reports, ideas and pull requ
 
 ## Build and test
 
-Requirements: the .NET 10 SDK and the .NET 8 runtime (the tests also run on .NET Framework 4.8 on Windows).
+Requirements: the .NET 10 SDK (pinned by `global.json`, any 10.0 feature band) and the .NET 8 runtime
+(the tests also run on .NET Framework 4.8 on Windows).
 
 ```shell
 dotnet build -c Release TinyCsv.slnx
@@ -24,6 +25,10 @@ regenerated with:
 ```shell
 dotnet pack -c Release TinyCsv.slnx -p:ApiCompatGenerateSuppressionFile=true
 ```
+
+The common build settings are in `Directory.Build.props` (all the projects) and `src/Directory.Build.props` (the packages),
+the versions of the NuGet packages in `Directory.Packages.props` (Central Package Management: a `PackageReference`
+has no `Version`), the package sources in `nuget.config` (only nuget.org), the code style in `.editorconfig`.
 
 The samples and the benchmarks reference the libraries as projects, so they must keep building after every change.
 The benchmarks are described in [benchmark/README.md](benchmark/README.md).
