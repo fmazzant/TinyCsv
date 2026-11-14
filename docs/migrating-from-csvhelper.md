@@ -172,10 +172,10 @@ var csv = new TinyCsv<Product>(options =>
 | `TypeConverterOption.Format("...")` | `Format("...")` | `AddColumn(m => m.X, "...")` |
 | `TypeConverterOption.CultureInfo(c)` | `FormatProvider(c)` | `AddColumn(m => m.X, c)` (an `IFormatProvider`) |
 | `TypeConverter<C>()` | `Converter(new C())` | `AddColumn(m => m.X, new C())` |
-| `Ignore()` | do not map the property | do not add the column |
+| `Ignore()` | `Ignore()`, or do not map the property | do not add the column |
 | `References<TMap>()`, `Map(m => m.Address.City)` | `Map(m => m.Address.City)` | `AddColumn(m => m.Address.City)` |
-| `Optional()` | not supported | with `MapColumnsByHeader`, a missing column throws `MissingColumnException` |
-| `Default(v)` | not supported | an empty value is `null` for a nullable type, otherwise the default value of the type |
+| `Optional()` | `Optional()` | not available: use the class map, or `[Optional]` on the property |
+| `Default(v)` | `Default(v)` | not available: use the class map, or `[Default(v)]` on the property |
 | `Constant(v)` | not supported | set the value after the read |
 | `TypeConverterOption.NullValues("NULL")` | `NullValues("NULL")` | `options.NullValues` (all the columns) |
 
@@ -193,7 +193,9 @@ As soon as one column is defined, only the defined columns are mapped.
 | `[Index(0)]` | `[Column(index: 0)]` |
 | `[Format("dd/MM/yyyy")]` | `[Column(format: "dd/MM/yyyy")]` |
 | `[TypeConverter(typeof(C))]` | `[Column(converter: typeof(C))]` |
-| `[Ignore]` | no `[Column]` on the property |
+| `[Ignore]` | `[Ignore]`, or no `[Column]` on the property |
+| `[Optional]` | `[Optional]` |
+| `[Default(v)]` | `[Default(v)]` |
 | `[NullValues("NULL")]` | `[NullValues("NULL")]` on the property, or on the class for all the columns |
 | `[CultureInfo("it-IT")]` | `[Culture("it-IT")]` on the class |
 | `[Delimiter(";")]`, `[HasHeaderRecord(true)]`, ... | `[Delimiter(";")]`, `[HasHeaderRecord(true)]`, ... on the class |
@@ -267,7 +269,7 @@ TinyCsv has built-in converters for the primitive types, `decimal`, `DateTime`, 
 | `ShouldSkipRecord` | `SkipRow` (the raw row and its index) or `RowsToSkip` (the first N rows) |
 | `PrepareHeaderForMatch` | `HeaderNameComparer` (case insensitive by default) |
 | `DetectColumnCountChanges` | `ValidateColumnCount` |
-| `HeaderValidated` | with `MapColumnsByHeader`, a missing column throws `MissingColumnException` |
+| `HeaderValidated` | with `MapColumnsByHeader`, a missing column throws `MissingColumnException`, unless it is optional |
 | `MissingFieldFound` | `ValidateColumnCount`; without it a missing field is `null` or the default value of the type |
 | `BadDataFound`, `ReadingExceptionOccurred` | `BadDataFound` (the row is skipped and the read goes on) |
 | `Mode = CsvMode.RFC4180` | always RFC 4180 |

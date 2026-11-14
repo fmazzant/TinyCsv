@@ -74,7 +74,7 @@ If TinyCsv is useful to you, consider [supporting the project](#support). ☕
 | Alternative header names for a column | ❌ one name; planned ([#100](https://github.com/fmazzant/TinyCsv/issues/100)) | ✅ `Name("Id", "ID")` | ⚠️ manual | ❔ | ❌ by index |
 | Several record types in the same file | ❌ to evaluate ([#101](https://github.com/fmazzant/TinyCsv/issues/101)) | ✅ | ⚠️ manual | ⚠️ manual | ❌ |
 | Write without a model (dictionaries, `dynamic`, `DataTable`) | ❌ read only; planned ([#78](https://github.com/fmazzant/TinyCsv/issues/78)) | ✅ | ✅ by column name | ✅ from a `DbDataReader` | ❌ |
-| Configuration hooks (header validation, missing fields, ...) | ⚠️ `HeaderNameComparer`, `SkipRow`, `BadDataFound`; optional columns planned ([#81](https://github.com/fmazzant/TinyCsv/issues/81)) | ✅ many | ❌ | ❔ | ❌ |
+| Configuration hooks (header validation, missing fields, ...) | ⚠️ `HeaderNameComparer`, `SkipRow`, `BadDataFound`, ignored, optional and default columns | ✅ many | ❌ | ❔ | ❌ |
 | Allocations when writing (100,000 rows, [benchmark](#performance)) | ✅ 0.01 MB | ⚠️ 25.2 MB | ✅ 0.02 MB | ✅ 0.05 MB | n/a |
 | Parallel parsing | ❌ not planned | ❌ | ✅ `ParallelEnumerate` | ❌ | ✅ degree of parallelism |
 | Zero-copy access to the fields (`Span<char>`) | ❌ not planned | ❌ | ✅ | ✅ | ❌ |
@@ -253,6 +253,32 @@ The properties of a class with a public parameterless constructor are columns to
 The other properties whose type has no value converter (i.e. collections) are ignored.
 To use a format, a custom converter or a different name, define the columns.
 
+### Ignore, optional and default values
+
+```c#
+public class Order
+{
+    public int Id { get; set; }
+
+    [Ignore]
+    public string Internal { get; set; }   // not read and not written
+
+    [Optional, Default(0)]
+    public int Priority { get; set; }      // may be missing from the header
+}
+
+// class map
+Map(m => m.Internal).Ignore();
+Map(m => m.Priority).Optional().Default(0);
+```
+
+- `[Ignore]` / `Ignore()`: the property is not a column, it is neither read nor written (automatic columns, `[Column]` and class maps);
+- `[Optional]` / `Optional()`: with `MapColumnsByHeader`, a column that is not in the header does not throw `MissingColumnException`: the property keeps its default value;
+- `[Default(value)]` / `Default(value)`: the value of the property when the field is empty (or white space) or missing (an optional column, or a short record).
+  It is converted to the type of the property (i.e. `[Default("1.5")]` for a `decimal`) and a value that cannot be converted throws an `ArgumentException` when the options are created.
+  A field in `NullValues` is still `null`;
+- the optional columns are written normally, and the default value is not used when writing.
+
 ### Nested properties
 
 A property of a property is a column, whose name is the names of the properties joined by an underscore:
@@ -385,7 +411,7 @@ public sealed class ProductMap : CsvClassMap<Product>
 var csv = new TinyCsv<Product>(new ProductMap());
 ```
 
-`Map` takes the property and returns the column, with `Index`, `Name`, `Format`, `FormatProvider`, `Converter` and `NullValues`.
+`Map` takes the property and returns the column, with `Index`, `Name`, `Format`, `FormatProvider`, `Converter`, `NullValues`, `Ignore`, `Optional` and `Default`.
 The index is the position of `Map` and the name is the property name, unless they are set.
 To change the options of the map, use `UseClassMap` and then the options:
 
@@ -454,7 +480,7 @@ var csv = new TinyCsv<Model>(options =>
 - the order of the columns in the file does not matter;
 - the columns of the file that are not defined in the options are ignored;
 - the names are compared ignoring the case and the spaces around them. Use `HeaderNameComparer` to change it, e.g. `StringComparer.Ordinal`;
-- a column that is not in the header throws a `MissingColumnException`, with the names in `MissingColumns`;
+- a column that is not in the header throws a `MissingColumnException`, with the names in `MissingColumns`, unless it is [optional](#ignore-optional-and-default-values);
 - it requires `HasHeaderRecord = true`, otherwise an `InvalidOperationException` is thrown.
 
 With attributes, use `[MapColumnsByHeader]` on the model, the column name is the `name` of `[Column]` or the property name.

@@ -84,6 +84,10 @@ namespace Mafesoft.TinyCsv
         private IFormatProvider? formatProvider;
         private IValueConverter? converter;
         private string[]? nullValues;
+        private bool ignore;
+        private bool optional;
+        private bool hasDefaultValue;
+        private object? defaultValue;
 
         internal CsvMemberMap(Type type, Expression expression)
         {
@@ -157,10 +161,53 @@ namespace Mafesoft.TinyCsv
             return this;
         }
 
+        /// <summary>
+        /// The property is not a column: it is neither read nor written
+        /// </summary>
+        /// <returns></returns>
+        public CsvMemberMap Ignore()
+        {
+            ignore = true;
+            return this;
+        }
+
+        /// <summary>
+        /// The column may be missing from the header record (see CsvOptions.MapColumnsByHeader):
+        /// no MissingColumnException is thrown and the property keeps its default value
+        /// </summary>
+        /// <returns></returns>
+        public CsvMemberMap Optional()
+        {
+            optional = true;
+            return this;
+        }
+
+        /// <summary>
+        /// The value of the property when the field is empty or missing. It is converted to the type of the property
+        /// and a value that cannot be converted throws an ArgumentException when the map is used.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public CsvMemberMap Default(object? value)
+        {
+            hasDefaultValue = true;
+            defaultValue = value;
+            return this;
+        }
+
         internal void AddTo<T>(CsvOptionsColumns<T> columns)
         {
+            if (ignore)
+            {
+                return;
+            }
             var column = columns.AddColumn(type, index, name ?? expression.GetColumnName(), expression, format, formatProvider, converter);
             column.NullValues = nullValues;
+            column.IsOptional = optional;
+            if (hasDefaultValue)
+            {
+                column.SetDefaultValue(defaultValue);
+            }
         }
     }
 }
