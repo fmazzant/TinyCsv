@@ -169,6 +169,7 @@ var csv = new TinyCsv<Product>(options =>
 |---|---|---|
 | `Index(i)` | `Index(i)` | the order of `AddColumn`, or `AddColumn(i, "Name", m => m.X, converter)` |
 | `Name("x")` | `Name("x")` | `AddColumn("x", m => m.X)` |
+| `Name("Id", "ID", "Code")` | `Name("Id", "ID", "Code")` | `AddColumn(m => m.Id).WithNames("ID", "Code")` |
 | `TypeConverterOption.Format("...")` | `Format("...")` | `AddColumn(m => m.X, "...")` |
 | `TypeConverterOption.CultureInfo(c)` | `FormatProvider(c)` | `AddColumn(m => m.X, c)` (an `IFormatProvider`) |
 | `TypeConverter<C>()` | `Converter(new C())` | `AddColumn(m => m.X, new C())` |
@@ -190,6 +191,7 @@ As soon as one column is defined, only the defined columns are mapped.
 | CsvHelper | TinyCsv |
 |---|---|
 | `[Name("x")]` | `[Column(name: "x")]` |
+| `[Name("Id", "ID")]` | `[Column(names: new[] { "Id", "ID" })]` |
 | `[Index(0)]` | `[Column(index: 0)]` |
 | `[Format("dd/MM/yyyy")]` | `[Column(format: "dd/MM/yyyy")]` |
 | `[TypeConverter(typeof(C))]` | `[Column(converter: typeof(C))]` |

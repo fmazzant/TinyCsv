@@ -621,10 +621,11 @@ namespace Mafesoft.TinyCsv
 
             var fieldIndexes = new int[Columns.Count];
             var missing = new List<string>();
+            var missingNames = new List<string>();
             var columnIndex = 0;
             foreach (var column in Columns)
             {
-                if (indexByName.TryGetValue(column.ColumnName ?? string.Empty, out var fieldIndex))
+                if (TryGetFieldIndex(indexByName, column, out var fieldIndex))
                 {
                     fieldIndexes[columnIndex] = fieldIndex;
                 }
@@ -636,15 +637,39 @@ namespace Mafesoft.TinyCsv
                 else
                 {
                     missing.Add(column.ColumnName ?? string.Empty);
+                    var alternativeNames = column.AlternativeNames;
+                    missingNames.Add(alternativeNames.Length == 0
+                        ? column.ColumnName ?? string.Empty
+                        : $"{column.ColumnName} (or {string.Join(", ", alternativeNames)})");
                 }
                 columnIndex++;
             }
 
             if (missing.Count > 0)
             {
-                throw new MissingColumnException(missing.ToArray());
+                throw new MissingColumnException(missing.ToArray(),
+                    $"The header record does not contain the columns: {string.Join(", ", missingNames)}.");
             }
             return fieldIndexes;
+        }
+
+        /// <summary>
+        /// The index of the field of the column: the first name of the column (see CsvColumn.ColumnNames) found in the header
+        /// </summary>
+        private static bool TryGetFieldIndex(Dictionary<string, int> indexByName, CsvColumn column, out int fieldIndex)
+        {
+            if (indexByName.TryGetValue(column.ColumnName ?? string.Empty, out fieldIndex))
+            {
+                return true;
+            }
+            foreach (var name in column.AlternativeNames)
+            {
+                if (indexByName.TryGetValue(name ?? string.Empty, out fieldIndex))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>

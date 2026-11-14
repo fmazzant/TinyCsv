@@ -80,6 +80,7 @@ namespace Mafesoft.TinyCsv
         private readonly Expression expression;
         private int index = -1;
         private string? name;
+        private string[] alternativeNames = new string[0];
         private string? format;
         private IFormatProvider? formatProvider;
         private IValueConverter? converter;
@@ -114,6 +115,24 @@ namespace Mafesoft.TinyCsv
         public CsvMemberMap Name(string? name)
         {
             this.name = name;
+            return this;
+        }
+
+        /// <summary>
+        /// The names of the column in the header record (see CsvOptions.MapColumnsByHeader): when reading,
+        /// the first name found in the header wins; the header is written with the first name
+        /// </summary>
+        /// <param name="name">the name of the column, written in the header</param>
+        /// <param name="alternativeName">another name of the column</param>
+        /// <param name="otherNames">the other names of the column</param>
+        /// <returns></returns>
+        public CsvMemberMap Name(string name, string alternativeName, params string[] otherNames)
+        {
+            this.name = name;
+            var names = new string[(otherNames?.Length ?? 0) + 1];
+            names[0] = alternativeName;
+            otherNames?.CopyTo(names, 1);
+            alternativeNames = names;
             return this;
         }
 
@@ -202,6 +221,7 @@ namespace Mafesoft.TinyCsv
                 return;
             }
             var column = columns.AddColumn(type, index, name ?? expression.GetColumnName(), expression, format, formatProvider, converter);
+            column.WithNames(alternativeNames);
             column.NullValues = nullValues;
             column.IsOptional = optional;
             if (hasDefaultValue)
