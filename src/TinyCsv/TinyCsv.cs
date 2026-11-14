@@ -377,7 +377,7 @@ namespace Mafesoft.TinyCsv
             foreach (var model in models)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                builder.Build(model);
+                builder.Build(model, index);
                 lines[index] = builder.ToString();
                 index++;
             }

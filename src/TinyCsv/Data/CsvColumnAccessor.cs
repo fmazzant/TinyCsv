@@ -47,6 +47,7 @@ namespace Mafesoft.TinyCsv.Data
         public CsvColumnBinding(CsvColumn column, CsvOptions<T> options)
         {
             Column = column;
+            IsText = column.ColumnType == typeof(string);
             Provider = column.GetFormatProvider(options.Culture);
             Accessor = CsvColumnAccessor<T>.Get(column, options).Bind(Provider);
 
@@ -65,6 +66,11 @@ namespace Mafesoft.TinyCsv.Data
         public CsvColumn Column { get; }
 
         public CsvColumnAccessor<T> Accessor { get; }
+
+        /// <summary>
+        /// True when the column is of type string: its values are protected from CSV injection (see CsvOptions.InjectionProtection)
+        /// </summary>
+        public bool IsText { get; }
 
         public IFormatProvider Provider { get; }
 
@@ -228,11 +234,11 @@ namespace Mafesoft.TinyCsv.Data
         {
             if (binding.Culture == null)
             {
-                line.AppendField(binding.Column.Converter.Convert(getter(model), null, binding.Provider));
+                line.AppendText(binding.Column.Converter.Convert(getter(model), null, binding.Provider));
                 return;
             }
             // string.Format(provider, "{0}", value) returns the value with a culture and with DefaultFormatProvider
-            line.AppendField(getter(model));
+            line.AppendText(getter(model));
         }
     }
 
@@ -354,7 +360,7 @@ namespace Mafesoft.TinyCsv.Data
         public override void AppendValue(T model, CsvLineBuilder<T> line, CsvColumnBinding<T> binding)
         {
             var value = Property.GetValue(model);
-            line.AppendField(binding.Column.Converter.Convert(value, null, binding.Provider));
+            line.AppendValue(binding.Column.Converter.Convert(value, null, binding.Provider), binding);
         }
     }
 }
