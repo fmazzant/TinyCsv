@@ -71,7 +71,7 @@ If TinyCsv is useful to you, consider [supporting the project](#support). ☕
 | Native AOT / trimming | to evaluate ([#84](https://github.com/fmazzant/TinyCsv/issues/84)) | ⚠️ | ✅ | ✅ | ⚠️ |
 | `netstandard2.0` (.NET Framework 4.6.2+) | ✅ | ✅ | ❌ | ✅ | ✅ |
 | Immutable models (records, constructor parameters, `init`) | ❌ requires `new()`; to evaluate ([#83](https://github.com/fmazzant/TinyCsv/issues/83)) | ✅ | n/a, manual | ❔ | ❌ |
-| Alternative header names for a column | ❌ one name; planned ([#100](https://github.com/fmazzant/TinyCsv/issues/100)) | ✅ `Name("Id", "ID")` | ⚠️ manual | ❔ | ❌ by index |
+| Alternative header names for a column | ✅ `Name("Id", "ID")`, `WithNames`, `[Column(names: ...)]` | ✅ `Name("Id", "ID")` | ⚠️ manual | ❔ | ❌ by index |
 | Several record types in the same file | ❌ to evaluate ([#101](https://github.com/fmazzant/TinyCsv/issues/101)) | ✅ | ⚠️ manual | ⚠️ manual | ❌ |
 | Write without a model (dictionaries, `dynamic`, `DataTable`) | ❌ read only; planned ([#78](https://github.com/fmazzant/TinyCsv/issues/78)) | ✅ | ✅ by column name | ✅ from a `DbDataReader` | ❌ |
 | Configuration hooks (header validation, missing fields, ...) | ⚠️ `HeaderNameComparer`, `SkipRow`, `BadDataFound`, ignored, optional and default columns | ✅ many | ❌ | ❔ | ❌ |
@@ -484,6 +484,25 @@ var csv = new TinyCsv<Model>(options =>
 - it requires `HasHeaderRecord = true`, otherwise an `InvalidOperationException` is thrown.
 
 With attributes, use `[MapColumnsByHeader]` on the model, the column name is the `name` of `[Column]` or the property name.
+
+A column can have alternative names, for files from different sources or versions (`Id`, `ID`, `Code`):
+
+```c#
+// lambda columns: the name of the column and then the alternative names
+options.Columns.AddColumn(m => m.Id).WithNames("ID", "Code");
+
+// class map
+Map(m => m.Id).Name("Id", "ID", "Code");
+
+// attributes
+[Column(names: new[] { "Id", "ID", "Code" })]
+public int Id { get; set; }
+```
+
+- when reading, the first name of the column found in the header wins, compared with `HeaderNameComparer`;
+- the header is written with the first name (`ColumnName`); `CsvColumn.ColumnNames` has all the names;
+- a column with none of its names in the header throws a `MissingColumnException`, whose message lists all the names (`Id (or ID, Code)`), unless it is optional;
+- `AddColumn` returns the column (`CsvColumn`), so `WithNames` can follow it.
 
 ### Detect the delimiter
 

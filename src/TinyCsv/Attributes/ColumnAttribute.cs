@@ -50,6 +50,12 @@ namespace Mafesoft.TinyCsv.Attributes
         public string? ColumnName { get; internal set; }
 
         /// <summary>
+        /// The names of the column in the header record (see CsvOptions.MapColumnsByHeader): the first is the ColumnName,
+        /// written in the header, the others are alternative names. Null when the column has only the ColumnName.
+        /// </summary>
+        public string[]? ColumnNames { get; internal set; }
+
+        /// <summary>
         /// Column's type
         /// </summary>
         public Type? ColumnType { get; internal set; }
@@ -100,6 +106,23 @@ namespace Mafesoft.TinyCsv.Attributes
             {
                 Converter = (IValueConverter?)Activator.CreateInstance(converter);
             }
+        }
+
+        /// <summary>
+        /// Contructor of a column with several names in the header record (i.e. <c>[Column(names: new[] { "Id", "ID", "Code" })]</c>):
+        /// when reading, the first name found in the header wins; the header is written with the first name
+        /// </summary>
+        /// <param name="names">the names of the column: the first is written in the header</param>
+        /// <param name="index"></param>
+        /// <param name="type"></param>
+        /// <param name="format"></param>
+        /// <param name="formatProvider"></param>
+        /// <param name="converter"></param>
+        /// <exception cref="ArgumentException">no name</exception>
+        public ColumnAttribute(string[] names, int index = -1, Type? type = null, string? format = null, Type? formatProvider = null, Type? converter = null)
+            : this(index, names != null && names.Length > 0 ? names[0] : throw new ArgumentException("A column requires at least one name.", nameof(names)), type, format, formatProvider, converter)
+        {
+            ColumnNames = names;
         }
     }
 }
