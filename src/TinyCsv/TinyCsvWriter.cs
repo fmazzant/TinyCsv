@@ -186,7 +186,7 @@ namespace Mafesoft.TinyCsv
             {
                 return null;
             }
-            var header = options.AsColumnsHeaderLine();
+            var header = builder.BuildHeader();
             options.Handlers.Write.OnRowHeader(Count, header);
             Count++;
             return header;

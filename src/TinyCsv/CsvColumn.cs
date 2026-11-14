@@ -77,6 +77,11 @@ namespace Mafesoft.TinyCsv
         public IValueConverter Converter { get; internal set; } = new DefaultValueConverter();
 
         /// <summary>
+        /// The values of the column that are read as null, instead of CsvOptions.NullValues. Null uses the values of the options.
+        /// </summary>
+        public string[]? NullValues { get; internal set; }
+
+        /// <summary>
         /// The accessor of the column (see Data.CsvColumnAccessor), created the first time the column is read or written
         /// </summary>
         internal object? Accessor { get; set; }

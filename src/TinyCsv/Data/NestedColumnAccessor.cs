@@ -45,6 +45,11 @@ namespace Mafesoft.TinyCsv.Data
 
         public override void SetValue(T model, CsvField value, CsvColumnBinding<T> binding, bool validateValues)
         {
+            SetObject(model, binding.Column.ConvertBack(value.ToString(), binding.Provider, validateValues));
+        }
+
+        public override void SetObject(T model, object? value)
+        {
             object target = model ?? throw new ArgumentNullException(nameof(model));
             var last = path.Length - 1;
             for (int i = 0; i < last; i++)
@@ -57,7 +62,7 @@ namespace Mafesoft.TinyCsv.Data
                 }
                 target = next;
             }
-            Setter(last)(target, binding.Column.ConvertBack(value.ToString(), binding.Provider, validateValues));
+            Setter(last)(target, value);
         }
 
         private Action<object, object?> Setter(int index)
@@ -72,7 +77,13 @@ namespace Mafesoft.TinyCsv.Data
             {
                 value = getters[i](value);
             }
-            line.AppendValue(binding.Column.Converter.Convert(value, null, binding.Provider), binding);
+            var text = binding.Column.Converter.Convert(value, null, binding.Provider);
+            if (value == null)
+            {
+                line.AppendNull(text, binding);
+                return;
+            }
+            line.AppendValue(text, binding);
         }
     }
 }

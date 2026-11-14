@@ -83,6 +83,7 @@ namespace Mafesoft.TinyCsv
         private string? format;
         private IFormatProvider? formatProvider;
         private IValueConverter? converter;
+        private string[]? nullValues;
 
         internal CsvMemberMap(Type type, Expression expression)
         {
@@ -145,9 +146,21 @@ namespace Mafesoft.TinyCsv
             return this;
         }
 
+        /// <summary>
+        /// The values of the column that are read as null (i.e. "N/A"), instead of the NullValues of the options
+        /// </summary>
+        /// <param name="nullValues"></param>
+        /// <returns></returns>
+        public CsvMemberMap NullValues(params string[] nullValues)
+        {
+            this.nullValues = nullValues;
+            return this;
+        }
+
         internal void AddTo<T>(CsvOptionsColumns<T> columns)
         {
-            columns.AddColumn(type, index, name ?? expression.GetColumnName(), expression, format, formatProvider, converter);
+            var column = columns.AddColumn(type, index, name ?? expression.GetColumnName(), expression, format, formatProvider, converter);
+            column.NullValues = nullValues;
         }
     }
 }

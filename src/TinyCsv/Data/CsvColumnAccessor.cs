@@ -48,6 +48,13 @@ namespace Mafesoft.TinyCsv.Data
         {
             Column = column;
             IsText = column.ColumnType == typeof(string);
+            var nullValues = column.NullValues ?? options.NullValues;
+            NullValues = nullValues == null || nullValues.Length == 0 ? null : nullValues;
+            NullValue = column.ColumnType.IsValueType && Nullable.GetUnderlyingType(column.ColumnType) == null
+                ? Activator.CreateInstance(column.ColumnType)
+                : null;
+            var quoteMode = options.QuoteMode;
+            Quoted = quoteMode == CsvQuoteMode.All || (quoteMode == CsvQuoteMode.NonNumeric && !IsNumber(column.ColumnType));
             Provider = column.GetFormatProvider(options.Culture);
             Accessor = CsvColumnAccessor<T>.Get(column, options).Bind(Provider);
 
@@ -71,6 +78,56 @@ namespace Mafesoft.TinyCsv.Data
         /// True when the column is of type string: its values are protected from CSV injection (see CsvOptions.InjectionProtection)
         /// </summary>
         public bool IsText { get; }
+
+        /// <summary>
+        /// The values read as null (see CsvOptions.NullValues), or null when there are none
+        /// </summary>
+        public string[]? NullValues { get; }
+
+        /// <summary>
+        /// The value of the property for a null value: null, or the default value of a type that cannot be null
+        /// </summary>
+        public object? NullValue { get; }
+
+        /// <summary>
+        /// True when the fields of the column are always enclosed in quotes (see CsvOptions.QuoteMode)
+        /// </summary>
+        public bool Quoted { get; }
+
+        /// <summary>
+        /// True when the field is one of the NullValues
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool IsNullValue(ReadOnlySpan<char> value)
+        {
+            var nullValues = NullValues;
+            if (nullValues == null)
+            {
+                return false;
+            }
+            for (int i = 0; i < nullValues.Length; i++)
+            {
+                var nullValue = nullValues[i];
+                if (nullValue != null && value.SequenceEqual(nullValue.AsSpan()))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// True for the types of the numbers, and their nullable types
+        /// </summary>
+        private static bool IsNumber(Type type)
+        {
+            type = Nullable.GetUnderlyingType(type) ?? type;
+            return type == typeof(int) || type == typeof(long) || type == typeof(short) || type == typeof(sbyte)
+                || type == typeof(uint) || type == typeof(ulong) || type == typeof(ushort) || type == typeof(byte)
+                || type == typeof(decimal) || type == typeof(double) || type == typeof(float)
+                || type == typeof(System.Numerics.BigInteger);
+        }
 
         public IFormatProvider Provider { get; }
 
@@ -114,6 +171,12 @@ namespace Mafesoft.TinyCsv.Data
         /// Sets the property of the model with the value of the field
         /// </summary>
         public abstract void SetValue(T model, CsvField value, CsvColumnBinding<T> binding, bool validateValues);
+
+        /// <summary>
+        /// Sets the property of the model with a value that is already converted (i.e. null for a NullValue),
+        /// that is null or a value of the type of the column
+        /// </summary>
+        public abstract void SetObject(T model, object? value);
 
         /// <summary>
         /// Appends the value of the property of the model to the line
@@ -230,15 +293,32 @@ namespace Mafesoft.TinyCsv.Data
             setter(model, value.ToString());
         }
 
+        public override void SetObject(T model, object? value)
+        {
+            setter(model, (string)value!);
+        }
+
         public override void AppendValue(T model, CsvLineBuilder<T> line, CsvColumnBinding<T> binding)
         {
+            var value = getter(model);
             if (binding.Culture == null)
             {
-                line.AppendText(binding.Column.Converter.Convert(getter(model), null, binding.Provider));
+                var text = binding.Column.Converter.Convert(value, null, binding.Provider);
+                if (value == null)
+                {
+                    line.AppendNull(text, binding);
+                    return;
+                }
+                line.AppendText(text);
                 return;
             }
             // string.Format(provider, "{0}", value) returns the value with a culture and with DefaultFormatProvider
-            line.AppendText(getter(model));
+            if (value == null)
+            {
+                line.AppendNull(null, binding);
+                return;
+            }
+            line.AppendText(value);
         }
     }
 
@@ -302,6 +382,11 @@ namespace Mafesoft.TinyCsv.Data
             setter(model, default);
         }
 
+        public override void SetObject(T model, object? value)
+        {
+            setter(model, value == null ? default : (TValue)value);
+        }
+
         /// <summary>
         /// As string.IsNullOrWhiteSpace
         /// </summary>
@@ -357,10 +442,21 @@ namespace Mafesoft.TinyCsv.Data
             Property.SetValue(model, binding.Column.ConvertBack(value.ToString(), binding.Provider, validateValues));
         }
 
+        public override void SetObject(T model, object? value)
+        {
+            Property.SetValue(model, value);
+        }
+
         public override void AppendValue(T model, CsvLineBuilder<T> line, CsvColumnBinding<T> binding)
         {
             var value = Property.GetValue(model);
-            line.AppendValue(binding.Column.Converter.Convert(value, null, binding.Provider), binding);
+            var text = binding.Column.Converter.Convert(value, null, binding.Provider);
+            if (value == null)
+            {
+                line.AppendNull(text, binding);
+                return;
+            }
+            line.AppendValue(text, binding);
         }
     }
 }
