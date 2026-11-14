@@ -244,7 +244,15 @@ namespace Mafesoft.TinyCsv.Data
                         var value = !hasDelimiters ? fields[fieldIndex]
                             : hasQuotedFields ? dataReader.GetField(records, fieldIndex)
                             : dataReader.GetField(buffer, start, length, delimiters, delimiterCount, fieldIndex);
-                        binding.Accessor.SetValue(model, value, binding, validateValues);
+                        if (binding.NullValues != null && binding.IsNullValue(value.Span))
+                        {
+                            // a null value is not converted (see CsvOptions.NullValues)
+                            binding.Accessor.SetObject(model, binding.NullValue);
+                        }
+                        else
+                        {
+                            binding.Accessor.SetValue(model, value, binding, validateValues);
+                        }
                     }
                 }
             }

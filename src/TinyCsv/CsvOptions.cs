@@ -279,6 +279,27 @@ namespace Mafesoft.TinyCsv
         /// The default is <see cref="DefaultInjectionCharacters"/>; null is the same as the default.
         /// </summary>
         public char[]? InjectionCharacters { get; set; } = DefaultInjectionCharacters;
+
+        /// <summary>
+        /// When the writer encloses the fields in quotes. The default is <see cref="CsvQuoteMode.Minimal"/>:
+        /// only the fields that contain the delimiter, a quote or a new line. The fields are enclosed in quotes
+        /// only when <see cref="AllowRowEnclosedInDoubleQuotesValues"/> is true.
+        /// </summary>
+        public CsvQuoteMode QuoteMode { get; set; } = CsvQuoteMode.Minimal;
+
+        /// <summary>
+        /// The values that are read as null (i.e. "NULL" or "\N"), compared with the whole field, case sensitive,
+        /// before the converter is called: the property is null, or the default value of a type that cannot be null.
+        /// A column can have its own values (see CsvMemberMap.NullValues and NullValuesAttribute), that replace these.
+        /// Null (default) reads every value with the converter.
+        /// </summary>
+        public string[]? NullValues { get; set; }
+
+        /// <summary>
+        /// The text written for a null value (i.e. "NULL" or "\N"). The default is an empty field.
+        /// When it is empty, a null value is written by the converter of the column, as before.
+        /// </summary>
+        public string? NullValueOnWrite { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -431,6 +452,18 @@ namespace Mafesoft.TinyCsv
                 {
                     this.InjectionProtection = injectionProtection.InjectionProtection;
                     this.InjectionCharacters = injectionProtection.InjectionCharacters ?? this.InjectionCharacters;
+                }
+                if (attribute is QuoteModeAttribute quoteMode)
+                {
+                    this.QuoteMode = quoteMode.QuoteMode;
+                }
+                if (attribute is NullValuesAttribute nullValues)
+                {
+                    this.NullValues = nullValues.NullValues;
+                }
+                if (attribute is NullValueOnWriteAttribute nullValueOnWrite)
+                {
+                    this.NullValueOnWrite = nullValueOnWrite.NullValueOnWrite;
                 }
             }
         }

@@ -177,6 +177,7 @@ var csv = new TinyCsv<Product>(options =>
 | `Optional()` | not supported | with `MapColumnsByHeader`, a missing column throws `MissingColumnException` |
 | `Default(v)` | not supported | an empty value is `null` for a nullable type, otherwise the default value of the type |
 | `Constant(v)` | not supported | set the value after the read |
+| `TypeConverterOption.NullValues("NULL")` | `NullValues("NULL")` | `options.NullValues` (all the columns) |
 
 A nested property (`m => m.Address.City`) is the column `Address_City`: when reading, the null objects (`Address`) are created.
 
@@ -193,6 +194,7 @@ As soon as one column is defined, only the defined columns are mapped.
 | `[Format("dd/MM/yyyy")]` | `[Column(format: "dd/MM/yyyy")]` |
 | `[TypeConverter(typeof(C))]` | `[Column(converter: typeof(C))]` |
 | `[Ignore]` | no `[Column]` on the property |
+| `[NullValues("NULL")]` | `[NullValues("NULL")]` on the property, or on the class for all the columns |
 | `[CultureInfo("it-IT")]` | `[Culture("it-IT")]` on the class |
 | `[Delimiter(";")]`, `[HasHeaderRecord(true)]`, ... | `[Delimiter(";")]`, `[HasHeaderRecord(true)]`, ... on the class |
 
@@ -269,6 +271,7 @@ TinyCsv has built-in converters for the primitive types, `decimal`, `DateTime`, 
 | `MissingFieldFound` | `ValidateColumnCount`; without it a missing field is `null` or the default value of the type |
 | `BadDataFound`, `ReadingExceptionOccurred` | `BadDataFound` (the row is skipped and the read goes on) |
 | `Mode = CsvMode.RFC4180` | always RFC 4180 |
+| `ShouldQuote` | `QuoteMode` (`Minimal` by default, `All`, `NonNumeric`, `None`) |
 | `InjectionOptions`, `InjectionCharacters` | `InjectionProtection` (`None` by default, `Escape`, `Strip`, `Throw`), `InjectionCharacters`; the escape character is always the apostrophe |
 
 ## Errors

@@ -385,7 +385,7 @@ public sealed class ProductMap : CsvClassMap<Product>
 var csv = new TinyCsv<Product>(new ProductMap());
 ```
 
-`Map` takes the property and returns the column, with `Index`, `Name`, `Format`, `FormatProvider` and `Converter`.
+`Map` takes the property and returns the column, with `Index`, `Name`, `Format`, `FormatProvider`, `Converter` and `NullValues`.
 The index is the position of `Map` and the name is the property name, unless they are set.
 To change the options of the map, use `UseClassMap` and then the options:
 
@@ -477,6 +477,25 @@ var csv = new TinyCsv<Model>(options =>
 
 With attributes, use `[DetectDelimiter(true)]` on the model.
 
+### Null values
+
+By default an empty field is `null` (or the default value of the type) and `null` is written as an empty field.
+Database exports often write `NULL`, `\N` or `N/A` for a null, and some consumers must tell `null` from `""`:
+
+```c#
+var csv = new TinyCsv<Model>(options =>
+{
+    options.NullValues = new[] { "NULL", "\\N" }; // read: these values are null
+    options.NullValueOnWrite = "\\N";             // write: the text of a null value
+});
+```
+
+- a field equal to one of `NullValues` (the whole field, case sensitive) is `null`, or the default value of a type that cannot be null (i.e. `int`): the converter is not called, so it is valid also with `ValidateValues`;
+- a column can have its own values, that replace the values of the options: `Map(m => m.Note).NullValues("N/A")` in a class map, or `[NullValues("N/A")]` on the property;
+- `NullValueOnWrite` is written for a `null` property (the default is an empty field), while an empty string is still an empty field: with both options set, `null` and `""` are read back as they are written;
+- `TinyCsvRecords` reads the `NullValues` as `null` too;
+- with attributes, use `[NullValues("NULL", "\\N")]` and `[NullValueOnWrite("\\N")]` on the model.
+
 ## Writing
 
 `Save` writes the models to a file, a `Stream` or a `StreamWriter`; `GetAllText` returns the CSV text:
@@ -508,6 +527,28 @@ using (var writer = csv.CreateWriter("file_export.csv"))
 The header is written before the first record, and the file is completed when the writer is disposed.
 `CreateWriter` takes a path, a `Stream` or a `StreamWriter`: the stream and the stream writer are left open.
 There are `WriteRecordAsync`, `WriteRecordsAsync` (with an `IEnumerable<T>` or an `IAsyncEnumerable<T>`) and `await using`, on every target framework.
+
+### Quote mode
+
+By default a field is enclosed in quotes only when it contains the delimiter, a quote or a new line, as RFC 4180.
+`QuoteMode` changes it, for the consumers that need more (or no) quotes:
+
+```c#
+var csv = new TinyCsv<Model>(options =>
+{
+    options.QuoteMode = CsvQuoteMode.All;
+});
+```
+
+| `QuoteMode` | `1;Mario Rossi;"a;b";` is written as |
+|---|---|
+| `Minimal` (default) | `1;Mario Rossi;"a;b";` |
+| `All` | `"1";"Mario Rossi";"a;b";""`: every field and the header; a `null` value is an empty field without quotes, an empty string is `""` |
+| `NonNumeric` | `1;"Mario Rossi";"a;b";""`: the fields and the header of the columns that are not numbers (text, dates, booleans, ...) |
+| `None` | never quoted: `a;b` contains the delimiter, so it throws an `InvalidColumnValueException` instead of writing a file that cannot be read back (a quote in a value is written as it is) |
+
+The fields are enclosed in quotes only when `AllowRowEnclosedInDoubleQuotesValues` is true (the default).
+With `Minimal`, the line is built without creating a string for each value, as before. With attributes, use `[QuoteMode(CsvQuoteMode.All)]` on the model.
 
 ### Protect against CSV injection
 

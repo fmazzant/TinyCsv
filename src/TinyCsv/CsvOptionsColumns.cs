@@ -196,7 +196,7 @@ namespace Mafesoft.TinyCsv
         /// <param name="converter"></param>
         /// <param name="propertyName">the model's property, when the column is not defined by an expression</param>
         /// <param name="propertyPath">the properties of a nested property, when the column is not defined by an expression</param>
-        internal void AddColumn(Type type, int columnIndex, string columnName, Expression? expression, string? columnFormat = null, IFormatProvider? formatProvider = null, IValueConverter? converter = null, string? propertyName = null, PropertyInfo[]? propertyPath = null)
+        internal CsvColumn AddColumn(Type type, int columnIndex, string columnName, Expression? expression, string? columnFormat = null, IFormatProvider? formatProvider = null, IValueConverter? converter = null, string? propertyName = null, PropertyInfo[]? propertyPath = null)
         {
             var index = columnIndex < 0 ? Columns.Count : columnIndex;
             var path = propertyPath ?? expression?.GetNestedPropertyPath();
@@ -205,7 +205,7 @@ namespace Mafesoft.TinyCsv
                 propertyName = ExpressionExtensions.GetPropertyPathName(path);
             }
 
-            Columns.Add(new CsvColumn()
+            var column = new CsvColumn()
             {
                 ColumnIndex = index,
                 ColumnName = columnName,
@@ -216,7 +216,22 @@ namespace Mafesoft.TinyCsv
                 ColumnFormatProvider = formatProvider,
                 Converter = converter ?? ValueConverterFactory.CreateValueConverterByType(type),
                 PropertyPath = path
-            });
+            };
+            Columns.Add(column);
+            return column;
+        }
+
+        /// <summary>
+        /// Sets the column with the attributes of its property (i.e. NullValuesAttribute)
+        /// </summary>
+        /// <param name="column"></param>
+        /// <param name="property"></param>
+        private static void ApplyPropertyAttributes(CsvColumn column, PropertyInfo property)
+        {
+            if (property.GetCustomAttribute(typeof(NullValuesAttribute)) is NullValuesAttribute nullValues)
+            {
+                column.NullValues = nullValues.NullValues;
+            }
         }
 
         /// <summary>
@@ -266,7 +281,8 @@ namespace Mafesoft.TinyCsv
                 var converter = ValueConverterFactory.CreateValueConverterByType(property.PropertyType);
                 if (converter.GetType() != typeof(DefaultValueConverter))
                 {
-                    AddColumn(property.PropertyType, Columns.Count, name, null, converter: converter, propertyName: property.Name, propertyPath: parent.Length > 0 ? path : null);
+                    var column = AddColumn(property.PropertyType, Columns.Count, name, null, converter: converter, propertyName: property.Name, propertyPath: parent.Length > 0 ? path : null);
+                    ApplyPropertyAttributes(column, property);
                 }
                 else if (ExpressionExtensions.IsNestedType(property.PropertyType) && types.Add(property.PropertyType))
                 {
@@ -294,7 +310,8 @@ namespace Mafesoft.TinyCsv
                     var formatProvider = column.ColumnFormatProvider;
                     var converter = column.Converter;
 
-                    AddColumn(propertyInfo.PropertyType, columnIndex, columnName, null, columnFormat, formatProvider, converter, propertyInfo.Name);
+                    var csvColumn = AddColumn(propertyInfo.PropertyType, columnIndex, columnName, null, columnFormat, formatProvider, converter, propertyInfo.Name);
+                    ApplyPropertyAttributes(csvColumn, propertyInfo);
                 }
             }
         }
