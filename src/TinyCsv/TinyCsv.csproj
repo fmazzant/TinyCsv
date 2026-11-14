@@ -8,7 +8,7 @@
     <PackageId>Mafesoft.TinyCsv</PackageId>
     <Product>TinyCsv</Product>
     <Title>Mafesoft.TinyCsv</Title>
-    <Version>4.0.2</Version>
+    <Version>4.1.0</Version>
     <Description>TinyCsv is a .NET library to read and write CSV data in an easy way: strongly typed models with lambda columns, attributes or class maps, header mapping, delimiter detection, per-row error handling, records without a model and streaming async read and write.</Description>
     <PackageTags>csv;csv-parser;csv-reader;csv-writer;rfc4180;tsv;dotnet</PackageTags>
   </PropertyGroup>
