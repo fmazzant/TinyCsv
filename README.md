@@ -192,7 +192,7 @@ The `TextEncoding` option (UTF-8 by default) is used to read and write files, st
 |---|---|---|
 | `Delimiter` | `";"` | the delimiter of Excel with the Italian and most European regional settings. Set `","` for RFC 4180 files, or `DetectDelimiter = true` to detect it when reading (it is opt-in) |
 | `NewLine` | `"\r\n"` | RFC 4180. It is the same on every operating system, so the same models are written with the same bytes on Windows and Linux. When reading, `\r\n`, `\n` and `\r` are all accepted |
-| `TextEncoding` | UTF-8, written **without** the byte order mark (BOM) | most tools do not want the BOM. Excel needs it to recognize UTF-8: set `options.TextEncoding = new UTF8Encoding(true)` |
+| `TextEncoding` | UTF-8, written **without** the byte order mark (BOM) | most tools do not want the BOM. Excel needs it to recognize UTF-8: set `options.WriteByteOrderMark = true`, see [Opening the file in Excel](#opening-the-file-in-excel) |
 | `HasHeaderRecord` | `false` | |
 
 ### Culture
@@ -500,6 +500,7 @@ var csv = new TinyCsv<Model>(options =>
 - the delimiter is one of `DelimiterCandidates`: comma, semicolon, tab and pipe;
 - the delimiter found the same number of times in each of the first 10 records wins, ignoring the quoted values, the rows to skip and the comments;
 - when no candidate is found, the delimiter is `Delimiter`, that is also the delimiter used to write.
+- a first line `sep=X` (written by Excel, see [Opening the file in Excel](#opening-the-file-in-excel)) wins over the detection.
 
 With attributes, use `[DetectDelimiter(true)]` on the model.
 
@@ -603,6 +604,25 @@ var csv = new TinyCsv<Customer>(options =>
 - with attributes, use `[InjectionProtection(CsvInjectionProtection.Escape)]` on the model.
 
 The default is `None` in 4.x, so the files are the same as before: set it when the values come from the users.
+
+### Opening the file in Excel
+
+Excel and the other tools want different files: Excel needs the UTF-8 byte order mark (BOM) to show the accented characters,
+and it chooses the delimiter from the regional settings, while many Linux tools and importers fail with the BOM.
+
+```c#
+var csv = new TinyCsv<Model>(options =>
+{
+    options.HasHeaderRecord = true;
+    options.WriteByteOrderMark = true; // the BOM, whatever the TextEncoding instance
+    options.WriteSeparatorLine = true; // "sep=;" before the header
+});
+```
+
+- `WriteByteOrderMark`: `true` writes the BOM of the encoding (UTF-8, UTF-16, UTF-32), `false` does not write it, `null` (default) follows the `TextEncoding` instance (the default UTF-8 is written without the BOM). It applies to `Save`, `SaveAsync` and `CreateWriter` with a path or a `Stream`; `GetAllText` starts with the BOM char (`\uFEFF`) when it is `true`, so `File.WriteAllText` writes it too;
+- `WriteSeparatorLine`: writes `sep=` and the delimiter (i.e. `sep=;`) as the first line, so Excel uses the delimiter of the file regardless of the regional settings. Other tools do not know this line: write it only for Excel;
+- when reading, a first line `sep=X` is always recognized: it sets the delimiter (also with `DetectDelimiter`) and it is skipped, before `RowsToSkip`;
+- with attributes, use `[WriteByteOrderMark]` and `[WriteSeparatorLine]` on the model.
 
 ## Records without a model
 
@@ -900,7 +920,7 @@ var models = await csv.LoadFromFileAsync(path).ToListAsync(); // using Mafesoft.
   Reading is not affected: `\r\n`, `\n` and `\r` are all accepted.
 - `NewLineAttribute()` without a value is `"\r\n"` too.
 - `Delimiter` is still `";"`, `DetectDelimiter` is still opt-in.
-- UTF-8 is still written without the BOM: set `TextEncoding = new UTF8Encoding(true)` to write it.
+- UTF-8 is still written without the BOM: set `TextEncoding = new UTF8Encoding(true)` to write it, or `WriteByteOrderMark = true` (4.1).
 
 ### ASP.NET Core in 4.0
 

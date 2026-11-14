@@ -136,11 +136,11 @@ namespace Mafesoft.TinyCsv
         private Encoding ReaderEncoding => Options.TextEncoding ?? Encoding.UTF8;
 
         /// <summary>
-        /// The encoding used to write. The default UTF-8 is written without the byte order mark, as StreamWriter does.
+        /// The encoding used to write. The default UTF-8 is written without the byte order mark, as StreamWriter does; WriteByteOrderMark, when set, decides it.
         /// </summary>
-        private Encoding WriterEncoding => Options.TextEncoding == null || ReferenceEquals(Options.TextEncoding, Encoding.UTF8)
-            ? new UTF8Encoding(false)
-            : Options.TextEncoding;
+        private Encoding WriterEncoding => CsvOptions.WithByteOrderMark(
+            Options.TextEncoding == null || ReferenceEquals(Options.TextEncoding, Encoding.UTF8) ? new UTF8Encoding(false) : Options.TextEncoding,
+            Options.WriteByteOrderMark);
 
         private StreamReader CreateReader(string path) => new StreamReader(path, ReaderEncoding, true);
 
@@ -315,8 +315,13 @@ namespace Mafesoft.TinyCsv
         public string GetAllText(IEnumerable<T> models)
         {
             var lines = GetAllLines(models);
-            return string.Join(Options.NewLine, lines);
+            return TextPrefix + string.Join(Options.NewLine, lines);
         }
+
+        /// <summary>
+        /// The prefix of the text: the byte order mark char (U+FEFF) when WriteByteOrderMark is true
+        /// </summary>
+        private string TextPrefix => Options.WriteByteOrderMark == true ? "﻿" : string.Empty;
 
         /// <summary>
         /// Get all csv lines
@@ -339,7 +344,7 @@ namespace Mafesoft.TinyCsv
         public async Task<string> GetAllTextAsync(IEnumerable<T> models, CancellationToken cancellationToken = default)
         {
             var lines = await GetAllLinesAsync(models, cancellationToken);
-            return string.Join(Options.NewLine, lines);
+            return TextPrefix + string.Join(Options.NewLine, lines);
         }
 
         /// <summary>
@@ -359,18 +364,26 @@ namespace Mafesoft.TinyCsv
         /// </summary>
         private string[] BuildAllLines(IEnumerable<T> models, CancellationToken cancellationToken)
         {
+            // the index of the row (the header and the records), as the write events
             var index = 0;
+            // the separator line, when it is written, is not a row
+            var offset = Options.WriteSeparatorLine ? 1 : 0;
 
             // enumerated once: a lazy sequence (i.e. LoadFromText) cannot be enumerated twice
             models = models as ICollection<T> ?? models.ToList();
-            var count = models.Count() + (Options.HasHeaderRecord ? 1 : 0);
+            var count = models.Count() + (Options.HasHeaderRecord ? 1 : 0) + offset;
             var lines = new string[count];
             var builder = new CsvLineBuilder<T>(Options);
+
+            if (offset > 0)
+            {
+                lines[0] = Options.SeparatorLine;
+            }
 
             if (Options.HasHeaderRecord)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                lines[index] = builder.BuildHeader();
+                lines[offset + index] = builder.BuildHeader();
                 index++;
             }
 
@@ -378,7 +391,7 @@ namespace Mafesoft.TinyCsv
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 builder.Build(model, index);
-                lines[index] = builder.ToString();
+                lines[offset + index] = builder.ToString();
                 index++;
             }
 
