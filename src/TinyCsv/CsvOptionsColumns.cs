@@ -232,6 +232,14 @@ namespace Mafesoft.TinyCsv
             {
                 column.NullValues = nullValues.NullValues;
             }
+            if (Attribute.IsDefined(property, typeof(OptionalAttribute)))
+            {
+                column.IsOptional = true;
+            }
+            if (property.GetCustomAttribute(typeof(DefaultAttribute)) is DefaultAttribute defaultValue)
+            {
+                column.SetDefaultValue(defaultValue.Value);
+            }
         }
 
         /// <summary>
@@ -241,7 +249,7 @@ namespace Mafesoft.TinyCsv
         private void AddColumnsFromType(Type type)
         {
             var propertyWithColumnAttribute = type.GetProperties()
-                .Where(prop => Attribute.IsDefined(prop, typeof(ColumnAttribute)));
+                .Where(prop => Attribute.IsDefined(prop, typeof(ColumnAttribute)) && !Attribute.IsDefined(prop, typeof(IgnoreAttribute)));
 
             foreach (var property in propertyWithColumnAttribute)
             {
@@ -251,6 +259,7 @@ namespace Mafesoft.TinyCsv
 
         /// <summary>
         /// Adds a column for each public property of the type that can be read and written
+        /// (except the properties with IgnoreAttribute)
         /// and whose type has a value converter, in the order of declaration.
         /// The column name is the property name. The properties of a class with a public parameterless constructor
         /// are columns too, named as the nested property: Address.City is Address_City. Collections are ignored.
@@ -273,6 +282,7 @@ namespace Mafesoft.TinyCsv
                 if (property.GetIndexParameters().Length > 0
                     || property.GetGetMethod() == null
                     || property.GetSetMethod() == null
+                    || Attribute.IsDefined(property, typeof(IgnoreAttribute))
                     || !names.Add(name))
                 {
                     continue;

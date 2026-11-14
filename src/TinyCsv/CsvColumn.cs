@@ -82,6 +82,82 @@ namespace Mafesoft.TinyCsv
         public string[]? NullValues { get; internal set; }
 
         /// <summary>
+        /// True when the column may be missing from the header record (see CsvOptions.MapColumnsByHeader):
+        /// no MissingColumnException is thrown and the property keeps its default value
+        /// </summary>
+        public bool IsOptional { get; internal set; }
+
+        /// <summary>
+        /// True when the column has a <see cref="DefaultValue"/>
+        /// </summary>
+        public bool HasDefaultValue { get; private set; }
+
+        /// <summary>
+        /// The value of the property when the field is empty or missing, of the type of the column (see HasDefaultValue)
+        /// </summary>
+        public object? DefaultValue { get; private set; }
+
+        /// <summary>
+        /// Sets the default value, converted to the type of the column
+        /// </summary>
+        /// <param name="value"></param>
+        /// <exception cref="ArgumentException">the value cannot be converted to the type of the column</exception>
+        internal void SetDefaultValue(object? value)
+        {
+            DefaultValue = ConvertDefaultValue(value);
+            HasDefaultValue = true;
+        }
+
+        private object? ConvertDefaultValue(object? value)
+        {
+            var type = Nullable.GetUnderlyingType(ColumnType) ?? ColumnType;
+            if (value == null)
+            {
+                if (ColumnType.IsValueType && type == ColumnType)
+                {
+                    throw new ArgumentException($"The default value of the column {ColumnName} cannot be null: {ColumnType.Name} is not nullable.", nameof(value));
+                }
+                return null;
+            }
+            if (type.IsInstanceOfType(value))
+            {
+                return value;
+            }
+            try
+            {
+                if (type.IsEnum)
+                {
+                    return value is string name ? Enum.Parse(type, name, true) : Enum.ToObject(type, value);
+                }
+                if (value is string text)
+                {
+                    if (type == typeof(Guid))
+                    {
+                        return Guid.Parse(text);
+                    }
+                    if (type == typeof(TimeSpan))
+                    {
+                        return TimeSpan.Parse(text, CultureInfo.InvariantCulture);
+                    }
+                    if (type == typeof(DateTimeOffset))
+                    {
+                        return DateTimeOffset.Parse(text, CultureInfo.InvariantCulture);
+                    }
+                }
+                if (value is IConvertible && typeof(IConvertible).IsAssignableFrom(type))
+                {
+                    return System.Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+                }
+            }
+            catch (Exception exception) when (exception is FormatException || exception is InvalidCastException
+                || exception is OverflowException || exception is ArgumentException)
+            {
+                throw new ArgumentException($"The default value '{value}' of the column {ColumnName} is not a valid {ColumnType.Name}.", nameof(value), exception);
+            }
+            throw new ArgumentException($"The default value '{value}' of the column {ColumnName} is not a valid {ColumnType.Name}.", nameof(value));
+        }
+
+        /// <summary>
         /// The accessor of the column (see Data.CsvColumnAccessor), created the first time the column is read or written
         /// </summary>
         internal object? Accessor { get; set; }

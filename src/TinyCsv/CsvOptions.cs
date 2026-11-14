@@ -558,6 +558,11 @@ namespace Mafesoft.TinyCsv
                 {
                     fieldIndexes[columnIndex] = fieldIndex;
                 }
+                else if (column.IsOptional)
+                {
+                    // beyond every record: the field is missing (see CsvColumn.IsOptional)
+                    fieldIndexes[columnIndex] = int.MaxValue;
+                }
                 else
                 {
                     missing.Add(column.ColumnName ?? string.Empty);
