@@ -269,6 +269,7 @@ TinyCsv has built-in converters for the primitive types, `decimal`, `DateTime`, 
 | `MissingFieldFound` | `ValidateColumnCount`; without it a missing field is `null` or the default value of the type |
 | `BadDataFound`, `ReadingExceptionOccurred` | `BadDataFound` (the row is skipped and the read goes on) |
 | `Mode = CsvMode.RFC4180` | always RFC 4180 |
+| `InjectionOptions`, `InjectionCharacters` | `InjectionProtection` (`None` by default, `Escape`, `Strip`, `Throw`), `InjectionCharacters`; the escape character is always the apostrophe |
 
 ## Errors
 

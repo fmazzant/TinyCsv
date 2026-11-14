@@ -68,7 +68,7 @@ namespace Mafesoft.TinyCsv
         private void WriteRow(T model, CsvOptions<T>.WriteEventHandlers handlers)
         {
             handlers.OnRowWriting(Count, model);
-            builder.Build(model);
+            builder.Build(model, Count);
             if (handlers.Enabled)
             {
                 var line = builder.ToString();
@@ -97,7 +97,7 @@ namespace Mafesoft.TinyCsv
 
             var handlers = options.Handlers.Write;
             handlers.OnRowWriting(Count, model);
-            builder.Build(model);
+            builder.Build(model, Count);
             if (handlers.Enabled)
             {
                 var line = builder.ToString();

@@ -72,7 +72,7 @@ namespace Mafesoft.TinyCsv.Data
             {
                 value = getters[i](value);
             }
-            line.AppendField(binding.Column.Converter.Convert(value, null, binding.Provider));
+            line.AppendValue(binding.Column.Converter.Convert(value, null, binding.Provider), binding);
         }
     }
 }

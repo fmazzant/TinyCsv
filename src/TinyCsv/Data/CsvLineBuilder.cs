@@ -36,6 +36,7 @@ namespace Mafesoft.TinyCsv.Data
     using System.Runtime.CompilerServices;
 #endif
     using System.Threading.Tasks;
+    using Mafesoft.TinyCsv.Exceptions;
     using Mafesoft.TinyCsv.Extensions;
 
     /// <summary>
@@ -57,6 +58,10 @@ namespace Mafesoft.TinyCsv.Data
         // true when the escaped field is written in the buffer (see AppendEscaped),
         // false in the cases where only EnclosedInQuotesIfNecessary gives the same result
         private readonly bool escapeInBuffer;
+        private readonly CsvInjectionProtection injection;
+        private readonly char[] injectionChars;
+        // the column of the field that is appended, see Build
+        private CsvColumnBinding<T>? current;
         private char[] buffer = new char[256];
         private int length;
 
@@ -92,23 +97,36 @@ namespace Mafesoft.TinyCsv.Data
                 alwaysEscape = delimiter.Length == 0;
             }
             escapeChars = chars.ToArray();
+            injection = options.InjectionProtection;
+            injectionChars = options.InjectionCharacters ?? CsvOptions.DefaultInjectionCharacters;
         }
 
         /// <summary>
         /// Builds the line of the model
         /// </summary>
         /// <param name="model"></param>
-        public void Build(T model)
+        /// <param name="rowIndex">the index of the row, set in the exceptions (i.e. CsvInjectionException)</param>
+        /// <exception cref="CsvException"></exception>
+        public void Build(T model, int rowIndex)
         {
             length = 0;
-            for (int i = 0; i < bindings.Length; i++)
+            try
             {
-                if (i > 0)
+                for (int i = 0; i < bindings.Length; i++)
                 {
-                    Append(delimiter);
+                    if (i > 0)
+                    {
+                        Append(delimiter);
+                    }
+                    var binding = bindings[i];
+                    current = binding;
+                    binding.Accessor.AppendValue(model, this, binding);
                 }
-                var binding = bindings[i];
-                binding.Accessor.AppendValue(model, this, binding);
+            }
+            catch (CsvException exception)
+            {
+                exception.SetRowIndex(rowIndex);
+                throw;
             }
         }
 
@@ -137,6 +155,69 @@ namespace Mafesoft.TinyCsv.Data
         public Task WriteToAsync(TextWriter writer)
         {
             return writer.WriteAsync(buffer, 0, length);
+        }
+
+        /// <summary>
+        /// Appends a text field (the value of a column of type string), escaped if necessary and protected
+        /// from CSV injection (see CsvOptions.InjectionProtection). A null value is an empty field.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <exception cref="CsvInjectionException"></exception>
+        public void AppendText(string? value)
+        {
+            if (injection != CsvInjectionProtection.None
+                && value != null
+                && value.Length > 0
+                && Array.IndexOf(injectionChars, value[0]) >= 0)
+            {
+                AppendProtected(value);
+                return;
+            }
+            AppendField(value);
+        }
+
+        /// <summary>
+        /// Appends the converted value of a column: a text field when the column is of type string, otherwise a field
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="binding"></param>
+        public void AppendValue(string? value, CsvColumnBinding<T> binding)
+        {
+            if (binding.IsText)
+            {
+                AppendText(value);
+            }
+            else
+            {
+                AppendField(value);
+            }
+        }
+
+        /// <summary>
+        /// Appends a text value that starts with an injection character
+        /// </summary>
+        private void AppendProtected(string value)
+        {
+            switch (injection)
+            {
+                case CsvInjectionProtection.Strip:
+                    AppendField(value.TrimStart(injectionChars));
+                    break;
+                case CsvInjectionProtection.Throw:
+                    throw new CsvInjectionException(current?.Column.ColumnName ?? string.Empty, value);
+                default:
+                    // the apostrophe makes the value a text, and the quotes keep it in the same cell
+                    var escaped = "'" + value;
+                    if (quoting)
+                    {
+                        AppendEscaped(escaped.AsSpan(), true);
+                    }
+                    else
+                    {
+                        AppendField(escaped);
+                    }
+                    break;
+            }
         }
 
         /// <summary>
@@ -224,10 +305,13 @@ namespace Mafesoft.TinyCsv.Data
         /// the backslashes doubled (AllowBackSlashToEscapeQuote) and, when the field contains the delimiter,
         /// a quote or a new line, the field enclosed in quotes with the quotes escaped.
         /// </summary>
-        private void AppendEscaped(ReadOnlySpan<char> value)
+        /// <param name="value"></param>
+        /// <param name="enclose">true to enclose the field in quotes in any case</param>
+        private void AppendEscaped(ReadOnlySpan<char> value, bool enclose = false)
         {
             var enclosed = quoting
-                && (delimiter.Length == 0
+                && (enclose
+                    || delimiter.Length == 0
                     || value.IndexOf(delimiter.AsSpan()) >= 0
                     || value.IndexOf(quote) >= 0
                     || value.IndexOfAny('\r', '\n') >= 0

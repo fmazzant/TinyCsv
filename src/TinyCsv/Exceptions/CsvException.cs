@@ -33,7 +33,7 @@ namespace Mafesoft.TinyCsv.Exceptions
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// The base of the exceptions thrown while reading a csv, with the position of the error:
+    /// The base of the exceptions thrown while reading or writing a csv, with the position of the error:
     /// the row, and the column and the value when the error is about a value.
     /// </summary>
     [Serializable]
@@ -125,6 +125,15 @@ namespace Mafesoft.TinyCsv.Exceptions
         {
             RowIndex = rowIndex;
             Row = row;
+        }
+
+        /// <summary>
+        /// Sets the index of the row of the error, when the row is not known as text (i.e. when writing)
+        /// </summary>
+        /// <param name="rowIndex"></param>
+        internal void SetRowIndex(int rowIndex)
+        {
+            RowIndex = rowIndex;
         }
     }
 }

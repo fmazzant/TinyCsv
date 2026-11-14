@@ -260,6 +260,25 @@ namespace Mafesoft.TinyCsv
         /// Enable handlers if necessary
         /// </summary>
         public bool EnableHandlers { get; set; } = false;
+
+        /// <summary>
+        /// The default <see cref="InjectionCharacters"/>: the characters that start a formula in Excel and LibreOffice
+        /// (<c>=</c>, <c>+</c>, <c>-</c>, <c>@</c>, tab and carriage return), as OWASP recommends
+        /// </summary>
+        public static char[] DefaultInjectionCharacters => new[] { '=', '+', '-', '@', '\t', '\r' };
+
+        /// <summary>
+        /// Protects the text values from CSV injection (formula injection) when writing: a value that starts with one of
+        /// <see cref="InjectionCharacters"/> is escaped, stripped or rejected. Only the columns of type string are checked,
+        /// so the numbers (i.e. <c>-5</c>) are written as they are. The default is <see cref="CsvInjectionProtection.None"/>.
+        /// </summary>
+        public CsvInjectionProtection InjectionProtection { get; set; } = CsvInjectionProtection.None;
+
+        /// <summary>
+        /// The characters that start a formula, see <see cref="InjectionProtection"/>.
+        /// The default is <see cref="DefaultInjectionCharacters"/>; null is the same as the default.
+        /// </summary>
+        public char[]? InjectionCharacters { get; set; } = DefaultInjectionCharacters;
     }
 
     /// <summary>
@@ -407,6 +426,11 @@ namespace Mafesoft.TinyCsv
                 if (attribute is ValidateValuesAttribute validateValues)
                 {
                     this.ValidateValues = validateValues.ValidateValues;
+                }
+                if (attribute is InjectionProtectionAttribute injectionProtection)
+                {
+                    this.InjectionProtection = injectionProtection.InjectionProtection;
+                    this.InjectionCharacters = injectionProtection.InjectionCharacters ?? this.InjectionCharacters;
                 }
             }
         }

@@ -66,7 +66,7 @@ If TinyCsv is useful to you, consider [supporting the project](#support). ☕
 | Per-row error handling | ✅ | ✅ | ❌ | ⚠️ | ⚠️ |
 | Records without a model / `DataTable` | ✅ | ✅ | ⚠️ | ✅ | ❌ |
 | `IDataReader` (SqlBulkCopy) | planned ([#77](https://github.com/fmazzant/TinyCsv/issues/77)) | ✅ | ❌ | ✅ | ❌ |
-| CSV injection protection | planned ([#79](https://github.com/fmazzant/TinyCsv/issues/79)) | ✅ | ❌ | ❌ | n/a |
+| CSV injection protection | ✅ `InjectionProtection` | ✅ | ❌ | ❌ | n/a |
 | ASP.NET Core integration | ✅ DI; results/formatters planned ([#76](https://github.com/fmazzant/TinyCsv/issues/76)) | ❌ | ❌ | ❌ | ❌ |
 | Native AOT / trimming | to evaluate ([#84](https://github.com/fmazzant/TinyCsv/issues/84)) | ⚠️ | ✅ | ✅ | ⚠️ |
 | `netstandard2.0` (.NET Framework 4.6.2+) | ✅ | ✅ | ❌ | ✅ | ✅ |
@@ -508,6 +508,34 @@ using (var writer = csv.CreateWriter("file_export.csv"))
 The header is written before the first record, and the file is completed when the writer is disposed.
 `CreateWriter` takes a path, a `Stream` or a `StreamWriter`: the stream and the stream writer are left open.
 There are `WriteRecordAsync`, `WriteRecordsAsync` (with an `IEnumerable<T>` or an `IAsyncEnumerable<T>`) and `await using`, on every target framework.
+
+### Protect against CSV injection
+
+A file exported from user data and opened in Excel or LibreOffice runs as a formula any value that starts with `=`, `+`, `-`, `@`,
+tab or carriage return ([CSV injection](https://owasp.org/www-community/attacks/CSV_Injection)): a customer named `=HYPERLINK(...)`
+becomes a link on the machine of whoever opens the file. `InjectionProtection` protects the text values when writing:
+
+```c#
+var csv = new TinyCsv<Customer>(options =>
+{
+    options.HasHeaderRecord = true;
+    options.InjectionProtection = CsvInjectionProtection.Escape;
+});
+```
+
+| `InjectionProtection` | `=1+2` is written as |
+|---|---|
+| `None` (default) | `=1+2`, as it is |
+| `Escape` | `"'=1+2"`: prefixed with an apostrophe and enclosed in quotes, so it is shown as text |
+| `Strip` | `1+2`: the leading injection characters are removed |
+| `Throw` | a `CsvInjectionException` (a `CsvException`) with `RowIndex`, `ColumnName` and `Value` |
+
+- only the columns of type `string` are checked, so the numbers are written as they are: `-5` stays `-5`;
+- the characters are in `InjectionCharacters` (`=`, `+`, `-`, `@`, `\t` and `\r` by default);
+- it applies to `Save`, `SaveAsync`, `GetAllText`, `GetAllLines` and `CreateWriter`; the values are read back as they are written (with the apostrophe);
+- with attributes, use `[InjectionProtection(CsvInjectionProtection.Escape)]` on the model.
+
+The default is `None` in 4.x, so the files are the same as before: set it when the values come from the users.
 
 ## Records without a model
 
