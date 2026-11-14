@@ -183,7 +183,7 @@ namespace Mafesoft.TinyCsv
 
         /// <summary>
         /// The encoding to read and write. The default is UTF-8, written without the byte order mark (BOM);
-        /// set <c>new UTF8Encoding(true)</c> to write the BOM (i.e. for Excel). When reading, a BOM takes precedence.
+        /// set <see cref="WriteByteOrderMark"/> (or <c>new UTF8Encoding(true)</c>) to write the BOM (i.e. for Excel). When reading, a BOM takes precedence.
         /// Null is the same as the default.
         /// </summary>
         public Encoding? TextEncoding { get; set; } = Encoding.UTF8;
@@ -300,6 +300,68 @@ namespace Mafesoft.TinyCsv
         /// When it is empty, a null value is written by the converter of the column, as before.
         /// </summary>
         public string? NullValueOnWrite { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Writes the byte order mark (BOM) of the encoding, independently from the <see cref="TextEncoding"/> instance:
+        /// true writes it (Excel needs it to show the accented characters of a UTF-8 file), false does not write it
+        /// (many Linux tools and importers fail with it). Null (default) follows the encoding: the default UTF-8 is written
+        /// without the BOM, <c>new UTF8Encoding(true)</c> with the BOM.
+        /// <c>GetAllText</c> starts with the BOM char (U+FEFF) when it is true.
+        /// </summary>
+        public bool? WriteByteOrderMark { get; set; }
+
+        /// <summary>
+        /// Writes the line <c>sep=</c> followed by the <see cref="Delimiter"/> (i.e. <c>sep=;</c>) before the header:
+        /// Excel reads it to choose the delimiter, regardless of the regional settings. The default is false.
+        /// When reading, a first line <c>sep=X</c> is always recognized: it sets the delimiter and it is skipped.
+        /// </summary>
+        public bool WriteSeparatorLine { get; set; } = false;
+
+        /// <summary>
+        /// The prefix of the separator line, see <see cref="WriteSeparatorLine"/>
+        /// </summary>
+        internal const string SeparatorLinePrefix = "sep=";
+
+        /// <summary>
+        /// The separator line written with <see cref="WriteSeparatorLine"/>, i.e. "sep=;"
+        /// </summary>
+        internal string SeparatorLine => SeparatorLinePrefix + Delimiter;
+
+        /// <summary>
+        /// The encoding with or without the byte order mark (see WriteByteOrderMark). The encodings without a byte order mark
+        /// (i.e. ASCII) are returned as they are.
+        /// </summary>
+        /// <param name="encoding"></param>
+        /// <param name="writeByteOrderMark"></param>
+        /// <returns></returns>
+        internal static Encoding WithByteOrderMark(Encoding encoding, bool? writeByteOrderMark)
+        {
+            if (writeByteOrderMark == null)
+            {
+                return encoding;
+            }
+            var bom = writeByteOrderMark.Value;
+            if ((encoding.GetPreamble().Length > 0) == bom)
+            {
+                return encoding;
+            }
+            var throwOnInvalid = encoding.DecoderFallback is DecoderExceptionFallback;
+            switch (encoding.CodePage)
+            {
+                case 65001:
+                    return new UTF8Encoding(bom, throwOnInvalid);
+                case 1200:
+                    return new UnicodeEncoding(false, bom, throwOnInvalid);
+                case 1201:
+                    return new UnicodeEncoding(true, bom, throwOnInvalid);
+                case 12000:
+                    return new UTF32Encoding(false, bom, throwOnInvalid);
+                case 12001:
+                    return new UTF32Encoding(true, bom, throwOnInvalid);
+                default:
+                    return encoding;
+            }
+        }
     }
 
     /// <summary>
@@ -464,6 +526,14 @@ namespace Mafesoft.TinyCsv
                 if (attribute is NullValueOnWriteAttribute nullValueOnWrite)
                 {
                     this.NullValueOnWrite = nullValueOnWrite.NullValueOnWrite;
+                }
+                if (attribute is WriteByteOrderMarkAttribute writeByteOrderMark)
+                {
+                    this.WriteByteOrderMark = writeByteOrderMark.WriteByteOrderMark;
+                }
+                if (attribute is WriteSeparatorLineAttribute writeSeparatorLine)
+                {
+                    this.WriteSeparatorLine = writeSeparatorLine.WriteSeparatorLine;
                 }
             }
         }

@@ -2,6 +2,7 @@
 namespace Mafesoft.TinyCsv.Data
 {
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Text;
     using System.Threading;
@@ -28,14 +29,26 @@ namespace Mafesoft.TinyCsv.Data
 
         public string Delimiter { get; }
 
+        /// <summary>
+        /// Opens the reader: a first line "sep=X" (see CsvOptions.WriteSeparatorLine) sets the delimiter and it is skipped,
+        /// otherwise the delimiter is detected (see CsvOptions.DetectDelimiter) or it is the delimiter of the options.
+        /// </summary>
         public static CsvReadSource Open(TextReader reader, CsvOptions options)
         {
+            var sample = new Sample();
+            while (!sample.HasSeparatorLineOrNot)
+            {
+                sample.Append(reader.Read(sample.Chunk, 0, ChunkLength));
+            }
+            if (sample.TryTakeSeparatorLine(out var separator))
+            {
+                return new CsvReadSource(sample.ToReader(reader), separator);
+            }
             if (!options.DetectDelimiter)
             {
-                return new CsvReadSource(reader, options.Delimiter);
+                return new CsvReadSource(sample.ToReader(reader), options.Delimiter);
             }
 
-            var sample = new Sample();
             while (!sample.IsFull)
             {
                 sample.Append(reader.Read(sample.Chunk, 0, ChunkLength));
@@ -43,14 +56,26 @@ namespace Mafesoft.TinyCsv.Data
             return sample.ToSource(reader, options);
         }
 
+        /// <summary>
+        /// Opens the reader, as Open
+        /// </summary>
         public static async Task<CsvReadSource> OpenAsync(TextReader reader, CsvOptions options, CancellationToken cancellationToken)
         {
+            var sample = new Sample();
+            while (!sample.HasSeparatorLineOrNot)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                sample.Append(await reader.ReadAsync(sample.Chunk, 0, ChunkLength).ConfigureAwait(false));
+            }
+            if (sample.TryTakeSeparatorLine(out var separator))
+            {
+                return new CsvReadSource(sample.ToReader(reader), separator);
+            }
             if (!options.DetectDelimiter)
             {
-                return new CsvReadSource(reader, options.Delimiter);
+                return new CsvReadSource(sample.ToReader(reader), options.Delimiter);
             }
 
-            var sample = new Sample();
             while (!sample.IsFull)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -71,6 +96,85 @@ namespace Mafesoft.TinyCsv.Data
             public char[] Chunk { get; } = new char[ChunkLength];
 
             public bool IsFull => complete || text.Length >= MaxSampleLength || newLines > SampleRecords + 1;
+
+            /// <summary>
+            /// True when the sample is enough to know if the first line is a separator line: it does not start
+            /// with "sep=", or the first line is complete
+            /// </summary>
+            public bool HasSeparatorLineOrNot
+            {
+                get
+                {
+                    if (complete || text.Length >= MaxSampleLength)
+                    {
+                        return true;
+                    }
+                    var prefix = CsvOptions.SeparatorLinePrefix;
+                    if (text.Length < prefix.Length)
+                    {
+                        return false;
+                    }
+                    return !StartsWithSeparatorLinePrefix() || newLines > 0;
+                }
+            }
+
+            private bool StartsWithSeparatorLinePrefix()
+            {
+                var prefix = CsvOptions.SeparatorLinePrefix;
+                if (text.Length < prefix.Length)
+                {
+                    return false;
+                }
+                for (int i = 0; i < prefix.Length; i++)
+                {
+                    if (char.ToLowerInvariant(text[i]) != prefix[i])
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            /// <summary>
+            /// Removes the first line from the sample when it is a separator line ("sep=X")
+            /// </summary>
+            /// <param name="separator">the delimiter of the separator line</param>
+            /// <returns></returns>
+            public bool TryTakeSeparatorLine([NotNullWhen(true)] out string? separator)
+            {
+                separator = null;
+                if (!StartsWithSeparatorLinePrefix())
+                {
+                    return false;
+                }
+                var end = 0;
+                while (end < text.Length && text[end] != '\n')
+                {
+                    end++;
+                }
+                var line = text.ToString(0, end).TrimEnd('\r');
+                var value = line.Substring(CsvOptions.SeparatorLinePrefix.Length);
+                if (value.Length == 0)
+                {
+                    return false;
+                }
+                separator = value;
+                if (end < text.Length)
+                {
+                    newLines--;
+                    end++;
+                }
+                text.Remove(0, end);
+                return true;
+            }
+
+            /// <summary>
+            /// The reader of the sample and then of the rest of the reader
+            /// </summary>
+            public TextReader ToReader(TextReader reader)
+            {
+                return text.Length == 0 ? reader : new PrefixedTextReader(text.ToString(), reader);
+            }
 
             public void Append(int read)
             {
