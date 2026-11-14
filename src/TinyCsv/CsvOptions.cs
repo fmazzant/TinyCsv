@@ -183,7 +183,7 @@ namespace Mafesoft.TinyCsv
 
         /// <summary>
         /// The encoding to read and write. The default is UTF-8, written without the byte order mark (BOM);
-        /// set <c>new UTF8Encoding(true)</c> to write the BOM (i.e. for Excel). When reading, a BOM takes precedence.
+        /// set <see cref="WriteByteOrderMark"/> (or <c>new UTF8Encoding(true)</c>) to write the BOM (i.e. for Excel). When reading, a BOM takes precedence.
         /// Null is the same as the default.
         /// </summary>
         public Encoding? TextEncoding { get; set; } = Encoding.UTF8;
@@ -260,6 +260,108 @@ namespace Mafesoft.TinyCsv
         /// Enable handlers if necessary
         /// </summary>
         public bool EnableHandlers { get; set; } = false;
+
+        /// <summary>
+        /// The default <see cref="InjectionCharacters"/>: the characters that start a formula in Excel and LibreOffice
+        /// (<c>=</c>, <c>+</c>, <c>-</c>, <c>@</c>, tab and carriage return), as OWASP recommends
+        /// </summary>
+        public static char[] DefaultInjectionCharacters => new[] { '=', '+', '-', '@', '\t', '\r' };
+
+        /// <summary>
+        /// Protects the text values from CSV injection (formula injection) when writing: a value that starts with one of
+        /// <see cref="InjectionCharacters"/> is escaped, stripped or rejected. Only the columns of type string are checked,
+        /// so the numbers (i.e. <c>-5</c>) are written as they are. The default is <see cref="CsvInjectionProtection.None"/>.
+        /// </summary>
+        public CsvInjectionProtection InjectionProtection { get; set; } = CsvInjectionProtection.None;
+
+        /// <summary>
+        /// The characters that start a formula, see <see cref="InjectionProtection"/>.
+        /// The default is <see cref="DefaultInjectionCharacters"/>; null is the same as the default.
+        /// </summary>
+        public char[]? InjectionCharacters { get; set; } = DefaultInjectionCharacters;
+
+        /// <summary>
+        /// When the writer encloses the fields in quotes. The default is <see cref="CsvQuoteMode.Minimal"/>:
+        /// only the fields that contain the delimiter, a quote or a new line. The fields are enclosed in quotes
+        /// only when <see cref="AllowRowEnclosedInDoubleQuotesValues"/> is true.
+        /// </summary>
+        public CsvQuoteMode QuoteMode { get; set; } = CsvQuoteMode.Minimal;
+
+        /// <summary>
+        /// The values that are read as null (i.e. "NULL" or "\N"), compared with the whole field, case sensitive,
+        /// before the converter is called: the property is null, or the default value of a type that cannot be null.
+        /// A column can have its own values (see CsvMemberMap.NullValues and NullValuesAttribute), that replace these.
+        /// Null (default) reads every value with the converter.
+        /// </summary>
+        public string[]? NullValues { get; set; }
+
+        /// <summary>
+        /// The text written for a null value (i.e. "NULL" or "\N"). The default is an empty field.
+        /// When it is empty, a null value is written by the converter of the column, as before.
+        /// </summary>
+        public string? NullValueOnWrite { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Writes the byte order mark (BOM) of the encoding, independently from the <see cref="TextEncoding"/> instance:
+        /// true writes it (Excel needs it to show the accented characters of a UTF-8 file), false does not write it
+        /// (many Linux tools and importers fail with it). Null (default) follows the encoding: the default UTF-8 is written
+        /// without the BOM, <c>new UTF8Encoding(true)</c> with the BOM.
+        /// <c>GetAllText</c> starts with the BOM char (U+FEFF) when it is true.
+        /// </summary>
+        public bool? WriteByteOrderMark { get; set; }
+
+        /// <summary>
+        /// Writes the line <c>sep=</c> followed by the <see cref="Delimiter"/> (i.e. <c>sep=;</c>) before the header:
+        /// Excel reads it to choose the delimiter, regardless of the regional settings. The default is false.
+        /// When reading, a first line <c>sep=X</c> is always recognized: it sets the delimiter and it is skipped.
+        /// </summary>
+        public bool WriteSeparatorLine { get; set; } = false;
+
+        /// <summary>
+        /// The prefix of the separator line, see <see cref="WriteSeparatorLine"/>
+        /// </summary>
+        internal const string SeparatorLinePrefix = "sep=";
+
+        /// <summary>
+        /// The separator line written with <see cref="WriteSeparatorLine"/>, i.e. "sep=;"
+        /// </summary>
+        internal string SeparatorLine => SeparatorLinePrefix + Delimiter;
+
+        /// <summary>
+        /// The encoding with or without the byte order mark (see WriteByteOrderMark). The encodings without a byte order mark
+        /// (i.e. ASCII) are returned as they are.
+        /// </summary>
+        /// <param name="encoding"></param>
+        /// <param name="writeByteOrderMark"></param>
+        /// <returns></returns>
+        internal static Encoding WithByteOrderMark(Encoding encoding, bool? writeByteOrderMark)
+        {
+            if (writeByteOrderMark == null)
+            {
+                return encoding;
+            }
+            var bom = writeByteOrderMark.Value;
+            if ((encoding.GetPreamble().Length > 0) == bom)
+            {
+                return encoding;
+            }
+            var throwOnInvalid = encoding.DecoderFallback is DecoderExceptionFallback;
+            switch (encoding.CodePage)
+            {
+                case 65001:
+                    return new UTF8Encoding(bom, throwOnInvalid);
+                case 1200:
+                    return new UnicodeEncoding(false, bom, throwOnInvalid);
+                case 1201:
+                    return new UnicodeEncoding(true, bom, throwOnInvalid);
+                case 12000:
+                    return new UTF32Encoding(false, bom, throwOnInvalid);
+                case 12001:
+                    return new UTF32Encoding(true, bom, throwOnInvalid);
+                default:
+                    return encoding;
+            }
+        }
     }
 
     /// <summary>
@@ -408,6 +510,31 @@ namespace Mafesoft.TinyCsv
                 {
                     this.ValidateValues = validateValues.ValidateValues;
                 }
+                if (attribute is InjectionProtectionAttribute injectionProtection)
+                {
+                    this.InjectionProtection = injectionProtection.InjectionProtection;
+                    this.InjectionCharacters = injectionProtection.InjectionCharacters ?? this.InjectionCharacters;
+                }
+                if (attribute is QuoteModeAttribute quoteMode)
+                {
+                    this.QuoteMode = quoteMode.QuoteMode;
+                }
+                if (attribute is NullValuesAttribute nullValues)
+                {
+                    this.NullValues = nullValues.NullValues;
+                }
+                if (attribute is NullValueOnWriteAttribute nullValueOnWrite)
+                {
+                    this.NullValueOnWrite = nullValueOnWrite.NullValueOnWrite;
+                }
+                if (attribute is WriteByteOrderMarkAttribute writeByteOrderMark)
+                {
+                    this.WriteByteOrderMark = writeByteOrderMark.WriteByteOrderMark;
+                }
+                if (attribute is WriteSeparatorLineAttribute writeSeparatorLine)
+                {
+                    this.WriteSeparatorLine = writeSeparatorLine.WriteSeparatorLine;
+                }
             }
         }
 
@@ -494,25 +621,55 @@ namespace Mafesoft.TinyCsv
 
             var fieldIndexes = new int[Columns.Count];
             var missing = new List<string>();
+            var missingNames = new List<string>();
             var columnIndex = 0;
             foreach (var column in Columns)
             {
-                if (indexByName.TryGetValue(column.ColumnName ?? string.Empty, out var fieldIndex))
+                if (TryGetFieldIndex(indexByName, column, out var fieldIndex))
                 {
                     fieldIndexes[columnIndex] = fieldIndex;
+                }
+                else if (column.IsOptional)
+                {
+                    // beyond every record: the field is missing (see CsvColumn.IsOptional)
+                    fieldIndexes[columnIndex] = int.MaxValue;
                 }
                 else
                 {
                     missing.Add(column.ColumnName ?? string.Empty);
+                    var alternativeNames = column.AlternativeNames;
+                    missingNames.Add(alternativeNames.Length == 0
+                        ? column.ColumnName ?? string.Empty
+                        : $"{column.ColumnName} (or {string.Join(", ", alternativeNames)})");
                 }
                 columnIndex++;
             }
 
             if (missing.Count > 0)
             {
-                throw new MissingColumnException(missing.ToArray());
+                throw new MissingColumnException(missing.ToArray(),
+                    $"The header record does not contain the columns: {string.Join(", ", missingNames)}.");
             }
             return fieldIndexes;
+        }
+
+        /// <summary>
+        /// The index of the field of the column: the first name of the column (see CsvColumn.ColumnNames) found in the header
+        /// </summary>
+        private static bool TryGetFieldIndex(Dictionary<string, int> indexByName, CsvColumn column, out int fieldIndex)
+        {
+            if (indexByName.TryGetValue(column.ColumnName ?? string.Empty, out fieldIndex))
+            {
+                return true;
+            }
+            foreach (var name in column.AlternativeNames)
+            {
+                if (indexByName.TryGetValue(name ?? string.Empty, out fieldIndex))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>

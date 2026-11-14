@@ -244,16 +244,49 @@ namespace Mafesoft.TinyCsv.Data
                         var value = !hasDelimiters ? fields[fieldIndex]
                             : hasQuotedFields ? dataReader.GetField(records, fieldIndex)
                             : dataReader.GetField(buffer, start, length, delimiters, delimiterCount, fieldIndex);
-                        binding.Accessor.SetValue(model, value, binding, validateValues);
+                        if (binding.NullValues != null && binding.IsNullValue(value.Span))
+                        {
+                            // a null value is not converted (see CsvOptions.NullValues)
+                            binding.Accessor.SetObject(model, binding.NullValue);
+                        }
+                        else if (binding.Column.HasDefaultValue && IsWhiteSpace(value.Span))
+                        {
+                            // an empty field is the default value of the column (see CsvColumn.DefaultValue)
+                            binding.Accessor.SetObject(model, binding.Column.DefaultValue);
+                        }
+                        else
+                        {
+                            binding.Accessor.SetValue(model, value, binding, validateValues);
+                        }
+                    }
+                    else if (bindings[position].Column.HasDefaultValue)
+                    {
+                        // a missing field (an optional column, or a short record) is the default value of the column
+                        bindings[position].Accessor.SetObject(model, bindings[position].Column.DefaultValue);
                     }
                 }
             }
-            catch (Exception exception) when (!(exception is CsvException))
+            catch (Exception exception) when (!(exception is CsvException) && fieldIndexes[position] < count)
             {
                 var value = GetField(fieldIndexes[position], hasDelimiters);
                 throw bindings[position].Column.NotConvertibleValueException(value.ToString(), exception);
             }
             return model;
+        }
+
+        /// <summary>
+        /// As string.IsNullOrWhiteSpace
+        /// </summary>
+        private static bool IsWhiteSpace(ReadOnlySpan<char> value)
+        {
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (!char.IsWhiteSpace(value[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         /// <summary>

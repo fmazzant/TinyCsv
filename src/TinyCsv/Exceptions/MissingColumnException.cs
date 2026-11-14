@@ -64,6 +64,17 @@ namespace Mafesoft.TinyCsv.Exceptions
         /// <summary>
         /// Create a new instance of MissingColumnException
         /// </summary>
+        /// <param name="missingColumns">the names of the columns that are not in the header record</param>
+        /// <param name="message">the message, i.e. with the alternative names of the columns</param>
+        public MissingColumnException(string[] missingColumns, string? message)
+            : base(message)
+        {
+            MissingColumns = missingColumns;
+        }
+
+        /// <summary>
+        /// Create a new instance of MissingColumnException
+        /// </summary>
         /// <param name="message"></param>
         public MissingColumnException(string? message)
             : base(message)

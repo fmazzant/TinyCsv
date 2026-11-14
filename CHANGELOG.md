@@ -5,6 +5,43 @@ All notable changes to the `Mafesoft.TinyCsv*` packages (`Mafe.TinyCsv*` up to 3
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.0] - 2026-11-14
+
+### Added
+
+- Protection against CSV injection when writing: `options.InjectionProtection` (`None` default, `Escape`, `Strip`,
+  `Throw`) and `options.InjectionCharacters` (`=`, `+`, `-`, `@`, tab and carriage return by default). Only the text
+  columns are checked, so numbers such as `-5` are written as they are. `Throw` gives a `CsvInjectionException` with
+  `RowIndex`, `ColumnName` and `Value`. Also as the `[InjectionProtection]` attribute.
+  ([#79](https://github.com/fmazzant/TinyCsv/issues/79))
+- `options.QuoteMode`: `Minimal` (default, unchanged), `All`, `NonNumeric` and `None` (a value with the delimiter or
+  a new line throws `InvalidColumnValueException` instead of writing a broken file).
+  ([#80](https://github.com/fmazzant/TinyCsv/issues/80))
+- `options.NullValues`: on read the fields equal to one of them (`"NULL"`, `"N/A"`, ...) become `null`; also per
+  column (`Map(...).NullValues(...)`, `[NullValues]`) and in `TinyCsvRecords`. `options.NullValueOnWrite` is written
+  for a null property. Attributes `[QuoteMode]`, `[NullValues]`, `[NullValueOnWrite]`.
+  ([#80](https://github.com/fmazzant/TinyCsv/issues/80))
+- `[Ignore]` / `Ignore()`: the property is not a column. `[Optional]` / `Optional()`: with `MapColumnsByHeader`, a
+  column missing from the header no longer throws `MissingColumnException`. `[Default(value)]` / `Default(value)`:
+  the value used when the field is empty or missing, converted to the property type (an invalid value throws
+  `ArgumentException` when the options are built). ([#81](https://github.com/fmazzant/TinyCsv/issues/81))
+- Excel-friendly files: `options.WriteByteOrderMark` (`true`, `false`, or `null` = follow the `TextEncoding` as
+  before) and `options.WriteSeparatorLine` (`sep=;` before the header). On read a first `sep=X` line is always
+  recognized, sets the delimiter (it wins over `DetectDelimiter`) and is skipped. Attributes `[WriteByteOrderMark]`,
+  `[WriteSeparatorLine]`. ([#82](https://github.com/fmazzant/TinyCsv/issues/82))
+- Alternative header names for a column: `Map(m => m.Id).Name("Id", "ID", "Code")`,
+  `AddColumn(m => m.Id).WithNames("ID", "Code")`, `[Column(names: new[] { "Id", "ID", "Code" })]` and
+  `CsvColumn.ColumnNames`. On read the first name found in the header wins; on write the first name is the header.
+  The missing-column message lists all the names. ([#100](https://github.com/fmazzant/TinyCsv/issues/100))
+
+### Changed
+
+- `options.Columns.AddColumn(...)` returns the `CsvColumn` instead of `void`, so `.WithNames(...)` can follow. Source
+  compatible; assemblies compiled against 4.0 that call `AddColumn` must be recompiled.
+  ([#100](https://github.com/fmazzant/TinyCsv/issues/100))
+- CI and CodeQL run on the `release/*` and `release-candidate/*` branches too, not only on `main`.
+- README, `SECURITY.md` and the CsvHelper migration guide document the new options.
+
 ## [4.0.2] - 2026-11-14
 
 ### Fixed

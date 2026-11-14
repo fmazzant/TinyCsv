@@ -328,6 +328,19 @@ namespace Mafesoft.TinyCsv
                 {
                     names.Add(CsvRecord.FieldName(i));
                 }
+
+                // the null values are null (see CsvOptions.NullValues)
+                var nullValues = options.NullValues;
+                if (nullValues != null && nullValues.Length > 0)
+                {
+                    for (int i = 0; i < fields.Length; i++)
+                    {
+                        if (fields[i] != null && Array.IndexOf(nullValues, fields[i]) >= 0)
+                        {
+                            fields[i] = null!;
+                        }
+                    }
+                }
                 return new CsvRecord(names, fields);
             }
         }

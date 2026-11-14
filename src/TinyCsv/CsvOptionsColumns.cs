@@ -81,9 +81,9 @@ namespace Mafesoft.TinyCsv
         /// <param name="columnIndex"></param>
         /// <param name="expression"></param>
         /// <param name="columnFormat"></param>
-        public void AddColumn<T>(int columnIndex, Expression<Func<M, T>> expression, string? columnFormat = null)
+        public CsvColumn AddColumn<T>(int columnIndex, Expression<Func<M, T>> expression, string? columnFormat = null)
         {
-            this.AddColumn(columnIndex, expression.GetColumnName(), expression, columnFormat);
+            return this.AddColumn(columnIndex, expression.GetColumnName(), expression, columnFormat);
         }
 
         /// <summary>
@@ -93,9 +93,9 @@ namespace Mafesoft.TinyCsv
         /// <param name="columnName"></param>
         /// <param name="expression"></param>
         /// <param name="columnFormat"></param>
-        public void AddColumn<T>(string columnName, Expression<Func<M, T>> expression, string? columnFormat = null)
+        public CsvColumn AddColumn<T>(string columnName, Expression<Func<M, T>> expression, string? columnFormat = null)
         {
-            this.AddColumn(Columns.Count, columnName, expression, columnFormat);
+            return this.AddColumn(Columns.Count, columnName, expression, columnFormat);
         }
 
         /// <summary>
@@ -104,9 +104,9 @@ namespace Mafesoft.TinyCsv
         /// <typeparam name="T"></typeparam>
         /// <param name="expression"></param>
         /// <param name="columnFormat"></param>
-        public void AddColumn<T>(Expression<Func<M, T>> expression, string? columnFormat = null)
+        public CsvColumn AddColumn<T>(Expression<Func<M, T>> expression, string? columnFormat = null)
         {
-            this.AddColumn(Columns.Count, expression.GetColumnName(), expression, columnFormat);
+            return this.AddColumn(Columns.Count, expression.GetColumnName(), expression, columnFormat);
         }
 
         /// <summary>
@@ -117,9 +117,9 @@ namespace Mafesoft.TinyCsv
         /// <param name="columnName"></param>
         /// <param name="expression"></param>
         /// <param name="formatProvider"></param>
-        public void AddColumn<T>(int columnIndex, string columnName, Expression<Func<M, T>> expression, IFormatProvider formatProvider)
+        public CsvColumn AddColumn<T>(int columnIndex, string columnName, Expression<Func<M, T>> expression, IFormatProvider formatProvider)
         {
-            this.AddColumn(columnIndex, columnName, expression, null, formatProvider);
+            return this.AddColumn(columnIndex, columnName, expression, null, formatProvider);
         }
 
         /// <summary>
@@ -130,9 +130,9 @@ namespace Mafesoft.TinyCsv
         /// <param name="columnName"></param>
         /// <param name="expression"></param>
         /// <param name="converter"></param>
-        public void AddColumn<T>(int columnIndex, string columnName, Expression<Func<M, T>> expression, IValueConverter converter)
+        public CsvColumn AddColumn<T>(int columnIndex, string columnName, Expression<Func<M, T>> expression, IValueConverter converter)
         {
-            this.AddColumn(columnIndex, columnName, expression, null, null, converter);
+            return this.AddColumn(columnIndex, columnName, expression, null, null, converter);
         }
 
         /// <summary>
@@ -141,9 +141,9 @@ namespace Mafesoft.TinyCsv
         /// <typeparam name="T"></typeparam>
         /// <param name="expression"></param>
         /// <param name="formatProvider"></param>
-        public void AddColumn<T>(Expression<Func<M, T>> expression, IFormatProvider formatProvider)
+        public CsvColumn AddColumn<T>(Expression<Func<M, T>> expression, IFormatProvider formatProvider)
         {
-            this.AddColumn(Columns.Count, expression.GetColumnName(), expression, null, formatProvider);
+            return this.AddColumn(Columns.Count, expression.GetColumnName(), expression, null, formatProvider);
         }
 
         /// <summary>
@@ -153,9 +153,9 @@ namespace Mafesoft.TinyCsv
         /// <param name="expression"></param>
         /// <param name=""></param>
         /// <param name="converter"></param>
-        public void AddColumn<T>(Expression<Func<M, T>> expression, IValueConverter converter)
+        public CsvColumn AddColumn<T>(Expression<Func<M, T>> expression, IValueConverter converter)
         {
-            this.AddColumn(Columns.Count, expression.GetColumnName(), expression, null, null, converter);
+            return this.AddColumn(Columns.Count, expression.GetColumnName(), expression, null, null, converter);
         }
 
         /// <summary>
@@ -166,9 +166,9 @@ namespace Mafesoft.TinyCsv
         /// <param name="expression"></param>
         /// <param name=""></param>
         /// <param name="converter"></param>
-        public void AddColumn<T>(string columnName, Expression<Func<M, T>> expression, IValueConverter converter)
+        public CsvColumn AddColumn<T>(string columnName, Expression<Func<M, T>> expression, IValueConverter converter)
         {
-            this.AddColumn(Columns.Count, columnName, expression, null, null, converter);
+            return this.AddColumn(Columns.Count, columnName, expression, null, null, converter);
         }
 
         /// <summary>
@@ -180,9 +180,9 @@ namespace Mafesoft.TinyCsv
         /// <param name="expression"></param>
         /// <param name="columnFormat"></param>
         /// <param name="formatProvider"></param>
-        private void AddColumn<T>(int columnIndex, string columnName, Expression<Func<M, T>> expression, string? columnFormat = null, IFormatProvider? formatProvider = null, IValueConverter? converter = null)
+        private CsvColumn AddColumn<T>(int columnIndex, string columnName, Expression<Func<M, T>> expression, string? columnFormat = null, IFormatProvider? formatProvider = null, IValueConverter? converter = null)
         {
-            AddColumn(typeof(T), columnIndex, columnName, expression, columnFormat, formatProvider, converter);
+            return AddColumn(typeof(T), columnIndex, columnName, expression, columnFormat, formatProvider, converter);
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace Mafesoft.TinyCsv
         /// <param name="converter"></param>
         /// <param name="propertyName">the model's property, when the column is not defined by an expression</param>
         /// <param name="propertyPath">the properties of a nested property, when the column is not defined by an expression</param>
-        internal void AddColumn(Type type, int columnIndex, string columnName, Expression? expression, string? columnFormat = null, IFormatProvider? formatProvider = null, IValueConverter? converter = null, string? propertyName = null, PropertyInfo[]? propertyPath = null)
+        internal CsvColumn AddColumn(Type type, int columnIndex, string columnName, Expression? expression, string? columnFormat = null, IFormatProvider? formatProvider = null, IValueConverter? converter = null, string? propertyName = null, PropertyInfo[]? propertyPath = null)
         {
             var index = columnIndex < 0 ? Columns.Count : columnIndex;
             var path = propertyPath ?? expression?.GetNestedPropertyPath();
@@ -205,7 +205,7 @@ namespace Mafesoft.TinyCsv
                 propertyName = ExpressionExtensions.GetPropertyPathName(path);
             }
 
-            Columns.Add(new CsvColumn()
+            var column = new CsvColumn()
             {
                 ColumnIndex = index,
                 ColumnName = columnName,
@@ -216,7 +216,30 @@ namespace Mafesoft.TinyCsv
                 ColumnFormatProvider = formatProvider,
                 Converter = converter ?? ValueConverterFactory.CreateValueConverterByType(type),
                 PropertyPath = path
-            });
+            };
+            Columns.Add(column);
+            return column;
+        }
+
+        /// <summary>
+        /// Sets the column with the attributes of its property (i.e. NullValuesAttribute)
+        /// </summary>
+        /// <param name="column"></param>
+        /// <param name="property"></param>
+        private static void ApplyPropertyAttributes(CsvColumn column, PropertyInfo property)
+        {
+            if (property.GetCustomAttribute(typeof(NullValuesAttribute)) is NullValuesAttribute nullValues)
+            {
+                column.NullValues = nullValues.NullValues;
+            }
+            if (Attribute.IsDefined(property, typeof(OptionalAttribute)))
+            {
+                column.IsOptional = true;
+            }
+            if (property.GetCustomAttribute(typeof(DefaultAttribute)) is DefaultAttribute defaultValue)
+            {
+                column.SetDefaultValue(defaultValue.Value);
+            }
         }
 
         /// <summary>
@@ -226,7 +249,7 @@ namespace Mafesoft.TinyCsv
         private void AddColumnsFromType(Type type)
         {
             var propertyWithColumnAttribute = type.GetProperties()
-                .Where(prop => Attribute.IsDefined(prop, typeof(ColumnAttribute)));
+                .Where(prop => Attribute.IsDefined(prop, typeof(ColumnAttribute)) && !Attribute.IsDefined(prop, typeof(IgnoreAttribute)));
 
             foreach (var property in propertyWithColumnAttribute)
             {
@@ -236,6 +259,7 @@ namespace Mafesoft.TinyCsv
 
         /// <summary>
         /// Adds a column for each public property of the type that can be read and written
+        /// (except the properties with IgnoreAttribute)
         /// and whose type has a value converter, in the order of declaration.
         /// The column name is the property name. The properties of a class with a public parameterless constructor
         /// are columns too, named as the nested property: Address.City is Address_City. Collections are ignored.
@@ -258,6 +282,7 @@ namespace Mafesoft.TinyCsv
                 if (property.GetIndexParameters().Length > 0
                     || property.GetGetMethod() == null
                     || property.GetSetMethod() == null
+                    || Attribute.IsDefined(property, typeof(IgnoreAttribute))
                     || !names.Add(name))
                 {
                     continue;
@@ -266,7 +291,8 @@ namespace Mafesoft.TinyCsv
                 var converter = ValueConverterFactory.CreateValueConverterByType(property.PropertyType);
                 if (converter.GetType() != typeof(DefaultValueConverter))
                 {
-                    AddColumn(property.PropertyType, Columns.Count, name, null, converter: converter, propertyName: property.Name, propertyPath: parent.Length > 0 ? path : null);
+                    var column = AddColumn(property.PropertyType, Columns.Count, name, null, converter: converter, propertyName: property.Name, propertyPath: parent.Length > 0 ? path : null);
+                    ApplyPropertyAttributes(column, property);
                 }
                 else if (ExpressionExtensions.IsNestedType(property.PropertyType) && types.Add(property.PropertyType))
                 {
@@ -294,7 +320,12 @@ namespace Mafesoft.TinyCsv
                     var formatProvider = column.ColumnFormatProvider;
                     var converter = column.Converter;
 
-                    AddColumn(propertyInfo.PropertyType, columnIndex, columnName, null, columnFormat, formatProvider, converter, propertyInfo.Name);
+                    var csvColumn = AddColumn(propertyInfo.PropertyType, columnIndex, columnName, null, columnFormat, formatProvider, converter, propertyInfo.Name);
+                    if (column.ColumnNames != null && column.ColumnNames.Length > 1)
+                    {
+                        csvColumn.WithNames(column.ColumnNames.Skip(1).ToArray());
+                    }
+                    ApplyPropertyAttributes(csvColumn, propertyInfo);
                 }
             }
         }

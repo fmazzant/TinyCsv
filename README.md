@@ -66,15 +66,15 @@ If TinyCsv is useful to you, consider [supporting the project](#support). ☕
 | Per-row error handling | ✅ | ✅ | ❌ | ⚠️ | ⚠️ |
 | Records without a model / `DataTable` | ✅ | ✅ | ⚠️ | ✅ | ❌ |
 | `IDataReader` (SqlBulkCopy) | planned ([#77](https://github.com/fmazzant/TinyCsv/issues/77)) | ✅ | ❌ | ✅ | ❌ |
-| CSV injection protection | planned ([#79](https://github.com/fmazzant/TinyCsv/issues/79)) | ✅ | ❌ | ❌ | n/a |
+| CSV injection protection | ✅ `InjectionProtection` | ✅ | ❌ | ❌ | n/a |
 | ASP.NET Core integration | ✅ DI; results/formatters planned ([#76](https://github.com/fmazzant/TinyCsv/issues/76)) | ❌ | ❌ | ❌ | ❌ |
 | Native AOT / trimming | to evaluate ([#84](https://github.com/fmazzant/TinyCsv/issues/84)) | ⚠️ | ✅ | ✅ | ⚠️ |
 | `netstandard2.0` (.NET Framework 4.6.2+) | ✅ | ✅ | ❌ | ✅ | ✅ |
 | Immutable models (records, constructor parameters, `init`) | ❌ requires `new()`; to evaluate ([#83](https://github.com/fmazzant/TinyCsv/issues/83)) | ✅ | n/a, manual | ❔ | ❌ |
-| Alternative header names for a column | ❌ one name; planned ([#100](https://github.com/fmazzant/TinyCsv/issues/100)) | ✅ `Name("Id", "ID")` | ⚠️ manual | ❔ | ❌ by index |
+| Alternative header names for a column | ✅ `Name("Id", "ID")`, `WithNames`, `[Column(names: ...)]` | ✅ `Name("Id", "ID")` | ⚠️ manual | ❔ | ❌ by index |
 | Several record types in the same file | ❌ to evaluate ([#101](https://github.com/fmazzant/TinyCsv/issues/101)) | ✅ | ⚠️ manual | ⚠️ manual | ❌ |
 | Write without a model (dictionaries, `dynamic`, `DataTable`) | ❌ read only; planned ([#78](https://github.com/fmazzant/TinyCsv/issues/78)) | ✅ | ✅ by column name | ✅ from a `DbDataReader` | ❌ |
-| Configuration hooks (header validation, missing fields, ...) | ⚠️ `HeaderNameComparer`, `SkipRow`, `BadDataFound`; optional columns planned ([#81](https://github.com/fmazzant/TinyCsv/issues/81)) | ✅ many | ❌ | ❔ | ❌ |
+| Configuration hooks (header validation, missing fields, ...) | ⚠️ `HeaderNameComparer`, `SkipRow`, `BadDataFound`, ignored, optional and default columns | ✅ many | ❌ | ❔ | ❌ |
 | Allocations when writing (100,000 rows, [benchmark](#performance)) | ✅ 0.01 MB | ⚠️ 25.2 MB | ✅ 0.02 MB | ✅ 0.05 MB | n/a |
 | Parallel parsing | ❌ not planned | ❌ | ✅ `ParallelEnumerate` | ❌ | ✅ degree of parallelism |
 | Zero-copy access to the fields (`Span<char>`) | ❌ not planned | ❌ | ✅ | ✅ | ❌ |
@@ -192,7 +192,7 @@ The `TextEncoding` option (UTF-8 by default) is used to read and write files, st
 |---|---|---|
 | `Delimiter` | `";"` | the delimiter of Excel with the Italian and most European regional settings. Set `","` for RFC 4180 files, or `DetectDelimiter = true` to detect it when reading (it is opt-in) |
 | `NewLine` | `"\r\n"` | RFC 4180. It is the same on every operating system, so the same models are written with the same bytes on Windows and Linux. When reading, `\r\n`, `\n` and `\r` are all accepted |
-| `TextEncoding` | UTF-8, written **without** the byte order mark (BOM) | most tools do not want the BOM. Excel needs it to recognize UTF-8: set `options.TextEncoding = new UTF8Encoding(true)` |
+| `TextEncoding` | UTF-8, written **without** the byte order mark (BOM) | most tools do not want the BOM. Excel needs it to recognize UTF-8: set `options.WriteByteOrderMark = true`, see [Opening the file in Excel](#opening-the-file-in-excel) |
 | `HasHeaderRecord` | `false` | |
 
 ### Culture
@@ -252,6 +252,32 @@ var csv = new TinyCsv<Model>(options =>
 The properties of a class with a public parameterless constructor are columns too, see [nested properties](#nested-properties).
 The other properties whose type has no value converter (i.e. collections) are ignored.
 To use a format, a custom converter or a different name, define the columns.
+
+### Ignore, optional and default values
+
+```c#
+public class Order
+{
+    public int Id { get; set; }
+
+    [Ignore]
+    public string Internal { get; set; }   // not read and not written
+
+    [Optional, Default(0)]
+    public int Priority { get; set; }      // may be missing from the header
+}
+
+// class map
+Map(m => m.Internal).Ignore();
+Map(m => m.Priority).Optional().Default(0);
+```
+
+- `[Ignore]` / `Ignore()`: the property is not a column, it is neither read nor written (automatic columns, `[Column]` and class maps);
+- `[Optional]` / `Optional()`: with `MapColumnsByHeader`, a column that is not in the header does not throw `MissingColumnException`: the property keeps its default value;
+- `[Default(value)]` / `Default(value)`: the value of the property when the field is empty (or white space) or missing (an optional column, or a short record).
+  It is converted to the type of the property (i.e. `[Default("1.5")]` for a `decimal`) and a value that cannot be converted throws an `ArgumentException` when the options are created.
+  A field in `NullValues` is still `null`;
+- the optional columns are written normally, and the default value is not used when writing.
 
 ### Nested properties
 
@@ -385,7 +411,7 @@ public sealed class ProductMap : CsvClassMap<Product>
 var csv = new TinyCsv<Product>(new ProductMap());
 ```
 
-`Map` takes the property and returns the column, with `Index`, `Name`, `Format`, `FormatProvider` and `Converter`.
+`Map` takes the property and returns the column, with `Index`, `Name`, `Format`, `FormatProvider`, `Converter`, `NullValues`, `Ignore`, `Optional` and `Default`.
 The index is the position of `Map` and the name is the property name, unless they are set.
 To change the options of the map, use `UseClassMap` and then the options:
 
@@ -454,10 +480,29 @@ var csv = new TinyCsv<Model>(options =>
 - the order of the columns in the file does not matter;
 - the columns of the file that are not defined in the options are ignored;
 - the names are compared ignoring the case and the spaces around them. Use `HeaderNameComparer` to change it, e.g. `StringComparer.Ordinal`;
-- a column that is not in the header throws a `MissingColumnException`, with the names in `MissingColumns`;
+- a column that is not in the header throws a `MissingColumnException`, with the names in `MissingColumns`, unless it is [optional](#ignore-optional-and-default-values);
 - it requires `HasHeaderRecord = true`, otherwise an `InvalidOperationException` is thrown.
 
 With attributes, use `[MapColumnsByHeader]` on the model, the column name is the `name` of `[Column]` or the property name.
+
+A column can have alternative names, for files from different sources or versions (`Id`, `ID`, `Code`):
+
+```c#
+// lambda columns: the name of the column and then the alternative names
+options.Columns.AddColumn(m => m.Id).WithNames("ID", "Code");
+
+// class map
+Map(m => m.Id).Name("Id", "ID", "Code");
+
+// attributes
+[Column(names: new[] { "Id", "ID", "Code" })]
+public int Id { get; set; }
+```
+
+- when reading, the first name of the column found in the header wins, compared with `HeaderNameComparer`;
+- the header is written with the first name (`ColumnName`); `CsvColumn.ColumnNames` has all the names;
+- a column with none of its names in the header throws a `MissingColumnException`, whose message lists all the names (`Id (or ID, Code)`), unless it is optional;
+- `AddColumn` returns the column (`CsvColumn`), so `WithNames` can follow it.
 
 ### Detect the delimiter
 
@@ -474,8 +519,28 @@ var csv = new TinyCsv<Model>(options =>
 - the delimiter is one of `DelimiterCandidates`: comma, semicolon, tab and pipe;
 - the delimiter found the same number of times in each of the first 10 records wins, ignoring the quoted values, the rows to skip and the comments;
 - when no candidate is found, the delimiter is `Delimiter`, that is also the delimiter used to write.
+- a first line `sep=X` (written by Excel, see [Opening the file in Excel](#opening-the-file-in-excel)) wins over the detection.
 
 With attributes, use `[DetectDelimiter(true)]` on the model.
+
+### Null values
+
+By default an empty field is `null` (or the default value of the type) and `null` is written as an empty field.
+Database exports often write `NULL`, `\N` or `N/A` for a null, and some consumers must tell `null` from `""`:
+
+```c#
+var csv = new TinyCsv<Model>(options =>
+{
+    options.NullValues = new[] { "NULL", "\\N" }; // read: these values are null
+    options.NullValueOnWrite = "\\N";             // write: the text of a null value
+});
+```
+
+- a field equal to one of `NullValues` (the whole field, case sensitive) is `null`, or the default value of a type that cannot be null (i.e. `int`): the converter is not called, so it is valid also with `ValidateValues`;
+- a column can have its own values, that replace the values of the options: `Map(m => m.Note).NullValues("N/A")` in a class map, or `[NullValues("N/A")]` on the property;
+- `NullValueOnWrite` is written for a `null` property (the default is an empty field), while an empty string is still an empty field: with both options set, `null` and `""` are read back as they are written;
+- `TinyCsvRecords` reads the `NullValues` as `null` too;
+- with attributes, use `[NullValues("NULL", "\\N")]` and `[NullValueOnWrite("\\N")]` on the model.
 
 ## Writing
 
@@ -508,6 +573,75 @@ using (var writer = csv.CreateWriter("file_export.csv"))
 The header is written before the first record, and the file is completed when the writer is disposed.
 `CreateWriter` takes a path, a `Stream` or a `StreamWriter`: the stream and the stream writer are left open.
 There are `WriteRecordAsync`, `WriteRecordsAsync` (with an `IEnumerable<T>` or an `IAsyncEnumerable<T>`) and `await using`, on every target framework.
+
+### Quote mode
+
+By default a field is enclosed in quotes only when it contains the delimiter, a quote or a new line, as RFC 4180.
+`QuoteMode` changes it, for the consumers that need more (or no) quotes:
+
+```c#
+var csv = new TinyCsv<Model>(options =>
+{
+    options.QuoteMode = CsvQuoteMode.All;
+});
+```
+
+| `QuoteMode` | `1;Mario Rossi;"a;b";` is written as |
+|---|---|
+| `Minimal` (default) | `1;Mario Rossi;"a;b";` |
+| `All` | `"1";"Mario Rossi";"a;b";""`: every field and the header; a `null` value is an empty field without quotes, an empty string is `""` |
+| `NonNumeric` | `1;"Mario Rossi";"a;b";""`: the fields and the header of the columns that are not numbers (text, dates, booleans, ...) |
+| `None` | never quoted: `a;b` contains the delimiter, so it throws an `InvalidColumnValueException` instead of writing a file that cannot be read back (a quote in a value is written as it is) |
+
+The fields are enclosed in quotes only when `AllowRowEnclosedInDoubleQuotesValues` is true (the default).
+With `Minimal`, the line is built without creating a string for each value, as before. With attributes, use `[QuoteMode(CsvQuoteMode.All)]` on the model.
+
+### Protect against CSV injection
+
+A file exported from user data and opened in Excel or LibreOffice runs as a formula any value that starts with `=`, `+`, `-`, `@`,
+tab or carriage return ([CSV injection](https://owasp.org/www-community/attacks/CSV_Injection)): a customer named `=HYPERLINK(...)`
+becomes a link on the machine of whoever opens the file. `InjectionProtection` protects the text values when writing:
+
+```c#
+var csv = new TinyCsv<Customer>(options =>
+{
+    options.HasHeaderRecord = true;
+    options.InjectionProtection = CsvInjectionProtection.Escape;
+});
+```
+
+| `InjectionProtection` | `=1+2` is written as |
+|---|---|
+| `None` (default) | `=1+2`, as it is |
+| `Escape` | `"'=1+2"`: prefixed with an apostrophe and enclosed in quotes, so it is shown as text |
+| `Strip` | `1+2`: the leading injection characters are removed |
+| `Throw` | a `CsvInjectionException` (a `CsvException`) with `RowIndex`, `ColumnName` and `Value` |
+
+- only the columns of type `string` are checked, so the numbers are written as they are: `-5` stays `-5`;
+- the characters are in `InjectionCharacters` (`=`, `+`, `-`, `@`, `\t` and `\r` by default);
+- it applies to `Save`, `SaveAsync`, `GetAllText`, `GetAllLines` and `CreateWriter`; the values are read back as they are written (with the apostrophe);
+- with attributes, use `[InjectionProtection(CsvInjectionProtection.Escape)]` on the model.
+
+The default is `None` in 4.x, so the files are the same as before: set it when the values come from the users.
+
+### Opening the file in Excel
+
+Excel and the other tools want different files: Excel needs the UTF-8 byte order mark (BOM) to show the accented characters,
+and it chooses the delimiter from the regional settings, while many Linux tools and importers fail with the BOM.
+
+```c#
+var csv = new TinyCsv<Model>(options =>
+{
+    options.HasHeaderRecord = true;
+    options.WriteByteOrderMark = true; // the BOM, whatever the TextEncoding instance
+    options.WriteSeparatorLine = true; // "sep=;" before the header
+});
+```
+
+- `WriteByteOrderMark`: `true` writes the BOM of the encoding (UTF-8, UTF-16, UTF-32), `false` does not write it, `null` (default) follows the `TextEncoding` instance (the default UTF-8 is written without the BOM). It applies to `Save`, `SaveAsync` and `CreateWriter` with a path or a `Stream`; `GetAllText` starts with the BOM char (`\uFEFF`) when it is `true`, so `File.WriteAllText` writes it too;
+- `WriteSeparatorLine`: writes `sep=` and the delimiter (i.e. `sep=;`) as the first line, so Excel uses the delimiter of the file regardless of the regional settings. Other tools do not know this line: write it only for Excel;
+- when reading, a first line `sep=X` is always recognized: it sets the delimiter (also with `DetectDelimiter`) and it is skipped, before `RowsToSkip`;
+- with attributes, use `[WriteByteOrderMark]` and `[WriteSeparatorLine]` on the model.
 
 ## Records without a model
 
@@ -805,7 +939,7 @@ var models = await csv.LoadFromFileAsync(path).ToListAsync(); // using Mafesoft.
   Reading is not affected: `\r\n`, `\n` and `\r` are all accepted.
 - `NewLineAttribute()` without a value is `"\r\n"` too.
 - `Delimiter` is still `";"`, `DetectDelimiter` is still opt-in.
-- UTF-8 is still written without the BOM: set `TextEncoding = new UTF8Encoding(true)` to write it.
+- UTF-8 is still written without the BOM: set `TextEncoding = new UTF8Encoding(true)` to write it, or `WriteByteOrderMark = true` (4.1).
 
 ### ASP.NET Core in 4.0
 

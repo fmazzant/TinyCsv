@@ -30,6 +30,7 @@
 namespace Mafesoft.TinyCsv
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.Linq.Expressions;
@@ -50,6 +51,51 @@ namespace Mafesoft.TinyCsv
         /// Column's name
         /// </summary>
         public string ColumnName { get; internal set; } = string.Empty;
+
+        /// <summary>
+        /// The other names of the column in the header record, see <see cref="ColumnNames"/>
+        /// </summary>
+        private string[] alternativeNames = new string[0];
+
+        /// <summary>
+        /// The names of the column in the header record (see CsvOptions.MapColumnsByHeader): the <see cref="ColumnName"/>,
+        /// that is the name written in the header, and then the alternative names. When reading, the first name found wins.
+        /// </summary>
+        public IReadOnlyList<string> ColumnNames
+        {
+            get
+            {
+                var names = new string[alternativeNames.Length + 1];
+                names[0] = ColumnName;
+                alternativeNames.CopyTo(names, 1);
+                return names;
+            }
+        }
+
+        /// <summary>
+        /// Adds alternative names of the column in the header record (i.e. "ID" and "Code" for the column "Id"),
+        /// see <see cref="ColumnNames"/>. The header is written with the <see cref="ColumnName"/>.
+        /// </summary>
+        /// <param name="alternativeNames"></param>
+        /// <returns>the column</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public CsvColumn WithNames(params string[] alternativeNames)
+        {
+            if (alternativeNames == null)
+            {
+                throw new ArgumentNullException(nameof(alternativeNames));
+            }
+            var names = new string[this.alternativeNames.Length + alternativeNames.Length];
+            this.alternativeNames.CopyTo(names, 0);
+            alternativeNames.CopyTo(names, this.alternativeNames.Length);
+            this.alternativeNames = names;
+            return this;
+        }
+
+        /// <summary>
+        /// The other names of the column, without the ColumnName
+        /// </summary>
+        internal string[] AlternativeNames => alternativeNames;
 
         /// <summary>
         /// Column's name
@@ -75,6 +121,87 @@ namespace Mafesoft.TinyCsv
         /// Converter
         /// </summary>
         public IValueConverter Converter { get; internal set; } = new DefaultValueConverter();
+
+        /// <summary>
+        /// The values of the column that are read as null, instead of CsvOptions.NullValues. Null uses the values of the options.
+        /// </summary>
+        public string[]? NullValues { get; internal set; }
+
+        /// <summary>
+        /// True when the column may be missing from the header record (see CsvOptions.MapColumnsByHeader):
+        /// no MissingColumnException is thrown and the property keeps its default value
+        /// </summary>
+        public bool IsOptional { get; internal set; }
+
+        /// <summary>
+        /// True when the column has a <see cref="DefaultValue"/>
+        /// </summary>
+        public bool HasDefaultValue { get; private set; }
+
+        /// <summary>
+        /// The value of the property when the field is empty or missing, of the type of the column (see HasDefaultValue)
+        /// </summary>
+        public object? DefaultValue { get; private set; }
+
+        /// <summary>
+        /// Sets the default value, converted to the type of the column
+        /// </summary>
+        /// <param name="value"></param>
+        /// <exception cref="ArgumentException">the value cannot be converted to the type of the column</exception>
+        internal void SetDefaultValue(object? value)
+        {
+            DefaultValue = ConvertDefaultValue(value);
+            HasDefaultValue = true;
+        }
+
+        private object? ConvertDefaultValue(object? value)
+        {
+            var type = Nullable.GetUnderlyingType(ColumnType) ?? ColumnType;
+            if (value == null)
+            {
+                if (ColumnType.IsValueType && type == ColumnType)
+                {
+                    throw new ArgumentException($"The default value of the column {ColumnName} cannot be null: {ColumnType.Name} is not nullable.", nameof(value));
+                }
+                return null;
+            }
+            if (type.IsInstanceOfType(value))
+            {
+                return value;
+            }
+            try
+            {
+                if (type.IsEnum)
+                {
+                    return value is string name ? Enum.Parse(type, name, true) : Enum.ToObject(type, value);
+                }
+                if (value is string text)
+                {
+                    if (type == typeof(Guid))
+                    {
+                        return Guid.Parse(text);
+                    }
+                    if (type == typeof(TimeSpan))
+                    {
+                        return TimeSpan.Parse(text, CultureInfo.InvariantCulture);
+                    }
+                    if (type == typeof(DateTimeOffset))
+                    {
+                        return DateTimeOffset.Parse(text, CultureInfo.InvariantCulture);
+                    }
+                }
+                if (value is IConvertible && typeof(IConvertible).IsAssignableFrom(type))
+                {
+                    return System.Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+                }
+            }
+            catch (Exception exception) when (exception is FormatException || exception is InvalidCastException
+                || exception is OverflowException || exception is ArgumentException)
+            {
+                throw new ArgumentException($"The default value '{value}' of the column {ColumnName} is not a valid {ColumnType.Name}.", nameof(value), exception);
+            }
+            throw new ArgumentException($"The default value '{value}' of the column {ColumnName} is not a valid {ColumnType.Name}.", nameof(value));
+        }
 
         /// <summary>
         /// The accessor of the column (see Data.CsvColumnAccessor), created the first time the column is read or written

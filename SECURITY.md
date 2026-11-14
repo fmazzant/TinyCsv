@@ -23,3 +23,18 @@ Report it privately with [GitHub private vulnerability reporting](https://github
 
 You will receive an answer as soon as possible. When the problem is confirmed, a fixed version is released and
 the advisory is published with credit to the reporter, unless you prefer to stay anonymous.
+
+## CSV injection
+
+A CSV file opened in Excel or LibreOffice runs as a formula a value that starts with `=`, `+`, `-`, `@`, tab or carriage return
+([CSV injection](https://owasp.org/www-community/attacks/CSV_Injection)). TinyCsv writes the values as they are by default (`InjectionProtection = None` in 4.x),
+so an export of data entered by users can carry a formula to whoever opens the file.
+
+When the values come from users, set `InjectionProtection` when writing:
+
+- `CsvInjectionProtection.Escape`: the value is prefixed with an apostrophe and enclosed in quotes, so it is shown as text;
+- `CsvInjectionProtection.Strip`: the leading injection characters are removed;
+- `CsvInjectionProtection.Throw`: a `CsvInjectionException` is thrown, with the row and the column of the value.
+
+Only the text values (the columns of type `string`) are checked: the numbers are written as they are.
+See [Protect against CSV injection](README.md#protect-against-csv-injection) in the README.

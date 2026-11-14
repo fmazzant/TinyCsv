@@ -68,7 +68,7 @@ namespace Mafesoft.TinyCsv
         private void WriteRow(T model, CsvOptions<T>.WriteEventHandlers handlers)
         {
             handlers.OnRowWriting(Count, model);
-            builder.Build(model);
+            builder.Build(model, Count);
             if (handlers.Enabled)
             {
                 var line = builder.ToString();
@@ -97,7 +97,7 @@ namespace Mafesoft.TinyCsv
 
             var handlers = options.Handlers.Write;
             handlers.OnRowWriting(Count, model);
-            builder.Build(model);
+            builder.Build(model, Count);
             if (handlers.Enabled)
             {
                 var line = builder.ToString();
@@ -177,19 +177,20 @@ namespace Mafesoft.TinyCsv
         }
 
         /// <summary>
-        /// The header to write, if any, before the first record
+        /// The lines to write, if any, before the first record: the separator line (see WriteSeparatorLine) and the header
         /// </summary>
         private string? Start()
         {
             started = true;
+            var separatorLine = options.WriteSeparatorLine ? options.SeparatorLine : null;
             if (!options.HasHeaderRecord)
             {
-                return null;
+                return separatorLine;
             }
-            var header = options.AsColumnsHeaderLine();
+            var header = builder.BuildHeader();
             options.Handlers.Write.OnRowHeader(Count, header);
             Count++;
-            return header;
+            return separatorLine == null ? header : separatorLine + newLine + header;
         }
 
         /// <summary>

@@ -80,9 +80,15 @@ namespace Mafesoft.TinyCsv
         private readonly Expression expression;
         private int index = -1;
         private string? name;
+        private string[] alternativeNames = new string[0];
         private string? format;
         private IFormatProvider? formatProvider;
         private IValueConverter? converter;
+        private string[]? nullValues;
+        private bool ignore;
+        private bool optional;
+        private bool hasDefaultValue;
+        private object? defaultValue;
 
         internal CsvMemberMap(Type type, Expression expression)
         {
@@ -109,6 +115,24 @@ namespace Mafesoft.TinyCsv
         public CsvMemberMap Name(string? name)
         {
             this.name = name;
+            return this;
+        }
+
+        /// <summary>
+        /// The names of the column in the header record (see CsvOptions.MapColumnsByHeader): when reading,
+        /// the first name found in the header wins; the header is written with the first name
+        /// </summary>
+        /// <param name="name">the name of the column, written in the header</param>
+        /// <param name="alternativeName">another name of the column</param>
+        /// <param name="otherNames">the other names of the column</param>
+        /// <returns></returns>
+        public CsvMemberMap Name(string name, string alternativeName, params string[] otherNames)
+        {
+            this.name = name;
+            var names = new string[(otherNames?.Length ?? 0) + 1];
+            names[0] = alternativeName;
+            otherNames?.CopyTo(names, 1);
+            alternativeNames = names;
             return this;
         }
 
@@ -145,9 +169,65 @@ namespace Mafesoft.TinyCsv
             return this;
         }
 
+        /// <summary>
+        /// The values of the column that are read as null (i.e. "N/A"), instead of the NullValues of the options
+        /// </summary>
+        /// <param name="nullValues"></param>
+        /// <returns></returns>
+        public CsvMemberMap NullValues(params string[] nullValues)
+        {
+            this.nullValues = nullValues;
+            return this;
+        }
+
+        /// <summary>
+        /// The property is not a column: it is neither read nor written
+        /// </summary>
+        /// <returns></returns>
+        public CsvMemberMap Ignore()
+        {
+            ignore = true;
+            return this;
+        }
+
+        /// <summary>
+        /// The column may be missing from the header record (see CsvOptions.MapColumnsByHeader):
+        /// no MissingColumnException is thrown and the property keeps its default value
+        /// </summary>
+        /// <returns></returns>
+        public CsvMemberMap Optional()
+        {
+            optional = true;
+            return this;
+        }
+
+        /// <summary>
+        /// The value of the property when the field is empty or missing. It is converted to the type of the property
+        /// and a value that cannot be converted throws an ArgumentException when the map is used.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public CsvMemberMap Default(object? value)
+        {
+            hasDefaultValue = true;
+            defaultValue = value;
+            return this;
+        }
+
         internal void AddTo<T>(CsvOptionsColumns<T> columns)
         {
-            columns.AddColumn(type, index, name ?? expression.GetColumnName(), expression, format, formatProvider, converter);
+            if (ignore)
+            {
+                return;
+            }
+            var column = columns.AddColumn(type, index, name ?? expression.GetColumnName(), expression, format, formatProvider, converter);
+            column.WithNames(alternativeNames);
+            column.NullValues = nullValues;
+            column.IsOptional = optional;
+            if (hasDefaultValue)
+            {
+                column.SetDefaultValue(defaultValue);
+            }
         }
     }
 }
