@@ -698,6 +698,38 @@ string text = csv.GetAllText(dynamicRows);             // ExpandoObject, anonymo
 - the records read by `LoadFromFile`, `LoadDynamicFromFile` and `LoadDataTableFromFile` are written back as the same text;
 - `SaveToStream` and `SaveToStreamAsync` leave the stream open; `GetAllText` has no new line after the last row, as `TinyCsv<T>.GetAllText`.
 
+### IDataReader and SqlBulkCopy
+
+`CreateDataReader` returns a `DbDataReader` that reads the records one at a time, so the memory does not grow with
+the number of rows. `SqlBulkCopy` loads a CSV file into SQL Server without a `DataTable`:
+
+```c#
+using var reader = new TinyCsvRecords(o => o.Delimiter = ",").CreateDataReader("orders.csv");
+using var bulk = new SqlBulkCopy(connection) { DestinationTableName = "Orders" };
+await bulk.WriteToServerAsync(reader);
+
+// typed: the columns of the options and the values of the models, converted by the column converters
+using var typed = csv.CreateDataReader("orders.csv");   // TinyCsv<Order> or ITinyCsv<Order>
+```
+
+- the untyped reader has the names of the header (or `Field1`, `Field2`, ... without the header) and string values;
+  `ColumnTypes` gives a type to some columns, converted with `Culture` (an empty field is `DBNull`,
+  a field that cannot be converted throws `InvalidColumnValueException` with `RowIndex` and `ColumnName`);
+- `ColumnTypes` is used by `LoadDataTableFromFile`, `LoadDataTableFromStream` and `LoadDataTableFromText` too:
+
+```c#
+var csv = new TinyCsvRecords(o =>
+{
+    o.Delimiter = ",";
+    o.ColumnTypes = new Dictionary<string, Type> { ["Id"] = typeof(int), ["Price"] = typeof(decimal) };
+});
+DataTable table = csv.LoadDataTableFromFile("orders.csv");   // Id is int, Price is decimal, the others string
+```
+
+- `GetSchemaTable` returns `ColumnName`, `ColumnOrdinal`, `DataType`, `AllowDBNull` and the other standard columns,
+  so `DataTable.Load(reader)` creates typed columns;
+- disposing the reader disposes the file, the stream or the text reader.
+
 ## Error handling
 
 By default, a value that cannot be converted to the type of its column (i.e. `abc` for an `int`) is read as the default value.
