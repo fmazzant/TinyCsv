@@ -7,8 +7,9 @@
 
 [![Mafe.TinyCsv.AspNetCore downloads](https://img.shields.io/nuget/dt/Mafe.TinyCsv.AspNetCore?style=flat-square&label=Mafe.TinyCsv.AspNetCore%20downloads)](https://www.nuget.org/packages/Mafe.TinyCsv.AspNetCore)
 
-Registers [Mafesoft.TinyCsv](https://www.nuget.org/packages/Mafesoft.TinyCsv) in the ASP.NET Core dependency injection.
-It depends only on `Microsoft.Extensions.DependencyInjection.Abstractions`.
+Registers [Mafesoft.TinyCsv](https://www.nuget.org/packages/Mafesoft.TinyCsv) in the ASP.NET Core dependency injection
+and, on .NET 8+, returns and reads CSV: minimal API results, `IFormFile` uploads, MVC `text/csv` formatters and
+`ProblemDetails` for bad data. On .NET Standard 2.0 it depends only on `Microsoft.Extensions.DependencyInjection.Abstractions`.
 
 Target frameworks: .NET 10, .NET 8, .NET Standard 2.0.
 
@@ -33,6 +34,16 @@ builder.Services
 
 app.MapGet("/orders/it", ([FromKeyedServices("orders-it")] ITinyCsv<Order> csv) => csv.LoadFromFileAsync("orders-it.csv"));
 app.MapGet("/orders/us", (ITinyCsvFactory factory) => factory.Get<Order>("orders-us").LoadFromFileAsync("orders-us.csv"));
+
+// .NET 8+: CSV download and upload, MVC formatters, ProblemDetails for bad data
+app.MapGet("/orders.csv", (ITinyCsv<Order> csv, AppDb db) =>
+    Results.Extensions.Csv(csv, db.Orders.AsAsyncEnumerable(), fileDownloadName: "orders.csv"));
+app.MapPost("/orders/import", async (IFormFile file, ITinyCsv<Order> csv) =>
+{
+    await foreach (var order in csv.LoadFromFormFileAsync(file)) { }
+}).DisableAntiforgery();
+builder.Services.AddControllers().AddTinyCsvFormatters();
+builder.Services.AddTinyCsvProblemDetails();
 ```
 
 The instances are singletons of the service provider: two service providers do not share them.

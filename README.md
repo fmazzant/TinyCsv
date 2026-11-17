@@ -757,7 +757,8 @@ using Mafesoft.TinyCsv.AspNetCore;
 using Mafesoft.TinyCsv.AspNetCore.Extensions;
 ```
 
-The package depends only on `Microsoft.Extensions.DependencyInjection.Abstractions`.
+On .NET Standard 2.0 the package depends only on `Microsoft.Extensions.DependencyInjection.Abstractions` (dependency injection only);
+on .NET 8 and .NET 10 it uses the ASP.NET Core shared framework (`Microsoft.AspNetCore.App`) for the CSV results, the uploads and the MVC formatters.
 
 A `TinyCsv<T>` instance is thread-safe after its construction, as long as its options are not changed: it is registered as singleton.
 
@@ -801,6 +802,57 @@ do not share their registrations.
 | a name registered twice | `InvalidOperationException` (when it is registered) |
 | `Get<T>` with a name that is not registered | `KeyNotFoundException` |
 | `Get<T>` with the name of an instance of another model | `InvalidOperationException` |
+
+### Return and read CSV (.NET 8+)
+
+```c#
+// minimal API: a CSV download, streamed one record at a time (IEnumerable<T> or IAsyncEnumerable<T>)
+app.MapGet("/orders.csv", (ITinyCsv<Order> csv, AppDb db) =>
+    Results.Extensions.Csv(csv, db.Orders.AsAsyncEnumerable(), fileDownloadName: "orders.csv"));
+
+// upload of a file (multipart/form-data) or of a text/csv request body
+app.MapPost("/orders/import", async (IFormFile file, ITinyCsv<Order> csv) =>
+{
+    await foreach (var order in csv.LoadFromFormFileAsync(file)) { }
+}).DisableAntiforgery();
+
+app.MapPost("/orders/import-body", async (HttpRequest request, ITinyCsv<Order> csv) =>
+{
+    await foreach (var order in csv.LoadFromRequestAsync(request)) { }
+});
+
+// MVC: text/csv input and output formatters
+builder.Services.AddControllers().AddTinyCsvFormatters();
+```
+
+- `Results.Extensions.Csv` writes `text/csv; charset=utf-8` and, with a file name, `Content-Disposition: attachment`;
+  the records are written and flushed asynchronously, one at a time: the whole file is never in memory;
+- `AddTinyCsvFormatters` adds `TinyCsvOutputFormatter` (an action that returns `IEnumerable<T>` or `IAsyncEnumerable<T>`,
+  with `Accept: text/csv` or `[FormatFilter]` and `.csv`) and `TinyCsvInputFormatter` (a `[FromBody] List<T>` or `T[]`
+  with `Content-Type: text/csv`). The models use the `ITinyCsv<T>` registered with `AddTinyCsv`, otherwise the attributes
+  or the public properties of the model;
+- on .NET Standard 2.0 the package keeps only the dependency injection.
+
+#### Bad data in an upload
+
+A row with bad data throws a `CsvException` with `RowIndex`, `ColumnName` and `Value` (set `ValidateValues = true` to
+throw for a value that cannot be converted, instead of the default value). It becomes a 400 `ProblemDetails`
+with the extensions `row`, `column` and `value`:
+
+```c#
+// every endpoint: a CsvException not handled by the endpoint becomes a 400 ProblemDetails
+builder.Services.AddTinyCsvProblemDetails();
+app.UseExceptionHandler();
+
+// or in the endpoint
+catch (CsvException exception)
+{
+    return Results.Extensions.CsvProblem(exception);
+}
+```
+
+With the MVC input formatter, the bad data is a model error: with `[ApiController]` the response is a 400 `ValidationProblemDetails`.
+To skip the bad rows instead, set `BadDataFound` (see [Error handling](#error-handling)).
 
 ## Performance
 
