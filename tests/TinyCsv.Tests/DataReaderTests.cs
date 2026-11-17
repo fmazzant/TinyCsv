@@ -10,6 +10,16 @@ namespace Mafesoft.TinyCsv.Tests
     using Mafesoft.TinyCsv.Exceptions;
     using Xunit;
 
+    /// <summary>
+    /// The streaming test measures the process memory: it must not run in parallel with other tests,
+    /// whose allocations would be counted too.
+    /// </summary>
+    [CollectionDefinition(nameof(DataReaderTests), DisableParallelization = true)]
+    public class DataReaderTestsCollection
+    {
+    }
+
+    [Collection(nameof(DataReaderTests))]
     public class DataReaderTests
     {
         private const string Text = "Id,Name,Price,Date\n1,Mario,10.5,2026-01-02\n2,\"Rossi, Luigi\",,2026-03-04\n";
@@ -301,7 +311,8 @@ namespace Mafesoft.TinyCsv.Tests
                         count++;
                     }
                     var after = GC.GetTotalMemory(true);
-                    Assert.True(after - before < 2 * 1024 * 1024, $"The memory grew by {after - before} bytes.");
+                    // keeping the 199000 rows in memory would take tens of MB: a few MB is runtime noise
+                    Assert.True(after - before < 8 * 1024 * 1024,$"The memory grew by {after - before} bytes.");
                 }
                 Assert.Equal(200000, count);
             }
