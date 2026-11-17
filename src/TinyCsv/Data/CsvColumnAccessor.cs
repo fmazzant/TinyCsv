@@ -54,7 +54,7 @@ namespace Mafesoft.TinyCsv.Data
                 ? Activator.CreateInstance(column.ColumnType)
                 : null;
             var quoteMode = options.QuoteMode;
-            Quoted = quoteMode == CsvQuoteMode.All || (quoteMode == CsvQuoteMode.NonNumeric && !IsNumber(column.ColumnType));
+            Quoted = quoteMode == CsvQuoteMode.All || (quoteMode == CsvQuoteMode.NonNumeric && !CsvFieldBuilder.IsNumber(column.ColumnType));
             Provider = column.GetFormatProvider(options.Culture);
             Accessor = CsvColumnAccessor<T>.Get(column, options).Bind(Provider);
 
@@ -115,18 +115,6 @@ namespace Mafesoft.TinyCsv.Data
                 }
             }
             return false;
-        }
-
-        /// <summary>
-        /// True for the types of the numbers, and their nullable types
-        /// </summary>
-        private static bool IsNumber(Type type)
-        {
-            type = Nullable.GetUnderlyingType(type) ?? type;
-            return type == typeof(int) || type == typeof(long) || type == typeof(short) || type == typeof(sbyte)
-                || type == typeof(uint) || type == typeof(ulong) || type == typeof(ushort) || type == typeof(byte)
-                || type == typeof(decimal) || type == typeof(double) || type == typeof(float)
-                || type == typeof(System.Numerics.BigInteger);
         }
 
         public IFormatProvider Provider { get; }

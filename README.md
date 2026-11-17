@@ -672,6 +672,32 @@ DataTable table = csv.LoadDataTableFromFile("file.csv");
 - an empty name of the header is named by its position, a repeated name is followed by a number (i.e. `Name_2`);
 - the dictionaries compare the names with `HeaderNameComparer`, that ignores the case by default.
 
+### Write records without a model
+
+`TinyCsvRecords` writes a `DataTable`, an `IDataReader` (one row at a time), dictionaries or dynamic objects,
+without converting them to a class first:
+
+```c#
+var csv = new TinyCsvRecords(options =>
+{
+    options.Delimiter = ",";
+    options.ColumnsToWrite = new[] { "Id", "Name" };   // optional: the columns and their order
+});
+
+csv.SaveToFile("out.csv", dataTable);
+csv.SaveToFile("out.csv", listOfDictionaries);          // IEnumerable<IDictionary<string, object?>>
+await csv.SaveToStreamAsync(stream, dataReader, ct);   // IDataReader, streamed (DbDataReader.ReadAsync)
+string text = csv.GetAllText(dynamicRows);             // ExpandoObject, anonymous types, dictionaries
+```
+
+- the header has the columns of the `DataTable` or of the data reader, or the keys of the first record;
+  a key missing from a later record is a null value, a key that is not a column is not written;
+- the values are formatted with `Culture` (a `byte[]` as Base64) and written with the same rules of the typed writer:
+  `QuoteMode` (with `NonNumeric` the numeric columns are not quoted), `InjectionProtection`, `NullValueOnWrite`,
+  `WriteByteOrderMark` and `WriteSeparatorLine`;
+- the records read by `LoadFromFile`, `LoadDynamicFromFile` and `LoadDataTableFromFile` are written back as the same text;
+- `SaveToStream` and `SaveToStreamAsync` leave the stream open; `GetAllText` has no new line after the last row, as `TinyCsv<T>.GetAllText`.
+
 ## Error handling
 
 By default, a value that cannot be converted to the type of its column (i.e. `abc` for an `int`) is read as the default value.

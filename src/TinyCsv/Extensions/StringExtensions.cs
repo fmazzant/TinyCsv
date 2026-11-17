@@ -122,6 +122,15 @@ namespace Mafesoft.TinyCsv.Extensions
         /// <returns></returns>
         public static string EnclosedInQuotesIfNecessary<T>(this string value, CsvOptions<T> options)
         {
+            return EnclosedInQuotesIfNecessary(value, (CsvOptions)options);
+        }
+
+        /// <summary>
+        /// <see cref="EnclosedInQuotesIfNecessary{T}(string, CsvOptions{T})"/> for the options of any type,
+        /// i.e. the options of the records without a model
+        /// </summary>
+        internal static string EnclosedInQuotesIfNecessary(string value, CsvOptions options)
+        {
             if (string.IsNullOrEmpty(value))
             {
                 return value;
