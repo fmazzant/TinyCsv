@@ -672,6 +672,64 @@ DataTable table = csv.LoadDataTableFromFile("file.csv");
 - an empty name of the header is named by its position, a repeated name is followed by a number (i.e. `Name_2`);
 - the dictionaries compare the names with `HeaderNameComparer`, that ignores the case by default.
 
+### Write records without a model
+
+`TinyCsvRecords` writes a `DataTable`, an `IDataReader` (one row at a time), dictionaries or dynamic objects,
+without converting them to a class first:
+
+```c#
+var csv = new TinyCsvRecords(options =>
+{
+    options.Delimiter = ",";
+    options.ColumnsToWrite = new[] { "Id", "Name" };   // optional: the columns and their order
+});
+
+csv.SaveToFile("out.csv", dataTable);
+csv.SaveToFile("out.csv", listOfDictionaries);          // IEnumerable<IDictionary<string, object?>>
+await csv.SaveToStreamAsync(stream, dataReader, ct);   // IDataReader, streamed (DbDataReader.ReadAsync)
+string text = csv.GetAllText(dynamicRows);             // ExpandoObject, anonymous types, dictionaries
+```
+
+- the header has the columns of the `DataTable` or of the data reader, or the keys of the first record;
+  a key missing from a later record is a null value, a key that is not a column is not written;
+- the values are formatted with `Culture` (a `byte[]` as Base64) and written with the same rules of the typed writer:
+  `QuoteMode` (with `NonNumeric` the numeric columns are not quoted), `InjectionProtection`, `NullValueOnWrite`,
+  `WriteByteOrderMark` and `WriteSeparatorLine`;
+- the records read by `LoadFromFile`, `LoadDynamicFromFile` and `LoadDataTableFromFile` are written back as the same text;
+- `SaveToStream` and `SaveToStreamAsync` leave the stream open; `GetAllText` has no new line after the last row, as `TinyCsv<T>.GetAllText`.
+
+### IDataReader and SqlBulkCopy
+
+`CreateDataReader` returns a `DbDataReader` that reads the records one at a time, so the memory does not grow with
+the number of rows. `SqlBulkCopy` loads a CSV file into SQL Server without a `DataTable`:
+
+```c#
+using var reader = new TinyCsvRecords(o => o.Delimiter = ",").CreateDataReader("orders.csv");
+using var bulk = new SqlBulkCopy(connection) { DestinationTableName = "Orders" };
+await bulk.WriteToServerAsync(reader);
+
+// typed: the columns of the options and the values of the models, converted by the column converters
+using var typed = csv.CreateDataReader("orders.csv");   // TinyCsv<Order> or ITinyCsv<Order>
+```
+
+- the untyped reader has the names of the header (or `Field1`, `Field2`, ... without the header) and string values;
+  `ColumnTypes` gives a type to some columns, converted with `Culture` (an empty field is `DBNull`,
+  a field that cannot be converted throws `InvalidColumnValueException` with `RowIndex` and `ColumnName`);
+- `ColumnTypes` is used by `LoadDataTableFromFile`, `LoadDataTableFromStream` and `LoadDataTableFromText` too:
+
+```c#
+var csv = new TinyCsvRecords(o =>
+{
+    o.Delimiter = ",";
+    o.ColumnTypes = new Dictionary<string, Type> { ["Id"] = typeof(int), ["Price"] = typeof(decimal) };
+});
+DataTable table = csv.LoadDataTableFromFile("orders.csv");   // Id is int, Price is decimal, the others string
+```
+
+- `GetSchemaTable` returns `ColumnName`, `ColumnOrdinal`, `DataType`, `AllowDBNull` and the other standard columns,
+  so `DataTable.Load(reader)` creates typed columns;
+- disposing the reader disposes the file, the stream or the text reader.
+
 ## Error handling
 
 By default, a value that cannot be converted to the type of its column (i.e. `abc` for an `int`) is read as the default value.
@@ -757,7 +815,8 @@ using Mafesoft.TinyCsv.AspNetCore;
 using Mafesoft.TinyCsv.AspNetCore.Extensions;
 ```
 
-The package depends only on `Microsoft.Extensions.DependencyInjection.Abstractions`.
+On .NET Standard 2.0 the package depends only on `Microsoft.Extensions.DependencyInjection.Abstractions` (dependency injection only);
+on .NET 8 and .NET 10 it uses the ASP.NET Core shared framework (`Microsoft.AspNetCore.App`) for the CSV results, the uploads and the MVC formatters.
 
 A `TinyCsv<T>` instance is thread-safe after its construction, as long as its options are not changed: it is registered as singleton.
 
@@ -801,6 +860,57 @@ do not share their registrations.
 | a name registered twice | `InvalidOperationException` (when it is registered) |
 | `Get<T>` with a name that is not registered | `KeyNotFoundException` |
 | `Get<T>` with the name of an instance of another model | `InvalidOperationException` |
+
+### Return and read CSV (.NET 8+)
+
+```c#
+// minimal API: a CSV download, streamed one record at a time (IEnumerable<T> or IAsyncEnumerable<T>)
+app.MapGet("/orders.csv", (ITinyCsv<Order> csv, AppDb db) =>
+    Results.Extensions.Csv(csv, db.Orders.AsAsyncEnumerable(), fileDownloadName: "orders.csv"));
+
+// upload of a file (multipart/form-data) or of a text/csv request body
+app.MapPost("/orders/import", async (IFormFile file, ITinyCsv<Order> csv) =>
+{
+    await foreach (var order in csv.LoadFromFormFileAsync(file)) { }
+}).DisableAntiforgery();
+
+app.MapPost("/orders/import-body", async (HttpRequest request, ITinyCsv<Order> csv) =>
+{
+    await foreach (var order in csv.LoadFromRequestAsync(request)) { }
+});
+
+// MVC: text/csv input and output formatters
+builder.Services.AddControllers().AddTinyCsvFormatters();
+```
+
+- `Results.Extensions.Csv` writes `text/csv; charset=utf-8` and, with a file name, `Content-Disposition: attachment`;
+  the records are written and flushed asynchronously, one at a time: the whole file is never in memory;
+- `AddTinyCsvFormatters` adds `TinyCsvOutputFormatter` (an action that returns `IEnumerable<T>` or `IAsyncEnumerable<T>`,
+  with `Accept: text/csv` or `[FormatFilter]` and `.csv`) and `TinyCsvInputFormatter` (a `[FromBody] List<T>` or `T[]`
+  with `Content-Type: text/csv`). The models use the `ITinyCsv<T>` registered with `AddTinyCsv`, otherwise the attributes
+  or the public properties of the model;
+- on .NET Standard 2.0 the package keeps only the dependency injection.
+
+#### Bad data in an upload
+
+A row with bad data throws a `CsvException` with `RowIndex`, `ColumnName` and `Value` (set `ValidateValues = true` to
+throw for a value that cannot be converted, instead of the default value). It becomes a 400 `ProblemDetails`
+with the extensions `row`, `column` and `value`:
+
+```c#
+// every endpoint: a CsvException not handled by the endpoint becomes a 400 ProblemDetails
+builder.Services.AddTinyCsvProblemDetails();
+app.UseExceptionHandler();
+
+// or in the endpoint
+catch (CsvException exception)
+{
+    return Results.Extensions.CsvProblem(exception);
+}
+```
+
+With the MVC input formatter, the bad data is a model error: with `[ApiController]` the response is a 400 `ValidationProblemDetails`.
+To skip the bad rows instead, set `BadDataFound` (see [Error handling](#error-handling)).
 
 ## Performance
 

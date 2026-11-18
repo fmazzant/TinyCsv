@@ -9,13 +9,18 @@
     <Product>TinyCsv.AspNetCore</Product>
     <Title>Mafesoft.TinyCsv.AspNetCore</Title>
     <Version>4.1.0</Version>
-    <Description>Registers Mafesoft.TinyCsv in the ASP.NET Core dependency injection: typed singletons, named instances (keyed services on .NET 8+) and ITinyCsvFactory.</Description>
-    <PackageTags>csv;csv-parser;csv-reader;csv-writer;rfc4180;tsv;dotnet;aspnetcore;dependency-injection</PackageTags>
+    <Description>Mafesoft.TinyCsv in ASP.NET Core: dependency injection (typed singletons, named instances, ITinyCsvFactory) and, on .NET 8+, CSV results for the minimal APIs, IFormFile uploads, MVC input and output formatters and ProblemDetails for bad data.</Description>
+    <PackageTags>csv;csv-parser;csv-reader;csv-writer;rfc4180;tsv;dotnet;aspnetcore;dependency-injection;minimal-api;mvc;formatter</PackageTags>
   </PropertyGroup>
 
-  <ItemGroup>
-    <!-- only the abstractions are used: IServiceCollection, TryAddSingleton, AddKeyedSingleton (.NET 8+) -->
+  <!-- netstandard2.0: only the abstractions are used: IServiceCollection, TryAddSingleton -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+  </ItemGroup>
+
+  <!-- .NET 8+: the ASP.NET Core shared framework, for the CSV results of the minimal APIs, IFormFile and the MVC formatters -->
+  <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0'">
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>

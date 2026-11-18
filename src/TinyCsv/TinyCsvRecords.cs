@@ -11,8 +11,10 @@ namespace Mafesoft.TinyCsv
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using Mafesoft.TinyCsv.Conversions;
     using Mafesoft.TinyCsv.Data;
     using Mafesoft.TinyCsv.Exceptions;
+    using Mafesoft.TinyCsv.Factory;
     using Mafesoft.TinyCsv.Streams;
 
     /// <summary>
@@ -29,6 +31,22 @@ namespace Mafesoft.TinyCsv
             HasHeaderRecord = true;
         }
 
+        /// <summary>
+        /// The columns written by the SaveTo* methods and GetAllText, in this order. Null (default) writes all the columns:
+        /// the columns of the DataTable or of the data reader, or the keys of the first record (dictionaries, dynamic objects).
+        /// A column of a DataTable or of a data reader that does not exist throws an ArgumentException;
+        /// a key missing from a record is a null value.
+        /// </summary>
+        public IList<string>? ColumnsToWrite { get; set; }
+
+        /// <summary>
+        /// The types of the columns by name (i.e. <c>["Id"] = typeof(int)</c>), used by <c>CreateDataReader</c> and by
+        /// the <c>LoadDataTable*</c> methods instead of string: the fields are converted with the <see cref="CsvOptions.Culture"/>
+        /// and an empty field is DBNull. Null (default) or a column that is not in the list: string.
+        /// A field that cannot be converted throws an InvalidColumnValueException.
+        /// </summary>
+        public IDictionary<string, Type>? ColumnTypes { get; set; }
+
         internal CsvRecordOptions WithDelimiter(string delimiter)
         {
             var options = (CsvRecordOptions)MemberwiseClone();
@@ -42,7 +60,7 @@ namespace Mafesoft.TinyCsv
     /// The values are strings, named by the header; without the header, or for a value beyond it,
     /// the name is Field1, Field2 and so on. A value missing from a short record is null.
     /// </summary>
-    public sealed class TinyCsvRecords
+    public sealed partial class TinyCsvRecords
     {
         /// <summary>
         /// The options
@@ -240,16 +258,21 @@ namespace Mafesoft.TinyCsv
         {
             var table = new DataTable { Locale = Options.Culture ?? CultureInfo.InvariantCulture };
             var names = new List<string>();
+            var types = CreateColumnTypes();
+            var converters = new List<IValueConverter?>();
+            var rowIndex = Options.HasHeaderRecord ? 0 : -1;
             foreach (var record in ReadRecords(textReader, names))
             {
+                rowIndex++;
                 for (int i = table.Columns.Count; i < record.Names.Count; i++)
                 {
-                    table.Columns.Add(record.Names[i], typeof(string));
+                    AddColumn(table, converters, types, record.Names[i]);
                 }
                 var row = table.NewRow();
                 for (int i = 0; i < record.Names.Count; i++)
                 {
-                    row[i] = (object?)record.Value(i) ?? DBNull.Value;
+                    var column = table.Columns[i];
+                    row[i] = ConvertValue(column.ColumnName, column.DataType, converters[i], record.Value(i), rowIndex) ?? DBNull.Value;
                 }
                 table.Rows.Add(row);
             }
@@ -258,10 +281,17 @@ namespace Mafesoft.TinyCsv
                 // a file with the header and without records
                 foreach (var name in names)
                 {
-                    table.Columns.Add(name, typeof(string));
+                    AddColumn(table, converters, types, name);
                 }
             }
             return table;
+        }
+
+        private static void AddColumn(DataTable table, List<IValueConverter?> converters, Dictionary<string, Type>? types, string name)
+        {
+            var type = ColumnType(types, name);
+            table.Columns.Add(name, type);
+            converters.Add(type == typeof(string) ? null : ValueConverterFactory.CreateValueConverterByType(type));
         }
 
         /// <summary>
