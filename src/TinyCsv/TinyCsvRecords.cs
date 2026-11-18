@@ -29,6 +29,14 @@ namespace Mafesoft.TinyCsv
             HasHeaderRecord = true;
         }
 
+        /// <summary>
+        /// The columns written by the SaveTo* methods and GetAllText, in this order. Null (default) writes all the columns:
+        /// the columns of the DataTable or of the data reader, or the keys of the first record (dictionaries, dynamic objects).
+        /// A column of a DataTable or of a data reader that does not exist throws an ArgumentException;
+        /// a key missing from a record is a null value.
+        /// </summary>
+        public IList<string>? ColumnsToWrite { get; set; }
+
         internal CsvRecordOptions WithDelimiter(string delimiter)
         {
             var options = (CsvRecordOptions)MemberwiseClone();
@@ -42,7 +50,7 @@ namespace Mafesoft.TinyCsv
     /// The values are strings, named by the header; without the header, or for a value beyond it,
     /// the name is Field1, Field2 and so on. A value missing from a short record is null.
     /// </summary>
-    public sealed class TinyCsvRecords
+    public sealed partial class TinyCsvRecords
     {
         /// <summary>
         /// The options
